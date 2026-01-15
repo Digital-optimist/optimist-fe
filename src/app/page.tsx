@@ -16,7 +16,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <BenefitsSection />
-      <FeaturesShowcaseSection />
+      {/* <FeaturesShowcaseSection /> */}
       <EngineeredSection />
       <MadeSimpleSection />
       <OptimistAppSection />
