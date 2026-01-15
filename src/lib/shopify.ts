@@ -1,8 +1,7 @@
 // Shopify Storefront API Client and GraphQL Operations
 
-const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!;
-const storefrontAccessToken =
-  process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+const domain = "octolife-3.myshopify.com";
+const storefrontAccessToken = "3b12d6020365806434052cc061a5b5e3";
 const apiVersion = "2025-01";
 
 // =============================================================================

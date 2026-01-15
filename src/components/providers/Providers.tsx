@@ -13,8 +13,8 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ShopifyProvider
-      storeDomain={`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}`}
-      storefrontToken={process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!}
+      storeDomain={`https://octolife-3.myshopify.com`}
+      storefrontToken={"3b12d6020365806434052cc061a5b5e3"}
       storefrontApiVersion="2025-07"
       countryIsoCode="IN"
       languageIsoCode="EN"
