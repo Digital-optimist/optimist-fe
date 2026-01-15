@@ -46,8 +46,19 @@ export function TestimonialsSection() {
 
   useGSAP(
     () => {
+      // Batch all animations into a single timeline with one ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          end: "top 25%",
+          toggleActions: "play none none none",
+          once: true, // Only animate once for better performance
+        },
+      });
+
       // Header animation
-      gsap.fromTo(
+      tl.fromTo(
         headerRef.current,
         { opacity: 0, y: 40 },
         {
@@ -55,18 +66,14 @@ export function TestimonialsSection() {
           y: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0
       );
 
       // Cards stagger animation
       const cards = carouselRef.current?.querySelectorAll(".testimonial-card");
       if (cards) {
-        gsap.fromTo(
+        tl.fromTo(
           cards,
           { opacity: 0, y: 40 },
           {
@@ -75,12 +82,8 @@ export function TestimonialsSection() {
             stagger: 0.15,
             duration: 0.8,
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: carouselRef.current,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          }
+          },
+          0.2 // Start slightly after header
         );
       }
     },

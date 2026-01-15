@@ -94,8 +94,19 @@ export function OptimistAppSection() {
 
   useGSAP(
     () => {
+      // Batch all animations into a single timeline with one ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          end: "top 25%",
+          toggleActions: "play none none none",
+          once: true, // Only animate once for better performance
+        },
+      });
+
       // Header animation
-      gsap.fromTo(
+      tl.fromTo(
         headerRef.current,
         { opacity: 0, y: 40 },
         {
@@ -103,16 +114,12 @@ export function OptimistAppSection() {
           y: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0
       );
 
       // Phone animation
-      gsap.fromTo(
+      tl.fromTo(
         phoneRef.current,
         { opacity: 0, y: 60, scale: 0.9 },
         {
@@ -121,18 +128,14 @@ export function OptimistAppSection() {
           scale: 1,
           duration: 1,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: phoneRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0.2
       );
 
       // Feature cards stagger animation
       const cards = featuresRef.current?.querySelectorAll(".feature-card");
       if (cards) {
-        gsap.fromTo(
+        tl.fromTo(
           cards,
           { opacity: 0, scale: 0.9 },
           {
@@ -141,12 +144,8 @@ export function OptimistAppSection() {
             stagger: 0.12,
             duration: 0.6,
             ease: "back.out(1.2)",
-            scrollTrigger: {
-              trigger: featuresRef.current,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          }
+          },
+          0.4
         );
       }
     },

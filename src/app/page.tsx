@@ -2,6 +2,7 @@
 
 import { HeroSection } from "@/components/landing/HeroSection";
 import { BenefitsSection } from "@/components/landing/BenefitsSection";
+import { FeaturesShowcaseSection } from "@/components/landing/FeaturesShowcaseSection";
 import { EngineeredSection } from "@/components/landing/EngineeredSection";
 import { MadeSimpleSection } from "@/components/landing/MadeSimpleSection";
 import { OptimistAppSection } from "@/components/landing/OptimistAppSection";
@@ -15,6 +16,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <BenefitsSection />
+      <FeaturesShowcaseSection />
       <EngineeredSection />
       <MadeSimpleSection />
       <OptimistAppSection />

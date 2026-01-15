@@ -299,8 +299,19 @@ export function EngineeredSection() {
 
   useGSAP(
     () => {
+      // Batch all animations into a single timeline with one ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          end: "top 25%",
+          toggleActions: "play none none none",
+          once: true, // Only animate once for better performance
+        },
+      });
+
       // Header animation - fade in from bottom
-      gsap.fromTo(
+      tl.fromTo(
         headerRef.current,
         { opacity: 0, y: 50 },
         {
@@ -308,19 +319,15 @@ export function EngineeredSection() {
           y: 0,
           duration: 1,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0
       );
 
       // Features stagger animation - Apple-style sequential reveal
       const featureCards =
         featuresRef.current?.querySelectorAll(".feature-card");
       if (featureCards) {
-        gsap.fromTo(
+        tl.fromTo(
           featureCards,
           { opacity: 0, x: -40, scale: 0.95 },
           {
@@ -330,17 +337,13 @@ export function EngineeredSection() {
             stagger: 0.12,
             duration: 0.7,
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: featuresRef.current,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
-            },
-          }
+          },
+          0.2 // Start slightly after header
         );
       }
 
       // Image container animation with subtle scale
-      gsap.fromTo(
+      tl.fromTo(
         imageContainerRef.current,
         { opacity: 0, scale: 0.92, y: 30 },
         {
@@ -349,12 +352,8 @@ export function EngineeredSection() {
           y: 0,
           duration: 1,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: imageContainerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0.3 // Start slightly after features
       );
     },
     { scope: sectionRef }

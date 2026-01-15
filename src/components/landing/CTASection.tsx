@@ -12,7 +12,7 @@ export function CTASection() {
 
   useGSAP(
     () => {
-      // Card entrance animation
+      // Single animation - this is already just one ScrollTrigger, just optimize it
       gsap.fromTo(
         cardRef.current,
         { opacity: 0, y: 40, scale: 0.98 },
@@ -24,8 +24,9 @@ export function CTASection() {
           ease: "power3.out",
           scrollTrigger: {
             trigger: cardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
+            start: "top 75%",
+            toggleActions: "play none none none",
+            once: true, // Only animate once for better performance
           },
         }
       );

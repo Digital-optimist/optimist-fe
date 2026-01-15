@@ -13,8 +13,19 @@ export function MadeSimpleSection() {
 
   useGSAP(
     () => {
+      // Batch both cards into a single timeline with one ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          end: "top 25%",
+          toggleActions: "play none none none",
+          once: true, // Only animate once for better performance
+        },
+      });
+
       // Left card animation
-      gsap.fromTo(
+      tl.fromTo(
         leftCardRef.current,
         { opacity: 0, x: -40 },
         {
@@ -22,16 +33,12 @@ export function MadeSimpleSection() {
           x: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: leftCardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0
       );
 
-      // Right card animation
-      gsap.fromTo(
+      // Right card animation with slight stagger
+      tl.fromTo(
         rightCardRef.current,
         { opacity: 0, x: 40 },
         {
@@ -39,12 +46,8 @@ export function MadeSimpleSection() {
           x: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: rightCardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0.1 // Slight delay for stagger effect
       );
     },
     { scope: sectionRef }

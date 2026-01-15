@@ -12,14 +12,21 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialize Lenis for smooth scrolling
+    // Initialize Lenis for smooth scrolling with optimized settings
     const lenis = new Lenis({
-      duration: 1.2,
+      // Reduced duration for faster response and less processing
+      duration: 0.8,
+      // Simplified easing for better performance
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 2,
+      // Reduced multiplier to prevent over-scrolling
+      touchMultiplier: 1.5,
+      // Reduce wheel multiplier for better control
+      wheelMultiplier: 0.8,
+      // Enable autoRaf to reduce manual RAF overhead
+      autoRaf: false, // We'll handle RAF manually for better control with GSAP
     });
 
     lenisRef.current = lenis;

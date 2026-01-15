@@ -1,5 +1,6 @@
 export { HeroSection } from "./HeroSection";
 export { BenefitsSection } from "./BenefitsSection";
+export { FeaturesShowcaseSection } from "./FeaturesShowcaseSection";
 export { EngineeredSection } from "./EngineeredSection";
 export { MadeSimpleSection } from "./MadeSimpleSection";
 export { OptimistAppSection } from "./OptimistAppSection";

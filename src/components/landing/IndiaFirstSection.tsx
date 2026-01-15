@@ -14,8 +14,19 @@ export function IndiaFirstSection() {
 
   useGSAP(
     () => {
+      // Batch all animations into a single timeline with one ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          end: "top 25%",
+          toggleActions: "play none none none",
+          once: true, // Only animate once for better performance
+        },
+      });
+
       // Left card animation
-      gsap.fromTo(
+      tl.fromTo(
         leftCardRef.current,
         { opacity: 0, x: -40 },
         {
@@ -23,16 +34,12 @@ export function IndiaFirstSection() {
           x: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: leftCardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0
       );
 
       // Flower image animation
-      gsap.fromTo(
+      tl.fromTo(
         flowerRef.current,
         { opacity: 0, scale: 0.95 },
         {
@@ -40,18 +47,14 @@ export function IndiaFirstSection() {
           scale: 1,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: flowerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0.1
       );
 
       // Badges staggered animation
       const badgeCards = badgesRef.current?.querySelectorAll(".badge-card");
       if (badgeCards) {
-        gsap.fromTo(
+        tl.fromTo(
           badgeCards,
           { opacity: 0, y: 20 },
           {
@@ -60,12 +63,8 @@ export function IndiaFirstSection() {
             duration: 0.6,
             stagger: 0.15,
             ease: "power3.out",
-            scrollTrigger: {
-              trigger: badgesRef.current,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-          }
+          },
+          0.2
         );
       }
     },

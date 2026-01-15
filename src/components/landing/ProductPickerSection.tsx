@@ -134,8 +134,19 @@ export function ProductPickerSection() {
 
   useGSAP(
     () => {
+      // Batch animations into a single timeline with one ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          end: "top 25%",
+          toggleActions: "play none none none",
+          once: true, // Only animate once for better performance
+        },
+      });
+
       // Header animation
-      gsap.fromTo(
+      tl.fromTo(
         headerRef.current,
         { opacity: 0, y: 40 },
         {
@@ -143,16 +154,12 @@ export function ProductPickerSection() {
           y: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0
       );
 
-      // Card animation
-      gsap.fromTo(
+      // Card animation with slight delay
+      tl.fromTo(
         cardRef.current,
         { opacity: 0, y: 40 },
         {
@@ -160,12 +167,8 @@ export function ProductPickerSection() {
           y: 0,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
+        },
+        0.2
       );
     },
     { scope: sectionRef }

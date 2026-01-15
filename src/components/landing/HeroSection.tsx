@@ -12,13 +12,12 @@ import {
   Center,
   PerspectiveCamera,
   ContactShadows,
-  PerformanceMonitor,
-  AdaptiveDpr,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { HeroBlueGradient } from "@/components/landing/HeroBlueGradient";
+import { useScrollVelocity } from "@/hooks/useScrollVelocity";
 
-const MODEL_PATH = "/HomePageAnimation01.glb";
+const MODEL_PATH = "/HomePageAnimation02.glb";
 
 // Helper function to check if mobile view
 const isMobileView = (width: number) => width < 768;
@@ -77,9 +76,11 @@ function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
     });
   }, [startAnimation, size.width]);
 
-  // Keep camera looking at center
+  // Keep camera looking at center - throttle to every 3rd frame for performance
+  const frameCount = useRef(0);
   useFrame(() => {
-    if (cameraRef.current) {
+    frameCount.current++;
+    if (frameCount.current % 3 === 0 && cameraRef.current) {
       cameraRef.current.lookAt(0, 0, 0);
     }
   });
@@ -98,16 +99,13 @@ function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
 function SceneContent() {
   const [modelLoaded, setModelLoaded] = useState(false);
   const { gl } = useThree();
-  const setCanvasDpr = useRef((value: number) => {
-    if (typeof window === "undefined") return;
-    const target = Math.min(window.devicePixelRatio || 1, value);
-    gl.setPixelRatio(target);
-  }).current;
+  const isFastScrolling = useScrollVelocity({ threshold: 1200 });
 
-  // Set an initial safe DPR
+  // Set a fixed DPR for consistent performance
   useEffect(() => {
-    setCanvasDpr(1.5);
-  }, [setCanvasDpr]);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    gl.setPixelRatio(dpr);
+  }, [gl]);
 
   const handleModelLoaded = useRef(() => {
     // Small delay to ensure everything is rendered
@@ -116,16 +114,16 @@ function SceneContent() {
     }, 100);
   }).current;
 
+  // Pause rendering during fast scrolling to save resources
+  useFrame(() => {
+    if (isFastScrolling) {
+      return false; // Skip this frame
+    }
+  });
+
   return (
     <>
       <ResponsiveCamera startAnimation={modelLoaded} />
-
-      {/* Dynamically lower DPR if the device struggles */}
-      <PerformanceMonitor
-        onDecline={() => setCanvasDpr(1.2)}
-        onIncline={() => setCanvasDpr(1.5)}
-      />
-      <AdaptiveDpr pixelated />
 
       {/* Lighting optimized to show the AC's details clearly */}
       <ambientLight intensity={1} />
@@ -160,6 +158,7 @@ function HeroACCanvas() {
       camera={{ near: 0.01, far: 1000 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
+      frameloop="always"
     >
       <Suspense fallback={null}>
         <SceneContent />
@@ -178,7 +177,8 @@ export function HeroSection() {
   const imageRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
 
-  // Track scroll progress for the gradient shrink
+  // Use ref instead of state to avoid re-renders on every scroll
+  const scrollProgressRef = useRef(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   // Setup pinned scroll animation for gradient shrink
@@ -196,7 +196,12 @@ export function HeroSection() {
         anticipatePin: 1,
         scrub: 1,
         onUpdate: (self) => {
-          setScrollProgress(self.progress);
+          // Update ref immediately for gradient animation
+          scrollProgressRef.current = self.progress;
+          // Throttle state updates to reduce re-renders
+          if (Math.abs(self.progress - scrollProgress) > 0.02) {
+            setScrollProgress(self.progress);
+          }
         },
       });
 
@@ -267,7 +272,11 @@ export function HeroSection() {
       className="hero-section h-screen relative flex flex-col overflow-hidden"
     >
       {/* Blue Gradient Background - passes scroll progress for shrink animation */}
-      <div ref={gradientRef} className="absolute inset-0">
+      <div
+        ref={gradientRef}
+        className="absolute inset-0"
+        style={{ willChange: "transform" }}
+      >
         <HeroBlueGradient progress={scrollProgress} />
       </div>
 
@@ -275,6 +284,7 @@ export function HeroSection() {
       <div
         ref={contentRef}
         className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-24 md:pt-32 lg:pt-40"
+        style={{ willChange: "transform, opacity" }}
       >
         {/* Desktop Layout: flex row with content left and buttons right */}
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start max-w-[1400px] mx-auto w-full">
@@ -381,6 +391,7 @@ export function HeroSection() {
         <div
           ref={imageRef}
           className="flex-1 flex items-end justify-center mt-auto pb-0"
+          style={{ willChange: "transform, opacity" }}
         >
           <div className="w-full h-[300px] md:h-[400px] lg:h-[500px] xl:h-[550px] max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto">
             <HeroACCanvas />
@@ -392,4 +403,4 @@ export function HeroSection() {
 }
 
 // Preload the GLB model for better performance
-useGLTF.preload("/HomePageAnimation01.glb");
+useGLTF.preload(MODEL_PATH);
