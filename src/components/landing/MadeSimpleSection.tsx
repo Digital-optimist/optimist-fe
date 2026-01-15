@@ -56,7 +56,11 @@ export function MadeSimpleSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white py-4 md:py-6 overflow-hidden"
+      className="py-4 md:py-6 overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(0deg, #FFFFFF, #FFFFFF),linear-gradient(0deg, rgba(236, 236, 236, 0.2), rgba(236, 236, 236, 0.2))",
+      }}
     >
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
         {/* Desktop: 2-column layout, Mobile: stacked */}
@@ -66,7 +70,8 @@ export function MadeSimpleSection() {
             ref={leftCardRef}
             className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[400px] md:min-h-[500px] lg:min-h-[600px]"
             style={{
-              background: "linear-gradient(180deg, #FFFFFF 0%, #A8D4FF 50%, #3B82F6 100%)",
+              background:
+                "linear-gradient(180deg, #FFFFFF 0%, #A8D4FF 50%, #3B82F6 100%)",
             }}
           >
             {/* Decorative palm tree watermark */}
@@ -107,7 +112,7 @@ export function MadeSimpleSection() {
             className="relative rounded-[24px] md:rounded-[32px] overflow-hidden"
           >
             {/* Desktop Image */}
-            <div className="hidden md:block relative w-full aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[600px]">
+            <div className="hidden md:block relative w-full aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[500px]">
               <Image
                 src="/BrownBgRemoteDesktop.png"
                 alt="Optimist Remote Control with features labeled: Fan Speed, Turbo, Power ON/OFF, Temperature, Turbo+"
