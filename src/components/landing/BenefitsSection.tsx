@@ -50,8 +50,11 @@ export function BenefitsSection() {
       // Track our own ScrollTrigger instances for cleanup
       const triggers: ScrollTrigger[] = [];
 
+      // Check window width directly as additional safeguard (handles SSR hydration timing)
+      const isCurrentlyMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
       // Skip horizontal scroll on mobile - use native scroll instead
-      if (isMobile) {
+      if (isMobile || isCurrentlyMobile) {
         // Simple fade-in animation for mobile
         const headerTrigger = gsap.fromTo(
           headerRef.current,
@@ -148,11 +151,7 @@ export function BenefitsSection() {
         ref={triggerRef}
         className="py-12 md:py-16 lg:py-20"
       >
-        <div
-          className={`mx-auto px-4 md:px-6 lg:px-8 ${
-            isMobile ? "max-w-[1400px]" : ""
-          }`}
-        >
+        <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
           {/* Section Header */}
           <div ref={headerRef} className="mb-8 md:mb-12">
             <p className="text-sm md:text-base text-gray-500 italic mb-2">
@@ -171,18 +170,12 @@ export function BenefitsSection() {
           {/* Carousel - Desktop: horizontal scroll on vertical, Mobile: native horizontal scroll */}
           <div
             ref={carouselRef}
-            className={`flex gap-4 md:gap-6 ${
-              isMobile
-                ? "overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4"
-                : "overflow-visible"
-            }`}
-            style={isMobile ? { scrollSnapType: "x mandatory" } : {}}
+            className="flex gap-4 md:gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory md:snap-none"
           >
             {benefits.map((benefit) => (
               <div
                 key={benefit.id}
-                className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(80%-12px)] relative rounded-[24px] overflow-hidden"
-                style={isMobile ? { scrollSnapAlign: "start" } : {}}
+                className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(80%-12px)] relative rounded-[24px] overflow-hidden snap-start"
               >
                 {/* Image Background */}
                 <div className="relative aspect-[4/5] md:aspect-[16/10]">

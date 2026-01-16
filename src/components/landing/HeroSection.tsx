@@ -306,7 +306,7 @@ export function HeroSection() {
       {/* Content Container */}
       <div
         ref={contentRef}
-        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-16 md:pt-20 lg:pt-24"
+        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-24 md:pt-28 lg:pt-32"
         style={{ willChange: "transform, opacity" }}
       >
         {/* Desktop Layout: flex row with content left and buttons right */}
