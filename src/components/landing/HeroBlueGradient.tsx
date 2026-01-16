@@ -20,7 +20,6 @@ type AnimationSetters = {
   scaleY: (value: number) => void;
   borderRadius: (value: number) => void;
   y: (value: number) => void;
-  borderOpacity: (value: number) => void;
 };
 
 export function HeroBlueGradient({ progress }: { progress: number }) {
@@ -76,10 +75,6 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
         duration: 0.2,
         ease: "power2.out",
       }),
-      borderOpacity: gsap.quickTo(frame, "border-color", {
-        duration: 0.2,
-        ease: "power2.out",
-      }),
     };
 
     // Initial state
@@ -87,10 +82,7 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
     gsap.set(full, { opacity: 1 });
     // Transform from center so it shrinks evenly
     gsap.set(frame, { 
-      transformOrigin: "50% 50%",
-      borderStyle: "solid",
-      borderWidth: "1px",
-      borderColor: "rgba(219, 213, 202, 0)" 
+      transformOrigin: "50% 50%"
     });
   }, []);
 
@@ -135,17 +127,10 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
     const borderRadius = isMobile ? 0 : 32 + 16 * p; 
     const yOffset = isMobile ? 0 : 5 + 15 * p; 
 
-    // Border opacity fades in as we scroll
-    const borderAlpha = 0.3 * p;
-
     setters.scaleX(scaleX);
     setters.scaleY(scaleY);
     setters.borderRadius(borderRadius);
     setters.y(yOffset);
-    // Directly setting borderColor because borderAlpha is a value
-    gsap.set(frameRef.current, { 
-      borderColor: `rgba(219, 213, 202, ${borderAlpha})` 
-    });
   }, [progress]);
 
   return (
@@ -157,7 +142,7 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
       <div 
         ref={frameRef} 
         className="absolute inset-0 overflow-hidden"
-        style={{ willChange: "transform, border-radius, border-color" }}
+        style={{ willChange: "transform, border-radius" }}
       >
         <div
           ref={fullRef}

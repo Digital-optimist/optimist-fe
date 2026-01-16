@@ -173,6 +173,22 @@ function HeroACCanvas() {
   );
 }
 
+// Static image fallback for mobile (88MB GLB is too heavy for mobile)
+function HeroACImage() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <Image
+        src="/MainACMobile.png"
+        alt="Optimist AC"
+        width={600}
+        height={400}
+        className="object-contain w-full h-auto max-h-full"
+        priority
+      />
+    </div>
+  );
+}
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -319,8 +335,8 @@ export function HeroSection() {
               className="hero-headline hero-headline-size italic"
               style={{ perspective: "1000px" }}
             >
-              <span className="block">More Chill.</span>
-              <span className="block">Lower Bill.</span>
+              <span className="block">Cools more.</span>
+              <span className="block">Uses Less.</span>
             </h1>
 
             {/* Badges Row */}
@@ -410,14 +426,16 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* AC 3D Animation */}
+        {/* AC 3D Animation (desktop) / Static Image (mobile) */}
         <div
           ref={imageRef}
           className="flex-1 flex items-end justify-center mt-auto pb-0 md:pb-8"
           style={{ willChange: "transform, opacity" }}
         >
           <div className="w-full h-[480px] md:h-[500px] lg:h-[650px] xl:h-[750px] max-w-6xl lg:max-w-7xl xl:max-w-[1400px] mx-auto">
-            <HeroACCanvas />
+            {/* Mobile: Show static image (fast loading) */}
+            {/* Desktop: Show 3D animation */}
+            {isMobile ? <HeroACImage /> : <HeroACCanvas />}
           </div>
         </div>
       </div>

@@ -82,7 +82,8 @@ export function MadeSimpleSection() {
                 fill
                 className="object-contain"
                 style={{
-                  filter: "brightness(0) saturate(100%) invert(70%) sepia(30%) saturate(500%) hue-rotate(175deg) brightness(95%) contrast(90%)",
+                  filter:
+                    "brightness(0) saturate(100%) invert(70%) sepia(30%) saturate(500%) hue-rotate(175deg) brightness(95%) contrast(90%)",
                   opacity: 0.5,
                 }}
                 aria-hidden="true"
@@ -128,7 +129,7 @@ export function MadeSimpleSection() {
             </div>
 
             {/* Mobile Image */}
-            <div className="md:hidden relative w-full aspect-square">
+            <div className="md:hidden relative w-full aspect-[4/3]">
               <Image
                 src="/BrownBgRemoteMobile.png"
                 alt="Optimist Remote Control with features labeled"
