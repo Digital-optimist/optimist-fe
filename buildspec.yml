@@ -17,31 +17,16 @@ phases:
     commands:
       - echo "Running Next.js build (static export)"
       - yarn build
-      - |
-        if [ ! -d "out" ]; then
-          echo "ERROR: out/ directory not found. Ensure Next.js static export is configured."
-          exit 1
-        fi
+      - test -d out || (echo "ERROR: out/ directory not found. Ensure Next.js static export is configured." && exit 1)
       - echo "Static export generated successfully"
 
   post_build:
     commands:
       - echo "Deploying to S3 bucket: $S3_BUCKET"
-
-      # Sync all files (hashed assets get long cache)
-      - aws s3 sync ./out "s3://$S3_BUCKET/" \
-          --delete \
-          --cache-control "public,max-age=31536000,immutable"
-
-      # Override index.html to disable caching (critical for SPA updates)
-      - aws s3 cp ./out/index.html "s3://$S3_BUCKET/index.html" \
-          --cache-control "max-age=0,no-cache,no-store,must-revalidate" \
-          --content-type "text/html"
-
+      - aws s3 sync ./out s3://$S3_BUCKET/ --delete --cache-control "public,max-age=31536000,immutable"
+      - aws s3 cp ./out/index.html s3://$S3_BUCKET/index.html --cache-control "max-age=0,no-cache,no-store,must-revalidate" --content-type "text/html"
       - echo "Invalidating CloudFront cache"
-      - aws cloudfront create-invalidation \
-          --distribution-id "$CF_DIST_ID" \
-          --paths "/index.html" "/*"
+      - aws cloudfront create-invalidation --distribution-id "$CF_DIST_ID" --paths "/index.html" "/*"
 
 artifacts:
   files:
