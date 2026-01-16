@@ -20,6 +20,7 @@ type AnimationSetters = {
   scaleY: (value: number) => void;
   borderRadius: (value: number) => void;
   y: (value: number) => void;
+  borderOpacity: (value: number) => void;
 };
 
 export function HeroBlueGradient({ progress }: { progress: number }) {
@@ -64,13 +65,22 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
         duration: 0.2,
         ease: "power2.out",
       }),
+      borderOpacity: gsap.quickTo(frame, "border-color", {
+        duration: 0.2,
+        ease: "power2.out",
+      }),
     };
 
     // Initial state
     gsap.set([full, middle, shrink], { opacity: 0 });
     gsap.set(full, { opacity: 1 });
     // Transform from center so it shrinks evenly
-    gsap.set(frame, { transformOrigin: "50% 50%" });
+    gsap.set(frame, { 
+      transformOrigin: "50% 50%",
+      borderStyle: "solid",
+      borderWidth: "1px",
+      borderColor: "rgba(219, 213, 202, 0)" 
+    });
   }, []);
 
   useEffect(() => {
@@ -105,25 +115,37 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
     setters.shrink(clamp01(shrinkOpacity));
 
     // Shrink animation values:
-    // Start: full size (scale 1, border-radius 0)
-    // End: 92% width, 85% height, 48px border-radius
-    const scaleX = 1 - 0.08 * p; // 1 -> 0.92
-    const scaleY = 1 - 0.15 * p; // 1 -> 0.85
-    const borderRadius = 48 * p; // 0 -> 48px
-    const yOffset = 20 * p; // Slight upward offset as it shrinks
+    // Initial: 98% width, 88% height, 32px border-radius
+    // End: 92% width, 72% height, 48px border-radius
+    const scaleX = 0.98 - 0.06 * p; 
+    const scaleY = 0.88 - 0.16 * p; 
+    const borderRadius = 32 + 16 * p; 
+    const yOffset = 5 + 15 * p; 
+
+    // Border opacity fades in as we scroll
+    const borderAlpha = 0.3 * p;
 
     setters.scaleX(scaleX);
     setters.scaleY(scaleY);
     setters.borderRadius(borderRadius);
     setters.y(yOffset);
+    // Directly setting borderColor because borderAlpha is a value
+    gsap.set(frameRef.current, { 
+      borderColor: `rgba(219, 213, 202, ${borderAlpha})` 
+    });
   }, [progress]);
 
   return (
     <div
       aria-hidden
       className="absolute inset-0 pointer-events-none overflow-hidden"
+      style={{ transformStyle: "preserve-3d" }}
     >
-      <div ref={frameRef} className="absolute inset-0">
+      <div 
+        ref={frameRef} 
+        className="absolute inset-0 overflow-hidden"
+        style={{ willChange: "transform, border-radius, border-color" }}
+      >
         <div
           ref={fullRef}
           className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full [&>svg]:block"

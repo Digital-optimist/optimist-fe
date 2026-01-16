@@ -60,14 +60,14 @@ function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
      * Lower numbers = AC looks BIGGER
      * Higher numbers = AC looks SMALLER
      */
-    const finalZ = isMobile ? 3.2 : 1.8;
+    const finalZ = isMobile ? 3.2 : 1.4;
 
     // Animation: Zooming out to the "Big" view with a bounce
     gsap.to(cameraRef.current.position, {
       z: finalZ,
       duration: 2.5,
       delay: 0.1,
-      ease: "back.out(1.5)",
+      ease: "power2.out", // Smoother ease for the "Big" view
       onUpdate: () => {
         if (cameraRef.current) {
           cameraRef.current.lookAt(0, 0, 0);
@@ -136,13 +136,13 @@ function SceneContent() {
       </Center>
 
       <ContactShadows
-        position={[0, -0.8, 0]}
-        opacity={0.2}
-        scale={10}
-        blur={2.5}
-        far={4}
+        position={[0, -0.5, 0]}
+        opacity={0.4}
+        scale={15}
+        blur={2}
+        far={3}
         frames={1}
-        resolution={256}
+        resolution={512}
       />
     </>
   );
@@ -270,12 +270,13 @@ export function HeroSection() {
     <section
       ref={sectionRef}
       className="hero-section h-screen relative flex flex-col overflow-hidden"
+      style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
     >
       {/* Blue Gradient Background - passes scroll progress for shrink animation */}
       <div
         ref={gradientRef}
         className="absolute inset-0"
-        style={{ willChange: "transform" }}
+        style={{ willChange: "transform", transformStyle: "preserve-3d" }}
       >
         <HeroBlueGradient progress={scrollProgress} />
       </div>
@@ -283,7 +284,7 @@ export function HeroSection() {
       {/* Content Container */}
       <div
         ref={contentRef}
-        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-24 md:pt-32 lg:pt-40"
+        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-16 md:pt-20 lg:pt-24"
         style={{ willChange: "transform, opacity" }}
       >
         {/* Desktop Layout: flex row with content left and buttons right */}
@@ -310,9 +311,9 @@ export function HeroSection() {
                 <Image
                   src="/5StarRating.png"
                   alt="5 Star ISEER Rating"
-                  width={48}
-                  height={48}
-                  className="w-10 h-10 md:w-12 md:h-12"
+                  width={56}
+                  height={56}
+                  className="w-12 h-12 md:w-16 md:h-16"
                 />
                 <div className="flex flex-col">
                   <span className="hero-badge-title text-optimist-cream">
@@ -370,7 +371,7 @@ export function HeroSection() {
           {/* Right Content - Desktop CTA Buttons */}
           <div
             ref={buttonsRef}
-            className="hidden lg:flex items-center gap-4 lg:mt-12 xl:mt-16"
+            className="hidden lg:flex items-center gap-4 lg:mt-6 xl:mt-8"
           >
             <Link
               href="#why-optimist"
@@ -390,10 +391,10 @@ export function HeroSection() {
         {/* AC 3D Animation */}
         <div
           ref={imageRef}
-          className="flex-1 flex items-end justify-center mt-auto pb-0"
+          className="flex-1 flex items-end justify-center mt-auto pb-4 md:pb-8"
           style={{ willChange: "transform, opacity" }}
         >
-          <div className="w-full h-[300px] md:h-[400px] lg:h-[500px] xl:h-[550px] max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto">
+          <div className="w-full h-[400px] md:h-[500px] lg:h-[650px] xl:h-[750px] max-w-6xl lg:max-w-7xl xl:max-w-[1400px] mx-auto">
             <HeroACCanvas />
           </div>
         </div>

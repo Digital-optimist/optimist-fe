@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const benefits = [
   {
@@ -10,134 +10,220 @@ const benefits = [
     badge: "Super Energy Efficiency",
     headline: "Tired of surprise bills?",
     description: "Live Energy Meter, Track consumption as it happens.",
+    image: "/b1.png",
   },
   {
     id: 2,
     badge: "Cools at High Temperatures",
-    headline: "Beat the summer heat?",
-    description: "Powerful cooling even at 52°C outdoor temperature.",
+    headline: "AC gives up in peak summer?",
+    description: "Effortless cooling. Even in brutal heat.",
+    image: "/b2.png",
   },
   {
     id: 3,
-    badge: "Lower bills. Higher comfort.",
-    headline: "Save more every month?",
-    description: "India's highest ISEER rating means lowest running costs.",
+    badge: "Turbo Plus Mode",
+    headline: "Takes forever to cool down",
+    description: "Turbo Plus Mode. Added 0.5 ton, on demand.",
+    image: "/b3.png",
   },
 ];
 
 export function BenefitsSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useGSAP(
     () => {
-      // Batch header and cards into a single timeline with one ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true, // Only animate once for better performance
-        },
-      });
+      // Skip horizontal scroll on mobile - use native scroll instead
+      if (isMobile) {
+        // Simple fade-in animation for mobile
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 75%",
+              toggleActions: "play none none none",
+              once: true,
+            },
+          }
+        );
+        return;
+      }
 
-      // Header animation
-      tl.fromTo(
+      const carousel = carouselRef.current;
+      const section = sectionRef.current;
+      if (!carousel || !section) return;
+
+      // Get the total scroll width needed
+      const cards = carousel.querySelectorAll(".benefit-card");
+      const cardWidth = cards[0]?.getBoundingClientRect().width || 0;
+      const gap = 24; // gap-6 = 24px
+      const totalWidth = (cardWidth + gap) * cards.length - gap;
+      const viewportWidth = window.innerWidth;
+      const scrollDistance = totalWidth - viewportWidth + 100; // Extra padding
+
+      // Header fade in animation
+      gsap.fromTo(
         headerRef.current,
         { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-        },
-        0
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        }
       );
 
-      // Cards stagger animation - all in same timeline
-      const cards = carouselRef.current?.querySelectorAll(".benefit-card");
-      if (cards) {
-        tl.fromTo(
-          cards,
-          { opacity: 0, y: 60 },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: "power3.out",
+      // Horizontal scroll animation on vertical scroll
+      // Pin when bottom of section reaches bottom of viewport (so full card is visible)
+      gsap.to(carousel, {
+        x: -scrollDistance,
+        ease: "none",
+        scrollTrigger: {
+          trigger: triggerRef.current,
+          start: "bottom bottom+=50",
+          end: () => `+=${scrollDistance}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onRefresh: (self) => {
+            // Recalculate on resize
+            const newCards = carousel.querySelectorAll(".benefit-card");
+            const newCardWidth =
+              newCards[0]?.getBoundingClientRect().width || 0;
+            const newTotalWidth = (newCardWidth + gap) * newCards.length - gap;
+            const newScrollDistance = newTotalWidth - window.innerWidth + 100;
+            self.vars.end = `+=${newScrollDistance}`;
+            gsap.set(carousel, { x: -self.progress * newScrollDistance });
           },
-          0.2 // Start slightly after header
-        );
-      }
+        },
+      });
+
+      // Cleanup
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [isMobile] }
   );
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative py-12 md:py-16 lg:py-20 overflow-hidden bg-[#F8F8FA]"
-    >
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
-        {/* Section Header - Desktop */}
-        <div ref={headerRef} className="mb-8 md:mb-12">
-          <p className="text-sm md:text-base text-gray-500 italic mb-2">
-            New Generation of AC
-          </p>
-          {/* Desktop headline */}
-          <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
-            Everything you need. Nothing you don&apos;t.
-          </h2>
-          {/* Mobile headline */}
-          <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
-            Benefits that matter
-          </h2>
-        </div>
-
-        {/* Carousel */}
+    <section ref={sectionRef} className="relative bg-[#F8F8FA]">
+      {/* Trigger wrapper for pinning - only on desktop */}
+      <div
+        ref={triggerRef}
+        className={`py-12 md:py-16 lg:py-20 ${
+          isMobile ? "overflow-hidden" : ""
+        }`}
+      >
         <div
-          ref={carouselRef}
-          className="flex gap-4 md:gap-6 overflow-x-auto pb-4 -mx-4 pl-4 pr-4 md:mx-0 md:px-0 scrollbar-hide"
-          style={{ scrollSnapType: "x mandatory" }}
+          className={`mx-auto px-4 md:px-6 lg:px-8 ${
+            isMobile ? "max-w-[1400px]" : ""
+          }`}
         >
-          {benefits.map((benefit) => (
-            <div
-              key={benefit.id}
-              className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(80%-12px)] relative rounded-[24px] overflow-hidden"
-              style={{ scrollSnapAlign: "start" }}
-            >
-              {/* Image Background */}
-              <div className="relative aspect-[4/5] md:aspect-[16/10]">
-                <img
-                  src="/ACOutside.png"
-                  alt="Optimist AC"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+          {/* Section Header */}
+          <div ref={headerRef} className="mb-8 md:mb-12">
+            <p className="text-sm md:text-base text-gray-500 italic mb-2">
+              New Generation of AC
+            </p>
+            {/* Desktop headline */}
+            <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+              Everything you need. Nothing you don&apos;t.
+            </h2>
+            {/* Mobile headline */}
+            <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
+              Benefits that matter
+            </h2>
+          </div>
 
-                {/* Content Overlay */}
-                <div className="absolute inset-0 flex flex-col justify-between p-4 md:p-6">
-                  {/* Top - Badge */}
-                  <div>
-                    <span className="inline-block px-4 py-2 bg-optimist-blue-primary text-white text-sm font-medium rounded-full">
-                      {benefit.badge}
-                    </span>
-                  </div>
+          {/* Carousel - Desktop: horizontal scroll on vertical, Mobile: native horizontal scroll */}
+          <div
+            ref={carouselRef}
+            className={`flex gap-4 md:gap-6 ${
+              isMobile
+                ? "overflow-x-auto pb-4 -mx-4 pl-4 pr-4 scrollbar-hide"
+                : "overflow-visible"
+            }`}
+            style={isMobile ? { scrollSnapType: "x mandatory" } : {}}
+          >
+            {benefits.map((benefit) => (
+              <div
+                key={benefit.id}
+                className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(80%-12px)] relative rounded-[24px] overflow-hidden"
+                style={isMobile ? { scrollSnapAlign: "start" } : {}}
+              >
+                {/* Image Background */}
+                <div className="relative aspect-[4/5] md:aspect-[16/10]">
+                  {/* Base Background Image - Full Coverage */}
+                  <img
+                    src="/7f1e6fdcab538721bd5209e2c306b0ab004ed70a.png"
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
 
-                  {/* Bottom - Text */}
-                  <div className="mt-auto">
-                    <h3 className="font-display text-xl md:text-2xl lg:text-3xl font-bold text-cyan-300 mb-1">
-                      {benefit.headline}
-                    </h3>
-                    <p className="text-lg md:text-xl lg:text-2xl font-bold text-optimist-cream">
-                      {benefit.description}
-                    </p>
+                  {/* Benefit Image Layer */}
+                  <img
+                    src={benefit.image}
+                    alt={benefit.badge}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+
+                  {/* Bottom Gradient Overlay - 20% height */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 h-[20%]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(33, 33, 33, 0) 0%, #212121 100%)",
+                    }}
+                  />
+
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 flex flex-col justify-between p-4 md:p-6">
+                    {/* Top - Badge */}
+                    <div>
+                      <span className="inline-block px-4 py-2 bg-optimist-blue-primary text-white text-sm font-medium rounded-full">
+                        {benefit.badge}
+                      </span>
+                    </div>
+
+                    {/* Bottom - Text */}
+                    <div className="mt-auto">
+                      <h3 className="font-display text-xl md:text-2xl lg:text-[40px] font-bold text-[#AEFFD8] mb-1">
+                        {benefit.headline}
+                      </h3>
+                      <p className="text-lg md:text-xl lg:text-[40px] font-bold text-[#FFFCDC]">
+                        {benefit.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

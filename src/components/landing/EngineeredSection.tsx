@@ -23,29 +23,29 @@ const features = [
     id: 1,
     title: "Micro-channel heat exchanger",
     description: "Faster heat transfer. Lower energy use.",
-    image: "/AcEngineeringDesktop.png",
-    mobileImage: "/AcEngineeringMobile.png",
+    image: "/e1.png",
+    mobileImage: "/e1.png",
   },
   {
     id: 2,
     title: "Advanced aluminium alloy",
-    description: "Lightweight yet incredibly durable.",
-    image: "/AcEngineeringDesktop.png",
-    mobileImage: "/AcEngineeringMobile.png",
+    description: "Designed to last.",
+    image: "/e2.png",
+    mobileImage: "/e2.png",
   },
   {
     id: 3,
     title: "1000-hour corrosion tested",
     description: "Built to withstand extreme conditions.",
-    image: "/AcEngineeringDesktop.png",
-    mobileImage: "/AcEngineeringMobile.png",
+    image: "/e3.png",
+    mobileImage: "/e3.png",
   },
   {
     id: 4,
     title: "Automotive-derived design",
-    description: "Inspired by precision automotive engineering.",
-    image: "/AcEngineeringDesktop.png",
-    mobileImage: "/AcEngineeringMobile.png",
+    description: "High-performance thermal engineering.",
+    image: "/e4.png",
+    mobileImage: "/e4.png",
   },
 ];
 
@@ -97,46 +97,72 @@ function AccordionItem({
   }, [isActive]);
 
   return (
-    <button
-      key={feature.id}
-      onClick={onClick}
-      className={`feature-card w-full text-left p-4 rounded-[16px] flex flex-col transition-all duration-300 ${
-        isActive ? "bg-white shadow-sm" : "bg-transparent hover:bg-white/50"
-      }`}
-      style={{ animationDelay: `${index * 0.1}s` }}
-      aria-expanded={isActive}
-    >
-      {/* Header row with icon and title */}
-      <div className="flex items-center gap-4">
-        {/* Icon */}
-        <div className="w-10 h-10 flex-shrink-0 relative">
-          <Image
-            src={isActive ? "/LightningBlue.png" : "/LightningWhite.png"}
-            alt="Lightning icon"
-            fill
-            className="object-contain"
-          />
-        </div>
-
-        {/* Title */}
-        <div className="flex-1">
-          <h3 className="text-base font-semibold text-[#1A1A1A]">
-            {feature.title}
-          </h3>
-        </div>
-      </div>
-
-      {/* Expandable description area with GSAP animation */}
-      <div
-        ref={contentRef}
-        className="overflow-hidden"
-        style={{ height: 0, opacity: 0 }}
+    <div className="relative flex items-center">
+      <button
+        key={feature.id}
+        onClick={onClick}
+        className={`feature-card w-full text-left p-6 rounded-[20px] flex flex-col transition-all duration-300 border ${
+          isActive
+            ? "bg-white/80 border-white shadow-lg shadow-black/5"
+            : "bg-[#F3F4F6]/50 border-transparent hover:bg-white/40"
+        }`}
+        style={{ animationDelay: `${index * 0.1}s` }}
+        aria-expanded={isActive}
       >
-        <p ref={descriptionRef} className="text-sm text-[#6B7280] mt-2 pl-14">
-          {feature.description}
-        </p>
-      </div>
-    </button>
+        {/* Header row with icon and title */}
+        <div className="flex items-center gap-4">
+          {/* Icon */}
+          <div
+            className={`w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${
+              isActive
+                ? "bg-gradient-to-br from-[#074FD5] to-[#04348C]"
+                : "bg-[#E5E7EB]"
+            }`}
+          >
+            <div className="w-5 h-5 relative">
+              <Image
+                src={isActive ? "/LightningWhite.png" : "/LightningBlue.png"}
+                alt="Lightning icon"
+                fill
+                className={`object-contain ${
+                  !isActive && "opacity-40 grayscale"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Title */}
+          <div className="flex-1">
+            <h3
+              className={`text-lg font-semibold transition-colors duration-300 ${
+                isActive ? "text-[#1A1A1A]" : "text-[#4B5563]"
+              }`}
+            >
+              {feature.title}
+            </h3>
+          </div>
+        </div>
+
+        {/* Expandable description area with GSAP animation */}
+        <div
+          ref={contentRef}
+          className="overflow-hidden"
+          style={{ height: 0, opacity: 0 }}
+        >
+          <p
+            ref={descriptionRef}
+            className="text-base text-[#6B7280] mt-2 ml-14 font-medium"
+          >
+            {feature.description}
+          </p>
+        </div>
+      </button>
+
+      {/* Connecting Line - Only visible on desktop when active */}
+      {isActive && (
+        <div className="hidden lg:block absolute -right-24 w-24 h-[1px] bg-[#D1D5DB]" />
+      )}
+    </div>
   );
 }
 
@@ -246,10 +272,10 @@ function AnimatedImage({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full ${
+      className={`relative w-full border-[12px] border-black/5 shadow-2xl ${
         isMobile
-          ? "aspect-[4/3] rounded-[20px]"
-          : "h-full min-h-[500px] rounded-[24px]"
+          ? "aspect-[4/3] rounded-[32px]"
+          : "h-full min-h-[500px] rounded-[48px]"
       } overflow-hidden`}
     >
       {/* Current Image (will slide out) */}
@@ -261,7 +287,7 @@ function AnimatedImage({
           src={imageSrc}
           alt="Optimist AC with intelligent engineering"
           fill
-          className="object-cover"
+          className="object-cover rounded-[24px]"
           sizes={isMobile ? "100vw" : "(max-width: 1024px) 100vw, 60vw"}
           priority
         />
@@ -277,7 +303,7 @@ function AnimatedImage({
           src={imageSrc}
           alt="Optimist AC with intelligent engineering"
           fill
-          className="object-cover"
+          className="object-cover rounded-[24px]"
           sizes={isMobile ? "100vw" : "(max-width: 1024px) 100vw, 60vw"}
         />
       </div>
@@ -363,20 +389,20 @@ export function EngineeredSection() {
     <section
       ref={sectionRef}
       id="why-optimist"
-      className="py-12 md:py-16 lg:py-20 overflow-hidden"
+      className="py-12 md:py-16 lg:py-24 overflow-hidden"
       style={{
         background:
           "linear-gradient(89.33deg, #CAC9C9 1.16%, #EEEAEA 49.5%, #F3F1F1 60.8%, #CAC9C9 115.48%)",
       }}
     >
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
-        {/* Desktop Header */}
+        {/* Header */}
         <div
           ref={headerRef}
-          className="hidden lg:flex items-start justify-between mb-10"
+          className="flex flex-col lg:flex-row items-start justify-between mb-12 lg:mb-20 gap-8"
         >
-          <h2 className="font-display text-4xl lg:text-5xl xl:text-6xl leading-tight">
-            <span className="font-bold text-[#1A1A1A]">
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1] tracking-tight">
+            <span className="font-bold text-[#074FD5]">
               The intelligence you don&apos;t see.
             </span>
             <br />
@@ -387,31 +413,17 @@ export function EngineeredSection() {
 
           <Link
             href="#"
-            className="flex items-center gap-2 px-5 py-3 border border-[#D1D5DB] rounded-full text-[#1A1A1A] font-medium text-sm hover:bg-white/50 transition-colors whitespace-nowrap"
+            className="flex items-center gap-2 px-6 py-3 border border-[#00000033] rounded-full text-[#1A1A1A] font-semibold text-sm hover:bg-white transition-all shadow-sm hover:shadow-md whitespace-nowrap lg:mt-2"
           >
             Learn how our core works
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
 
-        {/* Mobile Header */}
-        <div className="lg:hidden mb-6">
-          <h2 className="font-display text-3xl md:text-4xl font-bold leading-tight">
-            <span className="text-optimist-blue-primary">
-              Engineered differently
-            </span>
-            <br />
-            <span className="text-gray-900">from the inside out</span>
-          </h2>
-        </div>
-
         {/* Desktop Layout - 2 columns with Apple-style accordion */}
-        <div className="hidden lg:grid lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-12 items-stretch">
+        <div className="hidden lg:grid lg:grid-cols-[1fr_1.4fr] gap-16 lg:gap-24 items-center">
           {/* Left - Accordion Features with original design */}
-          <div
-            ref={featuresRef}
-            className="flex flex-col justify-between space-y-3"
-          >
+          <div ref={featuresRef} className="flex flex-col space-y-4">
             {features.map((feature, index) => (
               <AccordionItem
                 key={feature.id}
@@ -424,7 +436,7 @@ export function EngineeredSection() {
           </div>
 
           {/* Right - AC Image with slide animation */}
-          <div ref={imageContainerRef} className="relative h-full">
+          <div ref={imageContainerRef} className="relative h-full py-8">
             <AnimatedImage activeFeatureId={activeFeature} isMobile={false} />
           </div>
         </div>
@@ -432,47 +444,65 @@ export function EngineeredSection() {
         {/* Mobile Layout - Stacked with horizontal carousel */}
         <div className="lg:hidden">
           {/* AC Image with slide animation */}
-          <div className="relative mb-6">
+          <div className="relative mb-10">
             <AnimatedImage activeFeatureId={activeFeature} isMobile={true} />
           </div>
 
           {/* Features Carousel (Original Design) */}
           <div
             ref={featuresRef}
-            className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+            className="flex gap-4 overflow-x-auto pb-8 -mx-4 px-4 scrollbar-hide"
             style={{ scrollSnapType: "x mandatory" }}
           >
             {features.map((feature) => (
               <div
                 key={feature.id}
                 onClick={() => handleFeatureClick(feature.id)}
-                className={`feature-card flex-shrink-0 w-[280px] rounded-[16px] p-4 shadow-sm cursor-pointer transition-all duration-300 ${
-                  activeFeature === feature.id ? "bg-white" : "bg-white/80"
+                className={`flex-shrink-0 w-[300px] rounded-[24px] p-6 border transition-all duration-300 cursor-pointer ${
+                  activeFeature === feature.id
+                    ? "bg-white border-white shadow-xl shadow-black/5"
+                    : "bg-[#F3F4F6]/50 border-transparent"
                 }`}
                 style={{ scrollSnapAlign: "start" }}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col gap-4">
                   {/* Icon */}
-                  <div className="w-10 h-10 flex-shrink-0 relative">
-                    <Image
-                      src={
-                        activeFeature === feature.id
-                          ? "/LightningBlue.png"
-                          : "/LightningWhite.png"
-                      }
-                      alt="Lightning icon"
-                      fill
-                      className="object-contain"
-                    />
+                  <div
+                    className={`w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center ${
+                      activeFeature === feature.id
+                        ? "bg-gradient-to-br from-[#074FD5] to-[#04348C]"
+                        : "bg-[#E5E7EB]"
+                    }`}
+                  >
+                    <div className="w-5 h-5 relative">
+                      <Image
+                        src={
+                          activeFeature === feature.id
+                            ? "/LightningWhite.png"
+                            : "/LightningBlue.png"
+                        }
+                        alt="Lightning icon"
+                        fill
+                        className={`object-contain ${
+                          activeFeature !== feature.id && "opacity-40 grayscale"
+                        }`}
+                      />
+                    </div>
                   </div>
 
                   {/* Text */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-[#1A1A1A]">
+                  <div>
+                    <h3
+                      className={`text-lg font-semibold ${
+                        activeFeature === feature.id
+                          ? "text-[#1A1A1A]"
+                          : "text-[#4B5563]"
+                      }`}
+                    >
                       {feature.title}
                     </h3>
-                    {activeFeature === feature.id && feature.description && (
-                      <p className="text-xs text-[#6B7280] mt-1 italic">
+                    {activeFeature === feature.id && (
+                      <p className="text-base text-[#6B7280] mt-2 font-medium">
                         {feature.description}
                       </p>
                     )}
