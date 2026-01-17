@@ -129,6 +129,55 @@ const products = {
   },
 };
 
+function ACVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const requestRef: any = useRef<number>(null);
+  const lastTimeRef: any = useRef<number>(null);
+
+  const animateReverse = (time: number) => {
+    if (!videoRef.current) return;
+
+    if (lastTimeRef.current !== undefined) {
+      const delta = (time - lastTimeRef.current) * 0.001;
+      videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - delta);
+    }
+    lastTimeRef.current = time;
+
+    if (videoRef.current.currentTime > 0) {
+      requestRef.current = requestAnimationFrame(animateReverse);
+    } else {
+      lastTimeRef.current = undefined;
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+      requestRef.current = undefined;
+      lastTimeRef.current = undefined;
+    }
+    videoRef.current?.play().catch((e) => console.log("Video play failed", e));
+  };
+
+  const handleMouseLeave = () => {
+    videoRef.current?.pause();
+    requestRef.current = requestAnimationFrame(animateReverse);
+  };
+
+  return (
+    <video
+      ref={videoRef}
+      src="/ac_animation.mp4"
+      className="w-full h-auto object-contain cursor-pointer bg-transparent"
+      muted
+      playsInline
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    />
+  );
+}
+
+
 export function ProductPickerSection() {
   const [activeTab, setActiveTab] = useState("1.0");
   const sectionRef = useRef<HTMLElement>(null);
@@ -214,11 +263,10 @@ export function ProductPickerSection() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-4 md:py-5 text-center text-sm md:text-base font-semibold transition-all duration-300 relative ${
-                    activeTab === tab.id
-                      ? "text-optimist-blue-primary"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`flex-1 py-4 md:py-5 text-center text-sm md:text-base font-semibold transition-all duration-300 relative ${activeTab === tab.id
+                    ? "text-optimist-blue-primary"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
                 >
                   {tab.label}
                   {/* Active underline */}
@@ -326,13 +374,7 @@ export function ProductPickerSection() {
 
                   {/* AC Image */}
                   <div className="w-full h-full flex items-center justify-center p-10">
-                    <Image
-                      src="/MainACDesktop.png"
-                      alt="Optimist AC Unit"
-                      width={800}
-                      height={600}
-                      className="w-full h-auto object-contain"
-                    />
+                    <ACVideo />
                   </div>
                 </div>
               </div>

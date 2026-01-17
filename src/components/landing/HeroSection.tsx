@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, Suspense } from "react";
+import { useRef, useEffect, useState, Suspense, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
@@ -16,6 +16,7 @@ import {
 import * as THREE from "three";
 import { HeroBlueGradient } from "@/components/landing/HeroBlueGradient";
 import { useScrollVelocity } from "@/hooks/useScrollVelocity";
+import HeroBlueGradient1 from "./HeroBlueGradient1";
 
 const MODEL_PATH = "/HomePageAnimation02.glb";
 
@@ -82,11 +83,9 @@ function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
     });
   }, [startAnimation, size.width]);
 
-  // Keep camera looking at center - throttle to every 3rd frame for performance
-  const frameCount = useRef(0);
+  // Keep camera looking at center
   useFrame(() => {
-    frameCount.current++;
-    if (frameCount.current % 3 === 0 && cameraRef.current) {
+    if (cameraRef.current) {
       cameraRef.current.lookAt(0, 0, 0);
     }
   });
@@ -102,7 +101,7 @@ function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
 }
 
 // Scene content component to handle animation state
-function SceneContent() {
+function SceneContent({ onReady }: { onReady?: () => void }) {
   const [modelLoaded, setModelLoaded] = useState(false);
   const { gl } = useThree();
   const isFastScrolling = useScrollVelocity({ threshold: 1200 });
@@ -113,12 +112,13 @@ function SceneContent() {
     gl.setPixelRatio(dpr);
   }, [gl]);
 
-  const handleModelLoaded = useRef(() => {
+  const handleModelLoaded = useCallback(() => {
     // Small delay to ensure everything is rendered
     setTimeout(() => {
       setModelLoaded(true);
+      if (onReady) onReady();
     }, 100);
-  }).current;
+  }, [onReady]);
 
   // Pause rendering during fast scrolling to save resources
   useFrame(() => {
@@ -156,6 +156,9 @@ function SceneContent() {
 
 // 3D Canvas wrapper component
 function HeroACCanvas() {
+  const [isReady, setIsReady] = useState(false);
+  const handleSceneReady = useCallback(() => setIsReady(true), []);
+
   return (
     <Canvas
       shadows
@@ -163,11 +166,12 @@ function HeroACCanvas() {
       // Ensures the rendering doesn't clip when camera is very close
       camera={{ near: 0.01, far: 1000 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      style={{ background: "transparent" }}
+      style={{ background: "transparent", marginTop: "80px" }}
+      className={`transition-opacity duration-1000 ease-out ${isReady ? "opacity-100" : "opacity-0"}`}
       frameloop="always"
     >
       <Suspense fallback={null}>
-        <SceneContent />
+        <SceneContent onReady={handleSceneReady} />
       </Suspense>
     </Canvas>
   );
@@ -305,9 +309,8 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className={`hero-section relative flex flex-col overflow-x-hidden ${
-        isMobile ? "min-h-screen" : "h-screen overflow-hidden"
-      }`}
+      className={`hero-section relative flex flex-col overflow-x-hidden ${isMobile ? "min-h-screen" : "h-screen overflow-hidden"
+        }`}
       style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
     >
       {/* Blue Gradient Background - passes scroll progress for shrink animation */}
@@ -316,7 +319,7 @@ export function HeroSection() {
         className="absolute inset-0"
         style={{ willChange: "transform", transformStyle: "preserve-3d" }}
       >
-        <HeroBlueGradient progress={scrollProgress} />
+        <HeroBlueGradient1 progress={scrollProgress} />
       </div>
 
       {/* Content Container */}

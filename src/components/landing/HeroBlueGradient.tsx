@@ -81,7 +81,7 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
     gsap.set([full, middle, shrink], { opacity: 0 });
     gsap.set(full, { opacity: 1 });
     // Transform from center so it shrinks evenly
-    gsap.set(frame, { 
+    gsap.set(frame, {
       transformOrigin: "50% 50%"
     });
   }, []);
@@ -123,9 +123,9 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
     const scaleX = isMobile ? 1 : 0.98 - 0.06 * p;
     const initialScaleY = isMobile ? 1 : 0.88;
     const scaleYDelta = isMobile ? 0 : 0.16;
-    const scaleY = initialScaleY - scaleYDelta * p; 
-    const borderRadius = isMobile ? 0 : 32 + 16 * p; 
-    const yOffset = isMobile ? 0 : 5 + 15 * p; 
+    const scaleY = initialScaleY - scaleYDelta * p;
+    const borderRadius = isMobile ? 0 : 32 + 16 * p;
+    const yOffset = isMobile ? 0 : 5 + 15 * p;
 
     setters.scaleX(scaleX);
     setters.scaleY(scaleY);
@@ -139,10 +139,10 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
       className="absolute inset-0 pointer-events-none overflow-hidden"
       style={{ transformStyle: "preserve-3d" }}
     >
-      <div 
-        ref={frameRef} 
-        className="absolute inset-0 overflow-hidden"
-        style={{ willChange: "transform, border-radius" }}
+      <div
+        ref={frameRef}
+        className="absolute top-0 overflow-hidden h-[95dvh] w-[100dvw]"
+        style={{ willChange: "transform, border-radius", borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}
       >
         <div
           ref={fullRef}

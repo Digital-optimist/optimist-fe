@@ -286,3 +286,18 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+.bg-test{
+  background-color: red;
+}
+
+.border-test{
+  border: 2px solid red;
+}
+
+.background-gradient {
+    z-index: -2;
+    background: linear-gradient(rgb(10, 10, 10) 50%, rgb(29, 29, 29) 92%);
+    position: fixed;
+    inset: 0%;
+}
