@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
+import { ScrollTrigger } from "@/lib/gsap";
 
 const features = [
   {
@@ -22,6 +23,14 @@ const features = [
     description: "Because quality shouldn't need an asterisk.",
     image: "/image 2.png",
   },
+  {
+    id: 3,
+    badge: "Smart Savings",
+    badgeIcon: "/41d29b9eba9f0cca3fb251cb6ffabdda00b8a903.png",
+    headline: "Energy Efficient",
+    description: "Save up to 40% on your electricity bills.",
+    image: "/image 2.png",
+  },
 ];
 
 // Arrow component pointing right
@@ -36,216 +45,121 @@ function ArrowLine({ className = "" }: { className?: string }) {
 
 export function FeaturesShowcaseSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const feature1Ref = useRef<HTMLDivElement>(null);
-  const feature2Ref = useRef<HTMLDivElement>(null);
-  const arrow1Ref = useRef<HTMLDivElement>(null);
-  const arrow2Ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoDuration, setVideoDuration] = useState(0);
 
   useGSAP(
     () => {
-      // Animate first feature
-      gsap.fromTo(
-        feature1Ref.current,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: feature1Ref.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        }
-      );
+      const video = videoRef.current;
+      if (!video || !sectionRef.current) return;
 
-      // Animate arrow 1
-      gsap.fromTo(
-        arrow1Ref.current,
-        { opacity: 0, scaleX: 0 },
-        {
-          opacity: 1,
-          scaleX: 1,
-          duration: 0.6,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: feature1Ref.current,
-            start: "top 70%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        }
-      );
+      // Ensure video is ready to be scrubbed
+      video.pause();
 
-      // Animate second feature
-      gsap.fromTo(
-        feature2Ref.current,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: feature2Ref.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        }
-      );
+      // We'll use a direct ScrollTrigger with onUpdate for maximum reliability
+      // This bypasses potential timeline/tween oddities with video elements
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.1, // Very low scrub for instant responsiveness
+        onUpdate: (self) => {
+          // Check if video is ready
+          if (video.readyState >= 1 && Number.isFinite(video.duration)) {
+            const progress = self.progress;
+            const time = progress * video.duration;
 
-      // Animate arrow 2
-      gsap.fromTo(
-        arrow2Ref.current,
-        { opacity: 0, scaleX: 0 },
-        {
-          opacity: 1,
-          scaleX: 1,
-          duration: 0.6,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: feature2Ref.current,
-            start: "top 70%",
-            toggleActions: "play none none none",
-            once: true,
-          },
+            // Check if the change is significant enough to warrant an update (optimization)
+            if (Math.abs(video.currentTime - time) > 0.05) {
+              video.currentTime = time;
+            }
+          }
         }
-      );
+      });
+
+      console.log("ScrollTrigger created for video scrubbing");
     },
-    { scope: sectionRef }
+    {
+      scope: sectionRef,
+    }
   );
 
   return (
     <section
       ref={sectionRef}
-      className="relative py-16 md:py-24 lg:py-32 overflow-x-hidden"
-      style={{
-        background: "linear-gradient(180deg, #F8F8FA 0%, #FFFFFF 50%, #F8F8FA 100%)",
-      }}
+      className="relative bg-[#F8F8FA]"
     >
-      {/* Decorative palm leaf shadow - top left */}
-      <div className="absolute top-0 left-0 w-[400px] md:w-[600px] lg:w-[800px] opacity-20 pointer-events-none">
-        <Image
-          src="/Leaf Swaying.gif"
-          alt=""
-          width={800}
-          height={600}
-          className="object-contain"
-          unoptimized
-        />
-      </div>
+      <div className="flex flex-col lg:flex-row">
+        {/* Left Scrollable Content */}
+        <div className="w-full lg:w-1/2 relative z-10">
+          <div className="flex flex-col">
+            {features.map((feature, index) => (
+              <div
+                key={feature.id}
+                className="min-h-screen flex items-center justify-center p-8 md:p-16 lg:p-24 border-b lg:border-none border-gray-100 last:border-0"
+              >
+                <div className="max-w-[500px]">
+                  {/* Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF9E6] rounded-full mb-6 relative">
+                    <div className="w-5 h-5 relative">
+                      <Image
+                        src={feature.badgeIcon}
+                        alt=""
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-[#8B7355]">
+                      {feature.badge}
+                    </span>
+                  </div>
 
-      {/* Feature 1 - In-Built Gas Indicator */}
-      <div
-        ref={feature1Ref}
-        className="relative mb-16 md:mb-24 lg:mb-32"
-      >
-        <div className="flex flex-col lg:flex-row items-center">
-          {/* Left - Content with padding */}
-          <div className="w-full lg:w-[45%] px-4 md:px-6 lg:pl-8 xl:pl-16 2xl:pl-24 lg:pr-0 order-2 lg:order-1">
-            <div className="max-w-[500px]">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF9E6] rounded-full mb-6">
-                <div className="w-5 h-5 relative">
-                  <Image
-                    src={features[0].badgeIcon}
-                    alt=""
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="text-sm font-medium text-[#8B7355]">
-                  {features[0].badge}
-                </span>
-              </div>
+                  {/* Headline with arrow */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-[#074FD5] leading-tight">
+                      {feature.headline}
+                    </h2>
+                    <ArrowLine />
+                  </div>
 
-              {/* Headline with arrow */}
-              <div className="flex items-center gap-4">
-                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#074FD5] leading-tight">
-                  {features[0].headline}
-                </h2>
-                <div ref={arrow1Ref} className="origin-left">
-                  <ArrowLine />
+                  {/* Description */}
+                  <p className="text-xl md:text-2xl text-[#6B7280] font-medium leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
-
-              {/* Description */}
-              <p className="text-base md:text-lg lg:text-xl text-[#6B7280] font-medium mt-4">
-                {features[0].description}
-              </p>
-            </div>
-          </div>
-
-          {/* Right - AC Image extending to edge */}
-          <div className="w-full lg:w-[55%] order-1 lg:order-2">
-            <div className="relative aspect-[4/3] lg:aspect-[16/10] w-full">
-              <Image
-                src={features[0].image}
-                alt="Optimist AC with In-Built Gas Indicator"
-                fill
-                className="object-contain object-right"
-                sizes="(max-width: 768px) 100vw, 55vw"
-              />
-            </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Feature 2 - 5 Years Warranty */}
-      <div
-        ref={feature2Ref}
-        className="relative"
-      >
-        <div className="flex flex-col lg:flex-row items-center">
-          {/* Left - Content with padding */}
-          <div className="w-full lg:w-[45%] px-4 md:px-6 lg:pl-8 xl:pl-16 2xl:pl-24 lg:pr-0 order-2 lg:order-1">
-            <div className="max-w-[500px]">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF5F5] rounded-full mb-6">
-                <div className="w-6 h-6 relative">
-                  <Image
-                    src={features[1].badgeIcon}
-                    alt=""
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="text-sm font-medium text-[#8B5555]">
-                  {features[1].badge}
-                </span>
-              </div>
-
-              {/* Headline */}
-              <h2 className="font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#074FD5] leading-tight mb-4">
-                {features[1].headline}
-              </h2>
-
-              {/* Description with arrow */}
-              <div className="flex items-center gap-4">
-                <p className="text-base md:text-lg lg:text-xl text-[#6B7280] font-medium">
-                  {features[1].description}
-                </p>
-                <div ref={arrow2Ref} className="origin-left flex-shrink-0">
-                  <ArrowLine />
-                </div>
-              </div>
-            </div>
+        {/* Right Sticky Video Section */}
+        <div className="hidden lg:block w-1/2 h-screen sticky top-0 right-0 overflow-hidden bg-white">
+          <div className="absolute inset-0 flex items-center justify-center p-12">
+            <video
+              ref={videoRef}
+              src="/ac_animation.mp4"
+              className="w-full h-full object-contain"
+              muted
+              playsInline
+              preload="auto"
+              // @ts-ignore
+              webkit-playsinline="true"
+              disablePictureInPicture
+              onLoadedMetadata={(e) => {
+                setVideoDuration(e.currentTarget.duration);
+              }}
+            />
           </div>
-
-          {/* Right - AC Image extending to edge */}
-          <div className="w-full lg:w-[55%] order-1 lg:order-2">
-            <div className="relative aspect-[4/3] lg:aspect-[16/10] w-full">
-              <Image
-                src={features[1].image}
-                alt="Optimist AC with 5-Year Warranty"
-                fill
-                className="object-contain object-right"
-                sizes="(max-width: 768px) 100vw, 55vw"
-              />
-            </div>
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-[400px] opacity-10 pointer-events-none">
+            <Image
+              src="/Leaf Swaying.gif"
+              alt=""
+              width={400}
+              height={300}
+              className="object-contain"
+              unoptimized
+            />
           </div>
         </div>
       </div>
