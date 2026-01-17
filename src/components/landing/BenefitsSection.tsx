@@ -145,20 +145,20 @@ export function BenefitsSection() {
   );
 
   return (
-    <section ref={sectionRef} className="relative bg-[#F8F8FA] overflow-x-hidden">
+    <section ref={sectionRef} className="relative bg-[#FFFFFF] overflow-x-hidden">
       {/* Trigger wrapper for pinning - only on desktop */}
       <div
         ref={triggerRef}
-        className="py-12 md:py-16 lg:py-20"
+        className="py-2 md:py-6 lg:py-10"
       >
         <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
           {/* Section Header */}
           <div ref={headerRef} className="mb-8 md:mb-12">
-            <p className="text-sm md:text-base text-gray-500 italic mb-2">
+            <p className="text-sm md:text-base text-[#212121] italic mb-2">
               New Generation of AC
             </p>
             {/* Desktop headline */}
-            <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+            <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
               Everything you need. Nothing you don&apos;t.
             </h2>
             {/* Mobile headline */}

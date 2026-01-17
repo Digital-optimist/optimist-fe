@@ -71,7 +71,7 @@ export function Footer() {
   return (
     <footer ref={footerRef} className="relative overflow-hidden">
       {/* Blue Cool Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 " style={{backdropFilter: "blur(200px)"}}>
         <Image
           src="/BlueCoolBackground.png"
           alt=""

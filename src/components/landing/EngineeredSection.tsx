@@ -112,14 +112,8 @@ function AccordionItem({
         {/* Header row with icon and title */}
         <div className="flex items-center gap-4">
           {/* Icon */}
-          <div
-            className={`w-10 h-10 flex-shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${
-              isActive
-                ? "bg-gradient-to-br from-[#074FD5] to-[#04348C]"
-                : "bg-white/70"
-            }`}
-          >
-            <div className="w-5 h-5 relative">
+        
+            <div className="w-10 h-10 flex-shrink-0 relative">
               <Image
                 src={isActive ? "/LightningBlue.png" : "/LightningWhite.png"}
                 alt="Lightning icon"
@@ -127,7 +121,7 @@ function AccordionItem({
                 className="object-contain"
               />
             </div>
-          </div>
+       
 
           {/* Title */}
           <div className="flex-1">
