@@ -10,8 +10,8 @@ phases:
       nodejs: 22
     commands:
       - echo Installing dependencies
-      - npm install -g yarn
-      - yarn install --frozen-lockfile
+      - corepack enable
+      - yarn install --immutable
 
   build:
     commands:

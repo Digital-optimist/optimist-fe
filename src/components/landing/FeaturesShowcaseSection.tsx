@@ -132,7 +132,7 @@ export function FeaturesShowcaseSection() {
           <div className="absolute inset-0 flex items-center justify-center">
             <video
               ref={videoRef}
-              src="/ac_animation.mp4"
+              src="/PointersAnimation.webm"
               className="h-[140%] max-w-none w-auto object-cover translate-x-[25%]"
               muted
               playsInline
