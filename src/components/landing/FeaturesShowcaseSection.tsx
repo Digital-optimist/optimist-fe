@@ -133,7 +133,7 @@ export function FeaturesShowcaseSection() {
             <video
               ref={videoRef}
               src="/ac_animation.mp4"
-              className="h-[140%] max-w-none w-auto object-cover translate-x-[35%]"
+              className="h-[140%] max-w-none w-auto object-cover translate-x-[25%]"
               muted
               playsInline
               preload="auto"
