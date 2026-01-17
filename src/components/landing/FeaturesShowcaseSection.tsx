@@ -56,20 +56,15 @@ export function FeaturesShowcaseSection() {
       // Ensure video is ready to be scrubbed
       video.pause();
 
-      // We'll use a direct ScrollTrigger with onUpdate for maximum reliability
-      // This bypasses potential timeline/tween oddities with video elements
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.1, // Very low scrub for instant responsiveness
+        scrub: 0.1,
         onUpdate: (self) => {
-          // Check if video is ready
           if (video.readyState >= 1 && Number.isFinite(video.duration)) {
             const progress = self.progress;
             const time = progress * video.duration;
-
-            // Check if the change is significant enough to warrant an update (optimization)
             if (Math.abs(video.currentTime - time) > 0.05) {
               video.currentTime = time;
             }
@@ -134,11 +129,11 @@ export function FeaturesShowcaseSection() {
 
         {/* Right Sticky Video Section */}
         <div className="hidden lg:block w-1/2 h-screen sticky top-0 right-0 overflow-hidden bg-white">
-          <div className="absolute inset-0 flex items-center justify-center p-12">
+          <div className="absolute inset-0 flex items-center justify-center">
             <video
               ref={videoRef}
               src="/ac_animation.mp4"
-              className="w-full h-full object-contain"
+              className="h-[140%] max-w-none w-auto object-cover translate-x-[35%]"
               muted
               playsInline
               preload="auto"
