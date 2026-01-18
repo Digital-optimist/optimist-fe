@@ -127,7 +127,7 @@ export function Footer() {
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 pt-12 md:pt-16 pb-6 md:pb-12">
         {/* Top Section - Links & Newsletter */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-12 md:mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-0 md:mb-16">
           {/* Column 1 - Nav Links */}
           <nav className="flex flex-col gap-4">
             {navLinksCol1.map((link) => (
@@ -217,7 +217,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Section - Family Image with Logo */}
-        <div ref={imageRef} className="relative">
+        <div ref={imageRef} className="relative mb-10 md:mb-0">
           <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden">
             {/* Family Image */}
             <Image
