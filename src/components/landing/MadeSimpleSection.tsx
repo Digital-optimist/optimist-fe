@@ -92,7 +92,7 @@ export function MadeSimpleSection() {
             </div>
 
             {/* Content */}
-            <div className="relative z-10 p-6 md:p-8 lg:p-10 flex flex-col justify-start pt-10 md:pt-14 lg:pt-16 h-full">
+            <div className="relative z-10 p-4 md:p-8 lg:p-10 flex flex-col justify-start pt-10 md:pt-14 lg:pt-16 h-full">
               {/* Headline */}
               <h2
                 className="font-display text-[32px] leading-[38px] md:text-[44px] md:leading-[50px] lg:text-[56px] lg:leading-[62px] font-bold mb-6 md:mb-8"
