@@ -311,7 +311,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className={`hero-section relative flex flex-col overflow-x-hidden ${isMobile ? "h-[680px]" : "h-screen overflow-hidden"
+      className={`hero-section relative flex flex-col overflow-x-hidden ${isMobile ? "h-[720px]" : "h-screen overflow-hidden"
         }`}
       style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
     >
@@ -347,7 +347,7 @@ export function HeroSection() {
             {/* Badges Row */}
             <div
               ref={badgesRef}
-              className="flex items-center gap-4 md:gap-6 mt-6 md:mt-8"
+              className="flex items-center justify-center gap-4 md:gap-6 mt-6 md:mt-8"
             >
               {/* ISEER Badge */}
               <div className="flex items-center gap-2 md:gap-3">
