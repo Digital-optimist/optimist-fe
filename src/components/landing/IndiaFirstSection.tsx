@@ -134,7 +134,7 @@ export function IndiaFirstSection() {
 
             {/* AC Image - Positioned at bottom right */}
             {/* Mobile AC Image */}
-            <div className="absolute bottom-0 right-0 w-[90%] md:hidden">
+            <div className="absolute bottom-[-12px] right-0 w-[76%] md:hidden">
               <Image
                 src="/mobile.png"
                 alt="Optimist AC Unit"
