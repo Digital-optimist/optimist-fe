@@ -208,7 +208,18 @@ export function IndiaFirstSection() {
                     "linear-gradient(135deg, #3478F6 0%, #5BA8E8 50%, #69CDEB 75%, #89D8F0 100%)",
                 }}
               >
-                <div className="flex items-center gap-3 md:gap-4">
+                {/* Grid Pattern Overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundImage: `
+                      linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)
+                    `,
+                    backgroundSize: "24px 24px",
+                  }}
+                />
+                <div className="relative z-10 flex items-center gap-3 md:gap-4">
                   <Image
                     src="/5StarRating.png"
                     alt="5 Star Rating"
@@ -217,7 +228,7 @@ export function IndiaFirstSection() {
                     className="w-12 h-12 md:w-14 md:h-14"
                   />
                   <div>
-                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold text-white leading-tight">
+                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold italic text-white leading-tight">
                       India&apos;s 1st
                     </p>
                     <p className="text-sm md:text-base text-white/90 font-medium">
@@ -235,7 +246,18 @@ export function IndiaFirstSection() {
                     "linear-gradient(135deg, #3478F6 0%, #5BA8E8 50%, #69CDEB 75%, #89D8F0 100%)",
                 }}
               >
-                <div className="flex items-center gap-3 md:gap-4">
+                {/* Grid Pattern Overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundImage: `
+                      linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)
+                    `,
+                    backgroundSize: "24px 24px",
+                  }}
+                />
+                <div className="relative z-10 flex items-center gap-3 md:gap-4">
                   <Image
                     src="/GoldenStar.png"
                     alt="Star Rating"
@@ -244,11 +266,16 @@ export function IndiaFirstSection() {
                     className="w-10 h-10 md:w-11 md:h-11"
                   />
                   <div>
-                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold text-white leading-tight">
+                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold italic text-white leading-tight">
                       4.8 rated
                     </p>
-                    <p className="text-sm md:text-base text-white/90 font-medium">
+                    {/* Mobile text */}
+                    <p className="text-sm md:hidden text-white/90 font-medium">
                       By those who switched, and stayed.
+                    </p>
+                    {/* Desktop text */}
+                    <p className="hidden md:block text-base text-white/90 font-medium">
+                      by early users
                     </p>
                   </div>
                 </div>

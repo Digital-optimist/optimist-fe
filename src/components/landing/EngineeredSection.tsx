@@ -101,14 +101,16 @@ function AccordionItem({
       <button
         key={feature.id}
         onClick={onClick}
-        className={`feature-card w-full text-left p-6 rounded-[20px] flex flex-col transition-all duration-300 border ${
+        className={`feature-card w-full text-left p-6 rounded-[20px] flex flex-col transition-all duration-300 ${
           isActive
-            ? "bg-white/80 border-white shadow-lg shadow-black/5"
+            ? "bg-white/80"
             : "bg-[#F3F4F6]/50 border-transparent hover:bg-white/40"
         }`}
-        style={{ animationDelay: `${index * 0.1}s`, boxShadow: "0px 3px 20px 0px #0000001A",
-
-       
+        style={{ 
+          animationDelay: `${index * 0.1}s`, 
+          boxShadow: isActive 
+            ? "0px 3px 20px 0px #0000001A, 0px -3px 5px 0px #00000033 inset" 
+            : "0px 3px 20px 0px #0000001A"
         }}
         aria-expanded={isActive}
       >
@@ -387,21 +389,21 @@ export function EngineeredSection() {
       className=" my-6 bg-white md:my-8 lg:my-12"
      
     >
-      <div className="py-12 md:py-16 lg:py-16 overflow-x-hidden mx-auto px-4 md:px-6 lg:px-8"  style={{
+      <div className="py-4 md:py-6 lg:py-8 overflow-x-hidden mx-auto px-4 md:px-6 lg:px-8"  style={{
         background:
           "linear-gradient(89.33deg, #CAC9C9 1.16%, #EEEAEA 49.5%, #F3F1F1 60.8%, #CAC9C9 115.48%)",
       }}>
         {/* Header */}
         <div
           ref={headerRef}
-          className="flex flex-col lg:flex-row items-start justify-between mb-5 lg:mb-8 gap-8"
+          className="flex flex-col lg:flex-row items-start justify-between mb-2 lg:mb-4 gap-8"
         >
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1] tracking-tight">
-            <span className="font-bold text-[#074FD5]">
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1]">
+            <span className="font-[600] text-[#074FD5]">
               The intelligence you don&apos;t see.
             </span>
             <br />
-            <span className="font-bold text-[#1A1A1A]">
+            <span className="font-[600] text-[#1A1A1A]">
               The performance you will.
             </span>
           </h2>
@@ -453,12 +455,17 @@ export function EngineeredSection() {
               <div
                 key={feature.id}
                 onClick={() => handleFeatureClick(feature.id)}
-                className={`flex-shrink-0 w-[300px] rounded-[24px] p-6 border transition-all duration-300 cursor-pointer ${
+                className={`flex-shrink-0 w-[300px] rounded-[24px] p-6 transition-all duration-300 cursor-pointer ${
                   activeFeature === feature.id
-                    ? "bg-white border-white shadow-xl shadow-black/5"
+                    ? "bg-white"
                     : "bg-[#F3F4F6]/50 border-transparent"
                 }`}
-                style={{ scrollSnapAlign: "start" }}
+                style={{ 
+                  scrollSnapAlign: "start",
+                  boxShadow: activeFeature === feature.id 
+                    ? "0px -3px 5px 0px #00000033 inset" 
+                    : undefined
+                }}
               >
                 <div className="flex flex-col gap-4">
                   {/* Icon */}

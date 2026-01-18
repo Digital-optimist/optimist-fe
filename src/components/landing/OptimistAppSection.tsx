@@ -236,7 +236,7 @@ export function OptimistAppSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white py-6 md:py-10 px-4 md:px-6 overflow-x-hidden"
+      className="bg-white py-4 md:py-6 px-4 md:px-6 overflow-x-hidden"
     >
       {/* Rounded Container with Border */}
       <div
@@ -273,13 +273,13 @@ export function OptimistAppSection() {
           <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-[40%] w-[1400px] rounded-[50%] bg-gradient-radial from-[#D4E8FF]/20 via-[#E8F2FF]/10 to-transparent" />
         </div>
 
-        <div className="relative z-10 px-4 md:px-8 lg:px-16 pt-12 md:pt-16 pb-0">
+        <div className="relative z-10 px-4 md:px-8 lg:px-16 pt-4 md:pt-8 pb-0">
           {/* Header */}
           <div ref={headerRef} className="text-center mb-8 md:mb-12">
-            <h2 className="font-display text-[40px] font-bold text-gray-900 mb-2 tracking-tight leading-tight">
+            <h2 className="font-display text-[32px] md:text-[40px] leading-[32px] md:leading-[40px] font-[700] font-bold text-gray-900 mb-2">
               Optimist App
             </h2>
-            <p className="text-[20px] text-gray-400 font-medium">
+            <p className="text-[16px] md:text-[20px] leading-[16px] md:leading-[20px] text-[#0000006B] font-[400]">
               Your full-control panel, right in your hand.
             </p>
           </div>
@@ -384,11 +384,11 @@ export function OptimistAppSection() {
               className="absolute z-30 pointer-events-none"
               style={{
                 bottom: "0px",
-                left: "50%",
-                transform: "translateX(-55%)",
+                left: "45%",
+                transform: "translateX(-50%)",
               }}
             >
-              <div className="relative w-[750px]">
+              <div className="relative w-[900px]">
                 <Image
                   src="/Hand.png"
                   alt="Optimist App"
@@ -404,8 +404,8 @@ export function OptimistAppSection() {
           {/* Mobile Layout */}
           <div className="lg:hidden">
             {/* Phone */}
-            <div ref={phoneRef} className="flex justify-center mb-4">
-              <div className="relative w-[300px] md:w-[380px]">
+            <div ref={phoneRef} className="flex justify-center">
+              <div className="relative w-[300px]">
                 <Image
                   src="/Hand.png"
                   alt="Optimist App"

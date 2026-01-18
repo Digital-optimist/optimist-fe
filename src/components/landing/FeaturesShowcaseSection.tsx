@@ -25,10 +25,11 @@ const features = [
   },
   {
     id: 3,
-    badge: "Smart Savings",
+    badgeTitle: "Highest ISEER",
+    badgeSubtitle: "In India",
     badgeIcon: "/41d29b9eba9f0cca3fb251cb6ffabdda00b8a903.png",
-    headline: "Energy Efficient",
-    description: "Save up to 40% on your electricity bills.",
+    headline: "Lower bills. Higher comfort.",
+    description: "Live Energy Meter, Track consumption as it happens.",
     image: "/image 2.png",
   },
 ];
@@ -82,21 +83,31 @@ export function FeaturesShowcaseSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#F8F8FA]"
+      className="relative bg-[#FFFFFF]"
     >
       <div className="flex flex-col lg:flex-row">
         {/* Left Scrollable Content */}
         <div className="w-full lg:w-1/2 relative z-10">
+         <div className="sticky  top-0 left-0 w-[800px] opacity-10 pointer-events-none">
+            <Image
+              src="/Leaf Swaying.gif"
+              alt=""
+              width={800}
+              height={1600}
+              className="object-contain"
+              unoptimized
+            />
+          </div>
           <div className="flex flex-col">
             {features.map((feature, index) => (
               <div
                 key={feature.id}
                 className="min-h-screen flex items-center justify-center p-8 md:p-16 lg:p-24 border-b lg:border-none border-gray-100 last:border-0"
               >
-                <div className="max-w-[500px]">
+                <div className="max-w-[600px]">
                   {/* Badge */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF9E6] rounded-full mb-6 relative">
-                    <div className="w-5 h-5 relative">
+                  <div className="inline-flex items-center gap-3 px-5 py-3 bg-[#FFF9E6] rounded-2xl mb-8">
+                    <div className="w-8 h-8 md:w-10 md:h-10 relative flex-shrink-0">
                       <Image
                         src={feature.badgeIcon}
                         alt=""
@@ -104,21 +115,40 @@ export function FeaturesShowcaseSection() {
                         className="object-contain"
                       />
                     </div>
-                    <span className="text-sm font-medium text-[#8B7355]">
-                      {feature.badge}
-                    </span>
+                    {'badgeTitle' in feature ? (
+                      <div className="flex flex-col">
+                        <span className="text-[12px] md:text-[16px] leading:[12px] md:leading-[16px] font-[700] text-[#212121]">
+                          {feature.badgeTitle}
+                        </span>
+                        <span className="text-[12px] md:text-[16px] leading:[12px] md:leading-[16px] font-[400] text-[#212121]">
+                          {feature.badgeSubtitle}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-[12px] md:text-[16px] leading:[12px] md:leading-[16px] font-[700] text-[#212121]">
+                        {feature.badge}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Headline with arrow */}
+                  {/* Headline with gradient */}
                   <div className="flex items-center gap-4 mb-6">
-                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-[#074FD5] leading-tight">
+                    <h2 
+                      className="font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight"
+                      style={{
+                        background: "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
                       {feature.headline}
                     </h2>
                     <ArrowLine />
                   </div>
 
                   {/* Description */}
-                  <p className="text-xl md:text-2xl text-[#6B7280] font-medium leading-relaxed">
+                  <p className="text-lg md:text-xl lg:text-2xl text-[#6B7280] font-normal italic leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -133,7 +163,7 @@ export function FeaturesShowcaseSection() {
             <video
               ref={videoRef}
               src="/PointersAnimation.webm"
-              className="h-[140%] max-w-none w-auto object-cover translate-x-[25%]"
+              className="h-[100%] max-w-none w-auto object-cover translate-x-[25%]"
               muted
               playsInline
               preload="auto"
@@ -145,17 +175,8 @@ export function FeaturesShowcaseSection() {
               }}
             />
           </div>
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-[400px] opacity-10 pointer-events-none">
-            <Image
-              src="/Leaf Swaying.gif"
-              alt=""
-              width={400}
-              height={300}
-              className="object-contain"
-              unoptimized
-            />
-          </div>
+       
+         
         </div>
       </div>
     </section>

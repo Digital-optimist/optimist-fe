@@ -70,6 +70,7 @@ export function MadeSimpleSection() {
             ref={leftCardRef}
             className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[400px] md:min-h-[450px] lg:min-h-[500px]"
             style={{
+              border: "1px solid #21212133",
               background:
                 "linear-gradient(180deg, #FFFFFF 0%, #E8F4FF 35%, #B8DEFF 70%, #8ECFFF 100%)",
             }}

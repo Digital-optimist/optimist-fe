@@ -79,7 +79,7 @@ export function Navigation() {
     <>
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-50 bg-white/[0.03] backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.08] shadow-[0_1px_1px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.08)]"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-y border-white/[0.15] shadow-[0_4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none"
       >
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="flex items-center justify-between h-14 md:h-16">
@@ -162,7 +162,7 @@ export function Navigation() {
                         className="fixed inset-0 z-40"
                         onClick={() => setIsUserMenuOpen(false)}
                       />
-                      <div className="absolute right-0 top-full mt-2 w-56 bg-white/[0.05] backdrop-blur-2xl backdrop-saturate-150 border border-white/[0.1] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.1)] z-50 overflow-hidden">
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-black/60 backdrop-blur-3xl backdrop-saturate-200 border border-white/[0.15] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] z-50 before:absolute before:inset-x-0 before:top-0 before:h-8 before:bg-gradient-to-b before:from-white/[0.1] before:to-transparent before:pointer-events-none before:rounded-t-xl">
                         <div className="px-4 py-3 border-b border-[#FFFCDC]/20">
                           <p className="text-sm font-medium text-[#FFFCDC] truncate">
                             {customer?.firstName} {customer?.lastName}
@@ -257,7 +257,7 @@ export function Navigation() {
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white/[0.02] backdrop-blur-2xl backdrop-saturate-150 border-t border-white/[0.06]">
+          <div className="md:hidden relative bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.12] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_-1px_1px_rgba(255,255,255,0.05)] before:absolute before:inset-x-0 before:top-0 before:h-8 before:bg-gradient-to-b before:from-white/[0.08] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-8 after:bg-gradient-to-t after:from-white/[0.04] after:to-transparent after:pointer-events-none">
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link, index) => {
                 const isActive = pathname === link.href;
