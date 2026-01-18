@@ -592,7 +592,7 @@ export function OptimistAppSection() {
           <div className="lg:hidden mt-[-50px]">
             {/* Phone */}
             <div ref={phoneRef} className="flex justify-center">
-              <div className="relative w-3/4">
+              <div className="relative w-[100%]">
                 <Image
                   src="/Hand.png"
                   alt="Optimist App"

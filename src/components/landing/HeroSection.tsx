@@ -187,7 +187,7 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
         alt="Optimist AC"
         className="object-contain w-full h-auto max-h-full"
         initial={{ opacity: 0, scale: 1 }}
-        animate={{ opacity: 1, scale: isMobile ? 0.8 : 0.6 }}
+        animate={{ opacity: 1, scale: isMobile ? 0.95 : 0.6 }}
         transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
       />
     </div>

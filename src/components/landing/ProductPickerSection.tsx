@@ -234,7 +234,7 @@ export function ProductPickerSection() {
       ref={sectionRef}
       className="bg-white py-8 md:py-12 lg:py-16 overflow-x-hidden"
     >
-      <div className=" mx-auto px-8 md:px-12 lg:px-16">
+      <div className=" mx-auto px-4 md:px-12 lg:px-16">
         {/* Header with decorative lines */}
         <div
           ref={headerRef}
@@ -282,7 +282,7 @@ export function ProductPickerSection() {
           </div>
 
           {/* Product Content */}
-          <div className="p-5 md:p-8 lg:p-10">
+          <div className="p-4 md:p-8 lg:p-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
               {/* Mobile: Image First */}
               <div className="lg:hidden">
