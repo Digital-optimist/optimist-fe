@@ -109,6 +109,11 @@ export const metadata: Metadata = {
     "energy efficient",
     "ISEER",
   ],
+  icons: {
+    icon: "/Favicon_Optimist_32px X 32px.png",
+    shortcut: "/Favicon_Optimist_32px X 32px.png",
+    apple: "/Favicon_Optimist_32px X 32px.png",
+  },
 };
 
 export default function RootLayout({

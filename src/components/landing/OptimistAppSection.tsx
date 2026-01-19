@@ -631,31 +631,31 @@ const mobileFeatures = [
   {
     id: 1,
     title: "Live Energy Meter",
-    description: "To track consumption and predict bills",
+    description: "Track. Predict. Save.",
   },
   {
     id: 2,
-    title: "Live Energy Meter",
-    description: "To track consumption and predict bills",
+    title: "Projected Monthly Bills",
+    description: "No surprises. Just real numbers.",
   },
   {
     id: 3,
-    title: "Live Energy Meter",
-    description: "To track consumption and predict bills",
+    title: "Filter Health",
+    description: "Clean when needed. No more guessing.",
   },
   {
     id: 4,
-    title: "Live Energy Meter",
-    description: "To track consumption and predict bills",
+    title: "Gas Level Indicator",
+    description: "Know before it's an issue.",
   },
   {
     id: 5,
-    title: "Live Energy Meter",
-    description: "To track consumption and predict bills",
+    title: "Intelligence Service Assistance",
+    description: "Diagnose remotely. Service seamlessly",
   },
   {
     id: 6,
-    title: "Live Energy Meter",
-    description: "To track consumption and predict bills",
+    title: "Scheduling",
+    description: "Start or stop automatically, on your time.",
   },
 ];

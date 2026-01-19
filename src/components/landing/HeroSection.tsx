@@ -311,7 +311,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className={`hero-section relative flex flex-col overflow-x-hidden ${isMobile ? "h-[720px]" : "h-screen overflow-hidden"
+      className={`hero-section relative flex flex-col overflow-x-hidden ${isMobile ? "h-[650px]" : "h-screen overflow-hidden"
         }`}
       style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
     >
@@ -327,11 +327,12 @@ export function HeroSection() {
       {/* Content Container */}
       <div
         ref={contentRef}
-        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-32 md:pt-28 lg:pt-32"
+        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-0 md:pt-28 lg:pt-32"
         style={{ willChange: "transform, opacity" }}
       >
         {/* Desktop Layout: flex row with content left and buttons right */}
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start max-w-[1400px] mx-auto w-full">
+        {/* Mobile: center content vertically within blue section (h-[600px]) */}
+        <div className="flex flex-col justify-center h-[600px] md:h-auto lg:flex-row lg:justify-between lg:items-start max-w-[1400px] mx-auto w-full">
           {/* Left Content */}
           <div className="flex flex-col">
             {/* Headline */}
@@ -431,8 +432,8 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* AC Image - positioned to overlap with gradient bottom on mobile */}
-        <div className="absolute bottom-0 left-0 right-0">
+        {/* AC Image - positioned to overlap blue/black boundary on mobile */}
+        <div className="absolute bottom-[50px] md:bottom-0 left-0 right-0">
           <HeroACImage isMobile={isMobile} />
         </div>
 

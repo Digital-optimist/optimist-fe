@@ -10,7 +10,7 @@ export default function HeroBlueGradient1({ progress }: { progress: number }) {
       initial={{ scale: 1.2 }}
       animate={{ scale: currentScale }}
       transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-      className="w-[1360px] h-[622px] overflow-hidden absolute left-1/2 -translate-x-1/2 top-0 md:top-[10%]"
+      className="w-[1360px] h-[600px] md:h-[622px] overflow-hidden absolute left-1/2 -translate-x-1/2 top-0 md:top-[10%]"
       style={{
         borderBottomLeftRadius: '20px',
         borderBottomRightRadius: '20px',
