@@ -181,13 +181,14 @@ function HeroACCanvas() {
 // Static image fallback for mobile (88MB GLB is too heavy for mobile)
 function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full flex items-end justify-center">
       <motion.img
         src="/hero_ac.png"
         alt="Optimist AC"
-        className="object-contain w-full h-auto max-h-full"
-        initial={{ opacity: 0, scale: 1 }}
-        animate={{ opacity: 1, scale: isMobile ? 0.95 : 0.6 }}
+        className="object-contain h-auto"
+        style={{ width: isMobile ? "95%" : "60%" }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
       />
     </div>
@@ -311,7 +312,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className={`hero-section relative flex flex-col overflow-x-hidden bg-black ${isMobile ? "h-[650px]" : "h-screen overflow-hidden"
+      className={`hero-section relative flex flex-col overflow-x-hidden bg-black h-screen ${isMobile ? "" : "overflow-hidden"
         }`}
       style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
     >
@@ -331,8 +332,8 @@ export function HeroSection() {
         style={{ willChange: "transform, opacity" }}
       >
         {/* Desktop Layout: flex row with content left and buttons right */}
-        {/* Mobile: center content vertically within blue section (h-[600px]) */}
-        <div className="flex flex-col justify-center h-[600px] md:h-auto lg:flex-row lg:justify-between lg:items-start max-w-[1400px] mx-auto w-full">
+        {/* Mobile: center content vertically, shifted up with pb to make room for AC */}
+        <div className="flex flex-col justify-center h-full pb-48 md:pb-0 md:h-auto lg:flex-row lg:justify-between lg:items-start max-w-[1400px] mx-auto w-full">
           {/* Left Content */}
           <div className="flex flex-col">
             {/* Headline */}
@@ -431,22 +432,11 @@ export function HeroSection() {
             </button>
           </div>
         </div>
+      </div>
 
-        {/* AC Image - positioned to overlap blue/black boundary on mobile */}
-        <div className="absolute bottom-[200px] md:bottom-0 left-0 right-0">
-          <HeroACImage isMobile={isMobile} />
-        </div>
-
-        {/* AC 3D Animation (desktop) / Static Image (mobile) */}
-        {/* <div
-          ref={imageRef}
-          className="flex-1 flex items-end justify-center mt-auto pb-0 md:pb-8"
-          style={{ willChange: "transform, opacity" }}
-        >
-          <div className="w-full h-[480px] md:h-[500px] lg:h-[650px] xl:h-[750px] max-w-6xl lg:max-w-7xl xl:max-w-[1400px] mx-auto">
-            {isMobile ? <HeroACImage /> : <HeroACCanvas />}
-          </div>
-        </div> */}
+      {/* AC Image - positioned relative to section, not content container */}
+      <div className="absolute bottom-[120px] md:bottom-[-100px] left-0 right-0 z-20">
+        <HeroACImage isMobile={isMobile} />
       </div>
     </section>
   );
