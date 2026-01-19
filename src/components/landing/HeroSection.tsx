@@ -314,13 +314,22 @@ export function HeroSection() {
       ref={sectionRef}
       className={`hero-section relative flex flex-col overflow-x-hidden bg-black h-screen ${isMobile ? "" : "overflow-hidden"
         }`}
-      style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
+      style={{ 
+        perspective: "1000px",
+        WebkitPerspective: "1000px",
+        transformStyle: "preserve-3d",
+        WebkitTransformStyle: "preserve-3d",
+      }}
     >
       {/* Blue Gradient Background - passes scroll progress for shrink animation */}
       <div
         ref={gradientRef}
         className="absolute inset-0"
-        style={{ willChange: "transform", transformStyle: "preserve-3d" }}
+        style={{ 
+          willChange: "transform", 
+          transformStyle: "preserve-3d",
+          WebkitTransformStyle: "preserve-3d",
+        }}
       >
         <HeroBlueGradient1 progress={scrollProgress} />
       </div>

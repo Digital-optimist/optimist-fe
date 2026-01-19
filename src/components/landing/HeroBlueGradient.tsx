@@ -137,12 +137,21 @@ export function HeroBlueGradient({ progress }: { progress: number }) {
     <div
       aria-hidden
       className="absolute inset-0 pointer-events-none overflow-hidden"
-      style={{ transformStyle: "preserve-3d" }}
+      style={{ 
+        transformStyle: "preserve-3d",
+        WebkitTransformStyle: "preserve-3d",
+      }}
     >
       <div
         ref={frameRef}
-        className="absolute top-0 overflow-hidden h-[95dvh] w-[100dvw]"
-        style={{ willChange: "transform, border-radius", borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}
+        className="absolute top-0 overflow-hidden h-[95vh] w-[100vw]"
+        style={{ 
+          willChange: "transform, border-radius", 
+          borderBottomLeftRadius: '20px', 
+          borderBottomRightRadius: '20px',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+        }}
       >
         <div
           ref={fullRef}

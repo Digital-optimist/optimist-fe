@@ -17,7 +17,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
         >
             <g clipPath="url(#clip0_1084_2444)">
                 <rect width={1360} height={622} fill="black" />
-                <motion.g animate={{ scaleY: s4_5 }} style={{ originY: 1 }}>
+                <motion.g animate={{ scaleY: s4_5 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-1-inside-1_1084_2444" fill="white">
                         <path d="M680 0H850V622H680V0Z" />
                     </mask>
@@ -29,7 +29,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-1-inside-1_1084_2444)"
                     />
                 </motion.g>
-                <motion.g filter="url(#filter0_d_1084_2444)" animate={{ scaleY: s3_6 }} style={{ originY: 1 }}>
+                <motion.g filter="url(#filter0_d_1084_2444)" animate={{ scaleY: s3_6 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-3-inside-2_1084_2444" fill="white">
                         <path d="M1020 0H850V622H1020V0Z" />
                     </mask>
@@ -45,7 +45,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-3-inside-2_1084_2444)"
                     />
                 </motion.g>
-                <motion.g filter="url(#filter1_d_1084_2444)" animate={{ scaleY: s2_7 }} style={{ originY: 1 }}>
+                <motion.g filter="url(#filter1_d_1084_2444)" animate={{ scaleY: s2_7 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-5-inside-3_1084_2444" fill="white">
                         <path d="M1190 0H1020V622H1190V0Z" />
                     </mask>
@@ -61,7 +61,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-5-inside-3_1084_2444)"
                     />
                 </motion.g>
-                <motion.g filter="url(#filter2_d_1084_2444)" animate={{ scaleY: s1_8 }} style={{ originY: 1 }}>
+                <motion.g filter="url(#filter2_d_1084_2444)" animate={{ scaleY: s1_8 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-7-inside-4_1084_2444" fill="white">
                         <path d="M1360 0H1190V622H1360V0Z" />
                     </mask>
@@ -77,7 +77,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-7-inside-4_1084_2444)"
                     />
                 </motion.g>
-                <motion.g animate={{ scaleY: s4_5 }} style={{ originY: 1 }}>
+                <motion.g animate={{ scaleY: s4_5 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-9-inside-5_1084_2444" fill="white">
                         <path d="M510 0H680V622H510V0Z" />
                     </mask>
@@ -89,7 +89,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-9-inside-5_1084_2444)"
                     />
                 </motion.g>
-                <motion.g filter="url(#filter3_d_1084_2444)" animate={{ scaleY: s3_6 }} style={{ originY: 1 }}>
+                <motion.g filter="url(#filter3_d_1084_2444)" animate={{ scaleY: s3_6 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-11-inside-6_1084_2444" fill="white">
                         <path d="M340 0H510V622H340V0Z" />
                     </mask>
@@ -105,7 +105,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-11-inside-6_1084_2444)"
                     />
                 </motion.g>
-                <motion.g filter="url(#filter4_d_1084_2444)" animate={{ scaleY: s2_7 }} style={{ originY: 1 }}>
+                <motion.g filter="url(#filter4_d_1084_2444)" animate={{ scaleY: s2_7 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-13-inside-7_1084_2444" fill="white">
                         <path d="M170 0H340V622H170V0Z" />
                     </mask>
@@ -121,7 +121,7 @@ const BlueGradientBox = ({ progress = 0, ...props }: { progress?: number }) => {
                         mask="url(#path-13-inside-7_1084_2444)"
                     />
                 </motion.g>
-                <motion.g filter="url(#filter5_d_1084_2444)" animate={{ scaleY: s1_8 }} style={{ originY: 1 }}>
+                <motion.g filter="url(#filter5_d_1084_2444)" animate={{ scaleY: s1_8 }} style={{ originY: 1, transformBox: 'fill-box' as const }}>
                     <mask id="path-15-inside-8_1084_2444" fill="white">
                         <path d="M0 0H170V622H0V0Z" />
                     </mask>

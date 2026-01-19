@@ -27,7 +27,8 @@ function lerp(start: number, end: number, factor: number): number {
 
 // ============================================
 // CUSTOM HOOK: useMouseParallax
-// Tracks normalized mouse coords and applies smooth rotation
+// Tracks normalized mouse coords and applies smooth rotation using GSAP
+// GSAP handles cross-browser compatibility (especially Safari) automatically
 // ============================================
 function useMouseParallax(
   containerRef: React.RefObject<HTMLElement | null>,
@@ -38,10 +39,10 @@ function useMouseParallax(
   const targetRotation = useRef({ x: 0, y: 0 });
   // Current rotation (smoothly interpolated)
   const currentRotation = useRef({ x: 0, y: 0 });
-  // Animation frame ID for cleanup
-  const rafId = useRef<number | null>(null);
   // Track if mouse is over container
   const isHovering = useRef(false);
+  // GSAP ticker callback reference
+  const tickerCallback = useRef<(() => void) | null>(null);
 
   // Responsive scaling based on viewport
   const getResponsiveMultiplier = useCallback(() => {
@@ -59,6 +60,16 @@ function useMouseParallax(
       "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice && !config.enableOnTouch) return;
 
+    // Initialize GSAP transform - this sets up the element for 3D transforms
+    gsap.set(target, {
+      rotationX: 0,
+      rotationY: 0,
+      z: 0,
+      transformPerspective: 1500,
+      transformStyle: "preserve-3d",
+      force3D: true,
+    });
+
     // Mouse move handler - calculate normalized coords (-1 to +1)
     const handleMouseMove = (e: MouseEvent) => {
       if (!isHovering.current) return;
@@ -73,9 +84,11 @@ function useMouseParallax(
       // Set target rotation (inverted for natural feel)
       // Mouse moves right → rotate left (negative Y rotation)
       // Mouse moves down → rotate up (negative X rotation)
+      // Convert radians to degrees for GSAP
+      const radToDeg = 180 / Math.PI;
       targetRotation.current = {
-        x: -normalizedY * config.maxRotationX * multiplier,
-        y: normalizedX * config.maxRotationY * multiplier,
+        x: -normalizedY * config.maxRotationX * multiplier * radToDeg,
+        y: normalizedX * config.maxRotationY * multiplier * radToDeg,
       };
     };
 
@@ -89,8 +102,8 @@ function useMouseParallax(
       targetRotation.current = { x: 0, y: 0 };
     };
 
-    // Animation loop - this is the "useFrame" equivalent
-    const animate = () => {
+    // Animation loop using GSAP ticker (syncs with GSAP's rendering pipeline)
+    tickerCallback.current = () => {
       // Smooth lerp towards target rotation
       currentRotation.current.x = lerp(
         currentRotation.current.x,
@@ -103,19 +116,17 @@ function useMouseParallax(
         config.lerpFactor
       );
 
-      // Apply transform to target element
-      // Note: perspective is set on parent element for full-component effect
-      target.style.transform = `
-        rotateX(${currentRotation.current.x}rad)
-        rotateY(${currentRotation.current.y}rad)
-        translateZ(0)
-      `;
-
-      rafId.current = requestAnimationFrame(animate);
+      // Apply transform using GSAP - handles all browser prefixes automatically
+      gsap.set(target, {
+        rotationX: currentRotation.current.x,
+        rotationY: currentRotation.current.y,
+        z: 0.01, // Small z value helps Safari render the 3D transform
+        force3D: true,
+      });
     };
 
-    // Start animation loop
-    rafId.current = requestAnimationFrame(animate);
+    // Add to GSAP's ticker (runs every frame, synced with GSAP)
+    gsap.ticker.add(tickerCallback.current);
 
     // Attach event listeners
     container.addEventListener("mousemove", handleMouseMove);
@@ -124,12 +135,14 @@ function useMouseParallax(
 
     // Cleanup
     return () => {
-      if (rafId.current) cancelAnimationFrame(rafId.current);
+      if (tickerCallback.current) {
+        gsap.ticker.remove(tickerCallback.current);
+      }
       container.removeEventListener("mousemove", handleMouseMove);
       container.removeEventListener("mouseenter", handleMouseEnter);
       container.removeEventListener("mouseleave", handleMouseLeave);
-      // Reset transform on cleanup
-      target.style.transform = "";
+      // Reset transform using GSAP
+      gsap.set(target, { rotationX: 0, rotationY: 0, z: 0, clearProps: "transform" });
     };
   }, [containerRef, targetRef, config, getResponsiveMultiplier]);
 }
@@ -385,24 +398,22 @@ export function OptimistAppSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white py-4 md:py-6 px-4 md:px-6 overflow-x-hidden"
+      className="bg-white py-4 md:py-6 px-4 md:px-6"
     >
       {/* Rounded Container with Border - STATIC frame */}
       <div
         ref={containerRef}
-        className={`relative max-w-[1440px] mx-auto bg-gradient-to-b from-white via-[#f5f9ff] to-[#e8f1ff] rounded-[32px] md:rounded-[48px] overflow-hidden border border-gray-200/50 transition-shadow duration-500 ease-out ${
+        className={`relative max-w-[1440px] mx-auto bg-gradient-to-b from-white via-[#f5f9ff] to-[#e8f1ff] rounded-[32px] md:rounded-[48px] border border-gray-200/50 transition-shadow duration-500 ease-out ${
           isHovered ? "shadow-2xl" : "shadow-xl"
         }`}
-        style={{ perspective: "1500px" }} // 3D perspective for inner content
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Inner content wrapper - receives parallax tilt */}
+        {/* Inner content wrapper - receives parallax tilt via GSAP */}
+        {/* GSAP handles transformPerspective and preserve-3d internally for cross-browser support */}
         <div
           ref={parallaxContentRef}
           style={{
-            transformStyle: "preserve-3d",
-            willChange: "transform",
             transformOrigin: "center center",
           }}
         >
