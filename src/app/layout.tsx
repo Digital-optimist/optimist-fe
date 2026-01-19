@@ -124,7 +124,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${abcSolar.variable} ${abcSolarDisplay.variable} antialiased bg-black text-optimist-cream`}
+        className={`${abcSolar.variable} ${abcSolarDisplay.variable} antialiased bg-white text-optimist-cream`}
       >
         <Providers>
           <SmoothScroll>

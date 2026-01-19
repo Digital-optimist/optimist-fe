@@ -23,7 +23,7 @@ const features = [
     badgeIcon: "/41d29b9eba9f0cca3fb251cb6ffabdda00b8a903.png",
     headline: "5 Years",
     description: "Because quality shouldn't need an asterisk.",
-    image: "/AC2.png",
+    image: "/AC3.png",
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ const features = [
     badgeIcon: "/41d29b9eba9f0cca3fb251cb6ffabdda00b8a903.png",
     headline: "Lower bills. Higher comfort.",
     description: "Live Energy Meter, Track consumption as it happens.",
-    image: "/AC3.png",
+    image: "/AC2.png",
   },
 ];
 
@@ -172,15 +172,15 @@ export function FeaturesShowcaseSection() {
               </div>
             </div>
 
-            {/* Image Content - positioned at bottom right, 80% visible, 20% overflow */}
-            <div className="w-full mt-[-140px] md:mt-0 lg:w-1/2 relative overflow-hidden">
-              <div className="relative w-[125%] lg:w-[125%] h-[250px] sm:h-[300px] md:h-[350px] lg:h-[450px] xl:h-[500px] ml-auto -mr-[20%]">
+            {/* Image Content - 100% width, aligned right */}
+            <div className="w-full mt-[-140px] md:mt-0 lg:w-[55%] relative flex justify-end">
+              <div className="relative w-full h-[300px] sm:h-[380px] md:h-[450px] lg:h-[550px] xl:h-[620px]">
                 <Image
                   src={feature.image}
                   alt={feature.headline}
                   fill
-                  className="object-contain object-right-bottom"
-                  sizes="(max-width: 1024px) 140vw, 70vw"
+                  className="object-contain object-right"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   priority={feature.id === 1}
                 />
               </div>

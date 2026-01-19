@@ -433,7 +433,7 @@ export function HeroSection() {
         </div>
 
         {/* AC Image - positioned to overlap blue/black boundary on mobile */}
-        <div className="absolute bottom-[150px] md:bottom-0 left-0 right-0">
+        <div className="absolute bottom-[200px] md:bottom-0 left-0 right-0">
           <HeroACImage isMobile={isMobile} />
         </div>
 
