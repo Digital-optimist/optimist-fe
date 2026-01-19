@@ -311,7 +311,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className={`hero-section relative flex flex-col overflow-x-hidden ${isMobile ? "h-[650px]" : "h-screen overflow-hidden"
+      className={`hero-section relative flex flex-col overflow-x-hidden bg-black ${isMobile ? "h-[650px]" : "h-screen overflow-hidden"
         }`}
       style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
     >
@@ -433,7 +433,7 @@ export function HeroSection() {
         </div>
 
         {/* AC Image - positioned to overlap blue/black boundary on mobile */}
-        <div className="absolute bottom-[50px] md:bottom-0 left-0 right-0">
+        <div className="absolute bottom-[150px] md:bottom-0 left-0 right-0">
           <HeroACImage isMobile={isMobile} />
         </div>
 
