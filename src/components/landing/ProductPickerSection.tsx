@@ -377,9 +377,9 @@ export function ProductPickerSection() {
 
               {/* Right Column - AC Image (Desktop Only) */}
               <div className="hidden lg:block">
-                <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-[24px] overflow-hidden shadow-sm h-full min-h-[400px] flex items-center justify-center">
+                <div className="relative bg-[#E7E7E7] rounded-[24px] overflow-hidden shadow-sm h-full min-h-[400px] flex items-center justify-center">
                   {/* Share Button */}
-                  <button className="absolute top-5 right-5 z-10 flex items-center gap-2 px-4 py-2.5 bg-white rounded-full shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border border-gray-100">
+                  <button className="absolute top-5 right-5 z-10 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-md text-sm font-medium text-gray-700 transition-colors border border-gray-100">
                     <Share2 className="w-4 h-4" />
                     Share
                   </button>
