@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect, useLayoutEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
@@ -381,28 +381,42 @@ export function EngineeredSection() {
     };
   }, []);
 
+  // Set initial states immediately to prevent flash/lag on first scroll
+  useLayoutEffect(() => {
+    if (headerRef.current) {
+      gsap.set(headerRef.current, { opacity: 0, y: 50 });
+    }
+    const featureCards = featuresRef.current?.querySelectorAll(".feature-card");
+    if (featureCards) {
+      gsap.set(featureCards, { opacity: 0, x: -40, scale: 0.95 });
+    }
+    if (imageContainerRef.current) {
+      gsap.set(imageContainerRef.current, { opacity: 0, scale: 0.92, y: 30 });
+    }
+  }, []);
+
   useGSAP(
     () => {
       // Batch all animations into a single timeline with one ScrollTrigger
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           end: "top 25%",
           toggleActions: "play none none none",
           once: true, // Only animate once for better performance
         },
       });
 
-      // Header animation - fade in from bottom
-      tl.fromTo(
+      // Header animation - use 'to' since initial state is already set
+      tl.to(
         headerRef.current,
-        { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
           duration: 1,
           ease: "power3.out",
+          force3D: true,
         },
         0
       );
@@ -411,9 +425,8 @@ export function EngineeredSection() {
       const featureCards =
         featuresRef.current?.querySelectorAll(".feature-card");
       if (featureCards) {
-        tl.fromTo(
+        tl.to(
           featureCards,
-          { opacity: 0, x: -40, scale: 0.95 },
           {
             opacity: 1,
             x: 0,
@@ -421,21 +434,22 @@ export function EngineeredSection() {
             stagger: 0.12,
             duration: 0.7,
             ease: "power3.out",
+            force3D: true,
           },
           0.2 // Start slightly after header
         );
       }
 
       // Image container animation with subtle scale
-      tl.fromTo(
+      tl.to(
         imageContainerRef.current,
-        { opacity: 0, scale: 0.92, y: 30 },
         {
           opacity: 1,
           scale: 1,
           y: 0,
           duration: 1,
           ease: "power3.out",
+          force3D: true,
         },
         0.3 // Start slightly after features
       );
@@ -457,7 +471,7 @@ export function EngineeredSection() {
         {/* Header */}
         <div
           ref={headerRef}
-          className="flex flex-col lg:flex-row items-start justify-between mb-2 lg:mb-4 gap-8"
+          className="flex flex-col lg:flex-row items-start justify-between mb-2 lg:mb-4 gap-8 will-change-[transform,opacity]"
         >
           <h2 className="font-display text-[32px] md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1]">
             <span className="font-[600] text-[#074FD5]">

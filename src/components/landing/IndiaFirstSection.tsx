@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useLayoutEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
@@ -14,41 +14,55 @@ export function IndiaFirstSection() {
   const badgesRef = useRef<HTMLDivElement>(null);
   const { openModal } = useWaitlist();
 
+  // Set initial states immediately to prevent flash/lag on first scroll
+  useLayoutEffect(() => {
+    if (leftCardRef.current) {
+      gsap.set(leftCardRef.current, { opacity: 0, x: -40 });
+    }
+    if (flowerRef.current) {
+      gsap.set(flowerRef.current, { opacity: 0, scale: 0.95 });
+    }
+    const badgeCards = badgesRef.current?.querySelectorAll(".badge-card");
+    if (badgeCards) {
+      gsap.set(badgeCards, { opacity: 0, y: 20 });
+    }
+  }, []);
+
   useGSAP(
     () => {
       // Batch all animations into a single timeline with one ScrollTrigger
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           end: "top 25%",
           toggleActions: "play none none none",
           once: true, // Only animate once for better performance
         },
       });
 
-      // Left card animation
-      tl.fromTo(
+      // Left card animation - use 'to' since initial state is already set
+      tl.to(
         leftCardRef.current,
-        { opacity: 0, x: -40 },
         {
           opacity: 1,
           x: 0,
           duration: 0.8,
           ease: "power3.out",
+          force3D: true,
         },
         0
       );
 
       // Flower image animation
-      tl.fromTo(
+      tl.to(
         flowerRef.current,
-        { opacity: 0, scale: 0.95 },
         {
           opacity: 1,
           scale: 1,
           duration: 0.8,
           ease: "power3.out",
+          force3D: true,
         },
         0.1
       );
@@ -56,15 +70,15 @@ export function IndiaFirstSection() {
       // Badges staggered animation
       const badgeCards = badgesRef.current?.querySelectorAll(".badge-card");
       if (badgeCards) {
-        tl.fromTo(
+        tl.to(
           badgeCards,
-          { opacity: 0, y: 20 },
           {
             opacity: 1,
             y: 0,
             duration: 0.6,
             stagger: 0.15,
             ease: "power3.out",
+            force3D: true,
           },
           0.2
         );
@@ -84,7 +98,7 @@ export function IndiaFirstSection() {
           {/* Left Column - Dark Product Card */}
           <div
             ref={leftCardRef}
-            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[420px] md:min-h-[520px] lg:min-h-[620px]"
+            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[420px] md:min-h-[520px] lg:min-h-[620px] will-change-[transform,opacity]"
             style={{
               background: 'linear-gradient(180deg, #000000 0%, #1a1a1a 40%, #666666 70%, #cccccc 90%, #f5f5f5 100%)',
             }}
@@ -138,12 +152,10 @@ export function IndiaFirstSection() {
               <Image
                 src="/mobile.png"
                 alt="Optimist AC Unit"
-                
-      width={500}
+                width={500}
                 height={50}
-          objectFit="cover"
-                className=""
-                priority
+                className="object-cover"
+                loading="lazy"
               />
             </div>
             
@@ -155,7 +167,7 @@ export function IndiaFirstSection() {
                 width={800}
                 height={400}
                 className="w-full h-auto"
-                priority
+                loading="lazy"
               />
             </div>
           </div>
@@ -165,7 +177,7 @@ export function IndiaFirstSection() {
             {/* Flower Image */}
             <div 
               ref={flowerRef}
-              className="relative bg-white border border-gray-200 rounded-[24px] md:rounded-[32px] overflow-hidden flex-1 min-h-[240px] md:min-h-[300px] lg:min-h-[340px] flex items-center justify-center"
+              className="relative bg-white border border-gray-200 rounded-[24px] md:rounded-[32px] overflow-hidden flex-1 min-h-[240px] md:min-h-[300px] lg:min-h-[340px] flex items-center justify-center will-change-[transform,opacity]"
             >
               {/* Star shape with palm tree video */}
               <svg width="0" height="0" className="absolute">
@@ -184,24 +196,24 @@ export function IndiaFirstSection() {
                   loop
                   muted
                   playsInline
+                  preload="metadata"
                   className="w-full h-full object-cover"
                 >
                   <source src="/TreeCool.mp4" type="video/mp4" />
                 </video>
-                {/* Blue Overlay with Blur */}
+                {/* Blue Overlay with Blur - using backdrop-filter for GPU acceleration */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: "#3478F6",
-                    filter: "blur(100px)",
-                    opacity: 0.5,
+                    background: "radial-gradient(circle, rgba(52, 120, 246, 0.5) 0%, rgba(52, 120, 246, 0.3) 50%, transparent 70%)",
+                    transform: "translateZ(0)",
                   }}
                 />
               </div>
             </div>
 
             {/* Badge Cards Container */}
-            <div ref={badgesRef} className="flex flex-col gap-3 md:gap-4">
+            <div ref={badgesRef} className="flex flex-col gap-3 md:gap-4 will-change-[transform,opacity]">
               {/* India's 1st Badge Card */}
               <div
                 className="badge-card relative rounded-[20px] md:rounded-[24px] overflow-hidden px-5 py-4 md:px-6 md:py-5"
@@ -228,6 +240,7 @@ export function IndiaFirstSection() {
                     width={56}
                     height={56}
                     className="w-12 h-12 md:w-14 md:h-14"
+                    loading="lazy"
                   />
                   <div>
                     <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold italic text-white leading-tight">
@@ -266,6 +279,7 @@ export function IndiaFirstSection() {
                     width={44}
                     height={44}
                     className="w-10 h-10 md:w-11 md:h-11"
+                    loading="lazy"
                   />
                   <div>
                     <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold italic text-white leading-tight">

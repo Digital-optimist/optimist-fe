@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect, useLayoutEffect } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -252,38 +252,49 @@ export function OptimistAppSection() {
     return feature?.handImage || "/hands/Live Energy Meter.png";
   }, [hoveredFeature, activeFeature]);
 
+  // Set initial states immediately to prevent flash/lag on first scroll
+  useLayoutEffect(() => {
+    if (headerRef.current) {
+      gsap.set(headerRef.current, { opacity: 0, y: 40 });
+    }
+    if (phoneRef.current) {
+      gsap.set(phoneRef.current, { opacity: 0, y: 60, scale: 0.9 });
+    }
+    const cards = featuresRef.current?.querySelectorAll(".feature-card");
+    if (cards) {
+      gsap.set(cards, { opacity: 0, scale: 0.9, y: 20 });
+    }
+  }, []);
+
   // GSAP animations
   useGSAP(
     () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           end: "top 25%",
           toggleActions: "play none none none",
           once: true,
         },
       });
 
-      tl.fromTo(
+      tl.to(
         headerRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", force3D: true },
         0
       );
 
-      tl.fromTo(
+      tl.to(
         phoneRef.current,
-        { opacity: 0, y: 60, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1, ease: "power3.out" },
+        { opacity: 1, y: 0, scale: 1, duration: 1, ease: "power3.out", force3D: true },
         0.2
       );
 
       const cards = featuresRef.current?.querySelectorAll(".feature-card");
       if (cards) {
-        tl.fromTo(
+        tl.to(
           cards,
-          { opacity: 0, scale: 0.9, y: 20 },
           {
             opacity: 1,
             scale: 1,
@@ -291,6 +302,7 @@ export function OptimistAppSection() {
             stagger: 0.1,
             duration: 0.8,
             ease: "power3.out",
+            force3D: true,
           },
           0.4
         );
@@ -364,7 +376,7 @@ export function OptimistAppSection() {
           {/* Hand/Phone Image */}
           <div
             ref={phoneRef}
-            className="absolute z-20 pointer-events-none"
+            className="absolute z-20 pointer-events-none will-change-[transform,opacity]"
             style={{ 
               left: "55%", 
               top: "140px",
@@ -404,7 +416,7 @@ export function OptimistAppSection() {
           {/* Header - centered, top: 43px */}
           <div 
             ref={headerRef} 
-            className="absolute left-1/2 -translate-x-1/2 text-center w-[444px] z-10"
+            className="absolute left-1/2 -translate-x-1/2 text-center w-[444px] z-10 will-change-[transform,opacity]"
             style={{ top: "43px" }}
           >
             <h2 className="font-display text-[40px] font-bold text-black leading-none mb-[14px]">

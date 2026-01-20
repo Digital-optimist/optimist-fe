@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useLayoutEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
@@ -45,6 +45,13 @@ export function BenefitsSection() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Set initial states immediately to prevent flash/lag on first scroll
+  useLayoutEffect(() => {
+    if (headerRef.current) {
+      gsap.set(headerRef.current, { opacity: 0, y: 40 });
+    }
+  }, []);
+
   useGSAP(
     () => {
       // Track our own ScrollTrigger instances for cleanup
@@ -55,17 +62,17 @@ export function BenefitsSection() {
 
       // Skip horizontal scroll on mobile - use native scroll instead
       if (isMobile || isCurrentlyMobile) {
-        // Simple fade-in animation for mobile
-        const headerTrigger = gsap.fromTo(
+        // Simple fade-in animation for mobile - use 'to' since initial state is set
+        const headerTrigger = gsap.to(
           headerRef.current,
-          { opacity: 0.2, y: 20},
           {
             opacity: 1,
             y: 0,
             duration: 0.8,
+            force3D: true,
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 75%",
+              start: "top 80%",
               toggleActions: "play none none none",
               once: true,
             },
@@ -91,17 +98,17 @@ export function BenefitsSection() {
       const viewportWidth = window.innerWidth;
       const scrollDistance = totalWidth - viewportWidth + 100; // Extra padding
 
-      // Header fade in animation
-      const headerTrigger = gsap.fromTo(
+      // Header fade in animation - use 'to' since initial state is set
+      const headerTrigger = gsap.to(
         headerRef.current,
-        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
+          force3D: true,
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 75%",
+            start: "top 80%",
             toggleActions: "play none none none",
             once: true,
           },
@@ -114,6 +121,7 @@ export function BenefitsSection() {
       const carouselTrigger = gsap.to(carousel, {
         x: -scrollDistance,
         ease: "none",
+        force3D: true,
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "bottom bottom",
@@ -153,7 +161,7 @@ export function BenefitsSection() {
       >
         <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
           {/* Section Header */}
-          <div ref={headerRef} className="mb-8 md:mb-12">
+          <div ref={headerRef} className="mb-8 md:mb-12 will-change-[transform,opacity]">
             <p className="text-sm md:text-base text-[#212121] italic mb-2">
               New Generation of AC
             </p>

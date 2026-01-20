@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useLayoutEffect } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -12,41 +12,51 @@ export function MadeSimpleSection() {
   const rightCardRef = useRef<HTMLDivElement>(null);
   const { openModal } = useWaitlist();
 
+  // Set initial states immediately to prevent flash/lag on first scroll
+  useLayoutEffect(() => {
+    if (leftCardRef.current) {
+      gsap.set(leftCardRef.current, { opacity: 0, x: -40 });
+    }
+    if (rightCardRef.current) {
+      gsap.set(rightCardRef.current, { opacity: 0, x: 40 });
+    }
+  }, []);
+
   useGSAP(
     () => {
       // Batch both cards into a single timeline with one ScrollTrigger
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           end: "top 25%",
           toggleActions: "play none none none",
           once: true, // Only animate once for better performance
         },
       });
 
-      // Left card animation
-      tl.fromTo(
+      // Left card animation - use 'to' since initial state is already set
+      tl.to(
         leftCardRef.current,
-        { opacity: 0, x: -40 },
         {
           opacity: 1,
           x: 0,
           duration: 0.8,
           ease: "power3.out",
+          force3D: true,
         },
         0
       );
 
       // Right card animation with slight stagger
-      tl.fromTo(
+      tl.to(
         rightCardRef.current,
-        { opacity: 0, x: 40 },
         {
           opacity: 1,
           x: 0,
           duration: 0.8,
           ease: "power3.out",
+          force3D: true,
         },
         0.1 // Slight delay for stagger effect
       );
@@ -69,7 +79,7 @@ export function MadeSimpleSection() {
           {/* Left Card - Blue gradient with headline */}
           <div
             ref={leftCardRef}
-            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[400px] md:min-h-[450px] lg:min-h-[500px]"
+            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[400px] md:min-h-[450px] lg:min-h-[500px] will-change-[transform,opacity]"
             style={{
               border: "1px solid #21212133",
               background:
@@ -124,7 +134,7 @@ export function MadeSimpleSection() {
           {/* Right Card - Remote on wooden background */}
           <div
             ref={rightCardRef}
-            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden"
+            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
           >
             {/* Desktop Image */}
             <div className="hidden md:block relative w-full aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[450px]">
@@ -134,7 +144,7 @@ export function MadeSimpleSection() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
+                loading="lazy"
               />
             </div>
 

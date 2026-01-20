@@ -443,7 +443,7 @@ export function FeaturesShowcaseSection() {
         className="relative bg-[#E7E7E7] hidden lg:block"
       >
         {/* Background Leaf Pattern */}
-        <div className="absolute top-0 left-0 sticky w-full max-w-[800px] opacity-10 pointer-events-none z-0">
+        <div className="absolute top-0 left-0 fixed w-full max-w-[800px] opacity-10 pointer-events-none z-0">
           <Image
             src="/Leaf Swaying.gif"
             alt=""
@@ -461,7 +461,7 @@ export function FeaturesShowcaseSection() {
               {features.map((feature) => (
                 <div
                   key={feature.id}
-                  className="min-h-screen flex items-center justify-center px-12 lg:px-16 xl:px-24 py-20"
+                  className="min-h-screen flex items-center justify-center px-12 lg:px-16 xl:px-24"
                 >
                   <div className="max-w-[500px]">
                     {/* Badge */}

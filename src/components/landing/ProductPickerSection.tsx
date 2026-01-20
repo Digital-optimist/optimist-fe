@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, Suspense, useEffect } from "react";
+import { useRef, useState, Suspense, useEffect, useLayoutEffect } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -185,41 +185,51 @@ export function ProductPickerSection() {
   const cardRef = useRef<HTMLDivElement>(null);
   const { openModal } = useWaitlist();
 
+  // Set initial states immediately to prevent flash/lag on first scroll
+  useLayoutEffect(() => {
+    if (headerRef.current) {
+      gsap.set(headerRef.current, { opacity: 0, y: 40 });
+    }
+    if (cardRef.current) {
+      gsap.set(cardRef.current, { opacity: 0, y: 40 });
+    }
+  }, []);
+
   useGSAP(
     () => {
       // Batch animations into a single timeline with one ScrollTrigger
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           end: "top 25%",
           toggleActions: "play none none none",
           once: true, // Only animate once for better performance
         },
       });
 
-      // Header animation
-      tl.fromTo(
+      // Header animation - use 'to' since initial state is set
+      tl.to(
         headerRef.current,
-        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
           ease: "power3.out",
+          force3D: true,
         },
         0
       );
 
       // Card animation with slight delay
-      tl.fromTo(
+      tl.to(
         cardRef.current,
-        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
           ease: "power3.out",
+          force3D: true,
         },
         0.2
       );
@@ -238,7 +248,7 @@ export function ProductPickerSection() {
         {/* Header with decorative lines */}
         <div
           ref={headerRef}
-          className="flex items-center justify-center gap-4 md:gap-6 mb-10 md:mb-14"
+          className="flex items-center justify-center gap-4 md:gap-6 mb-10 md:mb-14 will-change-[transform,opacity]"
         >
           {/* Left line */}
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gray-300" />
@@ -255,7 +265,7 @@ export function ProductPickerSection() {
         {/* Main Card */}
         <div
           ref={cardRef}
-          className="bg-[#F8F8FA] rounded-[24px] md:rounded-[32px] overflow-hidden"
+          className="bg-[#F8F8FA] rounded-[24px] md:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
           style={{boxShadow:"0px 9px 30px 0px #00000017"
           }}
         >
