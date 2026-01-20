@@ -167,7 +167,7 @@ function ACVideo() {
   return (
     <video
       ref={videoRef}
-      src="/ProductCard01.webm"
+      src="/ProductCardAnimation.mp4"
       className="w-full h-auto object-contain cursor-pointer bg-transparent"
       muted
       playsInline
@@ -370,7 +370,7 @@ export function ProductPickerSection() {
                     onClick={openModal}
                     className="btn-buy-now inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-3.5 rounded-full text-white font-semibold text-sm md:text-base"
                   >
-                    Notify Me
+                    Join the Waitlist
                   </button>
                 </div>
               </div>

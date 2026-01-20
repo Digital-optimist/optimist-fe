@@ -13,7 +13,7 @@ import { subscribeToWaitlist } from "@/lib/shopify";
 // Types
 // =============================================================================
 
-type ModalView = "email" | "success";
+type ModalView = "phone" | "success";
 
 interface WaitlistContextType {
   isModalOpen: boolean;
@@ -22,7 +22,7 @@ interface WaitlistContextType {
   error: string | null;
   openModal: () => void;
   closeModal: () => void;
-  submitEmail: (email: string) => Promise<boolean>;
+  submitPhone: (phone: string) => Promise<boolean>;
   showSuccess: () => void;
   resetModal: () => void;
 }
@@ -39,13 +39,13 @@ const WaitlistContext = createContext<WaitlistContextType | null>(null);
 
 export function WaitlistProvider({ children }: { children: ReactNode }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalView, setModalView] = useState<ModalView>("email");
+  const [modalView, setModalView] = useState<ModalView>("phone");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const openModal = useCallback(() => {
     setIsModalOpen(true);
-    setModalView("email");
+    setModalView("phone");
     setError(null);
     // Prevent body scroll when modal is open
     document.body.style.overflow = "hidden";
@@ -57,7 +57,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
     document.body.style.overflow = "";
     // Reset state after animation completes
     setTimeout(() => {
-      setModalView("email");
+      setModalView("phone");
       setError(null);
       setIsLoading(false);
     }, 300);
@@ -69,17 +69,17 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetModal = useCallback(() => {
-    setModalView("email");
+    setModalView("phone");
     setError(null);
     setIsLoading(false);
   }, []);
 
-  const submitEmail = useCallback(async (email: string): Promise<boolean> => {
+  const submitPhone = useCallback(async (phone: string): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      await subscribeToWaitlist(email);
+      await subscribeToWaitlist(phone);
       setIsLoading(false);
       setModalView("success");
       return true;
@@ -100,7 +100,7 @@ export function WaitlistProvider({ children }: { children: ReactNode }) {
         error,
         openModal,
         closeModal,
-        submitEmail,
+        submitPhone,
         showSuccess,
         resetModal,
       }}

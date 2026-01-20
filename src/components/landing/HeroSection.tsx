@@ -418,7 +418,7 @@ export function HeroSection() {
                 onClick={openModal}
                 className="btn-buy-now hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
               >
-                Notify Me
+                Join the Waitlist
               </button>
             </div>
           </div>
@@ -438,7 +438,7 @@ export function HeroSection() {
               onClick={openModal}
               className="btn-buy-now hero-btn-desktop text-optimist-cream flex items-center justify-center"
             >
-              Notify Me
+              Join the Waitlist
             </button>
           </div>
         </div>

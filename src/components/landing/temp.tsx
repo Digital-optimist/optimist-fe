@@ -122,7 +122,7 @@ export default function ShrinkingHero() {
                 Why Optimist?
               </button>
               <button className="px-8 py-3 rounded-full bg-white text-blue-600 font-semibold shadow-xl">
-                Notify Me
+                Join the Waitlist
               </button>
             </div>
           </div>

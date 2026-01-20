@@ -111,12 +111,12 @@ export function MadeSimpleSection() {
                 nothing less.
               </h2>
 
-              {/* Notify Me Button */}
+              {/* Join Waitlist Button */}
               <button
                 onClick={openModal}
                 className="btn-buy-now inline-flex items-center justify-center w-fit px-8 md:px-10 py-3 md:py-3.5 rounded-full text-white font-semibold text-sm md:text-base"
               >
-                Notify Me
+                Join the Waitlist
               </button>
             </div>
           </div>

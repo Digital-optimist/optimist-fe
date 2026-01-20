@@ -121,7 +121,7 @@ export function IndiaFirstSection() {
                   onClick={openModal}
                   className="btn-buy-now w-[160px] hero-btn-mobile md:hero-btn-desktop inline-flex items-center justify-center text-white"
                 >
-                  Notify Me
+                  Join the Waitlist
                 </button>
                 <Link
                   href="#why-optimist"

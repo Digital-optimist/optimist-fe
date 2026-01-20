@@ -9,21 +9,22 @@ import Lottie from "lottie-react";
 import confettiAnimation from "../../../public/Confetti.json";
 
 // =============================================================================
-// Email Validation
+// Phone Validation
 // =============================================================================
 
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+function isValidPhone(phone: string): boolean {
+  // Indian phone: 10 digits, optionally with +91 prefix
+  const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
+  return phoneRegex.test(phone.replace(/\s/g, ''));
 }
 
 // =============================================================================
-// Email Form View
+// Phone Form View
 // =============================================================================
 
-function EmailFormView() {
-  const { submitEmail, isLoading, error, closeModal } = useWaitlist();
-  const [email, setEmail] = useState("");
+function PhoneFormView() {
+  const { submitPhone, isLoading, error, closeModal } = useWaitlist();
+  const [phone, setPhone] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,18 +37,18 @@ function EmailFormView() {
     e.preventDefault();
     setValidationError(null);
 
-    // Validate email
-    if (!email.trim()) {
-      setValidationError("Please enter your email");
+    // Validate phone
+    if (!phone.trim()) {
+      setValidationError("Please enter your phone number");
       return;
     }
 
-    if (!isValidEmail(email)) {
-      setValidationError("Please enter a valid email address");
+    if (!isValidPhone(phone)) {
+      setValidationError("Please enter a valid phone number");
       return;
     }
 
-    await submitEmail(email);
+    await submitPhone(phone);
   };
 
   const displayError = validationError || error;
@@ -78,22 +79,22 @@ function EmailFormView() {
 
       {/* Subtext */}
       <p className="text-gray-600 text-base md:text-lg mb-8 max-w-md">
-        by entering your email, and be the first to know when Optimist launches!
+        by entering your phone number, and be the first to know when Optimist launches!
       </p>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="w-full max-w-md">
-        {/* Email Input */}
+        {/* Phone Input */}
         <div className="relative mb-4">
           <input
             ref={inputRef}
-            type="email"
-            value={email}
+            type="tel"
+            value={phone}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setPhone(e.target.value);
               setValidationError(null);
             }}
-            placeholder="enter your email"
+            placeholder="enter your phone number"
             disabled={isLoading}
             className={`w-full px-6 py-4 bg-[#E8E8E8] rounded-full text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-base md:text-lg ${
               displayError ? "ring-2 ring-red-400" : ""
@@ -174,7 +175,7 @@ function SuccessView() {
 
         {/* Subtext */}
         <p className="text-gray-600 text-base md:text-lg max-w-md">
-          you will notified on your mentioned emailID when Optimist launches!
+          you will be notified on your phone number when Optimist launches!
         </p>
       </div>
     </div>
@@ -268,7 +269,7 @@ export function WaitlistModal() {
         className="relative w-full max-w-lg bg-white rounded-[24px] md:rounded-[32px] shadow-2xl opacity-0"
         onClick={(e) => e.stopPropagation()}
       >
-        {modalView === "email" ? <EmailFormView /> : <SuccessView />}
+        {modalView === "phone" ? <PhoneFormView /> : <SuccessView />}
       </div>
     </div>
   );

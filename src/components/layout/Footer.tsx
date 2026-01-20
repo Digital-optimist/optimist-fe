@@ -52,18 +52,19 @@ const socialLinks = [
   { href: "#", icon: XIcon, label: "X" },
 ];
 
-// Email validation helper
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+// Phone validation helper
+function isValidPhone(phone: string): boolean {
+  // Indian phone: 10 digits, optionally with +91 prefix
+  const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
+  return phoneRegex.test(phone.replace(/\s/g, ''));
 }
 
 export function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { submitEmail, isLoading, openModal, showSuccess } = useWaitlist();
+  const { submitPhone, isLoading, openModal, showSuccess } = useWaitlist();
 
   useGSAP(
     () => {
@@ -91,21 +92,21 @@ export function Footer() {
     e.preventDefault();
     setError(null);
 
-    // Validate email
-    if (!email.trim()) {
-      setError("Please enter your email");
+    // Validate phone
+    if (!phone.trim()) {
+      setError("Please enter your phone number");
       return;
     }
 
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email");
+    if (!isValidPhone(phone)) {
+      setError("Please enter a valid phone number");
       return;
     }
 
     // Call the API
-    const success = await submitEmail(email);
+    const success = await submitPhone(phone);
     if (success) {
-      setEmail("");
+      setPhone("");
       // Open modal and show success view
       openModal();
       showSuccess();
@@ -174,7 +175,7 @@ export function Footer() {
           {/* Column 4 - Newsletter */}
           <div className="col-span-2 md:col-span-2">
             <p className="text-xs uppercase tracking-wider text-[#FFFCDC] mb-4">
-              NOTIFY ME
+              JOIN THE WAITLIST
             </p>
             <form
               onSubmit={handleSubmit}
@@ -182,13 +183,13 @@ export function Footer() {
             >
               <div className="flex flex-col md:flex-row gap-3">
                 <input
-                  type="email"
-                  value={email}
+                  type="tel"
+                  value={phone}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setPhone(e.target.value);
                     setError(null);
                   }}
-                  placeholder="enter your email"
+                  placeholder="enter your phone number"
                   disabled={isLoading}
                   className={`w-full md:flex-1 px-4 py-3 bg-optimist-dark border rounded-full text-[#FFFCDC] placeholder:text-[#FFFCDC]/50 focus:outline-none focus:border-optimist-blue-primary transition-colors ${
                     error ? "border-red-500" : "border-optimist-border"
@@ -205,7 +206,7 @@ export function Footer() {
                       Submitting...
                     </span>
                   ) : (
-                    "Notify Me"
+                    "Join the Waitlist"
                   )}
                 </button>
               </div>

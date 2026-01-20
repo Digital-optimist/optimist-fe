@@ -1127,17 +1127,34 @@ function generateRandomPassword(): string {
   return password + "Aa1!";
 }
 
-export async function subscribeToWaitlist(email: string): Promise<boolean> {
+export async function subscribeToWaitlist(phone: string): Promise<boolean> {
   // Generate a random password - user won't need it for waitlist
   // They can use "Forgot Password" if they ever want to create a real account
   const randomPassword = generateRandomPassword();
+  
+  // Clean phone number and format to E.164 format for Shopify
+  let cleanPhone = phone.replace(/\D/g, '');
+  
+  // If phone starts with 91 and is 12 digits, it already has country code
+  // If it's 10 digits, add +91 prefix for India
+  if (cleanPhone.length === 10) {
+    cleanPhone = `+91${cleanPhone}`;
+  } else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+    cleanPhone = `+${cleanPhone}`;
+  } else if (!cleanPhone.startsWith('+')) {
+    cleanPhone = `+${cleanPhone}`;
+  }
+  
+  // Shopify requires email - generate a placeholder email from phone number
+  const phoneDigits = phone.replace(/\D/g, '');
+  const placeholderEmail = `${phoneDigits}@waitlist.optimist.in`;
 
   const query = `
     mutation CustomerCreate($input: CustomerCreateInput!) {
       customerCreate(input: $input) {
         customer {
           id
-          email
+          phone
         }
         customerUserErrors {
           field
@@ -1150,14 +1167,15 @@ export async function subscribeToWaitlist(email: string): Promise<boolean> {
 
   const data = await shopifyFetch<{
     customerCreate: {
-      customer: { id: string; email: string } | null;
+      customer: { id: string; phone: string } | null;
       customerUserErrors: { field: string[]; message: string; code: string }[];
     };
   }>({
     query,
     variables: {
       input: {
-        email,
+        email: placeholderEmail,
+        phone: cleanPhone,
         password: randomPassword,
         acceptsMarketing: true,
       },
@@ -1166,11 +1184,11 @@ export async function subscribeToWaitlist(email: string): Promise<boolean> {
 
   const errors = data.customerCreate.customerUserErrors;
   
-  // If email already exists (TAKEN error), treat as success
+  // If phone/email already exists (TAKEN error), treat as success
   if (errors.length > 0) {
     const error = errors[0];
     if (error.code === "TAKEN") {
-      // Email already subscribed - this is fine
+      // Phone already subscribed - this is fine
       return true;
     }
     throw new Error(error.message);
