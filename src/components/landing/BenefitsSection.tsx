@@ -125,7 +125,7 @@ export function BenefitsSection() {
         force3D: true,
         scrollTrigger: {
           trigger: triggerRef.current,
-          start: "bottom bottom",
+          start: "bottom bottom+=25",
           end: () => `+=${scrollDistance}`,
           pin: true,
           scrub: 1,
@@ -184,7 +184,7 @@ export function BenefitsSection() {
             {benefits.map((benefit) => (
               <div
                 key={benefit.id}
-                className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(55%-12px)] lg:w-[calc(60%-12px)] relative rounded-[24px] overflow-hidden snap-start transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
+                className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(55%-12px)] lg:w-[calc(65%-12px)] relative rounded-[24px] overflow-hidden snap-start transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
               >
                 {/* Image Background */}
                 <div className="relative aspect-[4/5] md:aspect-[16/10]">

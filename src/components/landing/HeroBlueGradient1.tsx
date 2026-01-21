@@ -1,10 +1,6 @@
 import BlueGradientBox from "@/assets/icons/blueGradientBox";
-import { motion } from "framer-motion";
 
 export default function HeroBlueGradient1({ progress, isMobile }: { progress: number; isMobile: boolean }) {
-  // On mobile, use static scale centered in middle; on desktop, animate based on scroll
-  const currentScale = isMobile ? 1 : 1.2 - (progress * 0.45); // Static scale on mobile, shrinks from 1.2 to 0.75 on desktop
-
   if (isMobile) {
     // Mobile: Blue gradient is 70vh tall, vertically centered (15vh from top)
     return (
@@ -12,7 +8,7 @@ export default function HeroBlueGradient1({ progress, isMobile }: { progress: nu
         className="w-full overflow-hidden absolute left-0"
         style={{
           height: '60vh',
-          top: '8vh', // (100vh - 70vh) / 2 = 15vh to center vertically
+          top: '8vh',
           borderBottomLeftRadius: '24px',
           borderBottomRightRadius: '24px',
         }}
@@ -29,29 +25,28 @@ export default function HeroBlueGradient1({ progress, isMobile }: { progress: nu
     );
   }
 
-  // Desktop: Animated version with scroll-based scaling
+  // Desktop: Gradient fills the card container, bars animate on scroll
+  // The card container (parent) already has the rounded corners and dimensions
   return (
-    <motion.div
-      initial={{ scale: 1.2, x: "-50%" }}
-      animate={{ scale: currentScale, x: "-50%" }}
-      transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-      className="w-[1360px] h-[622px] overflow-hidden absolute left-1/2 top-[10%]"
+    <div
+      className="absolute inset-0 overflow-hidden"
       style={{
-        borderBottomLeftRadius: '20px',
-        borderBottomRightRadius: '20px',
-        // Safari-compatible mask with proper vendor prefixing
-        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-        maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-        // Ensure proper transform origin for Safari
-        transformOrigin: 'top center',
-        WebkitTransformOrigin: 'top center',
-        // Force GPU acceleration for smoother Safari animation
-        willChange: 'transform',
+        // Force GPU acceleration for smoother animation
+        willChange: 'contents',
         WebkitBackfaceVisibility: 'hidden',
         backfaceVisibility: 'hidden',
       }}
     >
-      <BlueGradientBox progress={progress} />
-    </motion.div>
+      {/* Scale SVG to fill container while maintaining animation behavior */}
+      <div 
+        className="absolute left-1/2 top-0 h-full"
+        style={{
+          width: '1360px',
+          transform: 'translateX(-50%)',
+        }}
+      >
+        <BlueGradientBox progress={progress} />
+      </div>
+    </div>
   );
 }

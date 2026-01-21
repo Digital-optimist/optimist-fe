@@ -16,7 +16,6 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import HeroBlueGradient1 from "./HeroBlueGradient1";
 import { motion } from "framer-motion";
-import { HeroBlueGradient } from "./HeroBlueGradient";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
 const MODEL_PATH = "/HomePageAnimation02.glb";
@@ -194,15 +193,19 @@ function HeroACCanvas() {
 // Static image fallback for mobile (88MB GLB is too heavy for mobile)
 function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
-    <div className="relative w-full flex items-end justify-center">
+    <div className="relative flex items-end justify-center">
       <motion.img
         src={ASSETS.heroAc}
         alt="Optimist AC"
         className="object-contain h-auto"
-        style={{ width: isMobile ? "95%" : "60%" }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut", delay: 1 }}
+        style={{ 
+          width: isMobile ? "95%" : "auto",
+          maxWidth: isMobile ? undefined : "800px",
+          maxHeight: isMobile ? undefined : "320px",
+        }}
+        initial={{ opacity: 0, scale: 0.8, y: 50 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
       />
     </div>
   );
@@ -217,6 +220,7 @@ export function HeroSection() {
   const mobileButtonsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const { openModal } = useWaitlist();
 
   // Use ref instead of state to avoid re-renders on every scroll
@@ -237,16 +241,17 @@ export function HeroSection() {
   // Setup pinned scroll animation for gradient shrink - DESKTOP ONLY
   useGSAP(
     () => {
-      if (!sectionRef.current || !gradientRef.current) return;
+      if (!sectionRef.current) return;
 
       // Skip all scroll animations on mobile - use immediate check, not state
       if (isMobileDevice()) return;
 
-      // Create ScrollTrigger for pinning and gradient shrink - DESKTOP ONLY
+      // Create ScrollTrigger for pinning - DESKTOP ONLY
+      // Extended scroll distance for multi-phase animation
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: "+=100%", // Pin for 100% of viewport height
+        end: "+=150%", // Extended for multi-phase animation
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
@@ -261,18 +266,62 @@ export function HeroSection() {
         },
       });
 
-      // Animate content slightly during scroll
-      gsap.to(contentRef.current, {
-        scale: 0.98,
-        opacity: 0.95,
-        ease: "power2.inOut",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=100%",
-          scrub: 1,
-        },
-      });
+      // Phase 1 (0-60%): Content fades out
+      if (contentRef.current) {
+        gsap.to(contentRef.current, {
+          opacity: 0,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=60%",
+            scrub: 1,
+          },
+        });
+      }
+
+      // Phase 1-2 (20-80%): Gradient fades out as bars shrink
+      if (gradientRef.current) {
+        gsap.to(gradientRef.current, {
+          opacity: 0,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top+=20% top",
+            end: "+=60%",
+            scrub: 1,
+          },
+        });
+      }
+
+      // Phase 2 (40-90%): Card fades out and scales down
+      if (cardRef.current) {
+        gsap.to(cardRef.current, {
+          opacity: 0,
+          scale: 0.95,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top+=40% top",
+            end: "+=50%",
+            scrub: 1,
+          },
+        });
+      }
+
+      // Phase 2-3 (30-100%): AC image moves up smoothly
+      if (imageRef.current) {
+        gsap.to(imageRef.current, {
+          y: -300, // Move up significantly
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top+=30% top",
+            end: "+=120%",
+            scrub: 1,
+          },
+        });
+      }
     },
     { scope: sectionRef }
   );
@@ -335,149 +384,255 @@ export function HeroSection() {
         WebkitTransformStyle: "preserve-3d",
       }}
     >
-      {/* Blue Gradient Background - static radial glow on mobile, animated bars on desktop */}
-      <div
-        ref={gradientRef}
-        className="absolute inset-0"
-        style={{ 
-          willChange: isMobile ? "auto" : "transform", 
-          transformStyle: "preserve-3d",
-          WebkitTransformStyle: "preserve-3d",
-        }}
-      >
-        {/* Use HeroBlueGradient1 for both mobile (static) and desktop (animated) */}
-        <HeroBlueGradient1 progress={scrollProgress} isMobile={isMobile} />
-      </div>
-
-      {/* Content Container */}
-      <div
-        ref={contentRef}
-        className="relative z-10 flex-1 flex flex-col px-4 md:px-8 lg:px-16 xl:px-24 pt-0 md:pt-28 lg:pt-32"
-        style={{ willChange: "transform, opacity" }}
-      >
-        {/* Desktop Layout: flex row with content left and buttons right */}
-          {/* Mobile: content starts at 25vh (1/4th of screen height) */}
-          <div 
-            className="flex flex-col md:justify-center md:h-auto lg:flex-row lg:justify-between lg:items-start max-w-[1400px] mx-auto w-full"
-            style={{ paddingTop: isMobile ? '15vh' : undefined }}
+      {/* MOBILE LAYOUT - unchanged */}
+      {isMobile && (
+        <>
+          {/* Blue Gradient Background - static radial glow on mobile */}
+          <div
+            ref={gradientRef}
+            className="absolute inset-0"
+            style={{ 
+              willChange: "auto", 
+              transformStyle: "preserve-3d",
+              WebkitTransformStyle: "preserve-3d",
+            }}
           >
-          {/* Left Content */}
-          <div className="flex flex-col gap-4">
-            {/* Headline */}
-            <h1
-              ref={headlineRef}
-              className="hero-headline hero-headline-size italic"
-              style={{ perspective: "1000px" }}
-            >
-         
-        
-              <span className="block">Best Cooling. </span>
-              <span className="block">Lowest Bills.</span>
-            </h1>
+            <HeroBlueGradient1 progress={scrollProgress} isMobile={isMobile} />
+          </div>
 
-            {/* Badges Row */}
-            <div
-              ref={badgesRef}
-              className="flex items-center  gap-4 md:gap-6 mt-6 md:mt-8"
+          {/* Content Container */}
+          <div
+            ref={contentRef}
+            className="relative z-10 flex-1 flex flex-col px-4"
+            style={{ willChange: "transform, opacity" }}
+          >
+            <div 
+              className="flex flex-col"
+              style={{ paddingTop: '15vh' }}
             >
-              {/* ISEER Badge */}
-              <div className="flex items-center gap-2 md:gap-3">
-                <Image
-                  src={ASSETS.fiveStarRating}
-                  alt="5 Star ISEER Rating"
-                  width={56}
-                  height={56}
-                  className="w-12 h-12 md:w-16 md:h-16"
-                />
-                <div className="flex flex-col">
-                  <span className="hero-badge-title text-optimist-cream">
-                    Highest ISEER
-                  </span>
-                  <span className="hero-badge-subtitle text-optimist-cream-muted">
-                    In India
-                  </span>
+              {/* Left Content */}
+              <div className="flex flex-col gap-4">
+                {/* Headline */}
+                <h1
+                  ref={headlineRef}
+                  className="hero-headline hero-headline-size italic"
+                  style={{ perspective: "1000px" }}
+                >
+                  <span className="block">Best Cooling. </span>
+                  <span className="block">Lowest Bills.</span>
+                </h1>
+
+                {/* Badges Row */}
+                <div
+                  ref={badgesRef}
+                  className="flex items-center gap-4 mt-6"
+                >
+                  {/* ISEER Badge */}
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={ASSETS.fiveStarRating}
+                      alt="5 Star ISEER Rating"
+                      width={56}
+                      height={56}
+                      className="w-12 h-12"
+                    />
+                    <div className="flex flex-col">
+                      <span className="hero-badge-title text-optimist-cream">
+                        Highest ISEER
+                      </span>
+                      <span className="hero-badge-subtitle text-optimist-cream-muted">
+                        In India
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Rating Badge */}
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={ASSETS.goldenStar}
+                      alt="Golden Star Rating"
+                      width={32}
+                      height={32}
+                      className="w-6 h-6"
+                    />
+                    <div className="flex flex-col">
+                      <span className="hero-badge-title text-optimist-cream">
+                        4.8 rated
+                      </span>
+                      <span className="hero-badge-subtitle text-optimist-cream-muted">
+                        by early users
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Buttons - Mobile */}
+                <div
+                  ref={mobileButtonsRef}
+                  className="flex items-center gap-3 mt-8"
+                >
+                  <button
+                    onClick={() => scrollToSection('benefits')}
+                    className="btn-why-optimist hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
+                  >
+                    Why Optimist ?
+                  </button>
+                  <button
+                    onClick={openModal}
+                    className="btn-buy-now hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
+                  >
+                    Join the Waitlist
+                  </button>
                 </div>
               </div>
-
-              {/* Divider */}
-            
-
-              {/* Rating Badge */}
-              <div className="flex items-center gap-2 md:gap-3">
-                <Image
-                  src={ASSETS.goldenStar}
-                  alt="Golden Star Rating"
-                  width={32}
-                  height={32}
-                  className="w-6 h-6 md:w-8 md:h-8"
-                />
-                <div className="flex flex-col">
-                  <span className="hero-badge-title text-optimist-cream">
-                    4.8 rated
-                  </span>
-                  <span className="hero-badge-subtitle text-optimist-cream-muted">
-                    by early users
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* CTA Buttons - Mobile (full width, side by side) */}
-            <div
-              ref={mobileButtonsRef}
-              className="flex items-center gap-3 mt-8 lg:hidden"
-            >
-              <button
-                onClick={() => scrollToSection('benefits')}
-                className="btn-why-optimist hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
-              >
-                Why Optimist ?
-              </button>
-              <button
-                onClick={openModal}
-                className="btn-buy-now hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
-              >
-                Join the Waitlist
-              </button>
             </div>
           </div>
 
-          {/* Right Content - Desktop CTA Buttons */}
-          <div
-            ref={buttonsRef}
-            className="hidden lg:flex items-center gap-4 lg:mt-6 xl:mt-8"
+          {/* AC Image - Mobile */}
+          <div 
+            className="absolute left-0 right-0 z-20"
+            style={{
+              top: '70vh',
+              transform: 'translateY(-50%)',
+            }}
           >
-            <button
-              onClick={() => scrollToSection('benefits')}
-              className="btn-why-optimist hero-btn-desktop text-optimist-cream flex items-center justify-center"
+            <HeroACImage isMobile={isMobile} />
+          </div>
+        </>
+      )}
+
+      {/* DESKTOP LAYOUT - new card-based design */}
+      {!isMobile && (
+        <div className="relative w-full h-full flex flex-col items-center">
+          {/* Desktop Card Container */}
+          <div 
+            ref={cardRef}
+            className="relative w-full max-w-[1360px] mx-4 lg:mx-10 mt-[120px]"
+            style={{
+              height: '560px',
+              borderRadius: '24px',
+              boxShadow: '0px 145px 120px 4px rgba(52,120,246,0.12), 0px 35px 120px 0px rgba(52,120,246,0.2)',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Blue Gradient Background inside card */}
+            <div
+              ref={gradientRef}
+              className="absolute inset-0"
+              style={{ 
+                willChange: "transform", 
+                transformStyle: "preserve-3d",
+                WebkitTransformStyle: "preserve-3d",
+              }}
             >
-              Why Optimist ?
-            </button>
-            <button
-              onClick={openModal}
-              className="btn-buy-now hero-btn-desktop text-optimist-cream flex items-center justify-center"
+              <HeroBlueGradient1 progress={scrollProgress} isMobile={false} />
+            </div>
+
+            {/* Content Container inside card */}
+            <div
+              ref={contentRef}
+              className="relative z-10 h-full flex flex-col justify-center px-8 lg:px-10"
+              style={{ willChange: "transform, opacity" }}
             >
-              Join the Waitlist
-            </button>
+              <div className="flex flex-row justify-between items-start w-full">
+                {/* Left Content */}
+                <div className="flex flex-col gap-4">
+                  {/* Headline */}
+                  <h1
+                    ref={headlineRef}
+                    className="hero-headline hero-headline-size italic"
+                    style={{ perspective: "1000px" }}
+                  >
+                    <span className="block">Best Cooling. </span>
+                    <span className="block">Lowest Bills.</span>
+                  </h1>
+
+                  {/* Badges Row */}
+                  <div
+                    ref={badgesRef}
+                    className="flex items-center gap-6 mt-8"
+                  >
+                    {/* ISEER Badge */}
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={ASSETS.fiveStarRating}
+                        alt="5 Star ISEER Rating"
+                        width={56}
+                        height={56}
+                        className="w-14 h-14"
+                      />
+                      <div className="flex flex-col">
+                        <span className="hero-badge-title text-optimist-cream">
+                          Highest ISEER
+                        </span>
+                        <span className="hero-badge-subtitle text-optimist-cream-muted">
+                          In India
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Vertical Divider */}
+                    <div className="h-11 w-px bg-white/20" />
+
+                    {/* Rating Badge */}
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={ASSETS.goldenStar}
+                        alt="Golden Star Rating"
+                        width={44}
+                        height={44}
+                        className="w-11 h-11"
+                      />
+                      <div className="flex flex-col">
+                        <span className="hero-badge-title text-optimist-cream">
+                          4.8 rated
+                        </span>
+                        <span className="hero-badge-subtitle text-optimist-cream-muted">
+                          by early users
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Content - Desktop CTA Buttons */}
+                <div
+                  ref={buttonsRef}
+                  className="flex items-center gap-6 mt-6"
+                >
+                  <button
+                    onClick={() => scrollToSection('benefits')}
+                    className="btn-why-optimist hero-btn-desktop text-optimist-cream flex items-center justify-center"
+                  >
+                    Why Optimist ?
+                  </button>
+                  <button
+                    onClick={openModal}
+                    className="btn-buy-now hero-btn-desktop text-optimist-cream flex items-center justify-center"
+                  >
+                    Join the Waitlist
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* AC Image - Desktop: positioned half inside card, half outside */}
+          {/* AC center should align with card bottom edge */}
+          {/* Smaller negative margin = AC positioned lower = more in black section */}
+          <div 
+            ref={imageRef}
+            className="relative z-20 flex justify-center w-full"
+            style={{
+              // Negative margin to pull AC up - smaller value = lower position
+              marginTop: '-160px',
+              willChange: 'transform',
+            }}
+          >
+            <HeroACImage isMobile={false} />
           </div>
         </div>
-      </div>
-
-      {/* AC Image - Mobile: positioned at 85vh (bottom of blue gradient) with half overlapping into black */}
-      {/* Desktop: positioned at bottom */}
-      <div 
-        className="absolute left-0 right-0 z-20"
-        style={{
-          // Mobile: AC center is at 85vh (bottom edge of blue gradient), so half is in blue, half in black
-          // Blue section is 70vh tall, centered (15vh to 85vh)
-          // Desktop: positioned at bottom
-          top: isMobile ? '70vh' : undefined,
-          bottom: isMobile ? undefined : '0px',
-          transform: isMobile ? 'translateY(-50%)' : undefined,
-        }}
-      >
-        <HeroACImage isMobile={isMobile} />
-      </div>
+      )}
     </section>
   );
 }
