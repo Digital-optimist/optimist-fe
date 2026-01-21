@@ -3,7 +3,9 @@
  * All static assets are stored in the S3 bucket configured via environment variable
  */
 
-const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL || "";
+const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL||"https://optimist-fe-assets.s3.amazonaws.com";
+
+// Warn if the environment variable is not set
 
 /**
  * Get the full URL for an asset stored in S3
@@ -15,7 +17,7 @@ export function getAssetUrl(path: string): string {
   const cleanPath = path.startsWith("/") ? path.slice(1) : path;
   // Encode spaces and special characters in path
   const encodedPath = cleanPath.split("/").map(encodeURIComponent).join("/");
-  return `${S3_BUCKET_URL}/${encodedPath}`;
+  return `${S3_BUCKET_URL || ""}/${encodedPath}`;
 }
 
 // Pre-defined asset paths for type safety and easier refactoring
