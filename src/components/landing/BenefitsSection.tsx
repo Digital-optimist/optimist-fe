@@ -201,12 +201,12 @@ export function BenefitsSection() {
                     className="absolute inset-0 w-full h-full object-cover brightness-[0.9]"
                   />
 
-                  {/* Bottom Gradient Overlay - 20% height */}
+                  {/* Bottom Gradient Overlay for text visibility */}
                   <div
-                    className="absolute bottom-0 left-0 right-0 h-[30%]"
+                    className="absolute bottom-0 left-0 right-0 h-[55%]"
                     style={{
                       background:
-                        "linear-gradient(180deg, rgba(33, 33, 33, 0) 0%, #212121 100%)",
+                        "linear-gradient(180deg, rgba(33, 33, 33, 0) 0%, rgba(33, 33, 33, 0.4) 30%, rgba(33, 33, 33, 0.75) 60%, #212121 100%)",
                     }}
                   />
 
