@@ -147,12 +147,12 @@ export function TestimonialsSection() {
                   </div>
 
                   {/* Play Button */}
-                  <button className="absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                  {/* <button className="absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
                     <Play
                       className="w-5 h-5 text-gray-900 ml-0.5"
                       fill="currentColor"
                     />
-                  </button>
+                  </button> */}
                 </div>
 
                 {/* Quote Content */}
