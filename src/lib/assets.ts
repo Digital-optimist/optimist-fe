@@ -32,6 +32,26 @@ export const ASSETS = {
   mobile: getAssetUrl("mobile.png"),
   optimistAcCompare: getAssetUrl("optimist-ac-compare.png"),
   marketAcCompare: getAssetUrl("market-ac-compare.png"),
+  comparisonShadowBg: getAssetUrl("comparison-shadow-bg.png"),
+  comparisonTopGradient: getAssetUrl("comparison-top-gradient.png"),
+
+  // India Story Section
+  indiaStoryDesert: getAssetUrl("india-story-desert.png"),
+  indiaStorySleeping: getAssetUrl("india-story-sleeping.png"),
+  indiaStoryValidated: getAssetUrl("india-story-validated.png"),
+
+  // Warranty Section
+  warrantyCard: "/warranty-card.png",
+  warrantyCheck: "/warranty-check.png",
+
+  // Recognition Section
+  recognitionEllipse: "/recognition-ellipse.svg",
+  recognitionStripes: "/recognition-stripes.svg",
+  laurelLeft: "/laurel-left.svg",
+  laurelRight: "/laurel-right.svg",
+  shieldSlash: "/shield-slash.svg",
+  leafIcon: "/leaf.svg",
+  hourglass: "/hourglass.svg",
 
   // Ratings & Stars
   fiveStarRating: getAssetUrl("5StarRating.png"),

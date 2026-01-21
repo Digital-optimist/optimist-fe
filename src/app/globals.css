@@ -155,6 +155,20 @@ body {
     0px 4px 20px rgba(18, 101, 255, 0.4);
 }
 
+/* Primary Gradient Button (alias for btn-buy-now) */
+.btn-gradient-primary {
+  background: linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%);
+  box-shadow: 0px 2px 12.5px 2px #003FB2 inset;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0px 2px 12.5px 2px #003FB2 inset,
+    0px 4px 20px rgba(18, 101, 255, 0.4);
+}
+
 /* Hero Why Optimist Button - Glassmorphism with gradient border */
 .btn-why-optimist {
   position: relative;

@@ -1,0 +1,141 @@
+"use client";
+
+import { memo, useCallback, useEffect, useRef, type KeyboardEvent } from "react";
+import { ChevronDown } from "lucide-react";
+
+// =============================================================================
+// Types
+// =============================================================================
+
+interface QuantityDropdownProps {
+  quantity: number;
+  onQuantityChange: (qty: number) => void;
+  isOpen: boolean;
+  onToggle: () => void;
+  options?: readonly number[];
+}
+
+// =============================================================================
+// Constants
+// =============================================================================
+
+const DEFAULT_OPTIONS = [1, 2, 3, 4, 5] as const;
+
+// =============================================================================
+// Component
+// =============================================================================
+
+export const QuantityDropdown = memo(function QuantityDropdown({ 
+  quantity, 
+  onQuantityChange, 
+  isOpen, 
+  onToggle,
+  options = DEFAULT_OPTIONS
+}: QuantityDropdownProps) {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const listboxRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        onToggle();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, onToggle]);
+
+  // Focus first option when dropdown opens
+  useEffect(() => {
+    if (isOpen && listboxRef.current) {
+      const selectedOption = listboxRef.current.querySelector('[aria-selected="true"]') as HTMLButtonElement;
+      selectedOption?.focus();
+    }
+  }, [isOpen]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onToggle();
+    } else if (e.key === "Escape" && isOpen) {
+      e.preventDefault();
+      onToggle();
+    } else if (e.key === "ArrowDown" && !isOpen) {
+      e.preventDefault();
+      onToggle();
+    }
+  }, [isOpen, onToggle]);
+
+  const handleOptionKeyDown = useCallback((e: KeyboardEvent<HTMLButtonElement>, qty: number, index: number) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onQuantityChange(qty);
+      onToggle();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      onToggle();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const nextOption = listboxRef.current?.querySelectorAll('[role="option"]')[index + 1] as HTMLButtonElement;
+      nextOption?.focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const prevOption = listboxRef.current?.querySelectorAll('[role="option"]')[index - 1] as HTMLButtonElement;
+      prevOption?.focus();
+    }
+  }, [onQuantityChange, onToggle]);
+
+  const handleOptionClick = useCallback((qty: number) => {
+    onQuantityChange(qty);
+    onToggle();
+  }, [onQuantityChange, onToggle]);
+
+  return (
+    <div className="relative w-full" ref={dropdownRef}>
+      <button
+        onClick={onToggle}
+        onKeyDown={handleKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-label={`Quantity: ${quantity}. Click to change.`}
+        className="w-full flex items-center justify-between px-4 py-3 border border-gray-200 rounded-xl bg-white hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        type="button"
+      >
+        <span className="text-gray-900 font-medium text-sm md:text-base">Quantity: {quantity}</span>
+        <ChevronDown 
+          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`} 
+          aria-hidden="true"
+        />
+      </button>
+      
+      {isOpen && (
+        <div 
+          ref={listboxRef}
+          role="listbox"
+          aria-label="Select quantity"
+          className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto"
+        >
+          {options.map((qty, index) => (
+            <button
+              key={qty}
+              onClick={() => handleOptionClick(qty)}
+              onKeyDown={(e) => handleOptionKeyDown(e, qty, index)}
+              role="option"
+              aria-selected={quantity === qty}
+              className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors text-sm md:text-base focus:outline-none focus:bg-gray-100 ${
+                quantity === qty ? "bg-blue-50 text-blue-600" : "text-gray-900"
+              }`}
+              type="button"
+            >
+              {qty}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+});
