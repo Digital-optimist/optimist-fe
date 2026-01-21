@@ -6,7 +6,8 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import Lottie from "lottie-react";
-import confettiAnimation from "../../../public/Confetti.json";
+import ASSETS from "@/lib/assets";
+
 
 // =============================================================================
 // Phone Validation
@@ -144,7 +145,7 @@ function SuccessView() {
       {/* Confetti Animation - Background */}
       <div className="absolute inset-0 pointer-events-none">
         <Lottie
-          animationData={confettiAnimation}
+          animationData={ASSETS.confetti}
           loop={false}
           className="w-full h-full"
         />

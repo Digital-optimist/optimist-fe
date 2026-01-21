@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { ArrowUpRight } from "lucide-react";
+import { ASSETS } from "@/lib/assets";
 
 /**
  * Feature data for the accordion items
@@ -23,29 +24,29 @@ const features = [
     id: 1,
     title: "Micro-channel heat exchanger",
     description: "4X faster heat transfer than any other AC",
-    image: "/e1.png",
-    mobileImage: "/e1.png",
+    image: ASSETS.e1,
+    mobileImage: ASSETS.e1,
   },
   {
     id: 2,
     title: "Advanced aluminium alloy",
     description: "1,180 flow paths for ultra-efficient cooling",
-    image: "/e2.png",
-    mobileImage: "/e2.png",
+    image: ASSETS.e2,
+    mobileImage: ASSETS.e2,
   },
   {
     id: 3,
     title: "1000-hour corrosion tested",
     description: "15× more testing than typical market standards",
-    image: "/e3.png",
-    mobileImage: "/e3.png",
+    image: ASSETS.e3,
+    mobileImage: ASSETS.e3,
   },
   {
     id: 4,
     title: "Automotive-derived design",
     description: "High-performance thermal engineering.",
-    image: "/e4.png",
-    mobileImage: "/e4.png",
+    image: ASSETS.e4,
+    mobileImage: ASSETS.e4,
   },
 ];
 
@@ -120,7 +121,7 @@ function AccordionItem({
         
             <div className="w-10 h-10 flex-shrink-0 relative">
               <Image
-                src={isActive ? "/LightningBlue.png" : "/LightningWhite.png"}
+                src={isActive ? ASSETS.lightningBlue : ASSETS.lightningWhite}
                 alt="Lightning icon"
                 fill
                 className="object-contain"
@@ -553,8 +554,8 @@ export function EngineeredSection() {
                     <Image
                       src={
                         activeFeature === feature.id
-                          ? "/LightningBlue.png"
-                          : "/LightningWhite.png"
+                          ? ASSETS.lightningBlue
+                          : ASSETS.lightningWhite
                       }
                       alt="Lightning icon"
                       fill

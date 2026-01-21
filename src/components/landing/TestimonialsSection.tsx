@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { Play } from "lucide-react";
+import ASSETS from "@/lib/assets";
 
 const testimonials = [
   {
@@ -14,7 +15,7 @@ const testimonials = [
     date: "May 2025",
     quote:
       "We hit 47–48°C outside and the cooling never dropped. Airflow stayed steady through the day. No power dips, no noise spikes.",
-    image: "/RohanMehta.png",
+    image: ASSETS.rohanMehta,
   },
   {
     id: 2,
@@ -23,7 +24,7 @@ const testimonials = [
     date: "April 2025",
     quote:
       "What surprised me wasn't just the cooling. Our electricity bill was noticeably lower than last summer, even with longer usage.",
-    image: "/AnanyaRao.png",
+    image: ASSETS.ananyaRao,
   },
   {
     id: 3,
@@ -32,7 +33,7 @@ const testimonials = [
     date: "June 2025",
     quote:
       "The gas level indicator is a small thing, but it changes everything. I finally know when service is actually needed.",
-    image: "/KunalShah.png",
+    image: ASSETS.kunalShah,
   },
 ];
 

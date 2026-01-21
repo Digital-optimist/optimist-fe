@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { ScrollTrigger } from "@/lib/gsap";
+import { ASSETS } from "@/lib/assets";
 
 // Helper to detect iOS Safari
 const isIOSSafari = () => {
@@ -20,27 +21,27 @@ const features = [
   {
     id: 1,
     badge: "First in Class",
-    badgeIcon: "/image 24225.png",
+    badgeIcon: ASSETS.image24225,
     headline: "In-Built Gas Indicator.",
     description: "Stop paying for refills you don't need.",
-    image: "/AC1.png",
+    image: ASSETS.ac1,
   },
   {
     id: 2,
     badge: "5-Year Warranty",
-    badgeIcon: "/41d29b9eba9f0cca3fb251cb6ffabdda00b8a903.png",
+    badgeIcon: ASSETS.badge41d,
     headline: "5 Years",
     description: "Because quality shouldn't need an asterisk.",
-    image: "/AC3.png",
+    image: ASSETS.ac3,
   },
   {
     id: 3,
     badgeTitle: "Highest ISEER",
     badgeSubtitle: "In India",
-    badgeIcon: "/41d29b9eba9f0cca3fb251cb6ffabdda00b8a903.png",
+    badgeIcon: ASSETS.badge41d,
     headline: "Lower bills. Higher comfort.",
     description: "Live Energy Meter, Track consumption as it happens.",
-    image: "/AC2.png",
+    image: ASSETS.ac2,
   },
 ];
 
@@ -375,18 +376,18 @@ export function FeaturesShowcaseSection() {
                 justifyContent: 'center',
               }}
             >
-              <video
-                ref={mobileVideoRef}
-                src="/PointersAnimation.mp4#t=0.001"
-                className="h-[100%] w-auto max-w-none object-cover translate-x-[5%]"
-                muted
-                playsInline
-                preload="auto"
-                onLoadedMetadata={handleMobileVideoLoaded}
-                onCanPlay={handleMobileVideoLoaded}
-                onCanPlayThrough={handleMobileVideoLoaded}
-                style={{ WebkitTransform: 'translateZ(0) translateX(25%)' }}
-              />
+                <video
+                  ref={mobileVideoRef}
+                  src={`${ASSETS.videos.pointersAnimation}#t=0.001`}
+                  className="h-[100%] w-auto max-w-none object-cover translate-x-[5%]"
+                  muted
+                  playsInline
+                  preload="auto"
+                  onLoadedMetadata={handleMobileVideoLoaded}
+                  onCanPlay={handleMobileVideoLoaded}
+                  onCanPlayThrough={handleMobileVideoLoaded}
+                  style={{ WebkitTransform: 'translateZ(0) translateX(25%)' }}
+                />
             </div>
           </div>
 
@@ -446,7 +447,7 @@ export function FeaturesShowcaseSection() {
         {/* Background Leaf Pattern */}
         <div className="absolute top-0 left-0 sticky w-full max-w-[800px] opacity-10 pointer-events-none z-0">
           <Image
-            src="/Leaf Swaying.gif"
+            src={ASSETS.leafSwaying}
             alt=""
             width={800}
             height={1600}
@@ -526,7 +527,7 @@ export function FeaturesShowcaseSection() {
             <div className="absolute inset-0 flex items-center justify-center">
               <video
                 ref={videoRef}
-                src="/PointersAnimation.mp4#t=0.001"
+                src={`${ASSETS.videos.pointersAnimation}#t=0.001`}
                 className="h-[100%] bg-[#E7E7E7] max-w-none w-auto object-cover translate-x-[25%]"
                 muted
                 playsInline

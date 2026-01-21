@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { ASSETS } from "@/lib/assets";
 
 // LinkedIn icon component
 function LinkedInIcon() {
@@ -127,7 +128,7 @@ export function Footer() {
       {/* Blue Cool Background */}
       <div className="absolute inset-0 " style={{backdropFilter: "blur(200px)"}}>
         <Image
-          src="/BlueCoolBackground.png"
+          src={ASSETS.blueCoolBackground}
           alt=""
           fill
           className="object-cover"
@@ -236,7 +237,7 @@ export function Footer() {
           <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden">
             {/* Family Image */}
             <Image
-              src="/Family.png"
+              src={ASSETS.family}
               alt="Happy family enjoying comfort"
               fill
               className="object-cover z-0 brightness-[0.6]"
@@ -249,7 +250,7 @@ export function Footer() {
             {/* Logo Overlay */}
             <div className="absolute inset-0 z-20 flex items-end justify-center pb-10 md:pb-10 px-4 md:px-8">
               <Image
-                src="/Frame 48095518.png"
+                src={ASSETS.frame48095518}
                 alt="Optimist"
                 width={800}
                 height={150}

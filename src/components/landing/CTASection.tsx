@@ -4,6 +4,7 @@ import { useRef, useLayoutEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { ASSETS } from "@/lib/assets";
 
 export function CTASection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -82,7 +83,7 @@ export function CTASection() {
             preload="metadata"
             className="absolute inset-0 w-full h-full object-cover"
           >
-            <source src="/TreeCool.mp4" type="video/mp4" />
+            <source src={ASSETS.videos.treeCool} type="video/mp4" />
           </video>
 
           {/* Blue Overlay - using radial gradient for GPU acceleration instead of expensive blur */}

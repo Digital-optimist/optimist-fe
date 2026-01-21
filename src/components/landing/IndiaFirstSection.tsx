@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { ASSETS } from "@/lib/assets";
 
 export function IndiaFirstSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -106,7 +107,7 @@ export function IndiaFirstSection() {
             <div 
               className="absolute inset-0 z-0"
               style={{
-                backgroundImage: 'url("/Ellipse 1.png")',
+                backgroundImage: `url("${ASSETS.ellipse1}")`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -151,7 +152,7 @@ export function IndiaFirstSection() {
             {/* Mobile AC Image */}
             <div className="absolute bottom-[-12px] right-0 w-[76%] md:hidden">
               <Image
-                src="/mobile.png"
+                src={ASSETS.mobile}
                 alt="Optimist AC Unit"
                 width={500}
                 height={50}
@@ -163,7 +164,7 @@ export function IndiaFirstSection() {
             {/* Desktop AC Image */}
             <div className="hidden md:block absolute bottom-0 right-[-3%] w-[80%] lg:w-[75%]">
               <Image
-                src="/desktop.png"
+                src={ASSETS.desktop}
                 alt="Optimist AC Unit"
                 width={800}
                 height={400}
@@ -200,7 +201,7 @@ export function IndiaFirstSection() {
                   preload="metadata"
                   className="w-full h-full object-cover"
                 >
-                  <source src="/TreeCool.mp4" type="video/mp4" />
+                  <source src={ASSETS.videos.treeCool} type="video/mp4" />
                 </video>
                 {/* Blue Overlay with Blur - using backdrop-filter for GPU acceleration */}
                 <div
@@ -236,7 +237,7 @@ export function IndiaFirstSection() {
                 />
                 <div className="relative z-10 flex items-center gap-3 md:gap-4">
                   <Image
-                    src="/5StarRating.png"
+                    src={ASSETS.fiveStarRating}
                     alt="5 Star Rating"
                     width={56}
                     height={56}
@@ -275,7 +276,7 @@ export function IndiaFirstSection() {
                 />
                 <div className="relative z-10 flex items-center gap-3 md:gap-4">
                   <Image
-                    src="/GoldenStar.png"
+                    src={ASSETS.goldenStar}
                     alt="Star Rating"
                     width={44}
                     height={44}

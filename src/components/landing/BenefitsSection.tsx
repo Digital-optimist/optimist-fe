@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState, useLayoutEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { ASSETS } from "@/lib/assets";
 
 const benefits = [
   {
@@ -10,21 +11,21 @@ const benefits = [
     badge: "Worried about AC bill shocks?",
     headline: "India's Most Energy-Efficient AC.",
     description: "Lowest electricity consumption every single day.",
-    image: "/b1.png",
+    image: ASSETS.b1,
   },
   {
     id: 2,
     badge: "Cooling fails in peak summer?",
     headline: "Tested to cool at 50°C.",
     description: "No performance drop when others derate.",
-    image: "/b2.png",
+    image: ASSETS.b2,
   },
   {
     id: 3,
     badge: "Cooling taking forever?",
     headline: "2 Tons of Cooling in 1.5 Tons.",
     description: "Exclusive Turbo+ Mode for instant cooling.",
-    image: "/b3.png",
+    image: ASSETS.b3,
   },
 ];
 
@@ -189,7 +190,7 @@ export function BenefitsSection() {
                 <div className="relative aspect-[4/5] md:aspect-[16/10]">
                   {/* Base Background Image - Full Coverage */}
                   <img
-                    src="/7f1e6fdcab538721bd5209e2c306b0ab004ed70a.png"
+                    src={ASSETS.benefitsBg}
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover"
                   />

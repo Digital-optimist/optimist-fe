@@ -9,6 +9,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { ASSETS } from "@/lib/assets";
 
 function ACModel() {
   const { scene, animations } = useGLTF("/Product Card Animation 01.glb");
@@ -167,7 +168,7 @@ function ACVideo() {
   return (
     <video
       ref={videoRef}
-      src="/ProductCardAnimation.mp4"
+      src={ASSETS.videos.productCardAnimation}
       className="w-full h-auto object-contain cursor-pointer bg-transparent"
       muted
       playsInline
@@ -306,7 +307,7 @@ export function ProductPickerSection() {
                   {/* AC Image */}
                   <div className="aspect-[4/3] relative flex items-center justify-center p-8">
                     <Image
-                      src="/MainACMobile.png"
+                      src={ASSETS.mainAcMobile}
                       alt="Optimist AC Unit"
                       width={600}
                       height={450}
@@ -323,7 +324,7 @@ export function ProductPickerSection() {
                   {/* Rating Badge */}
                   <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm w-fit">
                     <Image
-                      src="/GoldenStar.png"
+                      src={ASSETS.goldenStar}
                       alt="Rating"
                       width={20}
                       height={20}

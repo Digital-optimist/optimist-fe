@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect, useLayoutEffect } from "react
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
+import { ASSETS } from "@/lib/assets";
 
 // ============================================
 // FEATURE CARD DATA
@@ -36,8 +37,8 @@ const FEATURES: FeatureCardData[] = [
     id: "energy-meter",
     title: "Live Energy Meter",
     description: "Track. Predict. Save.",
-    icon: "/icons/thermometer.svg",
-    handImage: "/hands/Live Energy Meter.png",
+    icon: ASSETS.thermometer,
+    handImage: ASSETS.liveEnergyMeter,
     desktopLeft: 80,
     desktopTop: 180,
     handOffsetX: 0,
@@ -47,8 +48,8 @@ const FEATURES: FeatureCardData[] = [
     id: "bills",
     title: "Projected Monthly Bills",
     description: "No surprises. Just real numbers.",
-    icon: "/icons/scroll.svg",
-    handImage: "/hands/Projected Monthly Bills.png",
+    icon: ASSETS.scroll,
+    handImage: ASSETS.projectedMonthlyBills,
     desktopLeft: 30,
     desktopTop: 380,
     handOffsetX: 0,
@@ -58,8 +59,8 @@ const FEATURES: FeatureCardData[] = [
     id: "filter",
     title: "Filter Health",
     description: "Clean when needed. No more guessing.",
-    icon: "/icons/filter.svg",
-    handImage: "/hands/Filter tracking.png",
+    icon: ASSETS.filter,
+    handImage: ASSETS.filterTracking,
     desktopLeft: 120,
     desktopTop: 580,
     handOffsetX: 0,
@@ -69,8 +70,8 @@ const FEATURES: FeatureCardData[] = [
     id: "gas-level",
     title: "Gas Level Indicator",
     description: "Know before it's an issue.",
-    icon: "/icons/gastank.svg",
-    handImage: "/hands/Gas level indicator.png",
+    icon: ASSETS.gastank,
+    handImage: ASSETS.gasLevelIndicator,
     desktopLeft: 966,
     desktopTop: 160,
     handOffsetX: -20,
@@ -80,8 +81,8 @@ const FEATURES: FeatureCardData[] = [
     id: "service",
     title: "Intelligence Service Assistance",
     description: "Diagnose remotely. Service seamlessly",
-    icon: "/icons/headset.svg",
-    handImage: "/hands/Service assistance.png",
+    icon: ASSETS.headset,
+    handImage: ASSETS.serviceAssistance,
     desktopLeft: 1016,
     desktopTop: 360,
     handOffsetX: 0,
@@ -91,8 +92,8 @@ const FEATURES: FeatureCardData[] = [
     id: "scheduling",
     title: "Scheduling",
     description: "Start or stop automatically, on your time.",
-    icon: "/icons/calendar.svg",
-    handImage: "/hands/Scheduling.png",
+    icon: ASSETS.calendar,
+    handImage: ASSETS.scheduling,
     desktopLeft: 1000,
     desktopTop: 560,
     handOffsetX: -16,
@@ -349,7 +350,7 @@ export function OptimistAppSection() {
   const getCurrentHandImage = useCallback(() => {
     const featureId = hoveredFeature || activeFeature;
     const feature = FEATURES.find((f) => f.id === featureId);
-    return feature?.handImage || "/hands/Live Energy Meter.png";
+    return feature?.handImage || ASSETS.liveEnergyMeter;
   }, [hoveredFeature, activeFeature]);
 
   // Set initial states immediately to prevent flash/lag on first scroll
@@ -446,7 +447,7 @@ export function OptimistAppSection() {
               style={{ top: "120px", width: "1258px", height: "1258px" }}
             >
               <Image
-                src="/Ellipse 6512.png"
+                src={ASSETS.ellipse6512}
                 alt=""
                 width={1258}
                 height={1258}
@@ -463,7 +464,7 @@ export function OptimistAppSection() {
               style={{ top: "380px", width: "753px", height: "753px" }}
             >
               <Image
-                src="/Ellipse 6513.png"
+                src={ASSETS.ellipse6513}
                 alt=""
                 width={753}
                 height={753}
@@ -574,7 +575,7 @@ export function OptimistAppSection() {
               style={{ top: "200px", width: "150%", maxWidth: "1258px" }}
             >
               <Image
-                src="/Ellipse 6512.png"
+                src={ASSETS.ellipse6512}
                 alt=""
                 width={1258}
                 height={1258}
@@ -591,7 +592,7 @@ export function OptimistAppSection() {
               style={{ top: "360px", width: "100%", maxWidth: "753px" }}
             >
               <Image
-                src="/Ellipse 6513.png"
+                src={ASSETS.ellipse6513}
                 alt=""
                 width={753}
                 height={753}

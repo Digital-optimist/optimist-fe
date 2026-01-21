@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { ASSETS } from "@/lib/assets";
 
 export function MadeSimpleSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -89,7 +90,7 @@ export function MadeSimpleSection() {
             {/* Decorative palm tree watermark */}
             <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 w-[180px] h-[180px] md:w-[240px] md:h-[240px] lg:w-[280px] lg:h-[280px] pointer-events-none">
               <Image
-                src="/OptimistTree.png"
+                src={ASSETS.optimistTree}
                 alt=""
                 fill
                 className="object-contain"
@@ -139,7 +140,7 @@ export function MadeSimpleSection() {
             {/* Desktop Image */}
             <div className="hidden md:block relative w-full aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[450px]">
               <Image
-                src="/BrownBgRemote.png"
+                src={ASSETS.brownBgRemote}
                 alt="Optimist Remote Control with features labeled: Fan Speed, Turbo, Power ON/OFF, Temperature, Turbo+"
                 fill
                 className="object-cover"
@@ -151,7 +152,7 @@ export function MadeSimpleSection() {
             {/* Mobile Image */}
             <div className="md:hidden relative w-full aspect-[4/3]">
               <Image
-                src="/BrownBgRemote.png"
+                src={ASSETS.brownBgRemote}
                 alt="Optimist Remote Control with features labeled"
                 fill
                 className="object-cover"

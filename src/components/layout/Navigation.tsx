@@ -19,6 +19,7 @@ import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { ASSETS } from "@/lib/assets";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -110,7 +111,7 @@ export function Navigation() {
             <div className="md:hidden flex items-center">
               <Link href="/" className="flex items-center group">
                 <Image
-                  src="/logo (2).png"
+                  src={ASSETS.logo}
                   alt="Optimist"
                   width={120}
                   height={32}
@@ -126,7 +127,7 @@ export function Navigation() {
             >
               <Link href="/" className="flex items-center group">
                 <Image
-                  src="/logo (2).png"
+                  src={ASSETS.logo}
                   alt="Optimist"
                   width={150}
                   height={40}

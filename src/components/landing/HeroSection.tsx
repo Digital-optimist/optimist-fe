@@ -18,6 +18,7 @@ import HeroBlueGradient1 from "./HeroBlueGradient1";
 import { motion } from "framer-motion";
 import { HeroBlueGradient } from "./HeroBlueGradient";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { ASSETS } from "@/lib/assets";
 const MODEL_PATH = "/HomePageAnimation02.glb";
 
 // Smooth scroll to element using GSAP
@@ -195,7 +196,7 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
     <div className="relative w-full flex items-end justify-center">
       <motion.img
-        src="/hero_ac.png"
+        src={ASSETS.heroAc}
         alt="Optimist AC"
         className="object-contain h-auto"
         style={{ width: isMobile ? "95%" : "60%" }}
@@ -382,7 +383,7 @@ export function HeroSection() {
               {/* ISEER Badge */}
               <div className="flex items-center gap-2 md:gap-3">
                 <Image
-                  src="/5StarRating.png"
+                  src={ASSETS.fiveStarRating}
                   alt="5 Star ISEER Rating"
                   width={56}
                   height={56}
@@ -404,7 +405,7 @@ export function HeroSection() {
               {/* Rating Badge */}
               <div className="flex items-center gap-2 md:gap-3">
                 <Image
-                  src="/GoldenStar.png"
+                  src={ASSETS.goldenStar}
                   alt="Golden Star Rating"
                   width={32}
                   height={32}
