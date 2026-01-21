@@ -222,10 +222,78 @@ export function OptimistAppSection() {
   const phoneRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const mobileCarouselRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   
   const [hoveredFeature, setHoveredFeature] = useState<FeatureId>(null);
   // Default to first item (energy-meter) for mobile
   const [activeFeature, setActiveFeature] = useState<FeatureId>("energy-meter");
+
+  // Mouse parallax effect - push in opposite direction
+  useEffect(() => {
+    const container = containerRef.current;
+    const content = contentRef.current;
+    if (!container || !content) return;
+
+    // Configuration for the parallax effect
+    const maxMove = 15; // Maximum pixels to move
+    const smoothness = 0.1; // Smoothing factor (0.05 - 0.2 for smooth feel)
+
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let animationId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      
+      // Calculate mouse position relative to container center (0 to 1, centered at 0.5)
+      const mouseX = (e.clientX - rect.left) / rect.width;
+      const mouseY = (e.clientY - rect.top) / rect.height;
+      
+      // Convert to -1 to 1 range (centered at 0)
+      const normalizedX = (mouseX - 0.5) * 2;
+      const normalizedY = (mouseY - 0.5) * 2;
+      
+      // Invert for opposite direction push effect
+      targetX = -normalizedX * maxMove;
+      targetY = -normalizedY * maxMove;
+    };
+
+    const handleMouseLeave = () => {
+      // Smoothly return to center
+      targetX = 0;
+      targetY = 0;
+    };
+
+    const animate = () => {
+      // Lerp towards target for smooth motion
+      currentX += (targetX - currentX) * smoothness;
+      currentY += (targetY - currentY) * smoothness;
+      
+      // Apply transform
+      gsap.set(content, {
+        x: currentX,
+        y: currentY,
+        force3D: true,
+      });
+      
+      animationId = requestAnimationFrame(animate);
+    };
+
+    // Start animation loop
+    animationId = requestAnimationFrame(animate);
+
+    // Add event listeners
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
 
   // Scroll-based active card detection for mobile carousel
   useEffect(() => {
@@ -369,128 +437,131 @@ export function OptimistAppSection() {
         }}
       >
         {/* ============ DESKTOP LAYOUT ============ */}
-        <div className="hidden lg:block relative h-[800px]">
-          {/* Background Ellipse - Outer (Group) */}
-          <div 
-            className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
-            style={{ top: "120px", width: "1258px", height: "1258px" }}
-          >
-            <Image
-              src="/Ellipse 6512.png"
-              alt=""
-              width={1258}
-              height={1258}
-              className="w-full h-full"
-              style={{ transform: "scale(1.112)" }}
-              loading="lazy"
-              quality={75}
-            />
-          </div>
+        <div className="hidden lg:block relative h-[800px] overflow-hidden">
+          {/* Parallax content wrapper */}
+          <div ref={contentRef} className="absolute inset-0 will-change-transform">
+            {/* Background Ellipse - Outer (Group) */}
+            <div 
+              className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
+              style={{ top: "120px", width: "1258px", height: "1258px" }}
+            >
+              <Image
+                src="/Ellipse 6512.png"
+                alt=""
+                width={1258}
+                height={1258}
+                className="w-full h-full"
+                style={{ transform: "scale(1.112)" }}
+                loading="lazy"
+                quality={75}
+              />
+            </div>
 
-          {/* Background Ellipse - Inner */}
-          <div 
-            className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
-            style={{ top: "380px", width: "753px", height: "753px" }}
-          >
-            <Image
-              src="/Ellipse 6513.png"
-              alt=""
-              width={753}
-              height={753}
-              className="w-full h-full"
-              style={{ transform: "scale(1.187)" }}
-              loading="lazy"
-              quality={75}
-            />
-          </div>
+            {/* Background Ellipse - Inner */}
+            <div 
+              className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
+              style={{ top: "380px", width: "753px", height: "753px" }}
+            >
+              <Image
+                src="/Ellipse 6513.png"
+                alt=""
+                width={753}
+                height={753}
+                className="w-full h-full"
+                style={{ transform: "scale(1.187)" }}
+                loading="lazy"
+                quality={75}
+              />
+            </div>
 
-          {/* Hand/Phone Image - Fixed position container */}
-          <div
-            ref={phoneRef}
-            className="absolute z-20 pointer-events-none will-change-[transform,opacity]"
-            style={{ 
-              left: "60%", 
-              top: "140px",
-              transform: "translateX(-50%)",
-              width: "800px",
-              height: "700px",
-              overflow: "hidden",
-            }}
-          >
-            {/* All hand images stacked - using fixed pixel positioning for consistency */}
-            {FEATURES.map((feature) => {
-              // Calculate position - all images positioned at same fixed coordinates
-              const offsetX = feature.handOffsetX || 0;
-              const offsetY = feature.handOffsetY || 0;
-              
-              return (
-                <div
-                  key={feature.id}
-                  className={`absolute transition-opacity duration-300 ${
-                    getCurrentHandImage() === feature.handImage
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
-                  style={{
-                    left: `${offsetX}px`,
-                    top: `${offsetY}px`,
-                    width: "800px",
-                    height: "700px",
-                  }}
-                >
-                  <Image
-                    src={feature.handImage}
-                    alt="Optimist App"
-                    width={800}
-                    height={700}
-                    quality={85}
-                    className="w-full h-full"
+            {/* Hand/Phone Image - Fixed position container */}
+            <div
+              ref={phoneRef}
+              className="absolute z-20 pointer-events-none will-change-[transform,opacity]"
+              style={{ 
+                left: "60%", 
+                top: "140px",
+                transform: "translateX(-50%)",
+                width: "800px",
+                height: "700px",
+                overflow: "hidden",
+              }}
+            >
+              {/* All hand images stacked - using fixed pixel positioning for consistency */}
+              {FEATURES.map((feature) => {
+                // Calculate position - all images positioned at same fixed coordinates
+                const offsetX = feature.handOffsetX || 0;
+                const offsetY = feature.handOffsetY || 0;
+                
+                return (
+                  <div
+                    key={feature.id}
+                    className={`absolute transition-opacity duration-300 ${
+                      getCurrentHandImage() === feature.handImage
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
                     style={{
-                      objectFit: "cover",
-                      objectPosition: "center center",
+                      left: `${offsetX}px`,
+                      top: `${offsetY}px`,
+                      width: "800px",
+                      height: "700px",
                     }}
-                    priority={feature.id === "energy-meter"}
-                    loading={feature.id === "energy-meter" ? undefined : "lazy"}
+                  >
+                    <Image
+                      src={feature.handImage}
+                      alt="Optimist App"
+                      width={800}
+                      height={700}
+                      quality={85}
+                      className="w-full h-full"
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center center",
+                      }}
+                      priority={feature.id === "energy-meter"}
+                      loading={feature.id === "energy-meter" ? undefined : "lazy"}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Header - centered, top: 43px */}
+            <div 
+              ref={headerRef} 
+              className="absolute left-1/2 -translate-x-1/2 text-center w-[444px] z-10 will-change-[transform,opacity]"
+              style={{ top: "43px" }}
+            >
+              <h2 className="font-display text-[40px] font-bold text-black leading-none mb-[14px]">
+                Optimist App
+              </h2>
+              <p className="font-display text-[20px] leading-normal" style={{ color: "rgba(0,0,0,0.42)" }}>
+                Your full-control panel, right in your hand.
+              </p>
+            </div>
+
+            {/* Feature Cards */}
+            <div ref={featuresRef} className="absolute inset-0 z-20">
+              {FEATURES.map((feature) => (
+                <div key={feature.id} className="feature-card">
+                  <DesktopFeatureCard
+                    feature={feature}
+                    onHover={handleCardHover}
+                    onLeave={handleCardLeave}
                   />
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
 
-          {/* Bottom Fade Gradient */}
+          {/* Bottom Fade Gradient - outside parallax wrapper so it stays fixed */}
           <div 
             className="absolute left-0 w-full h-[120px] pointer-events-none z-30 bottom-0"
             style={{
               background: "linear-gradient(178deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 1) 100%)",
             }}
           />
-
-          {/* Header - centered, top: 43px */}
-          <div 
-            ref={headerRef} 
-            className="absolute left-1/2 -translate-x-1/2 text-center w-[444px] z-10 will-change-[transform,opacity]"
-            style={{ top: "43px" }}
-          >
-            <h2 className="font-display text-[40px] font-bold text-black leading-none mb-[14px]">
-              Optimist App
-            </h2>
-            <p className="font-display text-[20px] leading-normal" style={{ color: "rgba(0,0,0,0.42)" }}>
-              Your full-control panel, right in your hand.
-            </p>
-          </div>
-
-          {/* Feature Cards */}
-          <div ref={featuresRef} className="absolute inset-0 z-20">
-            {FEATURES.map((feature) => (
-              <div key={feature.id} className="feature-card">
-                <DesktopFeatureCard
-                  feature={feature}
-                  onHover={handleCardHover}
-                  onLeave={handleCardLeave}
-                />
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* ============ MOBILE LAYOUT ============ */}
