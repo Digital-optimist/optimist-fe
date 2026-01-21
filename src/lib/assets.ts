@@ -3,7 +3,7 @@
  * All static assets are stored in the S3 bucket configured via environment variable
  */
 
-const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL||"https://optimist-fe-assets.s3.amazonaws.com";
+const S3_BUCKET_URL = "https://optimist-fe-assets.s3.amazonaws.com";
 
 // Warn if the environment variable is not set
 
