@@ -9,6 +9,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { useToast } from "@/components/ui/Toast";
 import { ASSETS } from "@/lib/assets";
 
 function ACModel() {
@@ -185,6 +186,16 @@ export function ProductPickerSection() {
   const headerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const { openModal } = useWaitlist();
+  const { showToast } = useToast();
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      showToast("Link copied to clipboard!", "success");
+    } catch {
+      showToast("Failed to copy link", "error");
+    }
+  };
 
   // Set initial states immediately to prevent flash/lag on first scroll
   useLayoutEffect(() => {
@@ -299,7 +310,10 @@ export function ProductPickerSection() {
               <div className="lg:hidden">
                 <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-[20px] overflow-hidden shadow-sm">
                   {/* Share Button */}
-                  <button className="absolute top-4 right-4 z-10 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                  <button
+                    onClick={handleShare}
+                    className="absolute top-4 right-4 z-10 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
                     <Share2 className="w-4 h-4" />
                     Share
                   </button>
@@ -390,7 +404,10 @@ export function ProductPickerSection() {
               <div className="hidden lg:block">
                 <div className="relative bg-[#E7E7E7] rounded-[24px] overflow-hidden shadow-sm h-full min-h-[400px] flex items-center justify-center">
                   {/* Share Button */}
-                  <button className="absolute top-5 right-5 z-10 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-md text-sm font-medium text-gray-700 transition-colors border border-gray-100">
+                  <button
+                    onClick={handleShare}
+                    className="absolute top-5 right-5 z-10 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-md text-sm font-medium text-gray-700 transition-colors border border-gray-100"
+                  >
                     <Share2 className="w-4 h-4" />
                     Share
                   </button>

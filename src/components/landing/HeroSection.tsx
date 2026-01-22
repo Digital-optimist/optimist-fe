@@ -1,24 +1,27 @@
 "use client";
 
-import { useScrollVelocity } from "@/hooks/useScrollVelocity";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+// COMMENTED OUT: Scroll animation imports - no longer needed for normal section
+// import { useScrollVelocity } from "@/hooks/useScrollVelocity";
+import { gsap } from "@/lib/gsap";
 import { useGSAP } from "@gsap/react";
-import {
-  Center,
-  ContactShadows,
-  Environment,
-  PerspectiveCamera,
-  useGLTF,
-} from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+// COMMENTED OUT: 3D model imports - not used in simplified version
+// import {
+//   Center,
+//   ContactShadows,
+//   Environment,
+//   PerspectiveCamera,
+//   useGLTF,
+// } from "@react-three/drei";
+// import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import Image from "next/image";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
+import { useEffect, useRef, useState } from "react";
+// import * as THREE from "three";
+// Blue gradient component - still used for mobile
 import HeroBlueGradient1 from "./HeroBlueGradient1";
 import { motion } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
-const MODEL_PATH = "/HomePageAnimation02.glb";
+// const MODEL_PATH = "/HomePageAnimation02.glb";
 
 // Smooth scroll to element using GSAP
 const scrollToSection = (elementId: string) => {
@@ -33,162 +36,141 @@ const scrollToSection = (elementId: string) => {
   }
 };
 
-// Helper function to check if mobile view
-const isMobileView = (width: number) => width < 768;
+// COMMENTED OUT: Helper function to check if mobile view - no longer used
+// const isMobileView = (width: number) => width < 768;
 
-// Check if device is mobile (for disabling pinning)
-const isMobileDevice = () => {
-  if (typeof window === "undefined") return false;
-  return window.innerWidth < 768;
-};
+// COMMENTED OUT: Mobile device check - no longer needed without scroll pinning
+// const isMobileDevice = () => {
+//   if (typeof window === "undefined") return false;
+//   return window.innerWidth < 768;
+// };
 
-// 3D AC Model Component
-function ACModel({ onLoaded }: { onLoaded: () => void }) {
-  const { scene } = useGLTF(MODEL_PATH);
+// COMMENTED OUT: 3D AC Model Component - not used in simplified version
+// function ACModel({ onLoaded }: { onLoaded: () => void }) {
+//   const { scene } = useGLTF(MODEL_PATH);
+//
+//   useEffect(() => {
+//     // Signal that model is loaded
+//     onLoaded();
+//   }, [onLoaded]);
+//
+//   return <primitive object={scene} scale={1} />;
+// }
 
-  useEffect(() => {
-    // Signal that model is loaded
-    onLoaded();
-  }, [onLoaded]);
+// COMMENTED OUT: Responsive Camera with zoom-out animation
+// function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
+//   const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
+//   const hasAnimated = useRef(false);
+//   const { size } = useThree();
+//
+//   useEffect(() => {
+//     if (cameraRef.current && !hasAnimated.current) {
+//       cameraRef.current.position.set(0, 0, 0.05);
+//       cameraRef.current.lookAt(0, 0, 0);
+//     }
+//   }, []);
+//
+//   useEffect(() => {
+//     if (!cameraRef.current || !startAnimation || hasAnimated.current) return;
+//     hasAnimated.current = true;
+//     const isMobile = size.width < 768;
+//     const finalZ = isMobile ? 2.4 : 1.4;
+//     gsap.to(cameraRef.current.position, {
+//       z: finalZ,
+//       duration: 2.5,
+//       delay: 0.1,
+//       ease: "power2.out",
+//       onUpdate: () => {
+//         if (cameraRef.current) {
+//           cameraRef.current.lookAt(0, 0, 0);
+//         }
+//       },
+//     });
+//   }, [startAnimation, size.width]);
+//
+//   useFrame(() => {
+//     if (cameraRef.current) {
+//       cameraRef.current.lookAt(0, 0, 0);
+//     }
+//   });
+//
+//   return (
+//     <PerspectiveCamera
+//       makeDefault
+//       ref={cameraRef}
+//       position={[0, 0, 0.05]}
+//       fov={isMobileView(size.width) ? 45 : 35}
+//     />
+//   );
+// }
 
-  return <primitive object={scene} scale={1} />;
-}
+// COMMENTED OUT: Scene content component
+// function SceneContent({ onReady }: { onReady?: () => void }) {
+//   const [modelLoaded, setModelLoaded] = useState(false);
+//   const { gl } = useThree();
+//   const isFastScrolling = useScrollVelocity({ threshold: 1200 });
+//
+//   useEffect(() => {
+//     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+//     gl.setPixelRatio(dpr);
+//   }, [gl]);
+//
+//   const handleModelLoaded = useCallback(() => {
+//     setTimeout(() => {
+//       setModelLoaded(true);
+//       if (onReady) onReady();
+//     }, 100);
+//   }, [onReady]);
+//
+//   useFrame(() => {
+//     if (isFastScrolling) {
+//       return false;
+//     }
+//   });
+//
+//   return (
+//     <>
+//       <ResponsiveCamera startAnimation={modelLoaded} />
+//       <ambientLight intensity={1} />
+//       <directionalLight position={[5, 5, 5]} intensity={1.4} />
+//       <Environment preset="city" />
+//       <Center top>
+//         <ACModel onLoaded={handleModelLoaded} />
+//       </Center>
+//       <ContactShadows
+//         position={[0, -0.5, 0]}
+//         opacity={0.4}
+//         scale={15}
+//         blur={2}
+//         far={3}
+//         frames={1}
+//         resolution={512}
+//       />
+//     </>
+//   );
+// }
 
-// Responsive Camera with zoom-out animation
-function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
-  const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
-  const hasAnimated = useRef(false);
-  const { size } = useThree();
-
-  // Set initial camera position immediately (very close - inside the AC)
-  useEffect(() => {
-    if (cameraRef.current && !hasAnimated.current) {
-      cameraRef.current.position.set(0, 0, 0.05);
-      cameraRef.current.lookAt(0, 0, 0);
-    }
-  }, []);
-
-  // Run animation only once when startAnimation becomes true
-  useEffect(() => {
-    if (!cameraRef.current || !startAnimation || hasAnimated.current) return;
-
-    hasAnimated.current = true;
-    const isMobile = size.width < 768;
-
-    /**
-     * ADJUST THESE FOR SIZE:
-     * Lower numbers = AC looks BIGGER
-     * Higher numbers = AC looks SMALLER
-     */
-    const finalZ = isMobile ? 2.4 : 1.4;
-
-    // Animation: Zooming out to the "Big" view with a bounce
-    gsap.to(cameraRef.current.position, {
-      z: finalZ,
-      duration: 2.5,
-      delay: 0.1,
-      ease: "power2.out", // Smoother ease for the "Big" view
-      onUpdate: () => {
-        if (cameraRef.current) {
-          cameraRef.current.lookAt(0, 0, 0);
-        }
-      },
-    });
-  }, [startAnimation, size.width]);
-
-  // Keep camera looking at center
-  useFrame(() => {
-    if (cameraRef.current) {
-      cameraRef.current.lookAt(0, 0, 0);
-    }
-  });
-
-  return (
-    <PerspectiveCamera
-      makeDefault
-      ref={cameraRef}
-      position={[0, 0, 0.05]}
-      fov={isMobileView(size.width) ? 45 : 35}
-    />
-  );
-}
-
-// Scene content component to handle animation state
-function SceneContent({ onReady }: { onReady?: () => void }) {
-  const [modelLoaded, setModelLoaded] = useState(false);
-  const { gl } = useThree();
-  const isFastScrolling = useScrollVelocity({ threshold: 1200 });
-
-  // Set a fixed DPR for consistent performance
-  useEffect(() => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    gl.setPixelRatio(dpr);
-  }, [gl]);
-
-  const handleModelLoaded = useCallback(() => {
-    // Small delay to ensure everything is rendered
-    setTimeout(() => {
-      setModelLoaded(true);
-      if (onReady) onReady();
-    }, 100);
-  }, [onReady]);
-
-  // Pause rendering during fast scrolling to save resources
-  useFrame(() => {
-    if (isFastScrolling) {
-      return false; // Skip this frame
-    }
-  });
-
-  return (
-    <>
-      <ResponsiveCamera startAnimation={modelLoaded} />
-
-      {/* Lighting optimized to show the AC's details clearly */}
-      <ambientLight intensity={1} />
-      <directionalLight position={[5, 5, 5]} intensity={1.4} />
-      <Environment preset="city" />
-
-      {/* Center is vital because the GLB has internal offsets */}
-      <Center top>
-        <ACModel onLoaded={handleModelLoaded} />
-      </Center>
-
-      <ContactShadows
-        position={[0, -0.5, 0]}
-        opacity={0.4}
-        scale={15}
-        blur={2}
-        far={3}
-        frames={1}
-        resolution={512}
-      />
-    </>
-  );
-}
-
-// 3D Canvas wrapper component
-function HeroACCanvas() {
-  const [isReady, setIsReady] = useState(false);
-  const handleSceneReady = useCallback(() => setIsReady(true), []);
-
-  return (
-    <Canvas
-      shadows
-      dpr={[1, 1.5]}
-      // Ensures the rendering doesn't clip when camera is very close
-      camera={{ near: 0.01, far: 1000 }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      style={{ background: "transparent", marginTop: "80px" }}
-      className={`transition-opacity duration-1000 ease-out ${isReady ? "opacity-100" : "opacity-0"}`}
-      frameloop="always"
-    >
-      <Suspense fallback={null}>
-        <SceneContent onReady={handleSceneReady} />
-      </Suspense>
-    </Canvas>
-  );
-}
+// COMMENTED OUT: 3D Canvas wrapper component
+// function HeroACCanvas() {
+//   const [isReady, setIsReady] = useState(false);
+//   const handleSceneReady = useCallback(() => setIsReady(true), []);
+//
+//   return (
+//     <Canvas
+//       shadows
+//       dpr={[1, 1.5]}
+//       camera={{ near: 0.01, far: 1000 }}
+//       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+//       style={{ background: "transparent", marginTop: "80px" }}
+//       className={`transition-opacity duration-1000 ease-out ${isReady ? "opacity-100" : "opacity-0"}`}
+//       frameloop="always"
+//     >
+//       <Suspense fallback={null}>
+//         <SceneContent onReady={handleSceneReady} />
+//       </Suspense>
+//     </Canvas>
+//   );
+// }
 
 // Static image fallback for mobile (88MB GLB is too heavy for mobile)
 function HeroACImage({ isMobile }: { isMobile: boolean }) {
@@ -220,12 +202,15 @@ export function HeroSection() {
   const mobileButtonsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const parallaxContainerRef = useRef<HTMLDivElement>(null);
+  const parallaxContentRef = useRef<HTMLDivElement>(null);
+  // const cardRef = useRef<HTMLDivElement>(null); // COMMENTED OUT: Not needed without card design
   const { openModal } = useWaitlist();
 
-  // Use ref instead of state to avoid re-renders on every scroll
-  const scrollProgressRef = useRef(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // COMMENTED OUT: Scroll progress tracking - not needed for desktop normal section
+  // const scrollProgressRef = useRef(0);
+  // Kept for mobile gradient (still uses scroll progress)
+  const scrollProgress = 0; // Static value for mobile gradient since no scroll animation
   const [isMobile, setIsMobile] = useState(false);
 
   // Detect mobile on mount and resize
@@ -238,93 +223,152 @@ export function HeroSection() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Setup pinned scroll animation for gradient shrink - DESKTOP ONLY
-  useGSAP(
-    () => {
-      if (!sectionRef.current) return;
+  // Mouse parallax effect - push in opposite direction (desktop only)
+  useEffect(() => {
+    if (isMobile) return;
+    
+    const container = parallaxContainerRef.current;
+    const content = parallaxContentRef.current;
+    if (!container || !content) return;
 
-      // Skip all scroll animations on mobile - use immediate check, not state
-      if (isMobileDevice()) return;
+    // Configuration for the parallax effect
+    const maxMove = 15; // Maximum pixels to move
+    const smoothness = 0.1; // Smoothing factor (0.05 - 0.2 for smooth feel)
 
-      // Create ScrollTrigger for pinning - DESKTOP ONLY
-      // Extended scroll distance for multi-phase animation
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "+=150%", // Extended for multi-phase animation
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        scrub: 1,
-        onUpdate: (self) => {
-          // Update ref immediately for gradient animation
-          scrollProgressRef.current = self.progress;
-          // Throttle state updates to reduce re-renders
-          if (Math.abs(self.progress - scrollProgress) > 0.02) {
-            setScrollProgress(self.progress);
-          }
-        },
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let animationId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      
+      // Calculate mouse position relative to container center (0 to 1, centered at 0.5)
+      const mouseX = (e.clientX - rect.left) / rect.width;
+      const mouseY = (e.clientY - rect.top) / rect.height;
+      
+      // Convert to -1 to 1 range (centered at 0)
+      const normalizedX = (mouseX - 0.5) * 2;
+      const normalizedY = (mouseY - 0.5) * 2;
+      
+      // Invert for opposite direction push effect
+      targetX = -normalizedX * maxMove;
+      targetY = -normalizedY * maxMove;
+    };
+
+    const handleMouseLeave = () => {
+      // Smoothly return to center
+      targetX = 0;
+      targetY = 0;
+    };
+
+    const animate = () => {
+      // Lerp towards target for smooth motion
+      currentX += (targetX - currentX) * smoothness;
+      currentY += (targetY - currentY) * smoothness;
+      
+      // Apply transform
+      gsap.set(content, {
+        x: currentX,
+        y: currentY,
+        force3D: true,
       });
+      
+      animationId = requestAnimationFrame(animate);
+    };
 
-      // Phase 1 (0-60%): Content fades out
-      if (contentRef.current) {
-        gsap.to(contentRef.current, {
-          opacity: 0,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "+=60%",
-            scrub: 1,
-          },
-        });
-      }
+    // Start animation loop
+    animationId = requestAnimationFrame(animate);
 
-      // Phase 1-2 (20-80%): Gradient fades out as bars shrink
-      if (gradientRef.current) {
-        gsap.to(gradientRef.current, {
-          opacity: 0,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top+=20% top",
-            end: "+=60%",
-            scrub: 1,
-          },
-        });
-      }
+    // Add event listeners
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseleave', handleMouseLeave);
 
-      // Phase 2 (40-90%): Card fades out and scales down
-      if (cardRef.current) {
-        gsap.to(cardRef.current, {
-          opacity: 0,
-          scale: 0.95,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top+=40% top",
-            end: "+=50%",
-            scrub: 1,
-          },
-        });
-      }
+    return () => {
+      cancelAnimationFrame(animationId);
+      container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [isMobile]);
 
-      // Phase 2-3 (30-100%): AC image moves up smoothly
-      if (imageRef.current) {
-        gsap.to(imageRef.current, {
-          y: -300, // Move up significantly
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top+=30% top",
-            end: "+=120%",
-            scrub: 1,
-          },
-        });
-      }
-    },
-    { scope: sectionRef }
-  );
+  // COMMENTED OUT: Scroll animation for gradient shrink - DESKTOP ONLY
+  // useGSAP(
+  //   () => {
+  //     if (!sectionRef.current) return;
+  //     if (isMobileDevice()) return;
+  //
+  //     ScrollTrigger.create({
+  //       trigger: sectionRef.current,
+  //       start: "top top",
+  //       end: "+=150%",
+  //       pin: true,
+  //       pinSpacing: true,
+  //       anticipatePin: 1,
+  //       scrub: 1,
+  //       onUpdate: (self) => {
+  //         scrollProgressRef.current = self.progress;
+  //         if (Math.abs(self.progress - scrollProgress) > 0.02) {
+  //           setScrollProgress(self.progress);
+  //         }
+  //       },
+  //     });
+  //
+  //     if (contentRef.current) {
+  //       gsap.to(contentRef.current, {
+  //         opacity: 0,
+  //         ease: "power2.inOut",
+  //         scrollTrigger: {
+  //           trigger: sectionRef.current,
+  //           start: "top top",
+  //           end: "+=60%",
+  //           scrub: 1,
+  //         },
+  //       });
+  //     }
+  //
+  //     if (gradientRef.current) {
+  //       gsap.to(gradientRef.current, {
+  //         opacity: 0,
+  //         ease: "power2.inOut",
+  //         scrollTrigger: {
+  //           trigger: sectionRef.current,
+  //           start: "top+=20% top",
+  //           end: "+=60%",
+  //           scrub: 1,
+  //         },
+  //       });
+  //     }
+  //
+  //     if (cardRef.current) {
+  //       gsap.to(cardRef.current, {
+  //         opacity: 0,
+  //         scale: 0.95,
+  //         ease: "power2.inOut",
+  //         scrollTrigger: {
+  //           trigger: sectionRef.current,
+  //           start: "top+=40% top",
+  //           end: "+=50%",
+  //           scrub: 1,
+  //         },
+  //       });
+  //     }
+  //
+  //     if (imageRef.current) {
+  //       gsap.to(imageRef.current, {
+  //         y: -300,
+  //         ease: "power2.out",
+  //         scrollTrigger: {
+  //           trigger: sectionRef.current,
+  //           start: "top+=30% top",
+  //           end: "+=120%",
+  //           scrub: 1,
+  //         },
+  //       });
+  //     }
+  //   },
+  //   { scope: sectionRef }
+  // );
 
   // Initial entrance animations
   useGSAP(
@@ -374,14 +418,10 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className={`hero-section relative flex flex-col overflow-x-hidden bg-black ${isMobile ? "" : "overflow-hidden h-screen"
-        }`}
+      className="hero-section relative flex flex-col overflow-hidden bg-black"
       style={{ 
-        height: isMobile ? '85vh' : undefined,
-        perspective: "1000px",
-        WebkitPerspective: "1000px",
-        transformStyle: "preserve-3d",
-        WebkitTransformStyle: "preserve-3d",
+        height: isMobile ? '85vh' : '100vh',
+        minHeight: isMobile ? '600px' : '700px',
       }}
     >
       {/* MOBILE LAYOUT - unchanged */}
@@ -501,39 +541,72 @@ export function HeroSection() {
         </>
       )}
 
-      {/* DESKTOP LAYOUT - new card-based design */}
+      {/* DESKTOP LAYOUT - Normal section matching Figma design */}
       {!isMobile && (
-        <div className="relative w-full h-full flex flex-col items-center">
-          {/* Desktop Card Container */}
-          <div 
-            ref={cardRef}
-            className="relative w-full max-w-[1360px] mx-4 lg:mx-10 mt-[120px]"
+        <div ref={parallaxContainerRef} className="relative w-full h-full flex flex-col overflow-hidden">
+          {/* Background from Figma - layered blue gradient + light rays + shadow with darken blend */}
+          <div
+            ref={gradientRef}
+            className="absolute inset-0 overflow-hidden"
             style={{
-              height: '560px',
-              borderRadius: '24px',
-              boxShadow: '0px 145px 120px 4px rgba(52,120,246,0.12), 0px 35px 120px 0px rgba(52,120,246,0.2)',
-              overflow: 'hidden',
+              backgroundColor: '#000',
             }}
           >
-            {/* Blue Gradient Background inside card */}
+            {/* Layer 1: Blue radial gradient base */}
             <div
-              ref={gradientRef}
               className="absolute inset-0"
-              style={{ 
-                willChange: "transform", 
-                transformStyle: "preserve-3d",
-                WebkitTransformStyle: "preserve-3d",
+              style={{
+                background: 'radial-gradient(ellipse 70% 50% at 50% 50%, #6B9FFF 0%, #3B7BF7 30%, #1E40AF 50%, #0a1628 80%, #000 100%)',
               }}
-            >
-              <HeroBlueGradient1 progress={scrollProgress} isMobile={false} />
-            </div>
+            />
+            {/* Layer 2: Light rays image with darken blend mode */}
+            <img
+              src="/Rectangle 34625200.png"
+              alt=""
+              className="absolute w-full h-full pointer-events-none"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'left top',
+                mixBlendMode: 'darken',
+              }}
+            />
+            {/* Layer 3: Leaf swaying gif overlay with darken blend mode */}
+            {/* <img
+              src={ASSETS.leafSwaying}
+              alt=""
+              className="absolute w-full h-full pointer-events-none"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'center center',
+                mixBlendMode: 'darken',
+              }}
+            /> */}
+            {/* Layer 4: Shadow overlay from top-left with multiply blend mode */}
+            <img
+              src="/Shadow%20%230011.png"
+              alt=""
+              className="absolute pointer-events-none"
+              style={{
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'left top',
+                mixBlendMode: 'multiply',
+              }}
+            />
+          </div>
 
-            {/* Content Container inside card */}
+          {/* Parallax content wrapper for mouse movement effect */}
+          <div ref={parallaxContentRef} className="relative z-10 flex-1 flex flex-col w-full h-full will-change-transform">
+            {/* Content Container - centered with max-width */}
             <div
               ref={contentRef}
-              className="relative z-10 h-full flex flex-col justify-center px-8 lg:px-10"
-              style={{ willChange: "transform, opacity" }}
+              className="flex-1 flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
+              style={{ paddingTop: '140px' }}
             >
+              {/* Top Row: Headline+Badges on Left, Buttons on Right */}
               <div className="flex flex-row justify-between items-start w-full">
                 {/* Left Content */}
                 <div className="flex flex-col gap-4">
@@ -550,7 +623,7 @@ export function HeroSection() {
                   {/* Badges Row */}
                   <div
                     ref={badgesRef}
-                    className="flex items-center gap-6 mt-8"
+                    className="flex items-center gap-6 mt-6"
                   >
                     {/* ISEER Badge */}
                     <div className="flex items-center gap-3">
@@ -598,7 +671,7 @@ export function HeroSection() {
                 {/* Right Content - Desktop CTA Buttons */}
                 <div
                   ref={buttonsRef}
-                  className="flex items-center gap-6 mt-6"
+                  className="flex items-center gap-4 mt-2"
                 >
                   <button
                     onClick={() => scrollToSection('benefits')}
@@ -615,21 +688,18 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* AC Image - Desktop: positioned half inside card, half outside */}
-          {/* AC center should align with card bottom edge */}
-          {/* Smaller negative margin = AC positioned lower = more in black section */}
-          <div 
-            ref={imageRef}
-            className="relative z-20 flex justify-center w-full"
-            style={{
-              // Negative margin to pull AC up - smaller value = lower position
-              marginTop: '-160px',
-              willChange: 'transform',
-            }}
-          >
-            <HeroACImage isMobile={false} />
+            {/* AC Image - Desktop: positioned at bottom center */}
+            <div 
+              ref={imageRef}
+              className="relative flex justify-center w-full"
+              style={{
+                marginTop: 'auto',
+                paddingBottom: '40px',
+              }}
+            >
+              <HeroACImage isMobile={false} />
+            </div>
           </div>
         </div>
       )}
@@ -637,5 +707,5 @@ export function HeroSection() {
   );
 }
 
-// Preload the GLB model for better performance
-useGLTF.preload(MODEL_PATH);
+// COMMENTED OUT: Preload the GLB model - not used in simplified version
+// useGLTF.preload(MODEL_PATH);
