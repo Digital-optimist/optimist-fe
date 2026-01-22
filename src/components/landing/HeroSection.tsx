@@ -424,11 +424,11 @@ export function HeroSection() {
         minHeight: isMobile ? '600px' : '700px',
       }}
     >
-      {/* MOBILE LAYOUT - unchanged */}
+      {/* MOBILE LAYOUT */}
       {isMobile && (
         <>
-          {/* Blue Gradient Background - static radial glow on mobile */}
-          <div
+          {/* COMMENTED OUT: Previous Blue Gradient Background implementation */}
+          {/* <div
             ref={gradientRef}
             className="absolute inset-0"
             style={{ 
@@ -438,6 +438,64 @@ export function HeroSection() {
             }}
           >
             <HeroBlueGradient1 progress={scrollProgress} isMobile={isMobile} />
+          </div> */}
+
+          {/* Background - same as desktop: layered blue gradient + light rays + shadow */}
+          <div
+            ref={gradientRef}
+            className="absolute inset-0 overflow-hidden"
+            style={{
+              backgroundColor: '#000',
+            }}
+          >
+            {/* Layer 1: Blue radial gradient base */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'radial-gradient(ellipse 70% 50% at 50% 50%, #6B9FFF 0%, #3B7BF7 30%, #1E40AF 50%, #0a1628 80%, #000 100%)',
+              }}
+            />
+            {/* Layer 2: Light rays image with darken blend mode */}
+            <img
+              src="/Rectangle 34625200.png"
+              alt=""
+              className="absolute w-full h-full pointer-events-none"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'left top',
+                mixBlendMode: 'darken',
+              }}
+            />
+            {/* Layer 3: Shadow overlay with multiply blend mode */}
+            {/* <img
+              src="/Shadow%20%230011.png"
+              alt=""
+              className="absolute pointer-events-none"
+              style={{
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'left top',
+                mixBlendMode: 'multiply',
+              }}
+            /> */}
+             <img
+              src={ASSETS.leafSwaying}
+              alt=""
+              className="absolute pointer-events-none"
+              style={{
+                top: 0,
+                left: 0,
+                width: '120%',
+                height: '120%',
+                objectFit: 'cover',
+                objectPosition: 'left top',
+                mixBlendMode: 'darken',
+                opacity: 0.25,
+              }}
+            />
           </div>
 
           {/* Content Container */}
@@ -538,6 +596,23 @@ export function HeroSection() {
           >
             <HeroACImage isMobile={isMobile} />
           </div>
+
+          {/* Leaf swaying gif overlay - above AC image */}
+          <img
+            src={ASSETS.leafSwaying}
+            alt=""
+            className="absolute pointer-events-none z-30"
+            style={{
+              top: 0,
+              left: 0,
+              width: '120%',
+              height: '120%',
+              objectFit: 'cover',
+              objectPosition: 'left top',
+              mixBlendMode: 'darken',
+              opacity: 0.25,
+            }}
+          />
         </>
       )}
 
@@ -571,18 +646,23 @@ export function HeroSection() {
               }}
             />
             {/* Layer 3: Leaf swaying gif overlay with darken blend mode */}
-            {/* <img
+            <img
               src={ASSETS.leafSwaying}
               alt=""
-              className="absolute w-full h-full pointer-events-none"
+              className="absolute pointer-events-none"
               style={{
+                top: 0,
+                left: 0,
+                width: '120%',
+                height: '120%',
                 objectFit: 'cover',
-                objectPosition: 'center center',
+                objectPosition: 'left top',
                 mixBlendMode: 'darken',
+                opacity: 0.25,
               }}
-            /> */}
+            />
             {/* Layer 4: Shadow overlay from top-left with multiply blend mode */}
-            <img
+            {/* <img
               src="/Shadow%20%230011.png"
               alt=""
               className="absolute pointer-events-none"
@@ -595,7 +675,7 @@ export function HeroSection() {
                 objectPosition: 'left top',
                 mixBlendMode: 'multiply',
               }}
-            />
+            /> */}
           </div>
 
           {/* Parallax content wrapper for mouse movement effect */}
@@ -701,6 +781,23 @@ export function HeroSection() {
               <HeroACImage isMobile={false} />
             </div>
           </div>
+
+          {/* Leaf swaying gif overlay - above AC image */}
+          <img
+            src={ASSETS.leafSwaying}
+            alt=""
+            className="absolute pointer-events-none z-30"
+            style={{
+              top: 0,
+              left: 0,
+              width: '120%',
+              height: '120%',
+              objectFit: 'cover',
+              objectPosition: 'left top',
+              mixBlendMode: 'darken',
+              opacity: 0.25,
+            }}
+          />
         </div>
       )}
     </section>
