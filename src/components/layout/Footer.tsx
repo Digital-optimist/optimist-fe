@@ -3,8 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, useInView } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
 
@@ -113,34 +112,59 @@ function isValidPhone(phone: string): boolean {
   return phoneRegex.test(phone.replace(/\s/g, ""));
 }
 
+// Easing
+const easeOutExpo = "easeOut" as const;
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: easeOutExpo },
+  },
+};
+
+const imageVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.8, ease: easeOutExpo },
+  },
+};
+
+const linkHoverVariants = {
+  hover: { x: 4, transition: { duration: 0.2 } },
+};
+
+const socialHoverVariants = {
+  hover: { scale: 1.15, transition: { duration: 0.2 } },
+  tap: { scale: 0.95 },
+};
+
 export function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { submitPhone, isLoading, openModal, showSuccess } = useWaitlist();
-
-  useGSAP(
-    () => {
-      // Image animation
-      gsap.fromTo(
-        imageRef.current,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: imageRef.current,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          },
-        },
-      );
-    },
-    { scope: footerRef },
-  );
+  
+  const isContentInView = useInView(contentRef, { once: true, amount: 0.2 });
+  const isImageInView = useInView(imageRef, { once: true, amount: 0.3 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,62 +209,79 @@ export function Footer() {
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 pt-12 md:pt-16 pb-6 md:pb-12">
         {/* Top Section - Links & Newsletter */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-0 md:mb-4">
+        <motion.div 
+          ref={contentRef}
+          initial="hidden"
+          animate={isContentInView ? "visible" : "hidden"}
+          variants={containerVariants}
+          className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-0 md:mb-4"
+        >
           {/* Column 1 - Nav Links */}
-
-          <nav className="flex flex-col gap-4">
-            {navLinksCol1.map((link) => (
-              <Link
+          <motion.nav variants={itemVariants} className="flex flex-col gap-4">
+            {navLinksCol1.map((link, index) => (
+              <motion.div
                 key={link.href}
-                href={link.href}
-                className="text-base md:text-[16px] text-[#FFFCDC] hover:text-white transition-colors"
+                variants={linkHoverVariants}
+                whileHover="hover"
               >
-                {link.label}
-              </Link>
+                <Link
+                  href={link.href}
+                  className="text-base md:text-[16px] text-[#FFFCDC] hover:text-white transition-colors inline-block"
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
             ))}
-          </nav>
+          </motion.nav>
 
           {/* Column 2 - Nav Links */}
-
-          <nav className="flex flex-col gap-4">
-            {navLinksCol2.map((link) => (
-              <Link
+          <motion.nav variants={itemVariants} className="flex flex-col gap-4">
+            {navLinksCol2.map((link, index) => (
+              <motion.div
                 key={link.href}
-                href={link.href}
-                className="text-[14px] md:text-[16px] text-[#FFFCDC] hover:text-white transition-colors"
+                variants={linkHoverVariants}
+                whileHover="hover"
               >
-                {link.label}
-              </Link>
+                <Link
+                  href={link.href}
+                  className="text-[14px] md:text-[16px] text-[#FFFCDC] hover:text-white transition-colors inline-block"
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
             ))}
-          </nav>
+          </motion.nav>
 
           {/* Column 3 - Social Links */}
-          <div className="col-span-2 md:col-span-1">
+          <motion.div variants={itemVariants} className="col-span-2 md:col-span-1">
             <p className="text-base text-[#FFFCDC] mb-4">Social links</p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
-                <a
+                <motion.a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
                   className="flex items-center justify-center text-[#FFFCDC] hover:opacity-80 transition-all"
+                  variants={socialHoverVariants}
+                  whileHover="hover"
+                  whileTap="tap"
                 >
                   <social.icon />
-                </a>
+                </motion.a>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Column 4 - Newsletter */}
-          <div className="col-span-2 md:col-span-2">
+          <motion.div variants={itemVariants} className="col-span-2 md:col-span-2">
             <p className="text-xs uppercase tracking-wider text-[#FFFCDC] mb-4">
               JOIN THE WAITLIST
             </p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <div className="flex flex-col md:flex-row gap-3">
-                <input
+                <motion.input
                   type="tel"
                   value={phone}
                   onChange={(e) => {
@@ -252,30 +293,57 @@ export function Footer() {
                   className={`w-full md:flex-1 px-4 py-3 bg-optimist-dark border rounded-full text-[#FFFCDC] placeholder:text-[#FFFCDC]/50 focus:outline-none focus:border-optimist-blue-primary transition-colors ${
                     error ? "border-red-500" : "border-optimist-border"
                   } ${isLoading ? "opacity-60 cursor-not-allowed" : ""}`}
+                  whileFocus={{ scale: 1.01 }}
+                  transition={{ duration: 0.2 }}
                 />
-                <button
+                <motion.button
                   type="submit"
                   disabled={isLoading}
                   className="btn-buy-now w-full md:w-auto md:px-6 py-3 rounded-full text-[#FFFCDC] font-semibold text-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <motion.span 
+                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      />
                       Submitting...
                     </span>
                   ) : (
                     "Join the Waitlist"
                   )}
-                </button>
+                </motion.button>
               </div>
-              {error && <p className="text-red-400 text-sm pl-4">{error}</p>}
+              {error && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-400 text-sm pl-4"
+                >
+                  {error}
+                </motion.p>
+              )}
             </form>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Bottom Section - Family Image with Logo */}
-        <div ref={imageRef} className="relative mb-10 md:mb-0">
-          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden">
+        <motion.div 
+          ref={imageRef} 
+          initial="hidden"
+          animate={isImageInView ? "visible" : "hidden"}
+          variants={imageVariants}
+          className="relative mb-10 md:mb-0"
+        >
+          <motion.div 
+            className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden"
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.4 }}
+          >
             {/* Family Image */}
             <Image
               src={ASSETS.family}
@@ -288,7 +356,12 @@ export function Footer() {
             {/* Blue Gradient Overlay - higher z-index than family image */}
 
             {/* Logo Overlay */}
-            <div className="absolute inset-0 z-20 flex items-end justify-center pb-10 md:pb-10 px-4 md:px-8">
+            <motion.div 
+              className="absolute inset-0 z-20 flex items-end justify-center pb-10 md:pb-10 px-4 md:px-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={isImageInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
               <Image
                 src={ASSETS.frame48095518}
                 alt="Optimist"
@@ -296,9 +369,9 @@ export function Footer() {
                 height={150}
                 className="w-[80%] md:w-[70%] lg:w-[60%] h-auto object-contain"
               />
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
     </footer>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useLayoutEffect } from "react";
+import { motion } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { type Product } from "@/lib/shopify";
@@ -19,6 +20,81 @@ import { AfterBuySection } from "@/components/products/AfterBuySection";
 import { WarrantySection } from "@/components/products/WarrantySection";
 import { RecognitionSection } from "@/components/products/RecognitionSection";
 import { BuiltForSection } from "@/components/products/BuiltForSection";
+
+// Easing
+const easeOutExpo = "easeOut" as const;
+
+// Page transition variants
+const pageVariants = {
+  initial: { opacity: 0 },
+  animate: { 
+    opacity: 1,
+    transition: { duration: 0.4, ease: easeOutExpo }
+  },
+  exit: { opacity: 0 }
+};
+
+// Section animation variants
+const sectionVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: easeOutExpo
+    }
+  }
+};
+
+const slideFromLeftVariants = {
+  hidden: { opacity: 0, x: -60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.7,
+      ease: easeOutExpo
+    }
+  }
+};
+
+const slideFromRightVariants = {
+  hidden: { opacity: 0, x: 60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.7,
+      ease: easeOutExpo
+    }
+  }
+};
+
+const scaleUpVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: easeOutExpo
+    }
+  }
+};
+
+const mobileFooterVariants = {
+  hidden: { opacity: 0, y: 100 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: easeOutExpo,
+      delay: 0.8
+    }
+  }
+};
 
 // =============================================================================
 // Types
@@ -198,7 +274,14 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
   }, [product, quantity, addToCart, showToast]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-white pb-24 md:pb-0">
+    <motion.div 
+      ref={containerRef} 
+      className="min-h-screen bg-white pb-24 md:pb-0"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={pageVariants}
+    >
       {/* Product Detail Section */}
       <div ref={heroRef} className="pt-16 md:pt-20 lg:pt-24 pb-8 md:pb-16">
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
@@ -320,19 +403,25 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
 
               {/* Action Buttons */}
               <div className="animate-in hidden md:flex flex gap-5">
-                <button
+                <motion.button
                   onClick={handleAddToCart}
                   disabled={isCartLoading}
                   className="flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border border-[rgba(0,0,0,0.12)] rounded-[40px] text-black font-medium text-base hover:border-[rgba(0,0,0,0.24)] transition-all disabled:opacity-50"
+                  whileHover={{ scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <ShoppingBagIcon className="w-6 h-6" />
                   <span>Add to Cart</span>
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   className="flex-1 px-6 py-4 rounded-[36px] text-[#FFFCDC] font-medium text-base text-center transition-all btn-buy-now"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
                 >
                   Buy Now
-                </button>
+                </motion.button>
               </div>
 
             </div>
@@ -341,49 +430,112 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
       </div>
 
       {/* Comparison Section */}
-      <ComparisonSection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <ComparisonSection />
+      </motion.div>
 
       {/* Result Section */}
-      <ResultSection />
-
- 
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={slideFromRightVariants}
+      >
+        <ResultSection />
+      </motion.div>
 
       {/* User Experience Section */}
-      <UserExperienceSection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={slideFromLeftVariants}
+      >
+        <UserExperienceSection />
+      </motion.div>
 
       {/* India Story Section */}
-      <IndiaStorySection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={scaleUpVariants}
+      >
+        <IndiaStorySection />
+      </motion.div>
 
       {/* After Buy Section */}
-      <AfterBuySection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <AfterBuySection />
+      </motion.div>
 
       {/* Warranty Section */}
-      <WarrantySection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={slideFromRightVariants}
+      >
+        <WarrantySection />
+      </motion.div>
 
       {/* Recognition Section */}
-      <RecognitionSection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={scaleUpVariants}
+      >
+        <RecognitionSection />
+      </motion.div>
 
       {/* Built For Section */}
-      <BuiltForSection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <BuiltForSection />
+      </motion.div>
 
       {/* Mobile Fixed Footer */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.15] shadow-[0_-4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={mobileFooterVariants}
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.15] shadow-[0_-4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none"
+      >
         <div className="px-4 py-4 flex items-center gap-3">
-          <button
+          <motion.button
             onClick={handleAddToCart}
             disabled={isCartLoading}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-white rounded-full text-black font-medium text-sm hover:bg-white/90 transition-all disabled:opacity-50"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <CartIcon className="w-5 h-5" />
             <span>Add to Cart</span>
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             className="flex-1 px-4 py-3.5 rounded-full text-[#FFFCDC] font-medium text-sm text-center transition-all btn-buy-now"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             Buy Now
-          </button>
+          </motion.button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
