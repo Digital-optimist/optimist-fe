@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef, useState, useCallback, useLayoutEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
 import { type Product } from "@/lib/shopify";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/Toast";
@@ -96,6 +94,42 @@ const mobileFooterVariants = {
   }
 };
 
+// Hero section variants
+const heroGalleryVariants = {
+  hidden: { opacity: 0, x: -40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: easeOutExpo
+    }
+  }
+};
+
+const heroInfoContainerVariants = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const heroInfoItemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: easeOutExpo
+    }
+  }
+};
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -168,9 +202,6 @@ interface ProductsPageClientProps {
 export default function ProductsPageClient({ product }: ProductsPageClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const galleryRef = useRef<HTMLDivElement>(null);
-  const productInfoRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<DisplayVariant>(MOCK_VARIANTS[1]);
   const [quantity, setQuantity] = useState(1);
@@ -183,56 +214,6 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
   const displayImages = images.length >= MAX_DISPLAY_IMAGES 
     ? images.slice(0, MAX_DISPLAY_IMAGES) 
     : [...images, ...MOCK_IMAGES].slice(0, MAX_DISPLAY_IMAGES);
-
-  // Set initial states to prevent flash
-  useLayoutEffect(() => {
-    if (galleryRef.current) {
-      gsap.set(galleryRef.current, { opacity: 0, x: -40 });
-    }
-    if (productInfoRef.current) {
-      const elements = productInfoRef.current.querySelectorAll(".animate-in");
-      gsap.set(elements, { opacity: 0, y: 30 });
-    }
-  }, []);
-
-  // Landing animation - enhanced staggered reveal
-  useGSAP(
-    () => {
-      if (!containerRef.current || hasAnimated.current) return;
-      hasAnimated.current = true;
-
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out", force3D: true },
-      });
-
-      // Gallery slides in from left
-      tl.to(
-        galleryRef.current,
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-        },
-        0
-      );
-
-      // Product info elements stagger in
-      const infoElements = productInfoRef.current?.querySelectorAll(".animate-in");
-      if (infoElements) {
-        tl.to(
-          infoElements,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.08,
-          },
-          0.2
-        );
-      }
-    },
-    { scope: containerRef }
-  );
 
   // Memoized handlers
   const handlePrevImage = useCallback(() => {
@@ -287,7 +268,12 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Left Column - Image Gallery */}
-            <div ref={galleryRef} className="w-full will-change-[transform,opacity]">
+            <motion.div 
+              className="w-full will-change-[transform,opacity]"
+              initial="hidden"
+              animate="visible"
+              variants={heroGalleryVariants}
+            >
               <ImageGallery
                 images={displayImages}
                 selectedIndex={selectedImageIndex}
@@ -295,20 +281,25 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                 onPrev={handlePrevImage}
                 onNext={handleNextImage}
               />
-            </div>
+            </motion.div>
 
             {/* Right Column - Product Info */}
-            <div ref={productInfoRef} className="w-full space-y-3 md:space-y-6">
+            <motion.div 
+              className="w-full space-y-3 md:space-y-6"
+              initial="hidden"
+              animate="visible"
+              variants={heroInfoContainerVariants}
+            >
               {/* Badge */}
-              <div className="animate-in flex items-center gap-2">
+              <motion.div variants={heroInfoItemVariants} className="flex items-center gap-2">
                 <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[#3478F6] text-white text-xs md:text-sm font-medium rounded-full">
                   Blue Pill
                 </span>
                 <span className="text-[#6c6a6a] text-xs md:text-sm">Customer favourite</span>
-              </div>
+              </motion.div>
 
               {/* Title & Delivery */}
-              <div className="animate-in">
+              <motion.div variants={heroInfoItemVariants}>
                 <h1 className="text-[28px] md:text-[40px] font-semibold text-black mb-2 leading-tight">
                   Optimist AC · 1.5 Ton
                 </h1>
@@ -316,23 +307,23 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                   <PackageIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                   <span className="text-xs md:text-sm">Delivery in ~3 weeks</span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Description */}
-              <div className="animate-in flex flex-col gap-3">
+              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-3">
                 <h3 className="text-sm md:text-lg font-semibold text-black">
                   Engineered for Indian reality.
                 </h3>
                 <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
                   Consistent cooling at 45°C. Bills that stay predictable. Performance that doesn&apos;t fade when you need it most.
                 </p>
-              </div>
+              </motion.div>
 
               {/* Divider */}
-              <div className="animate-in h-px bg-gray-200 w-full" />
+              <motion.div variants={heroInfoItemVariants} className="h-px bg-gray-200 w-full" />
 
               {/* Variants */}
-              <div className="animate-in flex flex-col gap-4">
+              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-4">
                 <h3 className="text-sm md:text-base font-medium text-black">
                   Variants
                 </h3>
@@ -348,10 +339,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Price */}
-              <div className="animate-in flex flex-col gap-3 md:gap-4">
+              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-3 md:gap-4">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-sm md:text-base font-medium text-black">
                     Price
@@ -368,10 +359,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* What's Included */}
-              <div className="animate-in flex flex-col gap-4">
+              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-4">
                 <h3 className="text-sm md:text-base font-medium text-black">
                   What&apos;s Included
                 </h3>
@@ -385,13 +376,13 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Divider */}
-              <div className="animate-in h-px bg-gray-200 w-full" />
+              <motion.div variants={heroInfoItemVariants} className="h-px bg-gray-200 w-full" />
 
               {/* Quantity */}
-              <div className="animate-in">
+              <motion.div variants={heroInfoItemVariants}>
                 <QuantityDropdown
                   quantity={quantity}
                   onQuantityChange={handleQuantityChange}
@@ -399,10 +390,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                   onToggle={handleQuantityToggle}
                   options={QUANTITY_OPTIONS}
                 />
-              </div>
+              </motion.div>
 
               {/* Action Buttons */}
-              <div className="animate-in hidden md:flex flex gap-5">
+              <motion.div variants={heroInfoItemVariants} className="hidden md:flex flex gap-5">
                 <motion.button
                   onClick={handleAddToCart}
                   disabled={isCartLoading}
@@ -422,9 +413,9 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                 >
                   Buy Now
                 </motion.button>
-              </div>
+              </motion.div>
 
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
