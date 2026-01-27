@@ -859,6 +859,60 @@ export async function customerRecover(email: string): Promise<boolean> {
   return true;
 }
 
+export async function customerResetByUrl(
+  resetUrl: string,
+  password: string
+): Promise<CustomerAccessToken> {
+  const query = `
+    mutation customerResetByUrl($resetUrl: URL!, $password: String!) {
+      customerResetByUrl(resetUrl: $resetUrl, password: $password) {
+        customer {
+          id
+          email
+        }
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        customerUserErrors {
+          field
+          message
+          code
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    customerResetByUrl: {
+      customer: { id: string; email: string } | null;
+      customerAccessToken: CustomerAccessToken | null;
+      customerUserErrors: { field: string[]; message: string; code: string }[];
+    };
+  }>({
+    query,
+    variables: { resetUrl, password },
+  });
+
+  if (data.customerResetByUrl.customerUserErrors.length > 0) {
+    const error = data.customerResetByUrl.customerUserErrors[0];
+    // Provide user-friendly error messages
+    if (error.code === "TOKEN_INVALID") {
+      throw new Error("This reset link is invalid. Please request a new one.");
+    }
+    if (error.code === "TOKEN_EXPIRED") {
+      throw new Error("This reset link has expired. Please request a new one.");
+    }
+    throw new Error(error.message);
+  }
+
+  if (!data.customerResetByUrl.customerAccessToken) {
+    throw new Error("Failed to reset password. Please try again.");
+  }
+
+  return data.customerResetByUrl.customerAccessToken;
+}
+
 export async function getCustomer(
   customerAccessToken: string
 ): Promise<Customer | null> {

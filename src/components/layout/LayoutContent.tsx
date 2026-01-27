@@ -5,7 +5,12 @@ import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 
 // Routes that should not have Navigation and Footer
-const AUTH_ROUTES = ["/login", "/sign-up", "/forgot-password"];
+const AUTH_ROUTES = [
+  "/login",
+  "/sign-up",
+  "/forgot-password",
+  "/reset-password",
+];
 
 interface LayoutContentProps {
   children: React.ReactNode;

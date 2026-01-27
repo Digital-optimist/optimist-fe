@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/Toast";
 import { Loader2, Mail, ArrowLeft, CheckCircle } from "lucide-react";
 import ASSETS from "@/lib/assets";
+import { customerRecover } from "@/lib/shopify";
 
 // Animation variants
 const fadeInUp = {
@@ -85,8 +86,8 @@ export default function ForgotPasswordPage() {
     setErrors({});
 
     try {
-      // Simulate API call for password reset
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Call Shopify's customerRecover mutation to send reset email
+      await customerRecover(email);
       setIsSubmitted(true);
       showToast("Reset link sent to your email!", "success");
     } catch (error) {
