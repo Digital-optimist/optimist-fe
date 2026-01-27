@@ -15,7 +15,8 @@ const features = [
   {
     icon: "/shield-slash.svg",
     title: "Energy-efficient design",
-    description: "World-class efficiency that reduces consumption from day one.",
+    description:
+      "World-class efficiency that reduces consumption from day one.",
   },
   {
     icon: "/leaf.svg",
@@ -25,7 +26,8 @@ const features = [
   {
     icon: "/hourglass.svg",
     title: "Complete transparency",
-    description: "Real-time visibility into energy use, gas levels, and system health.",
+    description:
+      "Real-time visibility into energy use, gas levels, and system health.",
   },
   {
     icon: "/hourglass.svg",
@@ -110,8 +112,8 @@ export function FutureSection() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-white overflow-hidden">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10">
+    <section ref={sectionRef} className="bg-white overflow-hidden max-w-[100vw]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 overflow-hidden">
         {/* Title */}
         <h2
           ref={titleRef}
@@ -121,11 +123,11 @@ export function FutureSection() {
         </h2>
 
         {/* Container for overlapping image and card */}
-        <div className="relative">
+        <div className="relative w-full overflow-hidden">
           {/* Team Image - overlaps the blue card */}
           <div
             ref={imageRef}
-            className="relative z-10 w-full max-w-[1172px] mx-auto h-[280px] md:h-[400px] lg:h-[498px] rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
+            className="relative z-10 w-[92%] max-w-[1172px] mx-auto h-[280px] md:h-[400px] lg:h-[498px] rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
           >
             <Image
               src={ASSETS.futureTeam}
@@ -140,55 +142,122 @@ export function FutureSection() {
           {/* Blue Gradient Card - positioned to be overlapped by image */}
           <div
             ref={cardRef}
-            className="relative w-full max-w-[1360px] mx-auto rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden will-change-[transform,opacity] -mt-[40px] md:-mt-[60px] lg:-mt-[74px]"
+            className="relative w-full md:max-w-[1360px] mx-auto rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden will-change-[transform,opacity] -mt-[40px] md:-mt-[60px] lg:-mt-[74px]"
             style={{
               background:
                 "linear-gradient(180deg, #3478F6 0%, #1E4690 129.18%)",
             }}
           >
             {/* Extra padding at top to account for the overlapping image */}
-            <div className="px-6 md:px-12 lg:px-16 pt-[60px] md:pt-[80px] lg:pt-[114px] pb-12 md:pb-16 lg:pb-[114px]">
+            <div className="px-4 md:px-12 lg:px-16 pt-[60px] md:pt-[80px] lg:pt-[114px] pb-10 md:pb-16 lg:pb-[114px]">
               {/* Vision Statement */}
-              <p className="font-medium text-[24px] md:text-[30px] lg:text-[36px] text-white text-center leading-[1.4] max-w-[900px] mx-auto mb-12 md:mb-16 lg:mb-[50px]">
-                We see a future where cooling becomes a true partner to energy saving.
+              <p className="font-medium italic md:not-italic text-[24px] md:text-[30px] lg:text-[36px] text-white text-center leading-[1.4] max-w-full md:max-w-[900px] mx-auto mb-10 md:mb-16 lg:mb-[50px]">
+                We see a future where cooling becomes a true partner to energy
+                saving.
               </p>
 
               {/* Features Grid */}
-              <div
-                ref={featuresRef}
-                className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-0"
-              >
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center">
-                    {/* Feature Item */}
-                    <div className="feature-item flex flex-col items-center gap-4 w-full md:w-[180px] lg:w-[205px]">
-                      {/* Icon */}
-                      <div className="w-10 h-10 relative">
-                        <Image
-                          src={feature.icon}
-                          alt=""
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
+              <div ref={featuresRef} className="relative w-full overflow-hidden">
+                {/* Mobile 2x2 Grid */}
+                <div className="md:hidden w-full">
+                  {/* Top Row */}
+                  <div className="grid grid-cols-2 gap-x-4 pb-6">
+                    {features.slice(0, 2).map((feature, index) => (
+                      <div
+                        key={index}
+                        className="feature-item flex flex-col items-center gap-3 min-w-0"
+                      >
+                        {/* Icon */}
+                        <div className="w-8 h-8 relative">
+                          <Image
+                            src={feature.icon}
+                            alt=""
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
 
-                      {/* Text Content */}
-                      <div className="flex flex-col items-center gap-2 text-center text-white">
-                        <p className="font-semibold text-[18px] lg:text-[20px] leading-normal">
-                          {feature.title}
-                        </p>
-                        <p className="font-normal text-[14px] lg:text-[16px] leading-normal w-[159px]">
-                          {feature.description}
-                        </p>
+                        {/* Text Content */}
+                        <div className="flex flex-col items-center gap-1 text-center text-white w-full">
+                          <p className="font-semibold text-[14px] leading-normal break-words">
+                            {feature.title}
+                          </p>
+                          <p className="font-normal text-[12px] leading-normal text-[#FFFFFF99] break-words">
+                            {feature.description}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Vertical Divider - hidden on mobile, shown between items */}
-                    {index < features.length - 1 && (
-                      <div className="hidden md:block w-[1px] h-[80px] bg-white/30 mx-6 lg:mx-8" />
-                    )}
+                    ))}
                   </div>
-                ))}
+
+                  {/* Horizontal Divider */}
+                  <div className="w-full h-[1px] bg-white/30 my-2" />
+
+                  {/* Bottom Row */}
+                  <div className="grid grid-cols-2 gap-x-4 pt-6">
+                    {features.slice(2, 4).map((feature, index) => (
+                      <div
+                        key={index + 2}
+                        className="feature-item flex flex-col items-center gap-3 min-w-0"
+                      >
+                        {/* Icon */}
+                        <div className="w-8 h-8 relative">
+                          <Image
+                            src={feature.icon}
+                            alt=""
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+
+                        {/* Text Content */}
+                        <div className="flex flex-col items-center gap-1 text-center text-white w-full">
+                          <p className="font-semibold text-[14px] leading-normal break-words">
+                            {feature.title}
+                          </p>
+                          <p className="font-normal text-[12px] leading-normal text-[#FFFFFF99] break-words">
+                            {feature.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Desktop Row Layout */}
+                <div className="hidden md:flex md:flex-row items-center justify-center gap-0">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-center">
+                      {/* Feature Item */}
+                      <div className="feature-item flex flex-col items-center gap-4 w-[180px] lg:w-[205px]">
+                        {/* Icon */}
+                        <div className="w-10 h-10 relative">
+                          <Image
+                            src={feature.icon}
+                            alt=""
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+
+                        {/* Text Content */}
+                        <div className="flex flex-col items-center gap-2 text-center text-white">
+                          <p className="font-semibold text-[18px] lg:text-[20px] leading-normal">
+                            {feature.title}
+                          </p>
+                          <p className="font-normal text-[#FFFFFF99] text-[14px] lg:text-[16px] leading-normal w-[159px]">
+                            {feature.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Vertical Divider - shown between items */}
+                      {index < features.length - 1 && (
+                        <div className="w-[1px] h-[80px] bg-white/30 mx-6 lg:mx-8" />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -59,7 +59,7 @@ export function CTASection() {
     >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 xl:px-[40px]">
         {/* Content Container */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-8 md:gap-10 lg:gap-8">
+        <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-4 md:gap-6 lg:gap-8">
           {/* Text Content */}
           <div
             ref={textRef}
@@ -67,14 +67,12 @@ export function CTASection() {
           >
             {/* Line 1: Everything you need. */}
             <p className="font-semibold text-[32px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[80px] text-black leading-[1.2] lg:leading-normal">
-              Everything you{" "}
-              <span className="text-[#3478F6]">need.</span>
+              Everything you <span className="text-[#3478F6]">need.</span>
             </p>
 
             {/* Line 2: Nothing you don't. */}
             <p className="font-semibold text-[32px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[80px] text-black leading-[1.2] lg:leading-normal">
-              Nothing you{" "}
-              <span className="text-[#3478F6]">don&apos;t.</span>
+              Nothing you <span className="text-[#3478F6]">don&apos;t.</span>
             </p>
           </div>
 

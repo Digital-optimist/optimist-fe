@@ -1,7 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AboutHeroSection, BreathworkSection, MissionSection, ProofOfWorkSection, TimelineSection, CoreTeamSection, FutureSection, CTASection } from "@/components/about";
+import {
+  AboutHeroSection,
+  BreathworkSection,
+  MissionSection,
+  ProofOfWorkSection,
+  TimelineSection,
+  CoreTeamSection,
+  FutureSection,
+  CTASection,
+} from "@/components/about";
 
 // Easing
 const easeOutExpo = "easeOut" as const;
@@ -9,11 +18,11 @@ const easeOutExpo = "easeOut" as const;
 // Page transition variants
 const pageVariants = {
   initial: { opacity: 0 },
-  animate: { 
+  animate: {
     opacity: 1,
-    transition: { duration: 0.4, ease: easeOutExpo }
+    transition: { duration: 0.4, ease: easeOutExpo },
   },
-  exit: { opacity: 0 }
+  exit: { opacity: 0 },
 };
 
 // Staggered section reveal
@@ -25,9 +34,9 @@ const sectionVariants = {
     transition: {
       delay: i * 0.05,
       duration: 0.7,
-      ease: easeOutExpo
-    }
-  })
+      ease: easeOutExpo,
+    },
+  }),
 };
 
 // Slide from left variant
@@ -38,9 +47,9 @@ const slideFromLeft = {
     x: 0,
     transition: {
       duration: 0.7,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 // Slide from right variant
@@ -51,9 +60,9 @@ const slideFromRight = {
     x: 0,
     transition: {
       duration: 0.7,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 // Scale up variant
@@ -64,15 +73,15 @@ const scaleUp = {
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 export default function AboutPage() {
   return (
-    <motion.main 
-      className="bg-white min-h-screen"
+    <motion.main
+      className="bg-white min-h-screen overflow-x-hidden"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -80,7 +89,7 @@ export default function AboutPage() {
     >
       {/* Hero Section - Immediate display */}
       <AboutHeroSection />
-      
+
       {/* Animated sections with various effects */}
       <motion.div
         initial="hidden"
@@ -90,7 +99,7 @@ export default function AboutPage() {
       >
         <BreathworkSection />
       </motion.div>
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -99,7 +108,7 @@ export default function AboutPage() {
       >
         <MissionSection />
       </motion.div>
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -109,7 +118,7 @@ export default function AboutPage() {
       >
         <ProofOfWorkSection />
       </motion.div>
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -118,7 +127,7 @@ export default function AboutPage() {
       >
         <TimelineSection />
       </motion.div>
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -127,7 +136,7 @@ export default function AboutPage() {
       >
         <CoreTeamSection />
       </motion.div>
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -137,7 +146,7 @@ export default function AboutPage() {
       >
         <FutureSection />
       </motion.div>
-      
+
       <motion.div
         initial="hidden"
         whileInView="visible"

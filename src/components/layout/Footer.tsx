@@ -162,7 +162,7 @@ export function Footer() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { submitPhone, isLoading, openModal, showSuccess } = useWaitlist();
-  
+
   const isContentInView = useInView(contentRef, { once: true, amount: 0.2 });
   const isImageInView = useInView(imageRef, { once: true, amount: 0.3 });
 
@@ -209,7 +209,7 @@ export function Footer() {
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12 pt-12 md:pt-16 pb-6 md:pb-12">
         {/* Top Section - Links & Newsletter */}
-        <motion.div 
+        <motion.div
           ref={contentRef}
           initial="hidden"
           animate={isContentInView ? "visible" : "hidden"}
@@ -253,7 +253,10 @@ export function Footer() {
           </motion.nav>
 
           {/* Column 3 - Social Links */}
-          <motion.div variants={itemVariants} className="col-span-2 md:col-span-1">
+          <motion.div
+            variants={itemVariants}
+            className="col-span-2 md:col-span-1"
+          >
             <p className="text-base text-[#FFFCDC] mb-4">Social links</p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
@@ -275,7 +278,10 @@ export function Footer() {
           </motion.div>
 
           {/* Column 4 - Newsletter */}
-          <motion.div variants={itemVariants} className="col-span-2 md:col-span-2">
+          <motion.div
+            variants={itemVariants}
+            className="col-span-2 md:col-span-2"
+          >
             <p className="text-xs uppercase tracking-wider text-[#FFFCDC] mb-4">
               JOIN THE WAITLIST
             </p>
@@ -306,10 +312,14 @@ export function Footer() {
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <motion.span 
+                      <motion.span
                         className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
                       />
                       Submitting...
                     </span>
@@ -319,7 +329,7 @@ export function Footer() {
                 </motion.button>
               </div>
               {error && (
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-red-400 text-sm pl-4"
@@ -332,14 +342,14 @@ export function Footer() {
         </motion.div>
 
         {/* Bottom Section - Family Image with Logo */}
-        <motion.div 
-          ref={imageRef} 
+        <motion.div
+          ref={imageRef}
           initial="hidden"
           animate={isImageInView ? "visible" : "hidden"}
           variants={imageVariants}
           className="relative mb-10 md:mb-0"
         >
-          <motion.div 
+          <motion.div
             className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden"
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.4 }}
@@ -356,10 +366,12 @@ export function Footer() {
             {/* Blue Gradient Overlay - higher z-index than family image */}
 
             {/* Logo Overlay */}
-            <motion.div 
+            <motion.div
               className="absolute inset-0 z-20 flex items-end justify-center pb-10 md:pb-10 px-4 md:px-8"
               initial={{ opacity: 0, y: 30 }}
-              animate={isImageInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              animate={
+                isImageInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+              }
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <Image

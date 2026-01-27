@@ -7,7 +7,11 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/Toast";
 import { ASSETS } from "@/lib/assets";
 import { ImageGallery } from "@/components/products/ImageGallery";
-import { PackageIcon, ShoppingBagIcon, CartIcon } from "@/components/icons/ProductIcons";
+import {
+  PackageIcon,
+  ShoppingBagIcon,
+  CartIcon,
+} from "@/components/icons/ProductIcons";
 import { QuantityDropdown } from "@/components/products/QuantityDropdown";
 import { ComparisonSection } from "@/components/products/ComparisonSection";
 import { ResultSection } from "@/components/products/ResultSection";
@@ -25,11 +29,11 @@ const easeOutExpo = "easeOut" as const;
 // Page transition variants
 const pageVariants = {
   initial: { opacity: 0 },
-  animate: { 
+  animate: {
     opacity: 1,
-    transition: { duration: 0.4, ease: easeOutExpo }
+    transition: { duration: 0.4, ease: easeOutExpo },
   },
-  exit: { opacity: 0 }
+  exit: { opacity: 0 },
 };
 
 // Section animation variants
@@ -40,9 +44,9 @@ const sectionVariants = {
     y: 0,
     transition: {
       duration: 0.7,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 const slideFromLeftVariants = {
@@ -52,9 +56,9 @@ const slideFromLeftVariants = {
     x: 0,
     transition: {
       duration: 0.7,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 const slideFromRightVariants = {
@@ -64,9 +68,9 @@ const slideFromRightVariants = {
     x: 0,
     transition: {
       duration: 0.7,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 const scaleUpVariants = {
@@ -76,9 +80,9 @@ const scaleUpVariants = {
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 const mobileFooterVariants = {
@@ -89,9 +93,9 @@ const mobileFooterVariants = {
     transition: {
       duration: 0.5,
       ease: easeOutExpo,
-      delay: 0.8
-    }
-  }
+      delay: 0.8,
+    },
+  },
 };
 
 // Hero section variants
@@ -102,9 +106,9 @@ const heroGalleryVariants = {
     x: 0,
     transition: {
       duration: 0.8,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 const heroInfoContainerVariants = {
@@ -113,9 +117,9 @@ const heroInfoContainerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
 
 const heroInfoItemVariants = {
@@ -125,9 +129,9 @@ const heroInfoItemVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: easeOutExpo
-    }
-  }
+      ease: easeOutExpo,
+    },
+  },
 };
 
 // =============================================================================
@@ -142,7 +146,6 @@ export interface DisplayVariant {
   available: boolean;
 }
 
-
 // =============================================================================
 // Constants
 // =============================================================================
@@ -151,9 +154,27 @@ const MAX_DISPLAY_IMAGES = 6;
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5] as const;
 
 const MOCK_VARIANTS: DisplayVariant[] = [
-  { id: "1ton", name: "1 Ton", subtitle: "For compact rooms", price: 40000, available: true },
-  { id: "1.5ton", name: "1.5 Ton", subtitle: "For medium-sized rooms", price: 45000, available: true },
-  { id: "2ton", name: "2 Ton", subtitle: "For large rooms", price: 52000, available: true },
+  {
+    id: "1ton",
+    name: "1 Ton",
+    subtitle: "For compact rooms",
+    price: 40000,
+    available: true,
+  },
+  {
+    id: "1.5ton",
+    name: "1.5 Ton",
+    subtitle: "For medium-sized rooms",
+    price: 45000,
+    available: true,
+  },
+  {
+    id: "2ton",
+    name: "2 Ton",
+    subtitle: "For large rooms",
+    price: 52000,
+    available: true,
+  },
 ];
 
 // What's Included features
@@ -168,7 +189,6 @@ const WHATS_INCLUDED = [
   "Gas level indicator",
   "Lower lifetime cost",
 ] as const;
-
 
 const MOCK_IMAGES = [
   ASSETS.ac1,
@@ -199,11 +219,15 @@ interface ProductsPageClientProps {
 // Main Component
 // =============================================================================
 
-export default function ProductsPageClient({ product }: ProductsPageClientProps) {
+export default function ProductsPageClient({
+  product,
+}: ProductsPageClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState<DisplayVariant>(MOCK_VARIANTS[1]);
+  const [selectedVariant, setSelectedVariant] = useState<DisplayVariant>(
+    MOCK_VARIANTS[1],
+  );
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
   const { addToCart, isLoading: isCartLoading } = useCart();
@@ -211,17 +235,22 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
 
   // Image navigation - memoized
   const images = product?.images.edges.map((e) => e.node.url) || MOCK_IMAGES;
-  const displayImages = images.length >= MAX_DISPLAY_IMAGES 
-    ? images.slice(0, MAX_DISPLAY_IMAGES) 
-    : [...images, ...MOCK_IMAGES].slice(0, MAX_DISPLAY_IMAGES);
+  const displayImages =
+    images.length >= MAX_DISPLAY_IMAGES
+      ? images.slice(0, MAX_DISPLAY_IMAGES)
+      : [...images, ...MOCK_IMAGES].slice(0, MAX_DISPLAY_IMAGES);
 
   // Memoized handlers
   const handlePrevImage = useCallback(() => {
-    setSelectedImageIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));
+    setSelectedImageIndex((prev) =>
+      prev === 0 ? displayImages.length - 1 : prev - 1,
+    );
   }, [displayImages.length]);
 
   const handleNextImage = useCallback(() => {
-    setSelectedImageIndex((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1));
+    setSelectedImageIndex((prev) =>
+      prev === displayImages.length - 1 ? 0 : prev + 1,
+    );
   }, [displayImages.length]);
 
   const handleSelectImage = useCallback((index: number) => {
@@ -242,7 +271,7 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
 
   const handleAddToCart = useCallback(async () => {
     if (!product) return;
-    
+
     const variant = product.variants.edges[0]?.node;
     if (!variant) return;
 
@@ -255,9 +284,9 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
   }, [product, quantity, addToCart, showToast]);
 
   return (
-    <motion.div 
-      ref={containerRef} 
-      className="min-h-screen bg-white pb-24 md:pb-0"
+    <motion.div
+      ref={containerRef}
+      className="min-h-screen bg-white pb-24 md:pb-0 overflow-x-hidden"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -268,7 +297,7 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Left Column - Image Gallery */}
-            <motion.div 
+            <motion.div
               className="w-full will-change-[transform,opacity]"
               initial="hidden"
               animate="visible"
@@ -284,18 +313,23 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
             </motion.div>
 
             {/* Right Column - Product Info */}
-            <motion.div 
+            <motion.div
               className="w-full space-y-3 md:space-y-6"
               initial="hidden"
               animate="visible"
               variants={heroInfoContainerVariants}
             >
               {/* Badge */}
-              <motion.div variants={heroInfoItemVariants} className="flex items-center gap-2">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex items-center gap-2"
+              >
                 <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[#3478F6] text-white text-xs md:text-sm font-medium rounded-full">
                   Blue Pill
                 </span>
-                <span className="text-[#6c6a6a] text-xs md:text-sm">Customer favourite</span>
+                <span className="text-[#6c6a6a] text-xs md:text-sm">
+                  Customer favourite
+                </span>
               </motion.div>
 
               {/* Title & Delivery */}
@@ -305,29 +339,45 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                 </h1>
                 <div className="flex items-center gap-2 text-[#6c6a6a]">
                   <PackageIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
-                  <span className="text-xs md:text-sm">Delivery in ~3 weeks</span>
+                  <span className="text-xs md:text-sm">
+                    Delivery in ~3 weeks
+                  </span>
                 </div>
               </motion.div>
 
               {/* Description */}
-              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-3">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-3"
+              >
                 <h3 className="text-sm md:text-lg font-semibold text-black">
                   Engineered for Indian reality.
                 </h3>
                 <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
-                  Consistent cooling at 45°C. Bills that stay predictable. Performance that doesn&apos;t fade when you need it most.
+                  Consistent cooling at 45°C. Bills that stay predictable.
+                  Performance that doesn&apos;t fade when you need it most.
                 </p>
               </motion.div>
 
               {/* Divider */}
-              <motion.div variants={heroInfoItemVariants} className="h-px bg-gray-200 w-full" />
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="h-px bg-gray-200 w-full"
+              />
 
               {/* Variants */}
-              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-4">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-4"
+              >
                 <h3 className="text-sm md:text-base font-medium text-black">
                   Variants
                 </h3>
-                <div className="w-full overflow-hidden" role="radiogroup" aria-label="Product variants">
+                <div
+                  className="w-full overflow-hidden"
+                  role="radiogroup"
+                  aria-label="Product variants"
+                >
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
                     {MOCK_VARIANTS.map((variant) => (
                       <VariantCard
@@ -342,7 +392,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
               </motion.div>
 
               {/* Price */}
-              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-3 md:gap-4">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-3 md:gap-4"
+              >
                 <div className="flex flex-col gap-2">
                   <h3 className="text-sm md:text-base font-medium text-black">
                     Price
@@ -352,7 +405,9 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                       <span className="text-2xl md:text-3xl font-semibold text-black">
                         ₹{formatPrice(selectedVariant.price)}
                       </span>
-                      <span className="text-[#6c6a6a] text-sm md:text-base font-light">(Inclusive of all taxes)</span>
+                      <span className="text-[#6c6a6a] text-sm md:text-base font-light">
+                        (Inclusive of all taxes)
+                      </span>
                     </div>
                     <p className="text-[#3478F6] text-xs md:text-sm font-medium">
                       Designed for lower long-term costs
@@ -362,7 +417,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
               </motion.div>
 
               {/* What's Included */}
-              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-4">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-4"
+              >
                 <h3 className="text-sm md:text-base font-medium text-black">
                   What&apos;s Included
                 </h3>
@@ -379,7 +437,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
               </motion.div>
 
               {/* Divider */}
-              <motion.div variants={heroInfoItemVariants} className="h-px bg-gray-200 w-full" />
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="h-px bg-gray-200 w-full"
+              />
 
               {/* Quantity */}
               <motion.div variants={heroInfoItemVariants}>
@@ -393,7 +454,10 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
               </motion.div>
 
               {/* Action Buttons */}
-              <motion.div variants={heroInfoItemVariants} className="hidden md:flex flex gap-5">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="hidden md:flex flex gap-5"
+              >
                 <motion.button
                   onClick={handleAddToCart}
                   disabled={isCartLoading}
@@ -414,7 +478,6 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
                   Buy Now
                 </motion.button>
               </motion.div>
-
             </motion.div>
           </div>
         </div>
@@ -501,7 +564,7 @@ export default function ProductsPageClient({ product }: ProductsPageClientProps)
       </motion.div>
 
       {/* Mobile Fixed Footer */}
-      <motion.div 
+      <motion.div
         initial="hidden"
         animate="visible"
         variants={mobileFooterVariants}

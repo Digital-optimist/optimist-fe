@@ -74,13 +74,17 @@ const HorizontalDivider = memo(function HorizontalDivider() {
 // Feature Card Component
 // =============================================================================
 
-const FeatureCard = memo(function FeatureCard({ feature }: { feature: RecognitionFeature }) {
+const FeatureCard = memo(function FeatureCard({
+  feature,
+}: {
+  feature: RecognitionFeature;
+}) {
   return (
     <div className="flex flex-col items-center gap-4 w-full md:w-[205px]">
       <div className="flex items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src={feature.iconSrc} 
+        <img
+          src={feature.iconSrc}
           alt={feature.iconAlt}
           className="w-8 h-8 md:w-10 md:h-10"
         />
@@ -112,7 +116,7 @@ const GradientBackground = memo(function GradientBackground() {
         className="hidden md:block object-cover rounded-[44px]"
         priority
       />
-      
+
       {/* Mobile Background Image */}
       <Image
         src={ASSETS.recognitionBgMobile}
@@ -174,7 +178,7 @@ export const RecognitionSection = memo(function RecognitionSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0
+        0,
       );
 
       // Header animation
@@ -187,7 +191,7 @@ export const RecognitionSection = memo(function RecognitionSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0.2
+        0.2,
       );
 
       // Features animation
@@ -200,69 +204,79 @@ export const RecognitionSection = memo(function RecognitionSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0.4
+        0.4,
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      className="w-full bg-white" 
+      className="w-full bg-white"
       aria-labelledby="recognition-heading"
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10">
         {/* Card Container */}
-        <div ref={cardRef} className="relative w-full min-h-[500px] md:min-h-[669px] overflow-hidden rounded-[24px] md:rounded-[44px] will-change-[transform,opacity]">
+        <div
+          ref={cardRef}
+          className="relative w-full min-h-[500px] md:min-h-[669px] overflow-hidden rounded-[24px] md:rounded-[44px] will-change-[transform,opacity]"
+        >
           {/* Background */}
           <GradientBackground />
-          
+
           {/* Content */}
           <div className="relative z-10 flex flex-col items-center justify-center gap-10 md:gap-[60px] py-16 md:py-24 lg:py-32 px-4 md:px-8">
             {/* Header Section */}
-            <div ref={headerRef} className="flex flex-col items-center gap-1 will-change-[transform,opacity]">
+            <div
+              ref={headerRef}
+              className="flex flex-col items-center gap-1 will-change-[transform,opacity]"
+            >
               {/* Title with Laurel Icons */}
               <div className="flex items-center gap-2 md:gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={ASSETS.laurelLeft} 
+                <img
+                  src={ASSETS.laurelLeft}
                   alt=""
                   className="w-5 h-9 md:w-[41px] md:h-[74px] shrink-0"
                 />
-                <h2 
+                <h2
                   id="recognition-heading"
                   className="font-display font-semibold text-xl md:text-4xl lg:text-5xl text-white text-center leading-tight"
                 >
                   Recognition based on performance, not promises.
                 </h2>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={ASSETS.laurelRight} 
+                <img
+                  src={ASSETS.laurelRight}
                   alt=""
                   className="w-5 h-9 md:w-[41px] md:h-[74px] shrink-0"
                   style={{ transform: "scaleX(-1)" }}
                 />
               </div>
-              
+
               {/* Subtitle */}
-              <p className="text-xs md:text-xl text-white/60 text-center">
-                Recognition
-              </p>
+              <p className="text-xs md:text-xl text-white/60 text-center"></p>
             </div>
 
             {/* Features Section - Desktop: horizontal with dividers, Mobile: vertical */}
             {/* Desktop Layout */}
-            <div ref={featuresRef} className="hidden md:flex items-center justify-center gap-[84px] w-full will-change-[transform,opacity]">
+            <div
+              ref={featuresRef}
+              className="hidden md:flex items-center justify-center gap-[84px] w-full will-change-[transform,opacity]"
+            >
               <FeatureCard feature={RECOGNITION_FEATURES[0]} />
               <VerticalDivider />
               <FeatureCard feature={RECOGNITION_FEATURES[1]} />
               <VerticalDivider />
               <FeatureCard feature={RECOGNITION_FEATURES[2]} />
             </div>
-            
+
             {/* Mobile Layout */}
-            <div ref={mobileRef} className="flex md:hidden flex-col items-center gap-7 w-full will-change-[transform,opacity]">
+            <div
+              ref={mobileRef}
+              className="flex md:hidden flex-col items-center gap-7 w-full will-change-[transform,opacity]"
+            >
               <FeatureCard feature={RECOGNITION_FEATURES[0]} />
               <HorizontalDivider />
               <FeatureCard feature={RECOGNITION_FEATURES[1]} />

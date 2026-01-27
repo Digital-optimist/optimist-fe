@@ -44,7 +44,7 @@ export function BuiltForSection() {
           duration: 0.8,
           ease: "power3.out",
         },
-        0
+        0,
       );
 
       // Image and callouts animation
@@ -56,7 +56,7 @@ export function BuiltForSection() {
           duration: 1,
           ease: "power3.out",
         },
-        0.2
+        0.2,
       );
 
       // Bottom section animation
@@ -68,21 +68,23 @@ export function BuiltForSection() {
           duration: 0.8,
           ease: "power3.out",
         },
-        0.6
+        0.6,
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
     <section
       ref={sectionRef}
-      className="bg-white py-12 md:py-16 lg:py-20 overflow-hidden"
+      className="bg-white py-12 pb-0 md:py-16 lg:py-20 overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
         {/* Title */}
         <div className="text-center mb-8 md:mb-11">
-          <p className="text-[#3478F6] text-sm md:text-base mb-2">Product Callout</p>
+          <p className="text-[#3478F6] text-sm md:text-base mb-2">
+            Product Callout
+          </p>
           <h2
             ref={titleRef}
             className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black will-change-[transform,opacity]"
@@ -113,7 +115,6 @@ export function BuiltForSection() {
                 alt="Optimist AC"
                 fill
                 className="object-contain"
-             
                 sizes="1184px"
                 priority
               />
@@ -165,7 +166,10 @@ export function BuiltForSection() {
           {/* Container with relative positioning */}
           <div className="relative" style={{ minHeight: "400px" }}>
             {/* Callout: Cools consistently - Top Left */}
-            <div className="absolute flex flex-col items-start" style={{ left: "0", top: "0" }}>
+            <div
+              className="absolute flex flex-col items-start"
+              style={{ left: "0", top: "0" }}
+            >
               <p className="font-semibold text-base leading-normal text-black">
                 Cools consistently
               </p>
@@ -175,7 +179,10 @@ export function BuiltForSection() {
             </div>
 
             {/* Callout: Tracks energy - Top Right (blue) */}
-            <div className="absolute flex flex-col items-end text-right" style={{ right: "0", top: "0" }}>
+            <div
+              className="absolute flex flex-col items-end text-right"
+              style={{ right: "0", top: "0" }}
+            >
               <p className="font-semibold text-base leading-normal text-[#3478F6]">
                 Tracks energy
               </p>
@@ -225,10 +232,14 @@ export function BuiltForSection() {
           {/* Outcome */}
           <div className="font-display text-center md:text-left">
             <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight">
-              <span className="text-black">Everything you need to stay cool.</span>
+              <span className="text-black">
+                Everything you need to stay cool.
+              </span>
             </p>
             <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight mt-1">
-              <span className="text-[#3478F6]">Nothing that gets in the way.</span>
+              <span className="text-[#3478F6]">
+                Nothing that gets in the way.
+              </span>
             </p>
           </div>
 

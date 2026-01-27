@@ -32,87 +32,87 @@ const easeOutExpo = "easeOut" as const;
 // Animation variants
 const navVariants = {
   hidden: { opacity: 0, y: -20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: easeOutExpo }
-  }
+    transition: { duration: 0.6, ease: easeOutExpo },
+  },
 };
 
 const linkVariants = {
   hidden: { opacity: 0, y: -15 },
-  visible: (i: number) => ({ 
-    opacity: 1, 
+  visible: (i: number) => ({
+    opacity: 1,
     y: 0,
-    transition: { 
-      duration: 0.5, 
+    transition: {
+      duration: 0.5,
       ease: easeOutExpo,
-      delay: 0.3 + i * 0.08 
-    }
-  })
+      delay: 0.3 + i * 0.08,
+    },
+  }),
 };
 
 const logoVariants = {
   hidden: { opacity: 0, scale: 0.9 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
-    transition: { duration: 0.6, ease: easeOutExpo, delay: 0.1 }
-  }
+    transition: { duration: 0.6, ease: easeOutExpo, delay: 0.1 },
+  },
 };
 
 const actionVariants = {
   hidden: { opacity: 0, x: 20 },
-  visible: (i: number) => ({ 
-    opacity: 1, 
+  visible: (i: number) => ({
+    opacity: 1,
     x: 0,
-    transition: { 
-      duration: 0.5, 
+    transition: {
+      duration: 0.5,
       ease: easeOutExpo,
-      delay: 0.5 + i * 0.08 
-    }
-  })
+      delay: 0.5 + i * 0.08,
+    },
+  }),
 };
 
 const mobileMenuVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     height: 0,
-    transition: { duration: 0.3, ease: easeOutExpo }
+    transition: { duration: 0.3, ease: easeOutExpo },
   },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     height: "auto",
-    transition: { duration: 0.4, ease: easeOutExpo }
-  }
+    transition: { duration: 0.4, ease: easeOutExpo },
+  },
 };
 
 const mobileItemVariants = {
   hidden: { opacity: 0, x: -20 },
-  visible: (i: number) => ({ 
-    opacity: 1, 
+  visible: (i: number) => ({
+    opacity: 1,
     x: 0,
-    transition: { 
-      duration: 0.3, 
+    transition: {
+      duration: 0.3,
       ease: easeOutExpo,
-      delay: i * 0.05 
-    }
-  })
+      delay: i * 0.05,
+    },
+  }),
 };
 
 const dropdownVariants = {
-  hidden: { 
-    opacity: 0, 
-    scale: 0.95, 
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
     y: -10,
-    transition: { duration: 0.2 }
+    transition: { duration: 0.2 },
   },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
+  visible: {
+    opacity: 1,
+    scale: 1,
     y: 0,
-    transition: { duration: 0.3, ease: easeOutExpo }
-  }
+    transition: { duration: 0.3, ease: easeOutExpo },
+  },
 };
 
 export function Navigation() {
@@ -172,10 +172,14 @@ export function Navigation() {
                         {link.label}
                       </motion.span>
                       {isActive && (
-                        <motion.span 
+                        <motion.span
                           layoutId="activeNavIndicator"
-                          className="absolute -bottom-1 left-0 right-0 h-[1px] bg-[#FFFCDC]" 
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                          className="absolute -bottom-1 left-0 right-0 h-[1px] bg-[#FFFCDC]"
+                          transition={{
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 30,
+                          }}
                         />
                       )}
                     </Link>
@@ -185,14 +189,17 @@ export function Navigation() {
             </div>
 
             {/* Left Logo - Mobile */}
-            <motion.div 
+            <motion.div
               initial="hidden"
               animate="visible"
               variants={logoVariants}
               className="md:hidden flex items-center"
             >
               <Link href="/" className="flex items-center group">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <Image
                     src={ASSETS.logo}
                     alt="Optimist"
@@ -212,7 +219,10 @@ export function Navigation() {
               className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center"
             >
               <Link href="/" className="flex items-center group">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <Image
                     src={ASSETS.logo}
                     alt="Optimist"
@@ -227,7 +237,7 @@ export function Navigation() {
             {/* Right Actions */}
             <div className="flex items-center gap-3 md:gap-4">
               {isAuthenticated && (
-                <motion.div 
+                <motion.div
                   custom={0}
                   initial="hidden"
                   animate="visible"
@@ -262,7 +272,7 @@ export function Navigation() {
                           className="fixed inset-0 z-40"
                           onClick={() => setIsUserMenuOpen(false)}
                         />
-                        <motion.div 
+                        <motion.div
                           initial="hidden"
                           animate="visible"
                           exit="hidden"
@@ -278,7 +288,10 @@ export function Navigation() {
                             </p>
                           </div>
                           <div className="py-2">
-                            <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
                               <Link
                                 href="/account"
                                 onClick={() => setIsUserMenuOpen(false)}
@@ -288,7 +301,10 @@ export function Navigation() {
                                 My Account
                               </Link>
                             </motion.div>
-                            <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
                               <Link
                                 href="/account/orders"
                                 onClick={() => setIsUserMenuOpen(false)}
@@ -298,7 +314,10 @@ export function Navigation() {
                                 Order History
                               </Link>
                             </motion.div>
-                            <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
                               <Link
                                 href="/account/addresses"
                                 onClick={() => setIsUserMenuOpen(false)}
@@ -342,11 +361,15 @@ export function Navigation() {
                   <ShoppingCart className="w-5 h-5" />
                   <AnimatePresence>
                     {totalQuantity > 0 && (
-                      <motion.span 
+                      <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 25,
+                        }}
                         className="absolute -top-2 -right-2 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-optimist-blue-primary text-white rounded-full"
                       >
                         {totalQuantity > 99 ? "99+" : totalQuantity}
@@ -367,7 +390,7 @@ export function Navigation() {
                     href="/login"
                     className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full border border-[#FFFCDC]/20 text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-all"
                   >
-                    <motion.span 
+                    <motion.span
                       className="flex items-center gap-2"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -420,7 +443,7 @@ export function Navigation() {
         {/* Mobile Navigation Menu */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div 
+            <motion.div
               initial="hidden"
               animate="visible"
               exit="hidden"
@@ -469,7 +492,7 @@ export function Navigation() {
                   <ShoppingCart className="w-5 h-5" />
                   Cart
                   {totalQuantity > 0 && (
-                    <motion.span 
+                    <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className="ml-auto px-2 py-0.5 text-xs font-bold bg-optimist-blue-primary text-white rounded-full"
@@ -481,12 +504,12 @@ export function Navigation() {
 
                 {isAuthenticated ? (
                   <>
-                    <motion.div 
+                    <motion.div
                       custom={navLinks.length + 1}
                       initial="hidden"
                       animate="visible"
                       variants={mobileItemVariants}
-                      className="h-px bg-[#FFFCDC]/10 my-2" 
+                      className="h-px bg-[#FFFCDC]/10 my-2"
                     />
                     <motion.div
                       custom={navLinks.length + 2}
@@ -533,12 +556,12 @@ export function Navigation() {
                   </>
                 ) : (
                   <>
-                    <motion.div 
+                    <motion.div
                       custom={navLinks.length + 1}
                       initial="hidden"
                       animate="visible"
                       variants={mobileItemVariants}
-                      className="h-px bg-[#FFFCDC]/10 my-2" 
+                      className="h-px bg-[#FFFCDC]/10 my-2"
                     />
                     <motion.div
                       custom={navLinks.length + 2}

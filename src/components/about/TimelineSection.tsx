@@ -157,51 +157,78 @@ function TimelineCard({
   image: string;
 }) {
   return (
-    <div className="relative flex-shrink-0 w-[320px] md:w-[600px] lg:w-[780px] h-[400px] md:h-[480px] lg:h-[516px] rounded-[16px] md:rounded-[20px] border border-[#E5E5E5] bg-white overflow-hidden">
-      {/* Decorative Shape - positioned behind content in lower-left */}
-      <div className="absolute left-[10px] md:left-[30px] lg:left-[40px] bottom-[60px] md:bottom-[80px] lg:bottom-[120px] w-[140px] md:w-[200px] lg:w-[260px] h-[150px] md:h-[216px] lg:h-[280px] pointer-events-none z-0">
+    <div className="relative flex-shrink-0 w-[320px] md:w-[600px] lg:w-[780px] h-auto md:h-[480px] lg:h-[516px] rounded-[20px] md:rounded-[20px] border border-[#E5E5E5] bg-white overflow-hidden">
+      {/* Decorative Shape - positioned in upper right on mobile, lower-left on desktop */}
+      <div className="absolute right-[20px] top-[60px] md:left-[30px] md:right-auto md:top-auto md:bottom-[80px] lg:left-[40px] lg:bottom-[120px] w-[120px] md:w-[200px] lg:w-[260px] h-[130px] md:h-[216px] lg:h-[280px] pointer-events-none z-0">
         <DecorativeShape className="w-full h-full" />
       </div>
 
-      {/* Card Content */}
-      <div className="relative z-10 flex flex-col md:flex-row gap-4 md:gap-[40px] lg:gap-[54px] h-full px-[20px] md:px-[40px] lg:px-[54px] py-[20px] md:py-[36px] lg:py-[44px]">
-        {/* Left Column - Label, Divider, Year */}
-        <div className="flex flex-col justify-between items-start w-full md:w-[280px] lg:w-[318px] h-auto md:h-full">
+      {/* Card Content - Mobile: single column, Desktop: two columns */}
+      <div className="relative z-10 flex flex-col md:flex-row gap-0 md:gap-[40px] lg:gap-[54px] h-full px-[24px] md:px-[40px] lg:px-[54px] py-[24px] md:py-[36px] lg:py-[44px]">
+        {/* Desktop Left Column - Label, Divider, Year (hidden on mobile) */}
+        <div className="hidden md:flex flex-col justify-between items-start w-[280px] lg:w-[318px] h-full">
           {/* Top: Label and Divider */}
-          <div className="flex flex-col gap-3 md:gap-4 w-full">
-            <p className="font-normal text-[14px] md:text-[18px] lg:text-[20px] text-black/50 tracking-[0.8px] leading-normal">
+          <div className="flex flex-col gap-4 w-full">
+            <p className="font-normal text-[18px] lg:text-[20px] text-black/50 tracking-[0.8px] leading-normal">
               {label}
             </p>
-            <div className="w-full md:w-[220px] lg:w-[281px] h-px bg-black/20" />
+            <div className="w-[220px] lg:w-[281px] h-px bg-black/20" />
           </div>
 
-          {/* Bottom: Year - hidden on mobile, shown on tablet/desktop */}
-          <p className="hidden md:block font-bold text-[100px] lg:text-[128px] text-[#E3E3E3] leading-none tracking-[0.04em]">
+          {/* Bottom: Year */}
+          <p className="font-bold text-[100px] lg:text-[128px] text-[#E3E3E3] leading-none tracking-[0.04em]">
             {year}
           </p>
         </div>
 
-        {/* Right Column - Description and Image */}
-        <div className="flex flex-col gap-4 md:gap-6 lg:gap-[53px] flex-1 md:w-[260px] lg:w-[301px]">
-          <p className="font-normal text-[14px] md:text-[15px] lg:text-[16px] text-black leading-[1.4] tracking-[0.04em]">
+        {/* Desktop Right Column - Description and Image (hidden on mobile) */}
+        <div className="hidden md:flex flex-col gap-6 lg:gap-[53px] flex-1 w-[260px] lg:w-[301px]">
+          <p className="font-normal text-[15px] lg:text-[16px] text-black leading-[1.4] tracking-[0.04em]">
             {description}
           </p>
 
           {/* Image */}
-          <div className="relative w-full h-[140px] md:h-[200px] lg:h-[260px] rounded-[12px] md:rounded-[14px] lg:rounded-[16px] overflow-hidden">
+          <div className="relative w-full h-[200px] lg:h-[260px] rounded-[14px] lg:rounded-[16px] overflow-hidden">
             <Image
               src={image}
               alt={`Timeline ${year}`}
               fill
               className="object-cover object-center"
-              sizes="(max-width: 768px) 280px, (max-width: 1024px) 260px, 301px"
+              sizes="(max-width: 1024px) 260px, 301px"
             />
           </div>
+        </div>
 
-          {/* Year - shown on mobile only, at bottom */}
-          <p className="md:hidden font-bold text-[64px] text-[#E3E3E3] leading-none tracking-[0.04em]">
+        {/* Mobile Layout - Single column with: Label -> Year -> Description -> Image */}
+        <div className="flex md:hidden flex-col w-full">
+          {/* Label */}
+          <p className="font-normal text-[16px] text-black/50 tracking-[0.8px] leading-normal mb-2">
+            {label}
+          </p>
+          
+          {/* Divider */}
+          <div className="w-full h-px bg-black/20 mb-4" />
+
+          {/* Year - large faded text */}
+          <p className="font-bold text-[80px] text-[#E3E3E3] leading-none tracking-[0.02em] mb-6">
             {year}
           </p>
+
+          {/* Description */}
+          <p className="font-normal text-[16px] text-black leading-[1.5] tracking-[0.02em] mb-6">
+            {description}
+          </p>
+
+          {/* Image - at bottom, full width */}
+          <div className="relative w-full h-[240px] rounded-[16px] overflow-hidden">
+            <Image
+              src={image}
+              alt={`Timeline ${year}`}
+              fill
+              className="object-cover object-center"
+              sizes="280px"
+            />
+          </div>
         </div>
       </div>
     </div>
