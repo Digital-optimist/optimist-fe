@@ -146,7 +146,7 @@ export function Navigation() {
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Left Navigation - Desktop */}
-            <div className="hidden md:flex items-center gap-8">
+            {/* <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link, index) => {
                 const isActive = pathname === link.href;
                 return (
@@ -186,7 +186,7 @@ export function Navigation() {
                   </motion.div>
                 );
               })}
-            </div>
+            </div> */}
 
             {/* Left Logo - Mobile */}
             <motion.div
@@ -235,7 +235,7 @@ export function Navigation() {
             </motion.div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-3 md:gap-4">
+            {/* <div className="flex items-center gap-3 md:gap-4">
               {isAuthenticated && (
                 <motion.div
                   custom={0}
@@ -436,12 +436,12 @@ export function Navigation() {
                   )}
                 </AnimatePresence>
               </motion.button>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* Mobile Navigation Menu */}
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {isMenuOpen && (
             <motion.div
               initial="hidden"
@@ -476,7 +476,7 @@ export function Navigation() {
                   );
                 })}
 
-                {/* Mobile Cart */}
+      
                 <motion.button
                   custom={navLinks.length}
                   initial="hidden"
@@ -583,7 +583,7 @@ export function Navigation() {
               </div>
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
       </motion.nav>
 
       {/* Cart Drawer */}
