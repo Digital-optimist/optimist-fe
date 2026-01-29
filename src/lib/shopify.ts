@@ -1157,6 +1157,74 @@ export async function customerDefaultAddressUpdate(
 }
 
 // =============================================================================
+// Customer Profile Update Operations
+// =============================================================================
+
+export interface CustomerUpdateInput {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  acceptsMarketing?: boolean;
+}
+
+export async function customerUpdate(
+  customerAccessToken: string,
+  customer: CustomerUpdateInput
+): Promise<Customer> {
+  const query = `
+    ${IMAGE_FRAGMENT}
+    ${ADDRESS_FRAGMENT}
+    ${CUSTOMER_FRAGMENT}
+    mutation CustomerUpdate($customerAccessToken: String!, $customer: CustomerUpdateInput!) {
+      customerUpdate(customerAccessToken: $customerAccessToken, customer: $customer) {
+        customer {
+          ...CustomerFragment
+        }
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        customerUserErrors {
+          field
+          message
+          code
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    customerUpdate: {
+      customer: Customer | null;
+      customerAccessToken: CustomerAccessToken | null;
+      customerUserErrors: { field: string[]; message: string; code: string }[];
+    };
+  }>({
+    query,
+    variables: { customerAccessToken, customer },
+  });
+
+  if (data.customerUpdate.customerUserErrors.length > 0) {
+    const error = data.customerUpdate.customerUserErrors[0];
+    // Provide user-friendly error messages
+    if (error.code === "TAKEN") {
+      throw new Error("This email or phone number is already in use by another account.");
+    }
+    if (error.code === "INVALID") {
+      throw new Error(`Invalid ${error.field?.join(" ") || "input"}: ${error.message}`);
+    }
+    throw new Error(error.message);
+  }
+
+  if (!data.customerUpdate.customer) {
+    throw new Error("Failed to update customer profile");
+  }
+
+  return data.customerUpdate.customer;
+}
+
+// =============================================================================
 // Waitlist / Newsletter Subscription
 // =============================================================================
 

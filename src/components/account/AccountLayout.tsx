@@ -17,9 +17,24 @@ interface AccountLayoutProps {
 
 // Mobile tab configuration
 const mobileTabs = [
-  { id: "profile" as const, label: "Profile", href: "/account", icon: UserCircle },
-  { id: "addresses" as const, label: "Addresses", href: "/account/addresses", icon: MapPin },
-  { id: "orders" as const, label: "Orders", href: "/account/orders", icon: Package },
+  {
+    id: "profile" as const,
+    label: "Profile",
+    href: "/account",
+    icon: UserCircle,
+  },
+  {
+    id: "addresses" as const,
+    label: "Addresses",
+    href: "/account/addresses",
+    icon: MapPin,
+  },
+  {
+    id: "orders" as const,
+    label: "Orders",
+    href: "/account/orders",
+    icon: Package,
+  },
 ];
 
 const slideUp = {
@@ -58,13 +73,13 @@ export default function AccountLayout({
   }, [isMobileMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header Banner */}
+    <div className="min-h-screen bg-white pt-[60px] lg:pt-[65px]">
+      {/* Header Banner - Full Width */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative h-[120px] sm:h-[140px] lg:h-[190px] mx-4 lg:mx-0 mt-4 lg:mt-0 rounded-[12px] lg:rounded-[7px] overflow-hidden"
+        className="relative h-[120px] sm:h-[160px] lg:h-[200px] w-full overflow-hidden"
         style={{
           backgroundImage:
             "linear-gradient(175.684deg, #1265FF 23.025%, #69CDEB 77.173%, #46F5A0 106.14%)",
@@ -75,24 +90,24 @@ export default function AccountLayout({
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="absolute left-[16px] sm:left-[24px] lg:left-[80px] top-1/2 -translate-y-1/2 font-display font-bold text-[22px] sm:text-[28px] lg:text-[54px] text-white leading-[1.1] max-w-[160px] sm:max-w-[200px] lg:max-w-[500px]"
+          className="absolute left-[16px] sm:left-[24px] lg:left-[80px] top-1/2 -translate-y-1/2 font-display font-bold text-[24px] sm:text-[32px] lg:text-[48px] text-white leading-[1.15] max-w-[180px] sm:max-w-[260px] lg:max-w-[450px]"
         >
           The weather&apos;s in good hands.
         </motion.p>
 
-        {/* Decorative AC Image */}
+        {/* Decorative Star Image */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+          initial={{ opacity: 0, scale: 0.8, rotate: -15 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="absolute right-[-30px] sm:right-[-20px] lg:right-[40px] top-1/2 -translate-y-1/2 w-[100px] sm:w-[140px] lg:w-[200px] h-[100px] sm:h-[140px] lg:h-[200px]"
+          className="absolute right-[16px] sm:right-[40px] lg:right-[80px] top-1/2 -translate-y-1/2 w-[90px] sm:w-[130px] lg:w-[180px] h-[90px] sm:h-[130px] lg:h-[180px]"
         >
           <Image
-            src={ASSETS.heroAc}
-            alt="Optimist AC"
-            width={200}
-            height={200}
-            className="object-contain drop-shadow-2xl rotate-[-15deg]"
+            src={ASSETS.clipPathGroup}
+            alt="Decorative"
+            width={180}
+            height={180}
+            className="object-contain"
           />
         </motion.div>
       </motion.div>
@@ -102,7 +117,7 @@ export default function AccountLayout({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
-        className="lg:hidden flex items-center gap-2 px-4 py-4 overflow-x-auto scrollbar-hide"
+        className="lg:hidden flex items-center gap-2 px-4 sm:px-6 py-4 overflow-x-auto scrollbar-hide"
       >
         {mobileTabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -135,7 +150,7 @@ export default function AccountLayout({
       </motion.div>
 
       {/* Main Content Area */}
-      <div className="relative flex">
+      <div className="relative flex px-4 sm:px-6 lg:px-20">
         {/* Mobile Menu Toggle - Full Menu */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -188,7 +203,7 @@ export default function AccountLayout({
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="hidden lg:block w-[280px] xl:w-[325px] min-h-[calc(100vh-190px)] border-r border-[#E5E5E5] px-4 py-12 flex-shrink-0"
+          className="hidden lg:block w-[260px] xl:w-[300px] min-h-[calc(100vh-230px)] border-r border-[#E5E5E5] pr-6 xl:pr-8 py-10 flex-shrink-0"
         >
           <AccountSidebar
             activeTab={activeTab}
@@ -234,7 +249,7 @@ export default function AccountLayout({
           initial="initial"
           animate="animate"
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex-1 px-4 lg:px-8 xl:px-12 py-6 lg:py-12 w-full lg:max-w-[949px]"
+          className="flex-1 pl-0 lg:pl-8 xl:pl-12 py-6 lg:py-10 w-full max-w-full lg:max-w-[900px]"
         >
           {children}
         </motion.main>

@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/Toast";
 import { AccountLayout } from "@/components/account";
@@ -30,25 +29,86 @@ interface ProfileFormData {
   lastName: string;
   email: string;
   phone: string;
-  dateOfBirth: string;
 }
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+}
+
+// Validation helpers
+const validateEmail = (email: string): string | undefined => {
+  if (!email.trim()) {
+    return "Email is required";
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return "Please enter a valid email address";
+  }
+  return undefined;
+};
+
+const validatePhone = (phone: string): string | undefined => {
+  if (!phone.trim()) {
+    return undefined; // Phone is optional
+  }
+  // Remove all non-digits for validation
+  const digitsOnly = phone.replace(/\D/g, "");
+  // Accept 10 digits (Indian mobile) or 10-15 digits with country code
+  if (digitsOnly.length < 10 || digitsOnly.length > 15) {
+    return "Please enter a valid phone number (10-15 digits)";
+  }
+  return undefined;
+};
+
+const validateName = (name: string, fieldName: string): string | undefined => {
+  if (!name.trim()) {
+    return `${fieldName} is required`;
+  }
+  if (name.trim().length < 2) {
+    return `${fieldName} must be at least 2 characters`;
+  }
+  if (name.trim().length > 50) {
+    return `${fieldName} must be less than 50 characters`;
+  }
+  // Only allow letters, spaces, hyphens, and apostrophes
+  const nameRegex = /^[a-zA-Z\s'-]+$/;
+  if (!nameRegex.test(name.trim())) {
+    return `${fieldName} can only contain letters, spaces, hyphens, and apostrophes`;
+  }
+  return undefined;
+};
+
+// Format phone number for display
+const formatPhoneDisplay = (phone: string): string => {
+  if (!phone) return "";
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 10) {
+    return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+  }
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return `+${digits.slice(0, 2)} ${digits.slice(2, 7)} ${digits.slice(7)}`;
+  }
+  return phone;
+};
 
 export default function AccountPage() {
   const router = useRouter();
-  const { customer, isAuthenticated, isLoading } = useAuth();
+  const { customer, isAuthenticated, isLoading, updateProfile } = useAuth();
   const { showToast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProfileFormData>({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    dateOfBirth: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -65,13 +125,51 @@ export default function AccountPage() {
         lastName: customer.lastName || "",
         email: customer.email || "",
         phone: customer.phone || "",
-        dateOfBirth: "",
       });
     }
   }, [customer]);
 
+  // Validate form
+  const validateForm = useCallback((): FormErrors => {
+    const newErrors: FormErrors = {};
+    
+    newErrors.firstName = validateName(formData.firstName, "First name");
+    newErrors.lastName = validateName(formData.lastName, "Last name");
+    newErrors.email = validateEmail(formData.email);
+    newErrors.phone = validatePhone(formData.phone);
+    
+    // Remove undefined errors
+    Object.keys(newErrors).forEach((key) => {
+      if (newErrors[key as keyof FormErrors] === undefined) {
+        delete newErrors[key as keyof FormErrors];
+      }
+    });
+    
+    return newErrors;
+  }, [formData]);
+
+  // Validate on blur
+  const handleBlur = (field: keyof ProfileFormData) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+  };
+
+  // Check if form has changes
+  const hasChanges = useCallback((): boolean => {
+    if (!customer) return false;
+    return (
+      formData.firstName !== (customer.firstName || "") ||
+      formData.lastName !== (customer.lastName || "") ||
+      formData.email !== (customer.email || "") ||
+      formData.phone !== (customer.phone || "")
+    );
+  }, [customer, formData]);
+
   const handleEditClick = () => {
     setIsEditing(true);
+    setErrors({});
+    setTouched({});
   };
 
   const handleCancelClick = () => {
@@ -82,39 +180,73 @@ export default function AccountPage() {
         lastName: customer.lastName || "",
         email: customer.email || "",
         phone: customer.phone || "",
-        dateOfBirth: "",
       });
     }
+    setErrors({});
+    setTouched({});
     setIsEditing(false);
   };
 
   const handleSaveClick = async () => {
+    // Validate all fields
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+    setTouched({
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+    });
+
+    // Check for validation errors
+    if (Object.keys(validationErrors).length > 0) {
+      showToast("Please fix the errors before saving", "error");
+      return;
+    }
+
+    // Check if there are any changes
+    if (!hasChanges()) {
+      showToast("No changes to save", "info");
+      setIsEditing(false);
+      return;
+    }
+
     setIsSaving(true);
     try {
-      // TODO: Implement customer update API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Format phone number for Shopify (E.164 format)
+      let formattedPhone = formData.phone;
+      if (formattedPhone) {
+        const digits = formattedPhone.replace(/\D/g, "");
+        if (digits.length === 10) {
+          formattedPhone = `+91${digits}`;
+        } else if (digits.length === 12 && digits.startsWith("91")) {
+          formattedPhone = `+${digits}`;
+        } else if (!formattedPhone.startsWith("+")) {
+          formattedPhone = `+${digits}`;
+        }
+      }
+
+      await updateProfile({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formattedPhone || undefined,
+      });
+
       showToast("Profile updated successfully", "success");
       setIsEditing(false);
     } catch (error) {
-      showToast("Failed to update profile", "error");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update profile";
+      showToast(errorMessage, "error");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 1024 * 1024) {
-        showToast("Image must be less than 1MB", "error");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  // Helper to show field error
+  const getFieldError = (field: keyof FormErrors): string | undefined => {
+    return touched[field] ? errors[field] : undefined;
   };
 
   if (isLoading) {
@@ -216,75 +348,68 @@ export default function AccountPage() {
 
         {/* Profile Fields */}
         <motion.div variants={fadeInUp} className="divide-y divide-[#E5E5E5]">
-          {/* Profile Photo */}
-          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
-            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
-              Your photo
-            </label>
-            <div className="flex items-center gap-4 flex-1">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[#E5E5E5]">
-                {profileImage ? (
-                  <Image
-                    src={profileImage}
-                    alt="Profile"
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[#737373] text-lg font-semibold">
-                    {formData.firstName?.[0]?.toUpperCase() || "U"}
-                  </div>
-                )}
-              </div>
-              {isEditing && (
-                <>
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-2 rounded-full bg-white border border-[#E5E5E5] shadow-[0px_4px_8px_-5px_rgba(0,0,0,0.15)] text-[#0A0A0A] text-[14px] font-medium hover:shadow-lg transition-all"
-                  >
-                    Choose
-                  </button>
-                  <span className="text-[14px] text-[#737373]">
-                    JPG or PNG. 1MB max
-                  </span>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </>
-              )}
-            </div>
-          </div>
-
           {/* Full Name */}
-          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
-            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-start py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0 pt-3">
               Full name
+              <span className="text-red-500 ml-0.5">*</span>
             </label>
             <div className="flex-1">
               {isEditing ? (
-                <div className="flex gap-4">
-                  <input
-                    type="text"
-                    value={formData.firstName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, firstName: e.target.value })
-                    }
-                    placeholder="First name"
-                    className="flex-1 h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
-                  />
-                  <input
-                    type="text"
-                    value={formData.lastName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lastName: e.target.value })
-                    }
-                    placeholder="Last name"
-                    className="flex-1 h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
-                  />
+                <div className="space-y-2">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={formData.firstName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            firstName: e.target.value,
+                          })
+                        }
+                        onBlur={() => handleBlur("firstName")}
+                        placeholder="First name"
+                        className={`w-full h-[48px] px-3 rounded-[10px] border bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:outline-none focus:ring-2 transition-all ${
+                          getFieldError("firstName")
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                            : "border-[#E5E5E5] focus:border-[#3478F6] focus:ring-[#3478F6]/20"
+                        }`}
+                      />
+                      {getFieldError("firstName") && (
+                        <div className="flex items-center gap-1 mt-1">
+                          <AlertCircle className="w-3 h-3 text-red-500" />
+                          <span className="text-[12px] text-red-500">
+                            {getFieldError("firstName")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={formData.lastName}
+                        onChange={(e) =>
+                          setFormData({ ...formData, lastName: e.target.value })
+                        }
+                        onBlur={() => handleBlur("lastName")}
+                        placeholder="Last name"
+                        className={`w-full h-[48px] px-3 rounded-[10px] border bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:outline-none focus:ring-2 transition-all ${
+                          getFieldError("lastName")
+                            ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                            : "border-[#E5E5E5] focus:border-[#3478F6] focus:ring-[#3478F6]/20"
+                        }`}
+                      />
+                      {getFieldError("lastName") && (
+                        <div className="flex items-center gap-1 mt-1">
+                          <AlertCircle className="w-3 h-3 text-red-500" />
+                          <span className="text-[12px] text-red-500">
+                            {getFieldError("lastName")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
@@ -297,21 +422,37 @@ export default function AccountPage() {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
-            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-start py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0 pt-3">
               Email
+              <span className="text-red-500 ml-0.5">*</span>
             </label>
             <div className="flex-1">
               {isEditing ? (
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="Enter your email"
-                  className="w-full h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
-                />
+                <div>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    onBlur={() => handleBlur("email")}
+                    placeholder="Enter your email"
+                    className={`w-full h-[48px] px-3 rounded-[10px] border bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:outline-none focus:ring-2 transition-all ${
+                      getFieldError("email")
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-[#E5E5E5] focus:border-[#3478F6] focus:ring-[#3478F6]/20"
+                    }`}
+                  />
+                  {getFieldError("email") && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <AlertCircle className="w-3 h-3 text-red-500" />
+                      <span className="text-[12px] text-red-500">
+                        {getFieldError("email")}
+                      </span>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
                   <span className="text-[16px] text-[#0A0A0A]">
@@ -323,64 +464,44 @@ export default function AccountPage() {
           </div>
 
           {/* Phone Number */}
-          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
-            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-start py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0 pt-3">
               Phone number
             </label>
             <div className="flex-1">
               {isEditing ? (
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  placeholder="+91 XXXXX XXXXX"
-                  className="w-full h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
-                />
+                <div>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    onBlur={() => handleBlur("phone")}
+                    placeholder="+91 XXXXX XXXXX"
+                    className={`w-full h-[48px] px-3 rounded-[10px] border bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:outline-none focus:ring-2 transition-all ${
+                      getFieldError("phone")
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                        : "border-[#E5E5E5] focus:border-[#3478F6] focus:ring-[#3478F6]/20"
+                    }`}
+                  />
+                  {getFieldError("phone") && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <AlertCircle className="w-3 h-3 text-red-500" />
+                      <span className="text-[12px] text-red-500">
+                        {getFieldError("phone")}
+                      </span>
+                    </div>
+                  )}
+                  <p className="text-[12px] text-[#737373] mt-1">
+                    Optional. Enter with country code (e.g., +91 for India)
+                  </p>
+                </div>
               ) : (
                 <div className="h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
                   <span className="text-[16px] text-[#0A0A0A]">
-                    {formData.phone || "Not set"}
+                    {formatPhoneDisplay(formData.phone) || "Not set"}
                   </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Date of Birth */}
-          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
-            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
-              Date of birth
-            </label>
-            <div className="flex-1">
-              {isEditing ? (
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={formData.dateOfBirth}
-                    onChange={(e) =>
-                      setFormData({ ...formData, dateOfBirth: e.target.value })
-                    }
-                    className="w-full h-[48px] px-3 pr-10 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
-                  />
-                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#737373] pointer-events-none" />
-                </div>
-              ) : (
-                <div className="relative h-[48px] px-3 pr-10 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
-                  <span className="text-[16px] text-[#0A0A0A]">
-                    {formData.dateOfBirth
-                      ? new Date(formData.dateOfBirth).toLocaleDateString(
-                          "en-IN",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )
-                      : "Not set"}
-                  </span>
-                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#737373]" />
                 </div>
               )}
             </div>

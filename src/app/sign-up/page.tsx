@@ -177,7 +177,7 @@ export default function SignUpPage() {
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: "url('/DesktopMobileGradient.png')",
+              backgroundImage: `url('${ASSETS.desktopMobileGradient}')`,
             }}
           />
 
@@ -330,7 +330,7 @@ export default function SignUpPage() {
             <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
-                backgroundImage: "url('/loginMobileGradient.png')",
+                backgroundImage: `url('${ASSETS.loginMobileGradient}')`,
               }}
             />
 

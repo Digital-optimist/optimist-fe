@@ -13,9 +13,11 @@ import {
   customerAccessTokenDelete,
   customerCreate,
   customerRecover,
+  customerUpdate,
   getCustomer,
   type Customer,
   type CustomerAccessToken,
+  type CustomerUpdateInput,
 } from "@/lib/shopify";
 
 // =============================================================================
@@ -40,6 +42,7 @@ interface AuthContextType extends AuthState {
   ) => Promise<void>;
   recoverPassword: (email: string) => Promise<void>;
   refreshCustomer: () => Promise<void>;
+  updateProfile: (data: CustomerUpdateInput) => Promise<void>;
 }
 
 // =============================================================================
@@ -201,6 +204,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [accessToken]);
 
+  // Update Profile
+  const updateProfile = useCallback(
+    async (data: CustomerUpdateInput) => {
+      if (!accessToken) {
+        throw new Error("Not authenticated");
+      }
+
+      const updatedCustomer = await customerUpdate(accessToken, data);
+      setCustomer(updatedCustomer);
+    },
+    [accessToken]
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -213,6 +229,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         recoverPassword,
         refreshCustomer,
+        updateProfile,
       }}
     >
       {children}

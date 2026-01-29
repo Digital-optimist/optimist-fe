@@ -145,6 +145,11 @@ export const ASSETS = {
   // Landing Page Assets
   rectangleBg: getAssetUrl("Rectangle 34625200.png"),
   shadowBg: getAssetUrl("Shadow #0011.png"),
+
+  // Auth Page Assets
+  loginMobileGradient: getAssetUrl("loginMobileGradient.png"),
+  desktopMobileGradient: getAssetUrl("DesktopMobileGradient.png"),
+  clipPathGroup: getAssetUrl("Clip path group.png"),
 } as const;
 
 export default ASSETS;

@@ -143,7 +143,7 @@ function ResetPasswordContent() {
             <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
-                backgroundImage: "url('/DesktopMobileGradient.png')",
+                backgroundImage: `url('${ASSETS.desktopMobileGradient}')`,
               }}
             />
 
@@ -281,7 +281,7 @@ function ResetPasswordContent() {
               <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{
-                  backgroundImage: "url('/loginMobileGradient.png')",
+                  backgroundImage: `url('${ASSETS.loginMobileGradient}')`,
                 }}
               />
               <div className="absolute top-[84px] left-1/2 -translate-x-1/2">
@@ -433,7 +433,7 @@ function ResetPasswordContent() {
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: "url('/DesktopMobileGradient.png')",
+              backgroundImage: `url('${ASSETS.desktopMobileGradient}')`,
             }}
           />
 
@@ -586,7 +586,7 @@ function ResetPasswordContent() {
             <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
-                backgroundImage: "url('/loginMobileGradient.png')",
+                backgroundImage: `url('${ASSETS.loginMobileGradient}')`,
               }}
             />
 
