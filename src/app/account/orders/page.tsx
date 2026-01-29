@@ -1,13 +1,10 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft,
   Package,
   Calendar,
   MapPin,
@@ -15,12 +12,29 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { AccountLayout } from "@/components/account";
 import { getCustomerOrders, formatPrice, type Order } from "@/lib/shopify";
 
+// Animation variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
 export default function OrdersPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { accessToken, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { accessToken, customer, isAuthenticated, isLoading: isAuthLoading } =
+    useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
@@ -52,78 +66,87 @@ export default function OrdersPage() {
     }
   }, [accessToken]);
 
-  useGSAP(
-    () => {
-      if (isLoading || isAuthLoading) return;
-
-      const elements = containerRef.current?.querySelectorAll(".animate-in");
-      if (!elements) return;
-
-      gsap.fromTo(
-        elements,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }
-      );
-    },
-    { scope: containerRef, dependencies: [isLoading, isAuthLoading] }
-  );
-
-  if (isAuthLoading || !isAuthenticated) {
+  if (isAuthLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-optimist-cream/30 border-t-optimist-cream rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="relative">
+            <div className="w-12 h-12 border-3 border-[#3478F6]/20 rounded-full" />
+            <div className="absolute top-0 left-0 w-12 h-12 border-3 border-transparent border-t-[#3478F6] rounded-full animate-spin" />
+          </div>
+          <p className="text-[#737373] text-sm animate-pulse">Loading...</p>
+        </motion.div>
       </div>
     );
   }
 
-  return (
-    <div ref={containerRef} className="min-h-screen pt-24 pb-16">
-      <div className="max-w-[1000px] mx-auto px-6 lg:px-12">
-        {/* Header */}
-        <div className="animate-in mb-8">
-          <Link
-            href="/account"
-            className="inline-flex items-center gap-2 text-optimist-cream-muted hover:text-optimist-cream transition-colors mb-6"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Account
-          </Link>
-          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-optimist-cream">
-            Order History
-          </h1>
-        </div>
+  if (!isAuthenticated || !customer) {
+    return null;
+  }
 
-        {/* Orders */}
+  return (
+    <AccountLayout
+      activeTab="orders"
+      customerName={customer.firstName || "User"}
+    >
+      <motion.div
+        variants={staggerContainer}
+        initial="initial"
+        animate="animate"
+        className="w-full"
+      >
+        {/* Section Header */}
+        <motion.div
+          variants={fadeInUp}
+          className="pb-6 border-b border-[#E5E5E5]"
+        >
+          <h1 className="text-[24px] font-semibold text-[#0A0A0A] leading-[1.5]">
+            Past orders
+          </h1>
+          <p className="text-[16px] text-[#737373] leading-[1.5]">
+            View and track your order history
+          </p>
+        </motion.div>
+
+        {/* Orders List */}
         {isLoading ? (
-          <div className="space-y-4">
+          <motion.div variants={fadeInUp} className="py-8 space-y-4">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-optimist-dark rounded-2xl p-6 animate-pulse"
-              >
-                <div className="h-6 w-32 bg-optimist-black rounded mb-4" />
-                <div className="h-4 w-48 bg-optimist-black rounded" />
-              </div>
+                className="h-24 bg-[#F5F5F5] rounded-xl animate-pulse"
+              />
             ))}
-          </div>
+          </motion.div>
         ) : orders.length === 0 ? (
-          <div className="animate-in text-center py-16 bg-optimist-dark rounded-2xl">
-            <Package className="w-16 h-16 text-optimist-cream-muted mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-optimist-cream mb-2">
+          <motion.div variants={fadeInUp} className="py-16 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#F5F5F5] flex items-center justify-center">
+              <Package className="w-8 h-8 text-[#737373]" />
+            </div>
+            <h2 className="text-[18px] font-semibold text-[#0A0A0A] mb-2">
               No orders yet
             </h2>
-            <p className="text-optimist-cream-muted mb-6">
+            <p className="text-[#737373] mb-6">
               When you place orders, they will appear here
             </p>
-            <Link
+            <a
               href="/products"
-              className="btn-primary px-6 py-3 rounded-full text-white font-medium inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-medium"
+              style={{
+                background:
+                  "linear-gradient(176.74deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                boxShadow: "inset 0px 2px 12.5px 2px #003FB2",
+              }}
             >
               Start Shopping
-            </Link>
-          </div>
+            </a>
+          </motion.div>
         ) : (
-          <div className="space-y-4">
+          <motion.div variants={fadeInUp} className="divide-y divide-[#E5E5E5]">
             {orders.map((order, index) => (
               <OrderCard
                 key={order.id}
@@ -135,10 +158,10 @@ export default function OrdersPage() {
                 }
               />
             ))}
-          </div>
+          </motion.div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </AccountLayout>
   );
 }
 
@@ -153,14 +176,12 @@ function OrderCard({
   isExpanded: boolean;
   onToggle: () => void;
 }) {
-  const statusColors: Record<string, string> = {
-    PAID: "bg-emerald-900/30 text-emerald-400 border-emerald-700",
-    PENDING: "bg-amber-900/30 text-amber-400 border-amber-700",
-    REFUNDED: "bg-red-900/30 text-red-400 border-red-700",
-    FULFILLED:
-      "bg-optimist-blue-primary/30 text-optimist-blue-light border-optimist-blue-primary",
-    UNFULFILLED:
-      "bg-optimist-cream-muted/10 text-optimist-cream-muted border-optimist-border",
+  const statusColors: Record<string, { bg: string; text: string }> = {
+    PAID: { bg: "bg-emerald-100", text: "text-emerald-700" },
+    PENDING: { bg: "bg-amber-100", text: "text-amber-700" },
+    REFUNDED: { bg: "bg-red-100", text: "text-red-700" },
+    FULFILLED: { bg: "bg-[rgba(52,120,246,0.1)]", text: "text-[#3478F6]" },
+    UNFULFILLED: { bg: "bg-[#F5F5F5]", text: "text-[#737373]" },
   };
 
   const date = new Date(order.processedAt).toLocaleDateString("en-IN", {
@@ -170,26 +191,31 @@ function OrderCard({
   });
 
   const lineItems = order.lineItems.edges.map((e) => e.node);
+  const status = statusColors[order.fulfillmentStatus] || statusColors.UNFULFILLED;
 
   return (
-    <div
-      className="animate-in bg-optimist-dark rounded-2xl overflow-hidden"
-      style={{ animationDelay: `${index * 0.05}s` }}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05 }}
+      className="py-4"
     >
-      {/* Order Header */}
+      {/* Order Header - Clickable */}
       <button
         onClick={onToggle}
-        className="w-full p-6 flex items-center justify-between hover:bg-optimist-black/20 transition-colors"
+        className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-[#FAFAFA] transition-colors"
       >
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-optimist-black flex items-center justify-center">
-            <Package className="w-6 h-6 text-optimist-cream-muted" />
+          <div className="w-12 h-12 rounded-xl bg-[#F5F5F5] flex items-center justify-center">
+            <Package className="w-6 h-6 text-[#737373]" />
           </div>
           <div className="text-left">
-            <p className="font-semibold text-optimist-cream">{order.name}</p>
-            <div className="flex items-center gap-3 mt-1 text-sm text-optimist-cream-muted">
+            <p className="text-[16px] font-semibold text-[#0A0A0A]">
+              {order.name}
+            </p>
+            <div className="flex items-center gap-3 mt-1 text-[14px] text-[#737373]">
               <span className="flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
+                <Calendar className="w-4 h-4" />
                 {date}
               </span>
               <span>•</span>
@@ -201,110 +227,112 @@ function OrderCard({
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="font-semibold text-optimist-cream">
-              {formatPrice(
-                order.totalPrice.amount,
-                order.totalPrice.currencyCode
-              )}
+            <p className="text-[16px] font-semibold text-[#0A0A0A]">
+              {formatPrice(order.totalPrice.amount, order.totalPrice.currencyCode)}
             </p>
             <span
-              className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full border ${
-                statusColors[order.fulfillmentStatus] ||
-                statusColors.UNFULFILLED
-              }`}
+              className={`inline-block mt-1 px-2 py-0.5 text-[12px] rounded-full ${status.bg} ${status.text}`}
             >
               {order.fulfillmentStatus.replace("_", " ")}
             </span>
           </div>
           {isExpanded ? (
-            <ChevronUp className="w-5 h-5 text-optimist-cream-muted" />
+            <ChevronUp className="w-5 h-5 text-[#737373]" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-optimist-cream-muted" />
+            <ChevronDown className="w-5 h-5 text-[#737373]" />
           )}
         </div>
       </button>
 
-      {/* Order Details */}
-      {isExpanded && (
-        <div className="px-6 pb-6 border-t border-optimist-border">
-          {/* Line Items */}
-          <div className="py-4 space-y-4">
-            {lineItems.map((item, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-optimist-black flex-shrink-0">
-                  {item.variant?.image ? (
-                    <Image
-                      src={item.variant.image.url}
-                      alt={item.title}
-                      fill
-                      sizes="64px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-optimist-cream-muted">
-                      <Package className="w-6 h-6" />
+      {/* Order Details - Expandable */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 pt-2 space-y-4">
+              {/* Line Items */}
+              <div className="space-y-3 p-4 bg-[#FAFAFA] rounded-xl">
+                {lineItems.map((item, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-[#E5E5E5] flex-shrink-0">
+                      {item.variant?.image ? (
+                        <Image
+                          src={item.variant.image.url}
+                          alt={item.title}
+                          fill
+                          sizes="56px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[#737373]">
+                          <Package className="w-6 h-6" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-optimist-cream truncate">
-                    {item.title}
-                  </p>
-                  <p className="text-sm text-optimist-cream-muted">
-                    Qty: {item.quantity}
-                  </p>
-                </div>
-                {item.variant?.price && (
-                  <p className="font-medium text-optimist-cream">
-                    {formatPrice(
-                      item.variant.price.amount,
-                      item.variant.price.currencyCode
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-medium text-[#0A0A0A] truncate">
+                        {item.title}
+                      </p>
+                      <p className="text-[13px] text-[#737373]">
+                        Qty: {item.quantity}
+                      </p>
+                    </div>
+                    {item.variant?.price && (
+                      <p className="text-[14px] font-medium text-[#0A0A0A]">
+                        {formatPrice(
+                          item.variant.price.amount,
+                          item.variant.price.currencyCode
+                        )}
+                      </p>
                     )}
-                  </p>
-                )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {/* Shipping Address */}
-          {order.shippingAddress && (
-            <div className="pt-4 border-t border-optimist-border">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-optimist-cream-muted mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-optimist-cream mb-1">
-                    Shipping Address
-                  </p>
-                  <address className="not-italic text-sm text-optimist-cream-muted">
-                    <p>
-                      {order.shippingAddress.firstName}{" "}
-                      {order.shippingAddress.lastName}
+              {/* Shipping Address */}
+              {order.shippingAddress && (
+                <div className="flex items-start gap-3 p-4 bg-[#FAFAFA] rounded-xl">
+                  <MapPin className="w-5 h-5 text-[#737373] mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-[14px] font-medium text-[#0A0A0A] mb-1">
+                      Shipping Address
                     </p>
-                    {order.shippingAddress.address1 && (
-                      <p>{order.shippingAddress.address1}</p>
-                    )}
-                    {order.shippingAddress.address2 && (
-                      <p>{order.shippingAddress.address2}</p>
-                    )}
-                    <p>
-                      {[
-                        order.shippingAddress.city,
-                        order.shippingAddress.province,
-                        order.shippingAddress.zip,
-                      ]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </p>
-                    {order.shippingAddress.country && (
-                      <p>{order.shippingAddress.country}</p>
-                    )}
-                  </address>
+                    <address className="not-italic text-[13px] text-[#737373] space-y-0.5">
+                      <p>
+                        {order.shippingAddress.firstName}{" "}
+                        {order.shippingAddress.lastName}
+                      </p>
+                      {order.shippingAddress.address1 && (
+                        <p>{order.shippingAddress.address1}</p>
+                      )}
+                      {order.shippingAddress.address2 && (
+                        <p>{order.shippingAddress.address2}</p>
+                      )}
+                      <p>
+                        {[
+                          order.shippingAddress.city,
+                          order.shippingAddress.province,
+                          order.shippingAddress.zip,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                      {order.shippingAddress.country && (
+                        <p>{order.shippingAddress.country}</p>
+                      )}
+                    </address>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
-          )}
-        </div>
-      )}
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

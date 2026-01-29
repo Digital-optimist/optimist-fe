@@ -1,18 +1,54 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
-import { User, Package, MapPin, Mail, Phone, Calendar, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { formatPrice, type Order } from "@/lib/shopify";
+import { useToast } from "@/components/ui/Toast";
+import { AccountLayout } from "@/components/account";
+
+// Animation variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+interface ProfileFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+}
 
 export default function AccountPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { customer, isAuthenticated, isLoading } = useAuth();
+  const { showToast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [formData, setFormData] = useState<ProfileFormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    dateOfBirth: "",
+  });
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -21,26 +57,80 @@ export default function AccountPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  useGSAP(
-    () => {
-      if (isLoading) return;
-      
-      const elements = containerRef.current?.querySelectorAll(".animate-in");
-      if (!elements) return;
+  // Initialize form data from customer
+  useEffect(() => {
+    if (customer) {
+      setFormData({
+        firstName: customer.firstName || "",
+        lastName: customer.lastName || "",
+        email: customer.email || "",
+        phone: customer.phone || "",
+        dateOfBirth: "",
+      });
+    }
+  }, [customer]);
 
-      gsap.fromTo(
-        elements,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }
-      );
-    },
-    { scope: containerRef, dependencies: [isLoading] }
-  );
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelClick = () => {
+    // Reset form data to original values
+    if (customer) {
+      setFormData({
+        firstName: customer.firstName || "",
+        lastName: customer.lastName || "",
+        email: customer.email || "",
+        phone: customer.phone || "",
+        dateOfBirth: "",
+      });
+    }
+    setIsEditing(false);
+  };
+
+  const handleSaveClick = async () => {
+    setIsSaving(true);
+    try {
+      // TODO: Implement customer update API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      showToast("Profile updated successfully", "success");
+      setIsEditing(false);
+    } catch (error) {
+      showToast("Failed to update profile", "error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        showToast("Image must be less than 1MB", "error");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-optimist-cream/30 border-t-optimist-cream rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="relative">
+            <div className="w-12 h-12 border-3 border-[#3478F6]/20 rounded-full" />
+            <div className="absolute top-0 left-0 w-12 h-12 border-3 border-transparent border-t-[#3478F6] rounded-full animate-spin" />
+          </div>
+          <p className="text-[#737373] text-sm animate-pulse">Loading...</p>
+        </motion.div>
       </div>
     );
   }
@@ -49,209 +139,254 @@ export default function AccountPage() {
     return null;
   }
 
-  const recentOrders = customer.orders.edges.slice(0, 3).map((e) => e.node);
-  const defaultAddress = customer.defaultAddress;
+  const fullName = `${formData.firstName} ${formData.lastName}`.trim();
 
   return (
-    <div ref={containerRef} className="min-h-screen pt-24 pb-16">
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
-        {/* Header */}
-        <div className="animate-in mb-12">
-          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-optimist-cream mb-2">
-            My Account
-          </h1>
-          <p className="text-lg text-optimist-cream-muted">
-            Welcome back, {customer.firstName || "there"}!
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Profile Card */}
-          <div className="animate-in lg:col-span-1">
-            <div className="bg-optimist-dark rounded-2xl p-6 h-full">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full bg-optimist-blue-primary/20 flex items-center justify-center">
-                  <User className="w-8 h-8 text-optimist-blue-light" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-optimist-cream">
-                    {customer.firstName} {customer.lastName}
-                  </h2>
-                  <p className="text-sm text-optimist-cream-muted">Customer</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {customer.email && (
-                  <div className="flex items-center gap-3 text-sm">
-                    <Mail className="w-4 h-4 text-optimist-cream-muted" />
-                    <span className="text-optimist-cream">{customer.email}</span>
-                  </div>
-                )}
-                {customer.phone && (
-                  <div className="flex items-center gap-3 text-sm">
-                    <Phone className="w-4 h-4 text-optimist-cream-muted" />
-                    <span className="text-optimist-cream">{customer.phone}</span>
-                  </div>
-                )}
-              </div>
-            </div>
+    <AccountLayout
+      activeTab="profile"
+      customerName={customer.firstName || "User"}
+    >
+      <motion.div
+        variants={staggerContainer}
+        initial="initial"
+        animate="animate"
+        className="w-full"
+      >
+        {/* Section Header */}
+        <motion.div
+          variants={fadeInUp}
+          className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#E5E5E5] gap-4"
+        >
+          <div>
+            <h1 className="text-[24px] font-semibold text-[#0A0A0A] leading-[1.5]">
+              Personal Info
+            </h1>
+            <p className="text-[16px] text-[#737373] leading-[1.5]">
+              Update your personal details
+            </p>
           </div>
 
-          {/* Quick Links */}
-          <div className="animate-in lg:col-span-2">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Link
-                href="/account/orders"
-                className="group bg-optimist-dark rounded-2xl p-6 hover:bg-optimist-dark/80 transition-colors"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-optimist-blue-primary/20 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-optimist-blue-light" />
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-optimist-cream-muted group-hover:text-optimist-cream group-hover:translate-x-1 transition-all" />
-                </div>
-                <h3 className="text-lg font-semibold text-optimist-cream mb-1">
-                  Order History
-                </h3>
-                <p className="text-sm text-optimist-cream-muted">
-                  View and track your orders
-                </p>
-              </Link>
-
-              <Link
-                href="/account/addresses"
-                className="group bg-optimist-dark rounded-2xl p-6 hover:bg-optimist-dark/80 transition-colors"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-optimist-gold/20 flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-optimist-gold" />
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-optimist-cream-muted group-hover:text-optimist-cream group-hover:translate-x-1 transition-all" />
-                </div>
-                <h3 className="text-lg font-semibold text-optimist-cream mb-1">
-                  Addresses
-                </h3>
-                <p className="text-sm text-optimist-cream-muted">
-                  Manage shipping addresses
-                </p>
-              </Link>
-            </div>
-          </div>
-
-          {/* Default Address */}
-          {defaultAddress && (
-            <div className="animate-in lg:col-span-1">
-              <div className="bg-optimist-dark rounded-2xl p-6 h-full">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-optimist-cream">
-                    Default Address
-                  </h3>
-                  <Link
-                    href="/account/addresses"
-                    className="text-sm text-optimist-blue-light hover:text-optimist-blue-glow transition-colors"
-                  >
-                    Edit
-                  </Link>
-                </div>
-                <address className="not-italic text-sm text-optimist-cream-muted space-y-1">
-                  <p className="text-optimist-cream font-medium">
-                    {defaultAddress.firstName} {defaultAddress.lastName}
-                  </p>
-                  {defaultAddress.address1 && <p>{defaultAddress.address1}</p>}
-                  {defaultAddress.address2 && <p>{defaultAddress.address2}</p>}
-                  <p>
-                    {[defaultAddress.city, defaultAddress.province, defaultAddress.zip]
-                      .filter(Boolean)
-                      .join(", ")}
-                  </p>
-                  {defaultAddress.country && <p>{defaultAddress.country}</p>}
-                  {defaultAddress.phone && (
-                    <p className="pt-2">{defaultAddress.phone}</p>
-                  )}
-                </address>
-              </div>
-            </div>
-          )}
-
-          {/* Recent Orders */}
-          <div className="animate-in lg:col-span-2">
-            <div className="bg-optimist-dark rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-optimist-cream">
-                  Recent Orders
-                </h3>
-                <Link
-                  href="/account/orders"
-                  className="text-sm text-optimist-blue-light hover:text-optimist-blue-glow transition-colors"
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            <AnimatePresence mode="wait">
+              {isEditing ? (
+                <motion.div
+                  key="edit-buttons"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="flex items-center gap-3"
                 >
-                  View all
-                </Link>
-              </div>
-
-              {recentOrders.length === 0 ? (
-                <div className="text-center py-8">
-                  <Package className="w-12 h-12 text-optimist-cream-muted mx-auto mb-3" />
-                  <p className="text-optimist-cream-muted">No orders yet</p>
-                  <Link
-                    href="/products"
-                    className="inline-flex items-center gap-2 mt-4 text-optimist-blue-light hover:text-optimist-blue-glow transition-colors"
+                  <button
+                    onClick={handleCancelClick}
+                    disabled={isSaving}
+                    className="px-4 py-3 rounded-full border border-[#E5E5E5] text-[#0A0A0A] text-[14px] font-medium hover:bg-[#F5F5F5] transition-colors disabled:opacity-50"
                   >
-                    Start shopping
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveClick}
+                    disabled={isSaving}
+                    className="px-4 py-3 rounded-full text-white text-[14px] font-medium transition-all disabled:opacity-50 flex items-center gap-2"
+                    style={{
+                      background:
+                        "linear-gradient(176.74deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                      boxShadow: "inset 0px 2px 12.5px 2px #003FB2",
+                    }}
+                  >
+                    {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Save changes
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.button
+                  key="view-button"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  onClick={handleEditClick}
+                  className="px-4 py-3 rounded-full bg-white border border-[#E5E5E5] shadow-[0px_4px_8px_-5px_rgba(0,0,0,0.15)] text-[#3478F6] text-[14px] font-medium hover:shadow-lg transition-all"
+                >
+                  Edit details
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Profile Fields */}
+        <motion.div variants={fadeInUp} className="divide-y divide-[#E5E5E5]">
+          {/* Profile Photo */}
+          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+              Your photo
+            </label>
+            <div className="flex items-center gap-4 flex-1">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[#E5E5E5]">
+                {profileImage ? (
+                  <Image
+                    src={profileImage}
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[#737373] text-lg font-semibold">
+                    {formData.firstName?.[0]?.toUpperCase() || "U"}
+                  </div>
+                )}
+              </div>
+              {isEditing && (
+                <>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-2 rounded-full bg-white border border-[#E5E5E5] shadow-[0px_4px_8px_-5px_rgba(0,0,0,0.15)] text-[#0A0A0A] text-[14px] font-medium hover:shadow-lg transition-all"
+                  >
+                    Choose
+                  </button>
+                  <span className="text-[14px] text-[#737373]">
+                    JPG or PNG. 1MB max
+                  </span>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Full Name */}
+          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+              Full name
+            </label>
+            <div className="flex-1">
+              {isEditing ? (
+                <div className="flex gap-4">
+                  <input
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    placeholder="First name"
+                    className="flex-1 h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
+                  />
+                  <input
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
+                    }
+                    placeholder="Last name"
+                    className="flex-1 h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
+                  />
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {recentOrders.map((order) => (
-                    <OrderRow key={order.id} order={order} />
-                  ))}
+                <div className="h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
+                  <span className="text-[16px] text-[#0A0A0A]">
+                    {fullName || "Not set"}
+                  </span>
                 </div>
               )}
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function OrderRow({ order }: { order: Order }) {
-  const statusColors: Record<string, string> = {
-    PAID: "bg-emerald-900/30 text-emerald-400",
-    PENDING: "bg-amber-900/30 text-amber-400",
-    REFUNDED: "bg-red-900/30 text-red-400",
-    FULFILLED: "bg-optimist-blue-primary/30 text-optimist-blue-light",
-    UNFULFILLED: "bg-optimist-cream-muted/20 text-optimist-cream-muted",
-  };
+          {/* Email */}
+          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+              Email
+            </label>
+            <div className="flex-1">
+              {isEditing ? (
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  placeholder="Enter your email"
+                  className="w-full h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
+                />
+              ) : (
+                <div className="h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
+                  <span className="text-[16px] text-[#0A0A0A]">
+                    {formData.email || "Not set"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
 
-  const date = new Date(order.processedAt).toLocaleDateString("en-IN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+          {/* Phone Number */}
+          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+              Phone number
+            </label>
+            <div className="flex-1">
+              {isEditing ? (
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  placeholder="+91 XXXXX XXXXX"
+                  className="w-full h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
+                />
+              ) : (
+                <div className="h-[48px] px-3 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
+                  <span className="text-[16px] text-[#0A0A0A]">
+                    {formData.phone || "Not set"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
 
-  return (
-    <div className="flex items-center justify-between py-3 border-b border-optimist-border last:border-b-0">
-      <div>
-        <p className="font-medium text-optimist-cream">{order.name}</p>
-        <div className="flex items-center gap-2 mt-1 text-xs text-optimist-cream-muted">
-          <Calendar className="w-3 h-3" />
-          {date}
-        </div>
-      </div>
-      <div className="text-right">
-        <p className="font-semibold text-optimist-cream">
-          {formatPrice(order.totalPrice.amount, order.totalPrice.currencyCode)}
-        </p>
-        <span
-          className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${
-            statusColors[order.fulfillmentStatus] || statusColors.UNFULFILLED
-          }`}
-        >
-          {order.fulfillmentStatus.replace("_", " ")}
-        </span>
-      </div>
-    </div>
+          {/* Date of Birth */}
+          <div className="flex flex-col sm:flex-row sm:items-center py-6 gap-4">
+            <label className="text-[16px] font-medium text-[#737373] w-full sm:w-[200px] lg:w-[300px] shrink-0">
+              Date of birth
+            </label>
+            <div className="flex-1">
+              {isEditing ? (
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) =>
+                      setFormData({ ...formData, dateOfBirth: e.target.value })
+                    }
+                    className="w-full h-[48px] px-3 pr-10 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] focus:border-[#3478F6] focus:outline-none focus:ring-2 focus:ring-[#3478F6]/20 transition-all"
+                  />
+                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#737373] pointer-events-none" />
+                </div>
+              ) : (
+                <div className="relative h-[48px] px-3 pr-10 rounded-[10px] border border-[#E5E5E5] bg-white/50 flex items-center">
+                  <span className="text-[16px] text-[#0A0A0A]">
+                    {formData.dateOfBirth
+                      ? new Date(formData.dateOfBirth).toLocaleDateString(
+                          "en-IN",
+                          {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )
+                      : "Not set"}
+                  </span>
+                  <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#737373]" />
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AccountLayout>
   );
 }

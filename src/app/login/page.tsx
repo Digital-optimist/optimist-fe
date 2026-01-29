@@ -89,7 +89,7 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
-      router.replace("/");
+      router.replace("/account");
     }
   }, [isAuthenticated, authLoading, router]);
 
@@ -259,11 +259,16 @@ export default function LoginPage() {
                 height={55}
                 className="object-contain"
               />
-              <div className="flex flex-col gap-[9px]" style={{ color: "#FFFFFF" }}>
+              <div
+                className="flex flex-col gap-[9px]"
+                style={{ color: "#FFFFFF" }}
+              >
                 <span className="font-display font-bold text-[25px] leading-none">
                   Highest ISEER
                 </span>
-                <span className="font-display text-[19px] leading-none">In India</span>
+                <span className="font-display text-[19px] leading-none">
+                  In India
+                </span>
               </div>
             </motion.div>
 
@@ -288,11 +293,16 @@ export default function LoginPage() {
                 height={52}
                 className="object-contain"
               />
-              <div className="flex flex-col gap-[9px]" style={{ color: "#FFFFFF" }}>
+              <div
+                className="flex flex-col gap-[9px]"
+                style={{ color: "#FFFFFF" }}
+              >
                 <span className="font-display font-bold text-[25px] leading-none">
                   4.8 rated
                 </span>
-                <span className="font-display text-[19px] leading-none">by early users</span>
+                <span className="font-display text-[19px] leading-none">
+                  by early users
+                </span>
               </div>
             </motion.div>
           </motion.div>
@@ -580,7 +590,10 @@ export default function LoginPage() {
                 transition={{ duration: 0.5 }}
                 type="submit"
                 disabled={isSubmitting}
-                whileHover={{ scale: 1.02, boxShadow: "0 10px 30px -10px rgba(52, 120, 246, 0.5)" }}
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0 10px 30px -10px rgba(52, 120, 246, 0.5)",
+                }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full h-[48px] lg:h-[52px] rounded-[36px] flex items-center justify-center text-[#FFFCDC] font-display font-semibold text-[14px] lg:text-[16px] leading-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
@@ -602,14 +615,20 @@ export default function LoginPage() {
                 transition={{ duration: 0.5 }}
                 className="flex items-center gap-3"
               >
-                <div className="flex-1 h-px" style={{ backgroundColor: "#E5E5E5" }} />
+                <div
+                  className="flex-1 h-px"
+                  style={{ backgroundColor: "#E5E5E5" }}
+                />
                 <span
                   className="text-[12px] lg:text-[16px] leading-[1.5] tracking-[0.24px] lg:tracking-[0.32px]"
                   style={{ color: "#737373" }}
                 >
                   Or
                 </span>
-                <div className="flex-1 h-px" style={{ backgroundColor: "#E5E5E5" }} />
+                <div
+                  className="flex-1 h-px"
+                  style={{ backgroundColor: "#E5E5E5" }}
+                />
               </motion.div>
 
               {/* Sign Up Link */}

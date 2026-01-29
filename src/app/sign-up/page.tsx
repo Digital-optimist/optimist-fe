@@ -79,7 +79,7 @@ export default function SignUpPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
-      router.replace("/");
+      router.replace("/account");
     }
   }, [isAuthenticated, authLoading, router]);
 
@@ -127,7 +127,7 @@ export default function SignUpPage() {
     try {
       await register(email, password, firstName.trim(), lastName.trim());
       showToast("Account created successfully!", "success");
-      router.push("/");
+      router.push("/account");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Registration failed";
