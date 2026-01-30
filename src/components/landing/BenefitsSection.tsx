@@ -173,10 +173,7 @@ export function BenefitsSection() {
       <div ref={triggerRef} className="py-8 md:py-12 lg:py-16">
         <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
           {/* Section Header */}
-          <div
-            ref={headerRef}
-            className="mb-8 md:mb-12 will-change-[transform,opacity]"
-          >
+          <div ref={headerRef} className="mb-4 will-change-[transform,opacity]">
             <p className="text-sm md:text-base text-[#212121] italic mb-2">
               New Generation of AC
             </p>
