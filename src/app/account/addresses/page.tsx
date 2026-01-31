@@ -418,19 +418,27 @@ export default function AddressesPage() {
           </AnimatePresence>
 
           {/* Add Address Button */}
-          {!isCreating && !editingId && (
-            <motion.div variants={fadeInUp} className="py-6">
-              <button
-                onClick={handleCreate}
-                className="flex items-center gap-1 text-[#3478F6] hover:opacity-70 transition-opacity"
+          <AnimatePresence>
+            {!isCreating && !editingId && (
+              <motion.div
+                key="add-address-button"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="py-6"
               >
-                <Plus className="w-5 h-5" />
-                <span className="text-[16px] font-medium underline">
-                  Add address
-                </span>
-              </button>
-            </motion.div>
-          )}
+                <button
+                  onClick={handleCreate}
+                  className="flex items-center gap-1 text-[#3478F6] hover:opacity-70 transition-opacity"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span className="text-[16px] font-medium underline">
+                    Add address
+                  </span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Empty State */}
           {addresses.length === 0 && !isCreating && (
