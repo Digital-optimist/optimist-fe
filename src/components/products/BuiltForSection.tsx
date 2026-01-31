@@ -125,7 +125,7 @@ export function BuiltForSection() {
             >
               <video
                 ref={videoRef}
-                src={ASSETS.videos.productCardAnimation}
+                src={ASSETS.videos.productCardAnimationWhite}
                 className="w-full h-full bg-white object-contain"
                 muted
                 playsInline

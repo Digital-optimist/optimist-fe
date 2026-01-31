@@ -180,7 +180,7 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
         src={ASSETS.heroAc}
         alt="Optimist AC"
         className="object-contain h-auto"
-        style={{ 
+        style={{
           width: isMobile ? "95%" : "auto",
           maxWidth: isMobile ? undefined : "800px",
           maxHeight: isMobile ? undefined : "320px",
@@ -226,7 +226,7 @@ export function HeroSection() {
   // Mouse parallax effect - push in opposite direction (desktop only)
   useEffect(() => {
     if (isMobile) return;
-    
+
     const container = parallaxContainerRef.current;
     const content = parallaxContentRef.current;
     if (!container || !content) return;
@@ -243,15 +243,15 @@ export function HeroSection() {
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
-      
+
       // Calculate mouse position relative to container center (0 to 1, centered at 0.5)
       const mouseX = (e.clientX - rect.left) / rect.width;
       const mouseY = (e.clientY - rect.top) / rect.height;
-      
+
       // Convert to -1 to 1 range (centered at 0)
       const normalizedX = (mouseX - 0.5) * 2;
       const normalizedY = (mouseY - 0.5) * 2;
-      
+
       // Invert for opposite direction push effect
       targetX = -normalizedX * maxMove;
       targetY = -normalizedY * maxMove;
@@ -267,14 +267,14 @@ export function HeroSection() {
       // Lerp towards target for smooth motion
       currentX += (targetX - currentX) * smoothness;
       currentY += (targetY - currentY) * smoothness;
-      
+
       // Apply transform
       gsap.set(content, {
         x: currentX,
         y: currentY,
         force3D: true,
       });
-      
+
       animationId = requestAnimationFrame(animate);
     };
 
@@ -282,13 +282,13 @@ export function HeroSection() {
     animationId = requestAnimationFrame(animate);
 
     // Add event listeners
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
       cancelAnimationFrame(animationId);
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [isMobile]);
 
@@ -381,47 +381,47 @@ export function HeroSection() {
       tl.fromTo(
         headlineRef.current?.querySelectorAll("span") || [],
         { opacity: 0, y: 60, rotateX: -15 },
-        { opacity: 1, y: 0, rotateX: 0, stagger: 0.15, duration: 1 }
+        { opacity: 1, y: 0, rotateX: 0, stagger: 0.15, duration: 1 },
       )
         // Badges fade in
         .fromTo(
           badgesRef.current,
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 0.8 },
-          "-=0.5"
+          "-=0.5",
         )
         // Desktop buttons
         .fromTo(
           buttonsRef.current?.children || [],
           { opacity: 0, x: 30 },
           { opacity: 1, x: 0, stagger: 0.1, duration: 0.6 },
-          "-=0.4"
+          "-=0.4",
         )
         // Mobile buttons
         .fromTo(
           mobileButtonsRef.current?.children || [],
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, stagger: 0.1, duration: 0.6 },
-          "-=0.6"
+          "-=0.6",
         )
         // AC Image with scale effect
         .fromTo(
           imageRef.current,
           { opacity: 0, y: 80, scale: 0.95 },
           { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" },
-          "-=0.8"
+          "-=0.8",
         );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
     <section
       ref={sectionRef}
       className="hero-section relative flex flex-col overflow-hidden bg-black"
-      style={{ 
-        height: isMobile ? '85vh' : '100vh',
-        minHeight: isMobile ? '600px' : '700px',
+      style={{
+        height: isMobile ? "85vh" : "100vh",
+        minHeight: isMobile ? "600px" : "700px",
       }}
     >
       {/* MOBILE LAYOUT */}
@@ -445,14 +445,15 @@ export function HeroSection() {
             ref={gradientRef}
             className="absolute inset-0 overflow-hidden"
             style={{
-              backgroundColor: '#000',
+              backgroundColor: "#000",
             }}
           >
             {/* Layer 1: Blue radial gradient base */}
             <div
               className="absolute inset-0"
               style={{
-                background: 'radial-gradient(ellipse 70% 50% at 50% 50%, #2563EB 0%, #1E40AF 25%, #1E3A8A 45%, #0a1628 75%, #000 100%)',
+                background:
+                  "radial-gradient(ellipse 70% 50% at 50% 50%, #2563EB 0%, #1E40AF 25%, #1E3A8A 45%, #0a1628 75%, #000 100%)",
               }}
             />
             {/* Layer 2: Light rays image with overlay blend mode */}
@@ -461,8 +462,8 @@ export function HeroSection() {
               alt=""
               className="absolute w-full h-full pointer-events-none"
               style={{
-                objectFit: 'cover',
-                objectPosition: 'left top',
+                objectFit: "cover",
+                objectPosition: "left top",
                 mixBlendMode: "overlay",
               }}
             />
@@ -481,7 +482,7 @@ export function HeroSection() {
                 mixBlendMode: 'multiply',
               }}
             /> */}
-             <video
+            <video
               src={ASSETS.videos.heroLeafVideo}
               autoPlay
               loop
@@ -489,9 +490,9 @@ export function HeroSection() {
               playsInline
               className="absolute inset-0 w-full h-full pointer-events-none"
               style={{
-                objectFit: 'cover',
-                objectPosition: 'left top',
-               
+                objectFit: "cover",
+                objectPosition: "left top",
+
                 opacity: 0.06,
               }}
             />
@@ -500,30 +501,24 @@ export function HeroSection() {
           {/* Content Container */}
           <div
             ref={contentRef}
-            className="relative z-10 flex-1 flex flex-col px-4"
+            className="relative z-10 flex-1 flex flex-col px-4 "
             style={{ willChange: "transform, opacity" }}
           >
-            <div 
-              className="flex flex-col"
-              style={{ paddingTop: '15vh' }}
-            >
+            <div className="flex flex-col" style={{ paddingTop: "15vh" }}>
               {/* Left Content */}
               <div className="flex flex-col gap-4">
                 {/* Headline */}
                 <h1
                   ref={headlineRef}
-                  className="hero-headline hero-headline-size italic"
+                  className="hero-headline hero-headline-size italic brightness-[0.8]"
                   style={{ perspective: "1000px" }}
                 >
-                  <span className="block">Best Cooling. </span>
-                  <span className="block">Lowest Bills.</span>
+                  <span className="block">The Real AC </span>
+                  <span className="block">Compromise ends here.</span>
                 </h1>
 
                 {/* Badges Row */}
-                <div
-                  ref={badgesRef}
-                  className="flex items-center gap-4 mt-6"
-                >
+                <div ref={badgesRef} className="flex items-center gap-4 mt-6">
                   {/* ISEER Badge */}
                   <div className="flex items-center gap-2">
                     <Image
@@ -569,7 +564,7 @@ export function HeroSection() {
                   className="flex items-center gap-3 mt-8"
                 >
                   <button
-                    onClick={() => scrollToSection('benefits')}
+                    onClick={() => scrollToSection("benefits")}
                     className="btn-why-optimist hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
                   >
                     Why Optimist ?
@@ -586,11 +581,11 @@ export function HeroSection() {
           </div>
 
           {/* AC Image - Mobile */}
-          <div 
-            className="absolute left-0 right-0 z-20"
+          <div
+            className="absolute left-0 right-0 z-20 brightness-[0.8]"
             style={{
-              top: '70vh',
-              transform: 'translateY(-50%)',
+              top: "70vh",
+              transform: "translateY(-50%)",
             }}
           >
             <HeroACImage isMobile={isMobile} />
@@ -605,9 +600,9 @@ export function HeroSection() {
             playsInline
             className="absolute inset-0 w-full h-full pointer-events-none z-30"
             style={{
-              objectFit: 'cover',
-              objectPosition: 'left top',
-             
+              objectFit: "cover",
+              objectPosition: "left top",
+
               opacity: 0.06,
             }}
           />
@@ -616,20 +611,24 @@ export function HeroSection() {
 
       {/* DESKTOP LAYOUT - Normal section matching Figma design */}
       {!isMobile && (
-        <div ref={parallaxContainerRef} className="relative w-full h-full flex flex-col overflow-hidden">
+        <div
+          ref={parallaxContainerRef}
+          className="relative w-full h-full flex flex-col overflow-hidden"
+        >
           {/* Background from Figma - layered blue gradient + light rays + shadow with darken blend */}
           <div
             ref={gradientRef}
             className="absolute inset-0 overflow-hidden"
             style={{
-              backgroundColor: '#000',
+              backgroundColor: "#000",
             }}
           >
             {/* Layer 1: Blue radial gradient base */}
             <div
               className="absolute inset-0"
               style={{
-                background: 'radial-gradient(ellipse 70% 50% at 50% 50%, #2563EB 0%, #1E40AF 25%, #1E3A8A 45%, #0a1628 75%, #000 100%)',
+                background:
+                  "radial-gradient(ellipse 70% 50% at 50% 50%, #2563EB 0%, #1E40AF 25%, #1E3A8A 45%, #0a1628 75%, #000 100%)",
               }}
             />
             {/* Layer 2: Light rays image with overlay blend mode */}
@@ -638,8 +637,8 @@ export function HeroSection() {
               alt=""
               className="absolute w-full h-full pointer-events-none"
               style={{
-                objectFit: 'cover',
-                objectPosition: 'left top',
+                objectFit: "cover",
+                objectPosition: "left top",
                 mixBlendMode: "overlay",
               }}
             />
@@ -654,11 +653,11 @@ export function HeroSection() {
               style={{
                 top: 0,
                 left: 0,
-                width: '120%',
-                height: '120%',
-                objectFit: 'cover',
-                objectPosition: 'left top',
-               
+                width: "120%",
+                height: "120%",
+                objectFit: "cover",
+                objectPosition: "left top",
+
                 opacity: 0.06,
               }}
             />
@@ -680,15 +679,18 @@ export function HeroSection() {
           </div>
 
           {/* Parallax content wrapper for mouse movement effect */}
-          <div ref={parallaxContentRef} className="relative z-10 flex-1 flex flex-col w-full h-full will-change-transform">
+          <div
+            ref={parallaxContentRef}
+            className="relative z-10 flex-1 flex flex-col w-full h-full will-change-transform"
+          >
             {/* Content Container - centered with max-width */}
             <div
               ref={contentRef}
               className="flex-1 flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
-              style={{ paddingTop: '140px' }}
+              style={{ paddingTop: "140px" }}
             >
               {/* Top Row: Headline+Badges on Left, Buttons on Right */}
-              <div className="flex flex-row justify-between items-start w-full">
+              <div className="flex flex-row justify-between brightness-[0.8] items-start w-full">
                 {/* Left Content */}
                 <div className="flex flex-col gap-4">
                   {/* Headline */}
@@ -697,15 +699,14 @@ export function HeroSection() {
                     className="hero-headline hero-headline-size italic"
                     style={{ perspective: "1000px" }}
                   >
-                    <span className="block">Best Cooling. </span>
-                    <span className="block">Lowest Bills.</span>
+                    <span className="block">The Real AC </span>
+                    <span className="block  text-[54px] leading-[54px] font-[600]">
+                      Compromise ends here.
+                    </span>
                   </h1>
 
                   {/* Badges Row */}
-                  <div
-                    ref={badgesRef}
-                    className="flex items-center gap-6 mt-6"
-                  >
+                  <div ref={badgesRef} className="flex items-center gap-6 mt-6">
                     {/* ISEER Badge */}
                     <div className="flex items-center gap-3">
                       <Image
@@ -750,12 +751,9 @@ export function HeroSection() {
                 </div>
 
                 {/* Right Content - Desktop CTA Buttons */}
-                <div
-                  ref={buttonsRef}
-                  className="flex items-center gap-4 mt-2"
-                >
+                <div ref={buttonsRef} className="flex items-center gap-4 mt-2">
                   <button
-                    onClick={() => scrollToSection('benefits')}
+                    onClick={() => scrollToSection("benefits")}
                     className="btn-why-optimist hero-btn-desktop text-optimist-cream flex items-center justify-center"
                   >
                     Why Optimist ?
@@ -771,12 +769,12 @@ export function HeroSection() {
             </div>
 
             {/* AC Image - Desktop: positioned at bottom center */}
-            <div 
+            <div
               ref={imageRef}
-              className="relative flex justify-center w-full"
+              className="relative flex justify-center w-full brightness-[0.8]"
               style={{
-                marginTop: 'auto',
-                paddingBottom: '40px',
+                marginTop: "auto",
+                paddingBottom: "40px",
               }}
             >
               <HeroACImage isMobile={false} />
@@ -794,10 +792,10 @@ export function HeroSection() {
             style={{
               top: 0,
               left: 0,
-              width: '120%',
-              height: '120%',
-              objectFit: 'cover',
-              objectPosition: 'left top',
+              width: "120%",
+              height: "120%",
+              objectFit: "cover",
+              objectPosition: "left top",
               mixBlendMode: "overlay",
               opacity: 0.06,
             }}

@@ -2,7 +2,7 @@
  * S3 Assets Configuration
  * All static assets are stored in the S3 bucket configured via environment variable
  */
-import favicon from "../../public/Favicon_Optimist_32px X 32px.png"
+import favicon from "../../public/Favicon_Optimist_32px X 32px.png";
 
 const S3_BUCKET_URL = "https://optimist-fe-assets.s3.amazonaws.com";
 
@@ -106,30 +106,31 @@ export const ASSETS = {
 
   // Hand Images (Optimist App Section)
 
-    filterTracking: getAssetUrl("Filter tracking.png"),
-    gasLevelIndicator: getAssetUrl("Gas level indicator.png"),
-    liveEnergyMeter: getAssetUrl("Live Energy Meter.png"),
-    projectedMonthlyBills: getAssetUrl("Projected Monthly Bills.png"),
-    scheduling: getAssetUrl("Scheduling.png"),
-    serviceAssistance: getAssetUrl("Service assistance.png"),
-  
+  filterTracking: getAssetUrl("Filter tracking.png"),
+  gasLevelIndicator: getAssetUrl("Gas level indicator.png"),
+  liveEnergyMeter: getAssetUrl("Live Energy Meter.png"),
+  projectedMonthlyBills: getAssetUrl("Projected Monthly Bills.png"),
+  scheduling: getAssetUrl("Scheduling.png"),
+  serviceAssistance: getAssetUrl("Service assistance.png"),
 
   // Icons
 
-    calendar: getAssetUrl("calendar.svg"),
-    filter: getAssetUrl("filter.svg"),
-    gastank: getAssetUrl("gastank.svg"),
-    headset: getAssetUrl("headset.svg"),
-    scroll: getAssetUrl("scroll.svg"),
-    thermometer: getAssetUrl("thermometer.svg"),
-  
+  calendar: getAssetUrl("calendar.svg"),
+  filter: getAssetUrl("filter.svg"),
+  gastank: getAssetUrl("gastank.svg"),
+  headset: getAssetUrl("headset.svg"),
+  scroll: getAssetUrl("scroll.svg"),
+  thermometer: getAssetUrl("thermometer.svg"),
 
   // Videos
   videos: {
     pointersAnimation: getAssetUrl("PointersAnimation.mp4"),
     productCardAnimation: getAssetUrl("ProductCardAnimation.mp4"),
+    productCardAnimationWhite: getAssetUrl("ProductCardAnimationWhite.mp4"),
     treeCool: getAssetUrl("TreeCool.mp4"),
-    heroLeafVideo:getAssetUrl("small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_9167357_small.mp4")
+    heroLeafVideo: getAssetUrl(
+      "small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_9167357_small.mp4",
+    ),
   },
 
   // About Page Assets
@@ -141,7 +142,7 @@ export const ASSETS = {
   teamMember: getAssetUrl("team-member.png"),
   timelineImage: getAssetUrl("timeline-image.jpg"),
   urbanLadderLogo: getAssetUrl("urban-ladder-logo.png"),
-  
+
   // Landing Page Assets
   rectangleBg: getAssetUrl("Rectangle 34625200.png"),
   shadowBg: getAssetUrl("Shadow #0011.png"),
