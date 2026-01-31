@@ -687,7 +687,7 @@ export function HeroSection() {
             <div
               ref={contentRef}
               className="flex-1 flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
-              style={{ paddingTop: "140px" }}
+              style={{ paddingTop: "12%" }}
             >
               {/* Top Row: Headline+Badges on Left, Buttons on Right */}
               <div className="flex flex-row justify-between brightness-[0.8] items-start w-full">
