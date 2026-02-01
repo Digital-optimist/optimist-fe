@@ -7,7 +7,7 @@ import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-  
+
   // Configure ScrollTrigger for optimal performance
   ScrollTrigger.config({
     // Limit calculations per scroll event
@@ -17,7 +17,7 @@ if (typeof window !== "undefined") {
     // Prevent redundant refreshes
     autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
   });
-  
+
   // Set default ScrollTrigger properties for better performance
   // Note: Don't set scrub default - let each animation control its own scrub value
   ScrollTrigger.defaults({
@@ -41,4 +41,3 @@ gsap.defaults({
 });
 
 export { gsap, ScrollTrigger };
-

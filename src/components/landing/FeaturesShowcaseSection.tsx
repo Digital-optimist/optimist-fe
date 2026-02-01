@@ -218,26 +218,47 @@ export function FeaturesShowcaseSection() {
 
       video.pause();
 
-      // Track target time for smoother seeking
+      // Track target time and current interpolated time for smoother seeking
       let targetTime = 0;
+      let currentTime = 0;
       let isSeekingAllowed = true;
+      let rafId: number | null = null;
 
-      // Use requestAnimationFrame for smoother video updates
+      // Lerp factor for smooth interpolation (lower = smoother but more lag)
+      const lerpFactor = 0.15;
+
+      // Use requestAnimationFrame with lerp for smoother video updates
       const updateVideoTime = () => {
         if (!isSeekingAllowed) return;
 
         if (video.readyState >= 1 && Number.isFinite(video.duration)) {
-          const diff = Math.abs(video.currentTime - targetTime);
-          if (diff > 0.03) {
+          // Lerp towards target time for smoother transitions
+          const diff = targetTime - currentTime;
+          
+          // If difference is very small, snap to target
+          if (Math.abs(diff) < 0.01) {
+            currentTime = targetTime;
+          } else {
+            // Smooth interpolation towards target
+            currentTime += diff * lerpFactor;
+          }
+
+          // Only seek if there's a meaningful difference
+          if (Math.abs(video.currentTime - currentTime) > 0.02) {
             if ("fastSeek" in video && typeof video.fastSeek === "function") {
               try {
-                video.fastSeek(targetTime);
+                video.fastSeek(currentTime);
               } catch {
-                video.currentTime = targetTime;
+                video.currentTime = currentTime;
               }
             } else {
-              video.currentTime = targetTime;
+              video.currentTime = currentTime;
             }
+          }
+
+          // Continue animation loop if not at target
+          if (Math.abs(targetTime - currentTime) > 0.01) {
+            rafId = requestAnimationFrame(updateVideoTime);
           }
         }
       };
@@ -250,13 +271,16 @@ export function FeaturesShowcaseSection() {
         onUpdate: (self) => {
           if (Number.isFinite(video.duration)) {
             targetTime = self.progress * video.duration;
-            requestAnimationFrame(updateVideoTime);
+            // Cancel any pending frame and start new animation loop
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(updateVideoTime);
           }
         },
       });
 
       return () => {
         isSeekingAllowed = false;
+        if (rafId) cancelAnimationFrame(rafId);
       };
     },
     {
@@ -276,20 +300,40 @@ export function FeaturesShowcaseSection() {
 
       video.pause();
 
-      // Track target time for smoother seeking
+      // Track target time and current interpolated time for smoother seeking
       let targetTime = 0;
+      let currentTime = 0;
       let rafId: number | null = null;
 
-      // Use requestAnimationFrame for smoother video updates
+      // Lerp factor for smooth interpolation (lower = smoother but more lag)
+      const lerpFactor = 0.12;
+
+      // Use requestAnimationFrame with lerp for smoother video updates
       const updateVideoTime = () => {
         if (video.readyState >= 1 && Number.isFinite(video.duration)) {
-          const diff = Math.abs(video.currentTime - targetTime);
-          if (diff > 0.03) {
+          // Lerp towards target time for smoother transitions
+          const diff = targetTime - currentTime;
+          
+          // If difference is very small, snap to target
+          if (Math.abs(diff) < 0.01) {
+            currentTime = targetTime;
+          } else {
+            // Smooth interpolation towards target
+            currentTime += diff * lerpFactor;
+          }
+
+          // Only seek if there's a meaningful difference
+          if (Math.abs(video.currentTime - currentTime) > 0.02) {
             try {
-              video.currentTime = targetTime;
-            } catch (e) {
+              video.currentTime = currentTime;
+            } catch {
               // Ignore seeking errors
             }
+          }
+
+          // Continue animation loop if not at target
+          if (Math.abs(targetTime - currentTime) > 0.01) {
+            rafId = requestAnimationFrame(updateVideoTime);
           }
         }
       };

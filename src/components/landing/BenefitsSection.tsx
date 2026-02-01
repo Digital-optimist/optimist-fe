@@ -108,6 +108,11 @@ export function BenefitsSection() {
         0,
       );
 
+      // Buffer zone: extra scroll distance at the start where first card stays visible
+      // This gives users time to view the first card before horizontal scroll begins
+      const bufferDistance = window.innerHeight * 0.4; // 40% of viewport height as buffer
+      const totalScrollDistance = bufferDistance + scrollDistance;
+
       // Header fade in animation - use 'to' since initial state is set
       const headerTrigger = gsap.to(headerRef.current, {
         opacity: 1,
@@ -123,15 +128,22 @@ export function BenefitsSection() {
       }).scrollTrigger;
       if (headerTrigger) triggers.push(headerTrigger);
 
+      // Calculate buffer ratio (what percentage of scroll is the buffer)
+      const bufferRatio = bufferDistance / totalScrollDistance;
+
       // Horizontal scroll animation - pins and scrolls cards horizontally
+      // Uses keyframes to create a buffer zone at the start
       const carouselTrigger = gsap.to(carousel, {
-        x: -scrollDistance,
+        keyframes: [
+          { x: 0, duration: bufferRatio }, // Stay at first card during buffer
+          { x: -scrollDistance, duration: 1 - bufferRatio }, // Then scroll to end
+        ],
         ease: "none",
         force3D: true,
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "top top", // Pin when section reaches top of viewport
-          end: () => `+=${scrollDistance}`,
+          end: () => `+=${totalScrollDistance}`,
           pin: true,
           scrub: 0.5, // Smoother scrub for professional feel
           anticipatePin: 1,
@@ -149,8 +161,9 @@ export function BenefitsSection() {
               newTotalWidth - newContainerWidth + newCardWidth * 0.1,
               0,
             );
-            self.vars.end = `+=${newScrollDistance}`;
-            gsap.set(carousel, { x: -self.progress * newScrollDistance });
+            const newBufferDistance = window.innerHeight * 0.4;
+            const newTotalScrollDistance = newBufferDistance + newScrollDistance;
+            self.vars.end = `+=${newTotalScrollDistance}`;
           },
         },
       }).scrollTrigger;
