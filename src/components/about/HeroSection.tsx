@@ -57,7 +57,7 @@ export function AboutHeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white pt-16 md:pt-16 lg:pt-16 pb-12 md:pb-16 lg:pb-20 overflow-hidden"
+      className="bg-white pt-24 pb-12 md:pb-16 lg:pb-20 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
         {/* Title - Cooling, built for a warming world. */}

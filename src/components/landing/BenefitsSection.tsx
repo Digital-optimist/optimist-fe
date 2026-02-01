@@ -7,19 +7,20 @@ import { ASSETS } from "@/lib/assets";
 
 const benefits = [
   {
-    id: 1,
-    badge: "Worried about AC bill shocks?",
-    headline: "India's Most Energy-Efficient AC.",
-    description: "Lowest electricity consumption every single day.",
-    image: ASSETS.b1,
-  },
-  {
     id: 2,
     badge: "Cooling fails in peak summer?",
     headline: "Tested to cool at 50°C.",
     description: "No performance drop when others derate.",
     image: ASSETS.b2,
   },
+  {
+    id: 1,
+    badge: "Worried about AC bill shocks?",
+    headline: "India's Most Energy-Efficient AC.",
+    description: "Lowest electricity consumption every single day.",
+    image: ASSETS.b1,
+  },
+
   {
     id: 3,
     badge: "Cooling taking forever?",
@@ -183,7 +184,7 @@ export function BenefitsSection() {
             </h2>
             {/* Mobile headline */}
             <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
-              Benefits that matter
+              Everything you need. Nothing you don&apos;t.
             </h2>
           </div>
 

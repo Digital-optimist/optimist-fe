@@ -112,7 +112,10 @@ export function FutureSection() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-white overflow-hidden max-w-[100vw]">
+    <section
+      ref={sectionRef}
+      className="bg-white overflow-hidden max-w-[100vw]"
+    >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 overflow-hidden">
         {/* Title */}
         <h2
@@ -157,7 +160,10 @@ export function FutureSection() {
               </p>
 
               {/* Features Grid */}
-              <div ref={featuresRef} className="relative w-full overflow-hidden">
+              <div
+                ref={featuresRef}
+                className="relative w-full overflow-hidden"
+              >
                 {/* Mobile 2x2 Grid */}
                 <div className="md:hidden w-full">
                   {/* Top Row */}
@@ -225,11 +231,11 @@ export function FutureSection() {
                 </div>
 
                 {/* Desktop Row Layout */}
-                <div className="hidden md:flex md:flex-row items-center justify-center gap-0">
+                <div className="hidden md:flex md:flex-row items-center justify-between gap-0">
                   {features.map((feature, index) => (
                     <div key={index} className="flex items-center">
                       {/* Feature Item */}
-                      <div className="feature-item flex flex-col items-center gap-4 w-[180px] lg:w-[205px]">
+                      <div className="feature-item flex flex-col items-center gap-4">
                         {/* Icon */}
                         <div className="w-10 h-10 relative">
                           <Image

@@ -1,7 +1,10 @@
 "use client";
 
 import { memo, useCallback } from "react";
-import { RadioFilledIcon, RadioEmptyIcon } from "@/components/icons/ProductIcons";
+import {
+  RadioFilledIcon,
+  RadioEmptyIcon,
+} from "@/components/icons/ProductIcons";
 
 // =============================================================================
 // Types
@@ -25,10 +28,10 @@ interface VariantCardProps {
 // Component
 // =============================================================================
 
-export const VariantCard = memo(function VariantCard({ 
-  variant, 
-  isSelected, 
-  onSelect 
+export const VariantCard = memo(function VariantCard({
+  variant,
+  isSelected,
+  onSelect,
 }: VariantCardProps) {
   const handleClick = useCallback(() => {
     onSelect(variant);
@@ -40,7 +43,7 @@ export const VariantCard = memo(function VariantCard({
       role="radio"
       aria-checked={isSelected}
       aria-label={`${variant.name} - ${variant.subtitle}`}
-      className={`relative flex-shrink-0 w-auto md:w-[157px] md:h-[94px] p-2.5 md:p-[10px] rounded-[8px] border transition-all text-left focus:outline-none flex flex-col justify-center ${
+      className={`relative flex-shrink-0 w-auto md:w-[180px] md:h-[94px] p-2.5 md:p-[10px] rounded-[8px] border transition-all text-left focus:outline-none flex flex-col justify-center ${
         isSelected
           ? "border-[#3478F6] bg-[rgba(52,120,246,0.06)]"
           : "border-[rgba(0,0,0,0.2)] bg-[rgba(0,0,0,0.04)] hover:border-[rgba(0,0,0,0.3)]"
@@ -57,7 +60,7 @@ export const VariantCard = memo(function VariantCard({
             <RadioEmptyIcon className="w-5 h-5" />
           )}
         </div>
-        
+
         {/* Variant Info */}
         <div className="flex flex-col gap-3 flex-1 min-w-0">
           <p className="font-semibold text-gray-900 text-sm">{variant.name}</p>
@@ -75,7 +78,7 @@ export const VariantCard = memo(function VariantCard({
             <RadioEmptyIcon className="w-5 h-5" />
           )}
         </div>
-        
+
         {/* Variant Info */}
         <div className="flex flex-col gap-1">
           <p className="font-semibold text-gray-900 text-sm">{variant.name}</p>

@@ -119,7 +119,7 @@ export function UserExperienceSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0
+        0,
       );
 
       // Cards stagger animation
@@ -135,7 +135,7 @@ export function UserExperienceSection() {
             ease: "power3.out",
             force3D: true,
           },
-          0.2
+          0.2,
         );
       }
 
@@ -149,10 +149,10 @@ export function UserExperienceSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0.5
+        0.5,
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
@@ -166,7 +166,9 @@ export function UserExperienceSection() {
           ref={headerRef}
           className="text-center mb-8 md:mb-12 will-change-[transform,opacity]"
         >
-          <p className="text-[#3478F6] text-sm md:text-base mb-2">Testimonials</p>
+          <p className="text-[#3478F6] text-sm md:text-base mb-2">
+            Testimonials
+          </p>
           <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-bold text-gray-900">
             What you&apos;ll notice at home.
           </h2>
@@ -196,10 +198,11 @@ export function UserExperienceSection() {
                     sizes="306px"
                   />
                   {/* Gradient Overlay */}
-                  <div 
+                  <div
                     className="absolute inset-0"
                     style={{
-                      background: "linear-gradient(180deg, rgba(0, 0, 0, 0) 44.76%, rgba(0, 0, 0, 1) 104.52%)"
+                      background:
+                        "linear-gradient(180deg, rgba(0, 0, 0, 0) 44.76%, rgba(0, 0, 0, 1) 104.52%)",
                     }}
                   />
 
@@ -243,10 +246,11 @@ export function UserExperienceSection() {
                     sizes="311px"
                   />
                   {/* Gradient Overlay */}
-                  <div 
+                  <div
                     className="absolute inset-0"
                     style={{
-                      background: "linear-gradient(180deg, rgba(0, 0, 0, 0) 44.76%, rgba(0, 0, 0, 1) 104.52%)"
+                      background:
+                        "linear-gradient(180deg, rgba(0, 0, 0, 0) 44.76%, rgba(0, 0, 0, 1) 104.52%)",
                     }}
                   />
 
@@ -284,9 +288,9 @@ export function UserExperienceSection() {
         {/* Footer Text */}
         <p
           ref={footerRef}
-          className="text-center mt-8 md:mt-12 text-base md:text-lg lg:text-xl font-medium text-gray-900 will-change-[transform,opacity]"
+          className="text-center mt-8 md:mt-12 text-lg md:text-xl lg:text-3xl font-medium text-gray-900 will-change-[transform,opacity]"
         >
-          Built for everyday living.{" "}
+          Built for everyday living. <br />
           <span className="text-[#3478F6]">Not just ideal conditions.</span>
         </p>
       </div>

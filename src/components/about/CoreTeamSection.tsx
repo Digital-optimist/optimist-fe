@@ -14,47 +14,43 @@ import { ASSETS } from "@/lib/assets";
 const teamData = [
   {
     id: 1,
-    title: "Our Founder",
-    role: "Ceo & Director",
-    name: "Ashish Gupta",
+    title: "Founder",
+    role: "CEO & Director",
+    name: "Ashish Goel",
     description:
-      "For years, finance teams have been promised automation, yet left doing the software's job themselves. For years, finance teams have been promised automation, yet left doing the software's job themselves.",
+      "Ashish Goel is a climate-tech builder and evangelist, former Founder & CEO of Urban Ladder, and a 5× Fortune 40 Under 40 awardee, now focused on building practical, engineering-led solutions for India's climate challenges.",
     image: ASSETS.teamFounder,
-    previousCompanies: [
-      ASSETS.urbanLadderLogo,
-      ASSETS.urbanLadderLogo,
-      ASSETS.urbanLadderLogo,
-    ],
+    previousCompanies: ["/accel.svg", "/sparrow.svg", "/spectrum.svg"],
   },
   {
     id: 2,
-    title: "Tech Head",
-    role: "CTO",
-    name: "Steve Matt",
+    title: "Co-Founder",
+    role: "Product & Engineering",
+    name: "Pranav Chopra",
     description:
-      "For years, finance teams have been promised automation, yet left doing the software's job themselves.",
+      "Pranav Chopra is a technology entrepreneur and co-founder of Optimist, building India-first climate tech cooling solutions to solve heat challenges. He drives product innovation and engineering execution with a focus on impact and scale.",
     image: ASSETS.teamMember,
-    previousCompanies: [ASSETS.urbanLadderLogo],
+    previousCompanies: ["/accel.svg", "/sparrow.svg"],
   },
   {
     id: 3,
-    title: "Tech Head",
-    role: "CTO",
-    name: "Steve Matt",
+    title: "Chief Innovation Officer",
+    role: "Innovation & Quality",
+    name: "Manjunath Vittala Rao",
     description:
-      "For years, finance teams have been promised automation, yet left doing the software's job themselves.",
+      "Manjunath Vittala Rao is the Chief Innovation Officer at Optimist, leading innovation and standards-led quality thinking as the company builds India-first, high-performance cooling for real heat conditions.",
     image: ASSETS.teamMember,
-    previousCompanies: [ASSETS.urbanLadderLogo],
+    previousCompanies: ["/spectrum.svg"],
   },
   {
     id: 4,
-    title: "Tech Head",
-    role: "CTO",
-    name: "Steve Matt",
+    title: "Advisor",
+    role: "Technical Advisor",
+    name: "Prof. Anurag Goyal",
     description:
-      "For years, finance teams have been promised automation, yet left doing the software's job themselves.",
+      "Prof. Anurag Goyal is an advisor at Optimist, bringing deep research and practical insight from his work on HVAC, heat transfer, and energy storage as an Assistant Professor of Mechanical Engineering at IIT Delhi, grounded in rigorous engineering principles.",
     image: ASSETS.teamMember,
-    previousCompanies: [ASSETS.urbanLadderLogo],
+    previousCompanies: ["/accel.svg"],
   },
 ];
 
@@ -128,7 +124,7 @@ function TeamCard({
       className={`flex flex-col gap-3 flex-shrink-0 transition-all duration-500 ease-out ${
         isFocused
           ? "w-[320px] md:w-[480px] lg:w-[576px]"
-          : "w-[320px] md:w-[300px] lg:w-[340px]"
+          : "w-[320px] md:w-[300px] lg:w-[390px]"
       }`}
     >
       {/* Image Card */}
@@ -155,7 +151,7 @@ function TeamCard({
           className={`absolute transition-all duration-500 ease-out ${
             isFocused
               ? "right-0 bottom-0 w-[200px] md:w-[260px] lg:w-[292px] h-[280px] md:h-[350px] lg:h-[399px]"
-              : "left-1/2 -translate-x-1/2 bottom-0 w-[200px] md:w-[250px] lg:w-[298px] h-[280px] md:h-[380px] lg:h-[380px]"
+              : "left-3/4 -translate-x-1/2 bottom-0 w-[200px] md:w-[250px] lg:w-[298px] h-[280px] md:h-[380px] lg:h-[380px]"
           }`}
         >
           <Image
@@ -278,6 +274,25 @@ export function CoreTeamSection() {
 
     const container = scrollContainerRef.current;
     const containerRect = container.getBoundingClientRect();
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+
+    // Calculate max scroll (accounting for trailing spacer)
+    const maxScroll = scrollWidth - clientWidth;
+
+    // Check if scrolled to the end (with small threshold)
+    const isAtEnd = scrollLeft >= maxScroll - 20;
+
+    // If at the end, focus the last card
+    if (isAtEnd && maxScroll > 0) {
+      return teamData.length - 1;
+    }
+
+    // Check if at the start
+    const isAtStart = scrollLeft <= 20;
+    if (isAtStart) {
+      return 0;
+    }
+
     // For mobile: center of container, for desktop: 30% from left
     const focusPoint = forMobile
       ? containerRect.left + containerRect.width / 2
@@ -286,6 +301,7 @@ export function CoreTeamSection() {
     let closestIndex = 0;
     let closestDistance = Infinity;
 
+    // Find the card closest to the focus point
     cardRefs.current.forEach((card, index) => {
       if (card) {
         const cardRect = card.getBoundingClientRect();
@@ -298,6 +314,28 @@ export function CoreTeamSection() {
         }
       }
     });
+
+    // Additional check: if we're in the last 25% of scroll, prefer later cards
+    const scrollProgress = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+    if (scrollProgress > 0.75 && closestIndex < teamData.length - 1) {
+      // Check if the next card is reasonably close
+      const nextCard = cardRefs.current[closestIndex + 1];
+      if (nextCard) {
+        const nextCardRect = nextCard.getBoundingClientRect();
+        const nextCardCenter = nextCardRect.left + nextCardRect.width / 2;
+        // If next card is visible in viewport, consider focusing it
+        if (
+          nextCardCenter < containerRect.right &&
+          nextCardCenter > containerRect.left
+        ) {
+          const nextDistance = Math.abs(focusPoint - nextCardCenter);
+          // More lenient threshold for later cards when near end
+          if (nextDistance < closestDistance * 1.5) {
+            closestIndex = closestIndex + 1;
+          }
+        }
+      }
+    }
 
     return closestIndex;
   }, []);
@@ -503,7 +541,7 @@ export function CoreTeamSection() {
           ref={scrollContainerRef}
           onScroll={updateScrollState}
           onTouchStart={handleTouchStart}
-          className="overflow-x-auto scrollbar-hide pb-4"
+          className="overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory md:snap-none"
         >
           <div
             ref={cardsRef}
@@ -515,6 +553,7 @@ export function CoreTeamSection() {
                 ref={(el) => {
                   cardRefs.current[index] = el;
                 }}
+                className="snap-center md:snap-align-none"
               >
                 <TeamCard
                   title={member.title}
@@ -529,6 +568,11 @@ export function CoreTeamSection() {
                 />
               </div>
             ))}
+            {/* Trailing spacer to allow last cards to reach focus point */}
+            <div
+              className="flex-shrink-0 w-[calc(50vw-200px)] md:w-[calc(40vw-150px)] lg:w-[calc(30vw-100px)]"
+              aria-hidden="true"
+            />
           </div>
         </div>
 

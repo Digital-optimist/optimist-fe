@@ -327,7 +327,7 @@ export default function ProductsPageClient({
 
             {/* Right Column - Product Info */}
             <motion.div
-              className="w-full space-y-3 md:space-y-6"
+              className="w-full space-y-4 md:space-y-6"
               initial="hidden"
               animate="visible"
               variants={heroInfoContainerVariants}
@@ -335,55 +335,32 @@ export default function ProductsPageClient({
               {/* Badge */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="flex items-center gap-2"
+                className="flex items-center"
               >
-                <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[#3478F6] text-white text-xs md:text-sm font-medium rounded-full">
-                  Blue Pill
-                </span>
-                <span className="text-[#6c6a6a] text-xs md:text-sm">
-                  Customer favourite
+                <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[rgba(52,120,246,0.12)] text-[#3478F6] text-xs md:text-sm font-normal rounded-full shadow-[inset_0px_-2px_4px_0px_#ccdeff]">
+                  #BESTSELLER
                 </span>
               </motion.div>
 
               {/* Title & Delivery */}
-              <motion.div variants={heroInfoItemVariants}>
-                <h1 className="text-[28px] md:text-[40px] font-semibold text-black mb-2 leading-tight">
-                  Optimist AC · 1.5 Ton
+              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-2">
+                <h1 className="text-[28px] md:text-[40px] font-semibold text-black leading-tight">
+                  Optimist AC 1.5 Ton
                 </h1>
                 <div className="flex items-center gap-2 text-[#6c6a6a]">
                   <PackageIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                   <span className="text-xs md:text-sm">
-                    Delivery in ~3 weeks
+                    Delivery in 3 weeks
                   </span>
                 </div>
               </motion.div>
 
-              {/* Description */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-3"
-              >
-                <h3 className="text-sm md:text-lg font-semibold text-black">
-                  Engineered for Indian reality.
-                </h3>
-                <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
-                  Consistent cooling at 45°C. Bills that stay predictable.
-                  Performance that doesn&apos;t fade when you need it most.
-                </p>
-              </motion.div>
-
-              {/* Divider */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="h-px bg-gray-200 w-full"
-              />
-
               {/* Variants */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="flex flex-col gap-4"
+                className="flex flex-col gap-4 md:gap-6"
               >
-                <h3 className="text-sm md:text-base font-medium text-black">
+                <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
                   Variants
                 </h3>
                 <div
@@ -404,56 +381,23 @@ export default function ProductsPageClient({
                 </div>
               </motion.div>
 
-              {/* Price */}
+              {/* Total/Price */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="flex flex-col gap-3 md:gap-4"
+                className="flex flex-col gap-2"
               >
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-sm md:text-base font-medium text-black">
-                    Price
-                  </h3>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="text-2xl md:text-3xl font-semibold text-black">
-                        ₹{formatPrice(selectedVariant.price)}
-                      </span>
-                      <span className="text-[#6c6a6a] text-sm md:text-base font-light">
-                        (Inclusive of all taxes)
-                      </span>
-                    </div>
-                    <p className="text-[#3478F6] text-xs md:text-sm font-medium">
-                      Designed for lower long-term costs
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* What's Included */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-4"
-              >
-                <h3 className="text-sm md:text-base font-medium text-black">
-                  What&apos;s Included
+                <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                  Total
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {WHATS_INCLUDED.map((feature, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-3 py-1.5 bg-[rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.08)] rounded-full text-xs md:text-sm text-black font-medium"
-                    >
-                      {feature}
-                    </span>
-                  ))}
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-2xl md:text-3xl font-semibold text-black">
+                    ₹{formatPrice(selectedVariant.price)}
+                  </span>
+                  <span className="text-[#6c6a6a] text-sm md:text-base font-light">
+                    (inclusive of all the taxes)
+                  </span>
                 </div>
               </motion.div>
-
-              {/* Divider */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="h-px bg-gray-200 w-full"
-              />
 
               {/* Quantity */}
               <motion.div variants={heroInfoItemVariants}>
@@ -469,12 +413,12 @@ export default function ProductsPageClient({
               {/* Action Buttons */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="hidden md:flex flex gap-5"
+                className="hidden md:flex gap-4"
               >
                 <motion.button
                   onClick={handleAddToCart}
                   disabled={isCartLoading}
-                  className="flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border border-[rgba(0,0,0,0.12)] rounded-[40px] text-black font-medium text-base hover:border-[rgba(0,0,0,0.24)] transition-all disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border border-[rgba(0,0,0,0.12)] rounded-full text-black font-medium text-base hover:border-[rgba(0,0,0,0.24)] transition-all disabled:opacity-50"
                   whileHover={{ scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.2 }}
@@ -483,13 +427,114 @@ export default function ProductsPageClient({
                   <span>Add to Cart</span>
                 </motion.button>
                 <motion.button
-                  className="flex-1 px-6 py-4 rounded-[36px] text-[#FFFCDC] font-medium text-base text-center transition-all btn-buy-now"
+                  className="flex-1 px-6 py-4 rounded-full text-[#FFFCDC] font-medium text-base text-center transition-all btn-buy-now"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.2 }}
                 >
                   Buy Now
                 </motion.button>
+              </motion.div>
+
+              {/* Divider */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="h-px bg-gray-200 w-full"
+              />
+
+              {/* Description Accordion */}
+              <motion.div variants={heroInfoItemVariants}>
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer py-2">
+                    <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                      Description
+                    </h3>
+                    <svg
+                      className="w-5 h-5 text-black transition-transform group-open:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div className="pt-2 pb-4">
+                    <h4 className="text-sm md:text-base font-semibold text-black mb-2">
+                      Engineered for Indian reality.
+                    </h4>
+                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
+                      Consistent cooling at 45°C. Bills that stay predictable.
+                      Performance that doesn&apos;t fade when you need it most.
+                    </p>
+                  </div>
+                </details>
+              </motion.div>
+
+              {/* Divider */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="h-px bg-gray-200 w-full"
+              />
+
+              {/* Warranty Return Accordion */}
+              <motion.div variants={heroInfoItemVariants}>
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer py-2">
+                    <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                      Warranty Return
+                    </h3>
+                    <svg
+                      className="w-5 h-5 text-black transition-transform group-open:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div className="pt-2 pb-4">
+                    <div className="flex flex-wrap gap-2">
+                      {WHATS_INCLUDED.map((feature, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-3 py-1.5 bg-[rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.08)] rounded-full text-xs md:text-sm text-black font-medium"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              </motion.div>
+
+              {/* Divider */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="h-px bg-gray-200 w-full"
+              />
+
+              {/* More Info Accordion */}
+              <motion.div variants={heroInfoItemVariants}>
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer py-2">
+                    <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                      More Info
+                    </h3>
+                    <svg
+                      className="w-5 h-5 text-black transition-transform group-open:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div className="pt-2 pb-4">
+                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
+                      Designed for lower long-term costs with highest ISEER rating and true tonnage performance.
+                    </p>
+                  </div>
+                </details>
               </motion.div>
             </motion.div>
           </div>

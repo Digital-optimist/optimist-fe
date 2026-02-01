@@ -42,7 +42,7 @@ const PalmTreeClipDef = memo(function PalmTreeClipDef() {
 // Palm Tree with Video - Using clip-path mask like IndiaFirstSection
 const PalmTreeDecoration = memo(function PalmTreeDecoration() {
   return (
-    <div className="relative bg-white border border-gray-200 rounded-[24px] md:rounded-[32px] overflow-hidden w-[280px] lg:w-[349px] h-[390px] lg:h-[490px] flex items-center justify-center">
+    <div className="relative bg-white overflow-hidden w-[280px] lg:w-[349px] h-[390px] lg:h-[490px] flex items-center justify-center">
       <div
         className="relative w-[90%] aspect-[349/490]"
         style={{ clipPath: "url(#palmTreeClipPath)" }}
@@ -83,13 +83,17 @@ const ValueCard = memo(function ValueCard({
   subtitle,
   description,
 }: ValueCardProps) {
+  const firstLetter = title.charAt(0);
+  const restOfTitle = title.slice(1);
+
   return (
     <div className="flex flex-col gap-4 lg:gap-5 w-full lg:w-[440px]">
       {/* Header with star icon and title */}
       <div className="flex items-center gap-2 lg:gap-3">
         <StarIcon className="w-6 h-6 lg:w-8 lg:h-8 shrink-0" />
         <h3 className="font-bold text-base lg:text-2xl text-black leading-[1.4]">
-          {title}
+          <span className="text-xl lg:text-3xl text-[#3478F6]">{firstLetter}</span>
+          {restOfTitle}
         </h3>
       </div>
       {/* Description */}
