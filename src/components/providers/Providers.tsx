@@ -5,6 +5,7 @@ import { ShopifyProvider } from "@shopify/hydrogen-react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { WaitlistProvider } from "@/contexts/WaitlistContext";
+import { ProductsProvider } from "@/contexts/ProductsContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import { WaitlistModal } from "@/components/ui/WaitlistModal";
 
@@ -24,10 +25,12 @@ export function Providers({ children }: ProvidersProps) {
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
-            <WaitlistProvider>
-              {children}
-              <WaitlistModal />
-            </WaitlistProvider>
+            <ProductsProvider>
+              <WaitlistProvider>
+                {children}
+                <WaitlistModal />
+              </WaitlistProvider>
+            </ProductsProvider>
           </CartProvider>
         </AuthProvider>
       </ToastProvider>

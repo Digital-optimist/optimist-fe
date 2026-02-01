@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, Suspense, useEffect, useLayoutEffect } from "react";
+import { useRef, useState, Suspense, useEffect, useLayoutEffect, useMemo } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -9,6 +9,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { useProducts } from "@/contexts/ProductsContext";
 import { useToast } from "@/components/ui/Toast";
 import { ASSETS } from "@/lib/assets";
 
@@ -96,19 +97,25 @@ function ACModelCanvas() {
 }
 
 const capacityTabs = [
-  { id: "1.0", label: "1.0 TON" },
-  { id: "1.5", label: "1.5 TON" },
-  { id: "2.0", label: "2.0 TON" },
+  { id: "1", label: "1 TON", tonnage: "1" },
+  { id: "1.5", label: "1.5 TON", tonnage: "1.5" },
+  { id: "2", label: "2 TON", tonnage: "2" },
 ];
 
-const products = {
-  "1.0": {
+// Fallback prices when Shopify data is unavailable (matching Shopify prices)
+const FALLBACK_PRICES: Record<string, number> = {
+  "1": 30000,
+  "1.5": 40000,
+  "2": 50000,
+};
+
+const productDetails = {
+  "1": {
     id: "u10x",
     rating: "4.8",
     headline: "Designed for compact rooms.",
     tagline: "Runs lighter. Costs less.",
     features: ["Engineered to cool", "Built to save", "Easy to maintain"],
-    price: "Rs 45,000.00",
     savings: "For long term savings",
   },
   "1.5": {
@@ -117,19 +124,27 @@ const products = {
     headline: "Designed for medium rooms.",
     tagline: "Perfect balance of power.",
     features: ["Engineered to cool", "Built to save", "Easy to maintain"],
-    price: "Rs 52,000.00",
     savings: "For long term savings",
   },
-  "2.0": {
+  "2": {
     id: "u20x",
     rating: "4.7",
     headline: "Designed for large rooms.",
     tagline: "Maximum cooling power.",
     features: ["Engineered to cool", "Built to save", "Easy to maintain"],
-    price: "Rs 62,000.00",
     savings: "For long term savings",
   },
 };
+
+// Helper to format price
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price).replace("₹", "Rs ");
+}
 
 function ACVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -181,12 +196,25 @@ function ACVideo() {
 
 
 export function ProductPickerSection() {
-  const [activeTab, setActiveTab] = useState("1.0");
+  const [activeTab, setActiveTab] = useState("1.5");
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const { openModal } = useWaitlist();
   const { showToast } = useToast();
+  const { getPriceByTonnage, isLoading: isPriceLoading } = useProducts();
+
+  // Get active tab's tonnage
+  const activeTonnage = useMemo(() => {
+    const tab = capacityTabs.find((t) => t.id === activeTab);
+    return tab?.tonnage || "1.5";
+  }, [activeTab]);
+
+  // Get price from Shopify or fallback
+  const activePrice = useMemo(() => {
+    const shopifyPrice = getPriceByTonnage(activeTonnage);
+    return shopifyPrice ?? FALLBACK_PRICES[activeTab as keyof typeof FALLBACK_PRICES] ?? 0;
+  }, [activeTonnage, getPriceByTonnage, activeTab]);
 
   const handleShare = async () => {
     try {
@@ -249,7 +277,7 @@ export function ProductPickerSection() {
     { scope: sectionRef }
   );
 
-  const activeProduct = products[activeTab as keyof typeof products];
+  const activeProduct = productDetails[activeTab as keyof typeof productDetails];
 
   return (
     <section
@@ -384,9 +412,13 @@ export function ProductPickerSection() {
                 {/* Bottom: Price and CTA */}
                 <div className="flex flex-row items-center gap-6 md:gap-8 mt-8 lg:mt-0">
                   <div className="flex flex-col gap-2">
-                    <span className="text-lg md:text-[20px] md:leading-[20px] font-[400] text-gray-900">
-                      {activeProduct.price}
-                    </span>
+                    {isPriceLoading ? (
+                      <div className="h-6 w-28 bg-gray-200 animate-pulse rounded" />
+                    ) : (
+                      <span className="text-lg md:text-[20px] md:leading-[20px] font-[400] text-gray-900">
+                        {formatPrice(activePrice)}
+                      </span>
+                    )}
                     <span className="text-xs md:text-sm text-gray-500">
                       {activeProduct.savings}
                     </span>

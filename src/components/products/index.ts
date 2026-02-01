@@ -1,5 +1,6 @@
 export { ImageGallery } from "./ImageGallery";
-export { VariantCard, type DisplayVariant } from "./VariantCard";
+export { VariantCard } from "./VariantCard";
+export { type DisplayVariant } from "@/contexts/ProductsContext";
 export { QuantityDropdown } from "./QuantityDropdown";
 export { ProductDetailRow, type ProductDetail } from "./ProductDetailRow";
 export { ComparisonSection } from "./ComparisonSection";

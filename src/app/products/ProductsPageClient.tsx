@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { type Product, getProducts } from "@/lib/shopify";
+import { type Product } from "@/lib/shopify";
 import { useCart } from "@/contexts/CartContext";
+import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
 import { useToast } from "@/components/ui/Toast";
 import { ASSETS } from "@/lib/assets";
 import { ImageGallery } from "@/components/products/ImageGallery";
@@ -135,60 +136,57 @@ const heroInfoItemVariants = {
 };
 
 // =============================================================================
-// Types
-// =============================================================================
-
-export interface DisplayVariant {
-  id: string;
-  name: string;
-  subtitle: string;
-  price: number;
-  available: boolean;
-}
-
-// =============================================================================
 // Constants
 // =============================================================================
 
 const MAX_DISPLAY_IMAGES = 6;
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5] as const;
 
-const MOCK_VARIANTS: DisplayVariant[] = [
+// Fallback variants when Shopify data is unavailable
+const FALLBACK_VARIANTS: DisplayVariant[] = [
   {
     id: "1ton",
+    variantId: "",
+    productId: "",
     name: "1 Ton",
     subtitle: "For compact rooms",
-    price: 40000,
-    available: true,
+    price: 30000,
+    compareAtPrice: null,
+    available: false,
+    tonnage: "1",
+    images: [],
+    description: "",
+    descriptionHtml: "",
   },
   {
-    id: "1.5ton",
+    id: "15ton",
+    variantId: "",
+    productId: "",
     name: "1.5 Ton",
     subtitle: "For medium-sized rooms",
-    price: 45000,
-    available: true,
+    price: 40000,
+    compareAtPrice: null,
+    available: false,
+    tonnage: "1.5",
+    images: [],
+    description: "",
+    descriptionHtml: "",
   },
   {
     id: "2ton",
+    variantId: "",
+    productId: "",
     name: "2 Ton",
     subtitle: "For large rooms",
-    price: 52000,
-    available: true,
+    price: 50000,
+    compareAtPrice: null,
+    available: false,
+    tonnage: "2",
+    images: [],
+    description: "",
+    descriptionHtml: "",
   },
 ];
-
-// What's Included features
-const WHATS_INCLUDED = [
-  "4.8 rated",
-  "Cooling in 45°C+",
-  "Highest ISEER",
-  "True tonnage",
-  "Micro-channel core",
-  "Automotive alloy",
-  "Corrosion tested",
-  "Gas level indicator",
-  "Lower lifetime cost",
-] as const;
 
 const MOCK_IMAGES = [
   ASSETS.ac1,
@@ -225,33 +223,129 @@ export default function ProductsPageClient({
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState<DisplayVariant>(
-    MOCK_VARIANTS[1],
-  );
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { showToast } = useToast();
+  const { combinedProduct, isLoading: isProductsLoading } = useProducts();
 
-  // Fetch products from Shopify and console log
+  // Get variants from combined product (each Shopify product = one variant option)
+  const variants = useMemo((): DisplayVariant[] => {
+    if (combinedProduct && combinedProduct.allVariants.length > 0) {
+      return combinedProduct.allVariants;
+    }
+    return FALLBACK_VARIANTS;
+  }, [combinedProduct]);
+
+  // Check if we have real Shopify data (not fallback)
+  const hasShopifyData = useMemo(() => {
+    return combinedProduct !== null && combinedProduct.allVariants.length > 0;
+  }, [combinedProduct]);
+
+  // Initialize selected variant - prefer 1.5 ton (middle), then first available
+  const [selectedVariant, setSelectedVariant] = useState<DisplayVariant | null>(null);
+
+  // Track if we've initialized with Shopify data
+  const [initializedWithShopify, setInitializedWithShopify] = useState(false);
+
+  // Update selected variant when variants change OR when Shopify data becomes available
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const products = await getProducts();
-        console.log("Shopify Products:", products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+    if (variants.length === 0) return;
 
-  // Image navigation - memoized
-  const images = product?.images.edges.map((e) => e.node.url) || MOCK_IMAGES;
-  const displayImages =
-    images.length >= MAX_DISPLAY_IMAGES
-      ? images.slice(0, MAX_DISPLAY_IMAGES)
-      : [...images, ...MOCK_IMAGES].slice(0, MAX_DISPLAY_IMAGES);
+    // If we haven't initialized with Shopify data yet and now have it, update the variant
+    const shouldUpdate = !selectedVariant || (hasShopifyData && !initializedWithShopify);
+    
+    if (shouldUpdate) {
+      // Prefer 1.5 ton as default, then first available, then middle one
+      const preferredVariant = variants.find((v) => v.tonnage === "1.5" && v.available);
+      const availableVariant = variants.find((v) => v.available);
+      const defaultVariant = preferredVariant || availableVariant || variants[Math.floor(variants.length / 2)];
+      setSelectedVariant(defaultVariant);
+      
+      if (hasShopifyData) {
+        setInitializedWithShopify(true);
+      }
+    }
+  }, [variants, hasShopifyData, initializedWithShopify, selectedVariant]);
+
+  // Reset image index when variant changes (each variant has its own images)
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [selectedVariant?.id]);
+
+  // Computed states for edge cases
+  const isOutOfStock = useMemo(() => {
+    // Don't show all out of stock if we don't have real data yet
+    if (!hasShopifyData) return false;
+    return variants.every((v) => !v.available);
+  }, [variants, hasShopifyData]);
+
+  // Only show out of stock if we have a selected variant and it's not available
+  // Don't show out of stock during loading, before variant is selected, or if using fallback data
+  const selectedVariantOutOfStock = useMemo(() => {
+    // Don't show out of stock during loading or if we don't have real Shopify data
+    if (isProductsLoading || !selectedVariant || !hasShopifyData) {
+      return false;
+    }
+    // Only show out of stock if the variant has a valid variantId (from Shopify) and is not available
+    if (!selectedVariant.variantId) {
+      return false;
+    }
+    return !selectedVariant.available;
+  }, [selectedVariant, isProductsLoading, hasShopifyData]);
+
+  const isProductUnavailable = useMemo(() => {
+    return !combinedProduct && !isProductsLoading;
+  }, [combinedProduct, isProductsLoading]);
+
+  // Determine if CTA buttons should be enabled
+  // Enabled when: not loading, have Shopify data, have valid variant, and variant is available
+  const canAddToCart = useMemo(() => {
+    return (
+      !isProductsLoading &&
+      hasShopifyData &&
+      selectedVariant !== null &&
+      !!selectedVariant.variantId &&
+      selectedVariant.available
+    );
+  }, [isProductsLoading, hasShopifyData, selectedVariant]);
+
+  // Button state for display purposes
+  const buttonState = useMemo(() => {
+    if (isProductsLoading || !hasShopifyData) {
+      return "loading";
+    }
+    if (!selectedVariant || !selectedVariant.variantId) {
+      return "loading";
+    }
+    if (!selectedVariant.available) {
+      return "outOfStock";
+    }
+    return "ready";
+  }, [isProductsLoading, hasShopifyData, selectedVariant]);
+
+  // Image navigation - use selected variant's images or fallback
+  const images = useMemo(() => {
+    // Use images from the selected variant (each product has its own images)
+    if (selectedVariant && selectedVariant.images.length > 0) {
+      return selectedVariant.images;
+    }
+    // Fallback to combined images or product prop
+    if (combinedProduct && combinedProduct.allImages.length > 0) {
+      return combinedProduct.allImages;
+    }
+    if (product?.images.edges.length) {
+      return product.images.edges.map((e) => e.node.url);
+    }
+    return MOCK_IMAGES;
+  }, [selectedVariant, combinedProduct, product]);
+
+  const displayImages = useMemo(() => {
+    if (images.length >= MAX_DISPLAY_IMAGES) {
+      return images.slice(0, MAX_DISPLAY_IMAGES);
+    }
+    return [...images, ...MOCK_IMAGES].slice(0, MAX_DISPLAY_IMAGES);
+  }, [images]);
 
   // Memoized handlers
   const handlePrevImage = useCallback(() => {
@@ -283,18 +377,23 @@ export default function ProductsPageClient({
   }, []);
 
   const handleAddToCart = useCallback(async () => {
-    if (!product) return;
+    if (!selectedVariant || !selectedVariant.variantId) {
+      showToast("Please select a variant", "error");
+      return;
+    }
 
-    const variant = product.variants.edges[0]?.node;
-    if (!variant) return;
+    if (!selectedVariant.available) {
+      showToast("This variant is out of stock", "error");
+      return;
+    }
 
     try {
-      await addToCart(variant.id, quantity);
+      await addToCart(selectedVariant.variantId, quantity);
       showToast("Added to cart", "success");
     } catch {
       showToast("Failed to add to cart", "error");
     }
-  }, [product, quantity, addToCart, showToast]);
+  }, [selectedVariant, quantity, addToCart, showToast]);
 
   return (
     <motion.div
@@ -335,22 +434,27 @@ export default function ProductsPageClient({
               {/* Badge */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="flex items-center"
+                className="flex items-center gap-2"
               >
                 <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[rgba(52,120,246,0.12)] text-[#3478F6] text-xs md:text-sm font-normal rounded-full shadow-[inset_0px_-2px_4px_0px_#ccdeff]">
                   #BESTSELLER
                 </span>
+                {isOutOfStock && (
+                  <span className="inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-red-100 text-red-600 text-xs md:text-sm font-medium rounded-full">
+                    Out of Stock
+                  </span>
+                )}
               </motion.div>
 
               {/* Title & Delivery */}
               <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-2">
                 <h1 className="text-[28px] md:text-[40px] font-semibold text-black leading-tight">
-                  Optimist AC 1.5 Ton
+                  Optimist AC {selectedVariant?.name || ""}
                 </h1>
                 <div className="flex items-center gap-2 text-[#6c6a6a]">
                   <PackageIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                   <span className="text-xs md:text-sm">
-                    Delivery in 3 weeks
+                    {selectedVariant?.available ? "Delivery in 3 weeks" : "Currently unavailable"}
                   </span>
                 </div>
               </motion.div>
@@ -363,22 +467,33 @@ export default function ProductsPageClient({
                 <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
                   Variants
                 </h3>
-                <div
-                  className="w-full overflow-hidden"
-                  role="radiogroup"
-                  aria-label="Product variants"
-                >
-                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
-                    {MOCK_VARIANTS.map((variant) => (
-                      <VariantCard
-                        key={variant.id}
-                        variant={variant}
-                        isSelected={selectedVariant.id === variant.id}
-                        onSelect={handleSelectVariant}
+                {isProductsLoading ? (
+                  <div className="flex gap-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="w-[180px] h-[94px] rounded-[8px] bg-gray-100 animate-pulse"
                       />
                     ))}
                   </div>
-                </div>
+                ) : (
+                  <div
+                    className="w-full overflow-hidden"
+                    role="radiogroup"
+                    aria-label="Product variants"
+                  >
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+                      {variants.map((variant) => (
+                        <VariantCard
+                          key={variant.id}
+                          variant={variant}
+                          isSelected={selectedVariant?.id === variant.id}
+                          onSelect={handleSelectVariant}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </motion.div>
 
               {/* Total/Price */}
@@ -390,13 +505,23 @@ export default function ProductsPageClient({
                   Total
                 </h3>
                 <div className="flex flex-wrap items-baseline gap-2">
+                  {selectedVariant?.compareAtPrice && selectedVariant.compareAtPrice > selectedVariant.price && (
+                    <span className="text-lg md:text-xl text-[#6c6a6a] line-through">
+                      ₹{formatPrice(selectedVariant.compareAtPrice)}
+                    </span>
+                  )}
                   <span className="text-2xl md:text-3xl font-semibold text-black">
-                    ₹{formatPrice(selectedVariant.price)}
+                    ₹{formatPrice(selectedVariant?.price || 0)}
                   </span>
                   <span className="text-[#6c6a6a] text-sm md:text-base font-light">
                     (inclusive of all the taxes)
                   </span>
                 </div>
+                {selectedVariantOutOfStock && (
+                  <span className="text-red-500 text-sm font-medium">
+                    This variant is currently out of stock
+                  </span>
+                )}
               </motion.div>
 
               {/* Quantity */}
@@ -417,22 +542,45 @@ export default function ProductsPageClient({
               >
                 <motion.button
                   onClick={handleAddToCart}
-                  disabled={isCartLoading}
-                  className="flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border border-[rgba(0,0,0,0.12)] rounded-full text-black font-medium text-base hover:border-[rgba(0,0,0,0.24)] transition-all disabled:opacity-50"
-                  whileHover={{ scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={isCartLoading || !canAddToCart}
+                  className={`flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border rounded-full font-medium text-base transition-all ${
+                    buttonState === "loading"
+                      ? "border-gray-200 text-gray-400"
+                      : buttonState === "outOfStock"
+                      ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                      : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
+                  }`}
+                  whileHover={canAddToCart ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" } : {}}
+                  whileTap={canAddToCart ? { scale: 0.98 } : {}}
                   transition={{ duration: 0.2 }}
                 >
                   <ShoppingBagIcon className="w-6 h-6" />
-                  <span>Add to Cart</span>
+                  <span>
+                    {buttonState === "loading"
+                      ? "Loading..."
+                      : buttonState === "outOfStock"
+                      ? "Out of Stock"
+                      : "Add to Cart"}
+                  </span>
                 </motion.button>
                 <motion.button
-                  className="flex-1 px-6 py-4 rounded-full text-[#FFFCDC] font-medium text-base text-center transition-all btn-buy-now"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={!canAddToCart}
+                  className={`flex-1 px-6 py-4 rounded-full font-medium text-base text-center transition-all ${
+                    buttonState === "loading"
+                      ? "bg-gray-300 text-gray-500"
+                      : buttonState === "outOfStock"
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "btn-buy-now text-[#FFFCDC]"
+                  }`}
+                  whileHover={canAddToCart ? { scale: 1.02 } : {}}
+                  whileTap={canAddToCart ? { scale: 0.98 } : {}}
                   transition={{ duration: 0.2 }}
                 >
-                  Buy Now
+                  {buttonState === "loading"
+                    ? "Loading..."
+                    : buttonState === "outOfStock"
+                    ? "Unavailable"
+                    : "Buy Now"}
                 </motion.button>
               </motion.div>
 
@@ -444,7 +592,7 @@ export default function ProductsPageClient({
 
               {/* Description Accordion */}
               <motion.div variants={heroInfoItemVariants}>
-                <details className="group">
+                <details className="group" open>
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
                       Description
@@ -458,14 +606,27 @@ export default function ProductsPageClient({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </summary>
-                  <div className="pt-2 pb-4">
-                    <h4 className="text-sm md:text-base font-semibold text-black mb-2">
-                      Engineered for Indian reality.
-                    </h4>
-                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
-                      Consistent cooling at 45°C. Bills that stay predictable.
-                      Performance that doesn&apos;t fade when you need it most.
-                    </p>
+                  <div className="pt-2 pb-4 max-h-[400px] overflow-y-auto">
+                    {selectedVariant?.descriptionHtml ? (
+                      <div
+                        className="rich-text-content text-sm md:text-base leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: selectedVariant.descriptionHtml }}
+                      />
+                    ) : selectedVariant?.description ? (
+                      <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
+                        {selectedVariant.description}
+                      </p>
+                    ) : (
+                      <>
+                        <h4 className="text-sm md:text-base font-semibold text-black mb-2">
+                          Engineered for Indian reality.
+                        </h4>
+                        <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
+                          Consistent cooling at 45°C. Bills that stay predictable.
+                          Performance that doesn&apos;t fade when you need it most.
+                        </p>
+                      </>
+                    )}
                   </div>
                 </details>
               </motion.div>
@@ -493,16 +654,9 @@ export default function ProductsPageClient({
                     </svg>
                   </summary>
                   <div className="pt-2 pb-4">
-                    <div className="flex flex-wrap gap-2">
-                      {WHATS_INCLUDED.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-3 py-1.5 bg-[rgba(0,0,0,0.04)] border border-[rgba(0,0,0,0.08)] rounded-full text-xs md:text-sm text-black font-medium"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
+                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed italic">
+                      No information available at this time. Warranty details will be updated soon.
+                    </p>
                   </div>
                 </details>
               </motion.div>
@@ -530,8 +684,8 @@ export default function ProductsPageClient({
                     </svg>
                   </summary>
                   <div className="pt-2 pb-4">
-                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
-                      Designed for lower long-term costs with highest ISEER rating and true tonnage performance.
+                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed italic">
+                      No additional information available at this time. Product specifications will be updated soon.
                     </p>
                   </div>
                 </details>
@@ -631,20 +785,43 @@ export default function ProductsPageClient({
         <div className="px-4 py-4 flex items-center gap-3">
           <motion.button
             onClick={handleAddToCart}
-            disabled={isCartLoading}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-white rounded-full text-black font-medium text-sm hover:bg-white/90 transition-all disabled:opacity-50"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            disabled={isCartLoading || !canAddToCart}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-full font-medium text-sm transition-all ${
+              buttonState === "loading"
+                ? "bg-gray-300 text-gray-500"
+                : buttonState === "outOfStock"
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-white text-black hover:bg-white/90 disabled:opacity-50"
+            }`}
+            whileHover={canAddToCart ? { scale: 1.02 } : {}}
+            whileTap={canAddToCart ? { scale: 0.98 } : {}}
           >
             <CartIcon className="w-5 h-5" />
-            <span>Add to Cart</span>
+            <span>
+              {buttonState === "loading"
+                ? "Loading..."
+                : buttonState === "outOfStock"
+                ? "Out of Stock"
+                : "Add to Cart"}
+            </span>
           </motion.button>
           <motion.button
-            className="flex-1 px-4 py-3.5 rounded-full text-[#FFFCDC] font-medium text-sm text-center transition-all btn-buy-now"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            disabled={!canAddToCart}
+            className={`flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center transition-all ${
+              buttonState === "loading"
+                ? "bg-gray-400 text-gray-600"
+                : buttonState === "outOfStock"
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                : "btn-buy-now text-[#FFFCDC]"
+            }`}
+            whileHover={canAddToCart ? { scale: 1.02 } : {}}
+            whileTap={canAddToCart ? { scale: 0.98 } : {}}
           >
-            Buy Now
+            {buttonState === "loading"
+              ? "Loading..."
+              : buttonState === "outOfStock"
+              ? "Unavailable"
+              : "Buy Now"}
           </motion.button>
         </div>
       </motion.div>
