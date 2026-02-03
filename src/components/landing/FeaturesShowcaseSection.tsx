@@ -355,6 +355,9 @@ export function FeaturesShowcaseSection() {
       });
 
       // ScrollTrigger 2: CONTENT TRANSITIONS - starts when section is sticky
+      // Custom breakpoints: 1st feature gets less time, faster transition to 2nd
+      const featureBreakpoints = [0, 0.15, 0.45, 1]; // 1st: 0-18%, 2nd: 18-50%, 3rd: 50-100%
+
       ScrollTrigger.create({
         trigger: section,
         start: "top top", // Start when section reaches top (sticky position)
@@ -363,12 +366,16 @@ export function FeaturesShowcaseSection() {
         onUpdate: (self) => {
           const progress = self.progress;
 
-          // Update active feature based on scroll progress
-          const featureCount = features.length;
-          const newActiveFeature = Math.min(
-            Math.floor(progress * featureCount),
-            featureCount - 1,
-          );
+          // Update active feature based on custom breakpoints
+          let newActiveFeature = 0;
+          for (let i = 1; i < featureBreakpoints.length; i++) {
+            if (progress >= featureBreakpoints[i]) {
+              newActiveFeature = i;
+            } else {
+              break;
+            }
+          }
+          newActiveFeature = Math.min(newActiveFeature, features.length - 1);
           setActiveFeature(newActiveFeature);
         },
       });
