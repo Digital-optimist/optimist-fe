@@ -365,36 +365,29 @@ export function FeaturesShowcaseSection() {
         }
       };
 
-      // ScrollTrigger 1: VIDEO SCRUBBING - starts when section enters viewport
+      // Feature breakpoints - evenly distributed for sync with video
+      // Feature 1: 0-33%, Feature 2: 33-66%, Feature 3: 66-100%
+      const featureBreakpoints = [0, 0.33, 0.66, 1];
+
+      // Single unified ScrollTrigger for both video and content
+      // This ensures they stay perfectly in sync
       ScrollTrigger.create({
         trigger: section,
-        start: "top bottom", // Start as soon as section enters viewport
+        start: "top top", // Start when section top reaches viewport top (sticky visible)
         end: "bottom bottom",
         scrub: 0.05,
         onUpdate: (self) => {
+          const progress = self.progress;
+
           // Update video time based on scroll progress
           if (Number.isFinite(video.duration)) {
             lastTargetTime = targetTime;
-            targetTime = self.progress * video.duration;
+            targetTime = progress * video.duration;
             if (rafId) cancelAnimationFrame(rafId);
             rafId = requestAnimationFrame(updateVideoTime);
           }
-        },
-      });
 
-      // ScrollTrigger 2: CONTENT TRANSITIONS - starts when section is sticky
-      // Custom breakpoints: 1st feature gets less time, faster transition to 2nd
-      const featureBreakpoints = [0, 0.1, 0.2, 1]; // 1st: 0-18%, 2nd: 18-50%, 3rd: 50-100%
-
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top", // Start when section reaches top (sticky position)
-        end: "bottom bottom",
-        scrub: 0.1,
-        onUpdate: (self) => {
-          const progress = self.progress;
-
-          // Update active feature based on custom breakpoints
+          // Update active feature based on breakpoints
           let newActiveFeature = 0;
           for (let i = 1; i < featureBreakpoints.length; i++) {
             if (progress >= featureBreakpoints[i]) {
