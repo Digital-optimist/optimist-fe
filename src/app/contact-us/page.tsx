@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Paperclip, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { submitContactForm } from "@/lib/shopify";
@@ -72,55 +73,88 @@ interface SuccessModalProps {
 }
 
 function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
 
-      {/* Modal Content */}
-      <div className="relative bg-white rounded-3xl p-6 sm:p-8 md:p-12 w-full max-w-[450px] sm:max-w-[520px] flex flex-col items-center gap-4 animate-in fade-in zoom-in-95 duration-300">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors"
-          aria-label="Close"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Check Circle Icon */}
-        <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px] rounded-full bg-[#3478F6] flex items-center justify-center">
-          <svg
-            className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          {/* Modal Content */}
+          <motion.div
+            className="relative bg-white rounded-3xl p-6 sm:p-8 md:p-12 w-full max-w-[450px] sm:max-w-[520px] flex flex-col items-center gap-4"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-        {/* Text Content */}
-        <div className="flex flex-col gap-2 text-center text-[#212121]">
-          <h2 className="font-display text-2xl sm:text-3xl md:text-[40px] font-bold leading-none">
-            Message sent!
-          </h2>
-          <p className="text-sm sm:text-base font-medium leading-relaxed">
-            We&apos;ll get back to you soon
-          </p>
+            {/* Check Circle Icon */}
+            <motion.div
+              className="w-20 h-20 sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px] rounded-full bg-[#3478F6] flex items-center justify-center"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                delay: 0.1,
+              }}
+            >
+              <svg
+                className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <motion.path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M5 13l4 4L19 7"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.4,
+                    ease: "easeOut",
+                  }}
+                />
+              </svg>
+            </motion.div>
+
+            {/* Text Content */}
+            <motion.div
+              className="flex flex-col gap-2 text-center text-[#212121]"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+            >
+              <h2 className="font-display text-2xl sm:text-3xl md:text-[40px] font-bold leading-none">
+                Message sent!
+              </h2>
+              <p className="text-sm sm:text-base font-medium leading-relaxed">
+                We&apos;ll get back to you soon
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }
 
