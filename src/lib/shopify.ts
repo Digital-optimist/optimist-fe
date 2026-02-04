@@ -1417,6 +1417,266 @@ export async function submitContactForm(
 }
 
 // =============================================================================
+// Blog Types
+// =============================================================================
+
+export interface BlogArticle {
+  id: string;
+  handle: string;
+  title: string;
+  content: string;
+  contentHtml: string;
+  excerpt: string | null;
+  excerptHtml: string | null;
+  publishedAt: string;
+  image: ShopifyImage | null;
+  author: {
+    name: string;
+    email: string | null;
+  } | null;
+  blog: {
+    id: string;
+    handle: string;
+    title: string;
+  };
+  tags: string[];
+  seo: {
+    title: string | null;
+    description: string | null;
+  } | null;
+}
+
+export interface Blog {
+  id: string;
+  handle: string;
+  title: string;
+  articles: {
+    edges: { node: BlogArticle }[];
+    pageInfo: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor: string | null;
+      endCursor: string | null;
+    };
+  };
+}
+
+// =============================================================================
+// Blog GraphQL Fragments
+// =============================================================================
+
+const ARTICLE_FRAGMENT = `
+  fragment ArticleFragment on Article {
+    id
+    handle
+    title
+    content
+    contentHtml
+    excerpt
+    excerptHtml
+    publishedAt
+    image {
+      ...ImageFragment
+    }
+    author: authorV2 {
+      name
+      email
+    }
+    blog {
+      id
+      handle
+      title
+    }
+    tags
+    seo {
+      title
+      description
+    }
+  }
+`;
+
+// =============================================================================
+// Blog Operations
+// =============================================================================
+
+export async function getBlogs(first: number = 10): Promise<Blog[]> {
+  const query = `
+    ${IMAGE_FRAGMENT}
+    ${ARTICLE_FRAGMENT}
+    query GetBlogs($first: Int!) {
+      blogs(first: $first) {
+        edges {
+          node {
+            id
+            handle
+            title
+            articles(first: 10) {
+              edges {
+                node {
+                  ...ArticleFragment
+                }
+              }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{ blogs: { edges: { node: Blog }[] } }>({
+    query,
+    variables: { first },
+  });
+
+  return data.blogs.edges.map((edge) => edge.node);
+}
+
+export async function getBlogByHandle(handle: string): Promise<Blog | null> {
+  const query = `
+    ${IMAGE_FRAGMENT}
+    ${ARTICLE_FRAGMENT}
+    query GetBlogByHandle($handle: String!) {
+      blog(handle: $handle) {
+        id
+        handle
+        title
+        articles(first: 50) {
+          edges {
+            node {
+              ...ArticleFragment
+            }
+          }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{ blog: Blog | null }>({
+    query,
+    variables: { handle },
+  });
+
+  return data.blog;
+}
+
+export async function getArticles(
+  first: number = 20,
+  after?: string,
+  query?: string,
+): Promise<{
+  articles: BlogArticle[];
+  pageInfo: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    startCursor: string | null;
+    endCursor: string | null;
+  };
+}> {
+  const gqlQuery = `
+    ${IMAGE_FRAGMENT}
+    ${ARTICLE_FRAGMENT}
+    query GetArticles($first: Int!, $after: String, $query: String) {
+      articles(first: $first, after: $after, query: $query, sortKey: PUBLISHED_AT, reverse: true) {
+        edges {
+          node {
+            ...ArticleFragment
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    articles: {
+      edges: { node: BlogArticle }[];
+      pageInfo: {
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+        startCursor: string | null;
+        endCursor: string | null;
+      };
+    };
+  }>({
+    query: gqlQuery,
+    variables: { first, after, query },
+  });
+
+  return {
+    articles: data.articles.edges.map((edge) => edge.node),
+    pageInfo: data.articles.pageInfo,
+  };
+}
+
+export async function getArticleByHandle(
+  blogHandle: string,
+  articleHandle: string,
+): Promise<BlogArticle | null> {
+  const query = `
+    ${IMAGE_FRAGMENT}
+    ${ARTICLE_FRAGMENT}
+    query GetArticleByHandle($blogHandle: String!, $articleHandle: String!) {
+      blog(handle: $blogHandle) {
+        articleByHandle(handle: $articleHandle) {
+          ...ArticleFragment
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    blog: { articleByHandle: BlogArticle | null } | null;
+  }>({
+    query,
+    variables: { blogHandle, articleHandle },
+  });
+
+  return data.blog?.articleByHandle || null;
+}
+
+export async function getArticlesByTag(
+  tag: string,
+  first: number = 20,
+): Promise<BlogArticle[]> {
+  const { articles } = await getArticles(first, undefined, `tag:${tag}`);
+  return articles;
+}
+
+// Helper function to calculate read time
+export function calculateReadTime(content: string): number {
+  const wordsPerMinute = 200;
+  const wordCount = content.replace(/<[^>]*>/g, "").split(/\s+/).length;
+  return Math.ceil(wordCount / wordsPerMinute);
+}
+
+// Helper function to format date
+export function formatArticleDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+// =============================================================================
 // Utility Functions
 // =============================================================================
 
