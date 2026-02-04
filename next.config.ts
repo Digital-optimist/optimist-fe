@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', // Static HTML export
+  output: "export", // Static HTML export
   trailingSlash: true, // Generate /products/index.html instead of /products.html
   reactCompiler: true,
   images: {

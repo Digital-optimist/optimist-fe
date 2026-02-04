@@ -202,7 +202,7 @@ async function shopifyFetch<T>({
 
   if (!response.ok) {
     throw new Error(
-      `Shopify API error: ${response.status} ${response.statusText}`
+      `Shopify API error: ${response.status} ${response.statusText}`,
     );
   }
 
@@ -446,14 +446,14 @@ export async function getProducts(first: number = 20): Promise<Product[]> {
     {
       query,
       variables: { first },
-    }
+    },
   );
 
   return data.products.edges.map((edge) => edge.node);
 }
 
 export async function getProductByHandle(
-  handle: string
+  handle: string,
 ): Promise<Product | null> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -479,7 +479,7 @@ export async function getProductByHandle(
 // =============================================================================
 
 export async function createCart(
-  lines: { merchandiseId: string; quantity: number }[] = []
+  lines: { merchandiseId: string; quantity: number }[] = [],
 ): Promise<Cart> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -542,7 +542,7 @@ export async function getCart(cartId: string): Promise<Cart | null> {
 
 export async function addToCart(
   cartId: string,
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number }[],
 ): Promise<Cart> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -579,7 +579,7 @@ export async function addToCart(
 
 export async function updateCartLines(
   cartId: string,
-  lines: { id: string; quantity: number }[]
+  lines: { id: string; quantity: number }[],
 ): Promise<Cart> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -616,7 +616,7 @@ export async function updateCartLines(
 
 export async function removeFromCart(
   cartId: string,
-  lineIds: string[]
+  lineIds: string[],
 ): Promise<Cart> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -653,7 +653,7 @@ export async function removeFromCart(
 
 export async function updateCartBuyerIdentity(
   cartId: string,
-  customerAccessToken: string
+  customerAccessToken: string,
 ): Promise<Cart> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -702,7 +702,7 @@ export async function customerCreate(
   email: string,
   password: string,
   firstName?: string,
-  lastName?: string
+  lastName?: string,
 ): Promise<{ customer: Customer; customerAccessToken: CustomerAccessToken }> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -759,7 +759,7 @@ export async function customerCreate(
 
 export async function customerAccessTokenCreate(
   email: string,
-  password: string
+  password: string,
 ): Promise<CustomerAccessToken> {
   const query = `
     mutation CustomerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
@@ -791,7 +791,7 @@ export async function customerAccessTokenCreate(
 
   if (data.customerAccessTokenCreate.customerUserErrors.length > 0) {
     throw new Error(
-      data.customerAccessTokenCreate.customerUserErrors[0].message
+      data.customerAccessTokenCreate.customerUserErrors[0].message,
     );
   }
 
@@ -803,7 +803,7 @@ export async function customerAccessTokenCreate(
 }
 
 export async function customerAccessTokenDelete(
-  customerAccessToken: string
+  customerAccessToken: string,
 ): Promise<boolean> {
   const query = `
     mutation CustomerAccessTokenDelete($customerAccessToken: String!) {
@@ -861,7 +861,7 @@ export async function customerRecover(email: string): Promise<boolean> {
 
 export async function customerResetByUrl(
   resetUrl: string,
-  password: string
+  password: string,
 ): Promise<CustomerAccessToken> {
   const query = `
     mutation customerResetByUrl($resetUrl: URL!, $password: String!) {
@@ -914,7 +914,7 @@ export async function customerResetByUrl(
 }
 
 export async function getCustomer(
-  customerAccessToken: string
+  customerAccessToken: string,
 ): Promise<Customer | null> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -937,7 +937,7 @@ export async function getCustomer(
 
 export async function getCustomerOrders(
   customerAccessToken: string,
-  first: number = 20
+  first: number = 20,
 ): Promise<Order[]> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -996,7 +996,7 @@ export async function getCustomerOrders(
 
 export async function customerAddressCreate(
   customerAccessToken: string,
-  address: Omit<Address, "id">
+  address: Omit<Address, "id">,
 ): Promise<Address> {
   const query = `
     ${ADDRESS_FRAGMENT}
@@ -1038,7 +1038,7 @@ export async function customerAddressCreate(
 export async function customerAddressUpdate(
   customerAccessToken: string,
   addressId: string,
-  address: Partial<Omit<Address, "id">>
+  address: Partial<Omit<Address, "id">>,
 ): Promise<Address> {
   const query = `
     ${ADDRESS_FRAGMENT}
@@ -1079,7 +1079,7 @@ export async function customerAddressUpdate(
 
 export async function customerAddressDelete(
   customerAccessToken: string,
-  addressId: string
+  addressId: string,
 ): Promise<boolean> {
   const query = `
     mutation CustomerAddressDelete($customerAccessToken: String!, $id: ID!) {
@@ -1113,7 +1113,7 @@ export async function customerAddressDelete(
 
 export async function customerDefaultAddressUpdate(
   customerAccessToken: string,
-  addressId: string
+  addressId: string,
 ): Promise<Customer> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -1145,7 +1145,7 @@ export async function customerDefaultAddressUpdate(
 
   if (data.customerDefaultAddressUpdate.customerUserErrors.length > 0) {
     throw new Error(
-      data.customerDefaultAddressUpdate.customerUserErrors[0].message
+      data.customerDefaultAddressUpdate.customerUserErrors[0].message,
     );
   }
 
@@ -1170,7 +1170,7 @@ export interface CustomerUpdateInput {
 
 export async function customerUpdate(
   customerAccessToken: string,
-  customer: CustomerUpdateInput
+  customer: CustomerUpdateInput,
 ): Promise<Customer> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -1209,10 +1209,14 @@ export async function customerUpdate(
     const error = data.customerUpdate.customerUserErrors[0];
     // Provide user-friendly error messages
     if (error.code === "TAKEN") {
-      throw new Error("This email or phone number is already in use by another account.");
+      throw new Error(
+        "This email or phone number is already in use by another account.",
+      );
     }
     if (error.code === "INVALID") {
-      throw new Error(`Invalid ${error.field?.join(" ") || "input"}: ${error.message}`);
+      throw new Error(
+        `Invalid ${error.field?.join(" ") || "input"}: ${error.message}`,
+      );
     }
     throw new Error(error.message);
   }
@@ -1237,14 +1241,15 @@ export async function customerUpdate(
  * - Special characters
  */
 function generateRandomPassword(): string {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let password = "";
-  
+
   // Generate 16 random characters
   for (let i = 0; i < 16; i++) {
     password += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
+
   // Add required character types to ensure complexity
   return password + "Aa1!";
 }
@@ -1253,22 +1258,22 @@ export async function subscribeToWaitlist(phone: string): Promise<boolean> {
   // Generate a random password - user won't need it for waitlist
   // They can use "Forgot Password" if they ever want to create a real account
   const randomPassword = generateRandomPassword();
-  
+
   // Clean phone number and format to E.164 format for Shopify
-  let cleanPhone = phone.replace(/\D/g, '');
-  
+  let cleanPhone = phone.replace(/\D/g, "");
+
   // If phone starts with 91 and is 12 digits, it already has country code
   // If it's 10 digits, add +91 prefix for India
   if (cleanPhone.length === 10) {
     cleanPhone = `+91${cleanPhone}`;
-  } else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+  } else if (cleanPhone.length === 12 && cleanPhone.startsWith("91")) {
     cleanPhone = `+${cleanPhone}`;
-  } else if (!cleanPhone.startsWith('+')) {
+  } else if (!cleanPhone.startsWith("+")) {
     cleanPhone = `+${cleanPhone}`;
   }
-  
+
   // Shopify requires email - generate a placeholder email from phone number
-  const phoneDigits = phone.replace(/\D/g, '');
+  const phoneDigits = phone.replace(/\D/g, "");
   const placeholderEmail = `${phoneDigits}@waitlist.optimist.in`;
 
   const query = `
@@ -1305,7 +1310,7 @@ export async function subscribeToWaitlist(phone: string): Promise<boolean> {
   });
 
   const errors = data.customerCreate.customerUserErrors;
-  
+
   // If phone/email already exists (TAKEN error), treat as success
   if (errors.length > 0) {
     const error = errors[0];
@@ -1320,12 +1325,104 @@ export async function subscribeToWaitlist(phone: string): Promise<boolean> {
 }
 
 // =============================================================================
+// Contact Form Submission (Google Sheets + Drive)
+// =============================================================================
+
+export interface ContactFormData {
+  reason: string;
+  fullName: string;
+  mobileNumber: string;
+  email?: string;
+  cityPincode: string;
+  serialNumber?: string;
+  orderId?: string;
+  message: string;
+  attachedFile?: File | null;
+}
+
+export interface ContactFormSubmissionResult {
+  success: boolean;
+  error?: string;
+}
+
+const GOOGLE_SHEETS_WEBHOOK_URL =
+  "https://script.google.com/macros/s/AKfycbzv9eGvqterTua50uwFY1UGbgBtLGFmaeX2lIsrBc4K4mfw9m6QX92sY8M2Rr88cPFm/exec";
+
+async function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+export async function submitContactForm(
+  data: ContactFormData,
+): Promise<ContactFormSubmissionResult> {
+  if (!GOOGLE_SHEETS_WEBHOOK_URL) {
+    return {
+      success: false,
+      error: "Form submission is not configured. Please contact support.",
+    };
+  }
+
+  let fileData = null;
+  if (data.attachedFile) {
+    try {
+      const base64 = await fileToBase64(data.attachedFile);
+      fileData = {
+        name: data.attachedFile.name,
+        type: data.attachedFile.type,
+        base64: base64,
+      };
+    } catch {
+      // File processing failed, continue without attachment
+    }
+  }
+
+  const payload = {
+    reason: data.reason,
+    fullName: data.fullName,
+    mobileNumber: `+91${data.mobileNumber}`,
+    email: data.email || "",
+    cityPincode: data.cityPincode,
+    serialNumber: data.serialNumber || "",
+    orderId: data.orderId || "",
+    message: data.message,
+    file: fileData,
+  };
+
+  try {
+    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to submit form",
+    };
+  }
+}
+
+// =============================================================================
 // Utility Functions
 // =============================================================================
 
 export function formatPrice(
   amount: string,
-  currencyCode: string = "INR"
+  currencyCode: string = "INR",
 ): string {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
