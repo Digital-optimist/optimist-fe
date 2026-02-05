@@ -90,28 +90,38 @@ export function BenefitsSection() {
       const section = sectionRef.current;
       if (!carousel || !section) return;
 
-      // Get the total scroll width needed
-      const cards = carousel.querySelectorAll(".benefit-card");
-      const cardWidth = cards[0]?.getBoundingClientRect().width || 0;
       const gap = 24; // gap-6 = 24px
-      const totalWidth = (cardWidth + gap) * cards.length - gap;
+      let scrollDistance = 0;
+      let bufferRatio = 0;
+      let totalScrollDistance = 0;
 
-      // Use the actual carousel container width instead of full viewport
-      const containerWidth =
-        carousel.parentElement?.getBoundingClientRect().width ||
-        window.innerWidth;
+      const updateMetrics = () => {
+        // Get the total scroll width needed
+        const cards = carousel.querySelectorAll(".benefit-card");
+        const cardWidth = cards[0]?.getBoundingClientRect().width || 0;
+        const totalWidth = (cardWidth + gap) * cards.length - gap;
 
-      // Calculate scroll distance: scroll enough to show the last card fully visible
-      // Add small padding (15% of card width) for breathing room
-      const scrollDistance = Math.max(
-        totalWidth - containerWidth + cardWidth * 0.15,
-        0,
-      );
+        // Use the actual carousel container width instead of full viewport
+        const containerWidth =
+          carousel.parentElement?.getBoundingClientRect().width ||
+          window.innerWidth;
 
-      // Buffer zone: extra scroll distance at the start where first card stays visible
-      // This gives users time to view the first card before horizontal scroll begins
-      const bufferDistance = window.innerHeight * 0.4; // 40% of viewport height as buffer
-      const totalScrollDistance = bufferDistance + scrollDistance;
+        // Calculate scroll distance: scroll enough to show the last card fully visible
+        // Add small padding (15% of card width) for breathing room
+        scrollDistance = Math.max(
+          totalWidth - containerWidth + cardWidth * 0.15,
+          0,
+        );
+
+        // Buffer zone: extra scroll distance at the start where first card stays visible
+        // This gives users time to view the first card before horizontal scroll begins
+        const bufferDistance = window.innerHeight * 0.4; // 40% of viewport height as buffer
+        totalScrollDistance = bufferDistance + scrollDistance;
+        bufferRatio =
+          totalScrollDistance > 0 ? bufferDistance / totalScrollDistance : 0;
+      };
+
+      updateMetrics();
 
       // Header fade in animation - use 'to' since initial state is set
       const headerTrigger = gsap.to(headerRef.current, {
@@ -128,50 +138,57 @@ export function BenefitsSection() {
       }).scrollTrigger;
       if (headerTrigger) triggers.push(headerTrigger);
 
-      // Calculate buffer ratio (what percentage of scroll is the buffer)
-      const bufferRatio = bufferDistance / totalScrollDistance;
-
       // Horizontal scroll animation - pins and scrolls cards horizontally
-      // Uses keyframes to create a buffer zone at the start
-      const carouselTrigger = gsap.to(carousel, {
-        keyframes: [
-          { x: 0, duration: bufferRatio }, // Stay at first card during buffer
-          { x: -scrollDistance, duration: 1 - bufferRatio }, // Then scroll to end
-        ],
+      // Smooths the entry by mapping a buffer zone before horizontal movement
+      const carouselTween = gsap.to(carousel, {
+        x: () => -scrollDistance,
         ease: "none",
         force3D: true,
-        scrollTrigger: {
-          trigger: triggerRef.current,
-          start: "top top", // Pin when section reaches top of viewport
-          end: () => `+=${totalScrollDistance}`,
-          pin: true,
-          scrub: 0.5, // Smoother scrub for professional feel
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onRefresh: (self) => {
-            // Recalculate on resize
-            const newCards = carousel.querySelectorAll(".benefit-card");
-            const newCardWidth =
-              newCards[0]?.getBoundingClientRect().width || 0;
-            const newTotalWidth = (newCardWidth + gap) * newCards.length - gap;
-            const newContainerWidth =
-              carousel.parentElement?.getBoundingClientRect().width ||
-              window.innerWidth;
-            const newScrollDistance = Math.max(
-              newTotalWidth - newContainerWidth + newCardWidth * 0.1,
-              0,
-            );
-            const newBufferDistance = window.innerHeight * 0.4;
-            const newTotalScrollDistance =
-              newBufferDistance + newScrollDistance;
-            self.vars.end = `+=${newTotalScrollDistance}`;
-          },
+        paused: true,
+      });
+
+      const carouselTrigger = ScrollTrigger.create({
+        trigger: triggerRef.current,
+        start: "top top", // Pin when section reaches top of viewport
+        end: () => `+=${totalScrollDistance}`,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+        refreshPriority: 1,
+        onRefresh: () => {
+          updateMetrics();
+          carouselTween.invalidate();
         },
-      }).scrollTrigger;
-      if (carouselTrigger) triggers.push(carouselTrigger);
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const adjusted =
+            progress <= bufferRatio || bufferRatio >= 1
+              ? 0
+              : (progress - bufferRatio) / (1 - bufferRatio);
+          carouselTween.progress(adjusted);
+        },
+      });
+      triggers.push(carouselTrigger);
+
+      // Refresh after images load to avoid pin jump on first entry
+      const images = carousel.querySelectorAll("img");
+      const handleImageLoad = () => ScrollTrigger.refresh();
+      images.forEach((img) => {
+        if (!img.complete) {
+          img.addEventListener("load", handleImageLoad);
+        }
+      });
 
       // Cleanup only our triggers, not all triggers
       return () => {
+        images.forEach((img) => {
+          if (!img.complete) {
+            img.removeEventListener("load", handleImageLoad);
+          }
+        });
+        carouselTween.kill();
         triggers.forEach((trigger) => trigger.kill());
       };
     },

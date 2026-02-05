@@ -16,6 +16,8 @@ if (typeof window !== "undefined") {
     syncInterval: 40,
     // Prevent redundant refreshes
     autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+    // Ignore mobile resize events (helps with iOS address bar showing/hiding)
+    ignoreMobileResize: true,
   });
 
   // Set default ScrollTrigger properties for better performance

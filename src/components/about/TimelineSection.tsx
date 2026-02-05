@@ -46,7 +46,7 @@ const timelineData = [
     year: "Feb 2024",
     description:
       "Heat stress chosen as the problem to solve. Optimist commits to climate adaptation through thermal comfort.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline1,
   },
   {
     id: 2,
@@ -54,7 +54,7 @@ const timelineData = [
     year: "Mar 2024",
     description:
       "Pranav Chopra joins. First-principles engineering begins. The problem shifts from 'what' to 'how'.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline2,
   },
   {
     id: 3,
@@ -62,7 +62,7 @@ const timelineData = [
     year: "Aug 2024",
     description:
       "Optimist formally comes into existence. From research project to real company.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline3,
   },
   {
     id: 4,
@@ -70,7 +70,7 @@ const timelineData = [
     year: "Nov 2024",
     description:
       "Nalanda-1 R&D Lab and dedicated workshop commissioned. Ability to test, fail, iterate, and build at scale. Before: theory. After: execution engine.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline4,
   },
   {
     id: 5,
@@ -78,7 +78,7 @@ const timelineData = [
     year: "July 2025",
     description:
       "Super-efficient AC architecture validated for Indian conditions. Performance, efficiency, and buildability converge. Before: experiments. After: product direction locked.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline5,
   },
   {
     id: 6,
@@ -86,7 +86,7 @@ const timelineData = [
     year: "Dec 2025",
     description:
       "USD 12M raised from Accel, Arkam Ventures & Sparrow Capital. External validation that climate-first engineering deserved scale.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline6,
   },
   {
     id: 7,
@@ -94,7 +94,7 @@ const timelineData = [
     year: "Jan 2026",
     description:
       "Optimist's first product launches in India. A new cooling standard enters the market.",
-    image: ASSETS.timelineImage,
+    image: ASSETS.timeline7,
   },
 ];
 
@@ -209,35 +209,6 @@ function TimelineCard({
   );
 }
 
-// Timeline Progress Dots Component
-function TimelineProgress({ total }: { total: number }) {
-  return (
-    <div className="flex items-center w-full">
-      {/* Dots with connecting lines */}
-      <div className="flex items-center">
-        {Array.from({ length: total }).map((_, index) => (
-          <div key={index} className="flex items-center">
-            {/* Dot */}
-            <div
-              className={`rounded-full transition-all duration-300 ${
-                index === 0
-                  ? "w-[12px] h-[12px] md:w-[14px] md:h-[14px] bg-[#3478F6]"
-                  : "w-[10px] h-[10px] md:w-[12px] md:h-[12px] bg-[#D9D9D9]"
-              }`}
-            />
-            {/* Connecting line (except after last dot) */}
-            {index < total - 1 && (
-              <div className="w-[60px] md:w-[120px] lg:w-[200px] h-[2px] bg-[#E5E5E5]" />
-            )}
-          </div>
-        ))}
-      </div>
-      {/* Trailing gradient line */}
-      <div className="flex-1 h-[2px] bg-gradient-to-r from-[#E5E5E5] to-transparent max-w-[300px] md:max-w-[600px] lg:max-w-[900px]" />
-    </div>
-  );
-}
-
 export function TimelineSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -260,19 +231,22 @@ export function TimelineSection() {
   }, []);
 
   // Smooth scroll function
-  const scroll = useCallback((direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 400;
-      scrollContainerRef.current.scrollTo({
-        left:
-          scrollContainerRef.current.scrollLeft +
-          (direction === "left" ? -scrollAmount : scrollAmount),
-        behavior: "smooth",
-      });
-      // Update scroll state after animation
-      setTimeout(updateScrollState, 350);
-    }
-  }, [updateScrollState]);
+  const scroll = useCallback(
+    (direction: "left" | "right") => {
+      if (scrollContainerRef.current) {
+        const scrollAmount = 400;
+        scrollContainerRef.current.scrollTo({
+          left:
+            scrollContainerRef.current.scrollLeft +
+            (direction === "left" ? -scrollAmount : scrollAmount),
+          behavior: "smooth",
+        });
+        // Update scroll state after animation
+        setTimeout(updateScrollState, 350);
+      }
+    },
+    [updateScrollState],
+  );
 
   useGSAP(
     () => {

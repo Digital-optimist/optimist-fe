@@ -52,7 +52,7 @@ export default function BlogDetailPageClient({
 }: BlogDetailPageClientProps) {
   return (
     <motion.main
-      className="bg-white min-h-screen overflow-x-hidden"
+      className="bg-white min-h-screen"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -92,7 +92,7 @@ export default function BlogDetailPageClient({
       </motion.div>
 
       {/* Content and Sidebar */}
-      <section className="bg-white py-8 md:py-12 lg:py-16 overflow-hidden">
+      <section className="bg-white py-8 md:py-12 lg:py-16">
         <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px]">
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 xl:gap-24">
             {/* Main Content */}

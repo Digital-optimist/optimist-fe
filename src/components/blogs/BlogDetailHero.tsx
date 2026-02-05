@@ -70,7 +70,7 @@ export function BlogDetailHero({ article }: BlogDetailHeroProps) {
   return (
     <section
       ref={sectionRef}
-      className="bg-white md:pt-8 pt-4 pb-6 md:pb-8 overflow-hidden"
+      className="bg-white md:pt-8 pt-4 pb-6 md:pb-8"
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px]">
         <div className="max-w-[768px]">

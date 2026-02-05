@@ -89,7 +89,7 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
   };
 
   return (
-    <section ref={sectionRef} className="bg-white pb-8 md:pb-12 overflow-hidden">
+    <section ref={sectionRef} className="bg-white pb-8 md:pb-12">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px]">
         <div className="flex flex-col gap-[20px] sm:gap-[24px]">
           {/* Featured Image */}

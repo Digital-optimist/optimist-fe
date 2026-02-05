@@ -119,6 +119,14 @@ export const ASSETS = {
   scheduling: getAssetUrl("Scheduling.png"),
   serviceAssistance: getAssetUrl("Service assistance.png"),
 
+  timeline1: getAssetUrl("Timeline1.png"),
+  timeline2: getAssetUrl("Timeline2.png"),
+  timeline3: getAssetUrl("Timeline3.png"),
+  timeline4: getAssetUrl("Timeline4.png"),
+  timeline5: getAssetUrl("Timeline5.png"),
+  timeline6: getAssetUrl("Timeline6.png"),
+  timeline7: getAssetUrl("Timeline7.png"),
+
   // Icons
 
   calendar: getAssetUrl("calendar.svg"),

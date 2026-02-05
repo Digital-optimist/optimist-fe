@@ -47,11 +47,11 @@ export function BlogCategoryTabs({
   return (
     <div
       ref={sectionRef}
-      className="bg-white pt-8 md:pt-10 lg:pt-16 will-change-[transform,opacity]"
+      className="bg-white pt-16 md:pt-20 lg:pt-24 will-change-[transform,opacity]"
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
         {/* Section Title */}
-        <h3 className="font-display font-semibold text-[20px] sm:text-[22px] md:text-[24px] lg:text-[36px] text-[#101828] text-center mb-6 md:mb-8">
+        <h3 className="font-display font-semibold text-[28px] sm:text-[28px] md:text-[32px] lg:text-[36px] text-[#101828] text-center mb-6 md:mb-8">
           Explore more topics
         </h3>
 

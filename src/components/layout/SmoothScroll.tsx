@@ -18,23 +18,45 @@ const isMobileDevice = () => {
   );
 };
 
+// Check if device is iOS
+const isIOSDevice = () => {
+  if (typeof window === "undefined") return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+};
+
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  // Initialize isMobile synchronously to prevent Lenis from ever initializing on mobile
+  const [isMobile, setIsMobile] = useState(() => 
+    typeof window !== "undefined" ? isMobileDevice() : false
+  );
+  const [isIOS, setIsIOS] = useState(() =>
+    typeof window !== "undefined" ? isIOSDevice() : false
+  );
 
-  // Detect mobile on mount
+  // Update on resize (for orientation changes)
   useEffect(() => {
-    setIsMobile(isMobileDevice());
+    const handleResize = () => {
+      setIsMobile(isMobileDevice());
+      setIsIOS(isIOSDevice());
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
-    // Skip Lenis on mobile - use native scrolling for better touch experience
-    if (isMobile) {
+    // Skip Lenis on mobile/iOS - use native scrolling for better touch experience
+    if (isMobile || isIOS) {
       // Still need to update ScrollTrigger on native scroll
       const handleScroll = () => {
         ScrollTrigger.update();
       };
       window.addEventListener("scroll", handleScroll, { passive: true });
+      
+      // Ensure native scrolling works properly on iOS
+      document.documentElement.style.setProperty("-webkit-overflow-scrolling", "touch");
+      
       return () => {
         window.removeEventListener("scroll", handleScroll);
       };
@@ -74,7 +96,12 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       lenis.destroy();
       gsap.ticker.remove(rafCallback);
     };
-  }, [isMobile]);
+  }, [isMobile, isIOS]);
+
+  // On mobile/iOS, render without the wrapper div that might interfere with scrolling
+  if (isMobile || isIOS) {
+    return <>{children}</>;
+  }
 
   return <div data-lenis-prevent-wheel={false}>{children}</div>;
 }

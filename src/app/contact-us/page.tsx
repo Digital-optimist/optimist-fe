@@ -772,11 +772,11 @@ export default function ContactPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#f5f5f5] pt-24 pb-16 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen bg-[#f5f5f5] pt-24 pb-16 px-2 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
         {/* Main white container card */}
-        <div className="bg-white rounded-[32px] p-8 md:p-12 lg:p-16">
+        <div className="bg-white rounded-[32px] p-8 px-4  md:p-12 lg:p-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
             {/* Left Column - Heading & Info */}
             <div ref={leftContentRef} className="lg:sticky lg:top-32">

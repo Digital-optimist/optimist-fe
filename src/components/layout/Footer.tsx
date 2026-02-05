@@ -351,7 +351,7 @@ export function Footer() {
           className="relative mt-8 md:mt-10"
         >
           <motion.div
-            className="relative w-full aspect-[15/9] md:aspect-[17/9] rounded-[24px] md:rounded-[50px] overflow-hidden"
+            className="relative w-full aspect-[15/9] md:aspect-[22/9] rounded-[24px] md:rounded-[50px] overflow-hidden"
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.4 }}
           >

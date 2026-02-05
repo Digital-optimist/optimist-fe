@@ -142,7 +142,7 @@ export default function BlogsPage() {
 
   return (
     <motion.main
-      className="bg-white min-h-screen overflow-x-hidden"
+      className="bg-white min-h-screen"
       initial="initial"
       animate="animate"
       exit="exit"

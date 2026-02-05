@@ -119,9 +119,19 @@ function TeamCard({
     ? FOCUSED_TEXT_COLOR
     : UNFOCUSED_TEXT_COLOR;
 
+  const cardTransitionClass = isMobile
+    ? ""
+    : "transition-all duration-500 ease-out";
+  const colorTransitionClass = isMobile
+    ? ""
+    : "transition-colors duration-500 ease-out";
+  const fadeTransitionClass = isMobile
+    ? ""
+    : "transition-opacity duration-500 ease-out";
+
   return (
     <div
-      className={`flex flex-col gap-3 flex-shrink-0 transition-all duration-500 ease-out ${
+      className={`flex flex-col gap-3 flex-shrink-0 ${cardTransitionClass} ${
         isFocused
           ? "w-[320px] md:w-[480px] lg:w-[576px]"
           : "w-[320px] md:w-[300px] lg:w-[390px]"
@@ -129,12 +139,12 @@ function TeamCard({
     >
       {/* Image Card */}
       <div
-        className="relative overflow-hidden rounded-[16px] lg:rounded-[20px] h-[300px] md:h-[360px] lg:h-[406px] transition-colors duration-500 ease-out"
+        className={`relative overflow-hidden rounded-[16px] lg:rounded-[20px] h-[300px] md:h-[360px] lg:h-[406px] ${colorTransitionClass}`}
         style={{ backgroundColor: bgColor }}
       >
         {/* Background gradient for focused card */}
         <div
-          className="absolute inset-0 w-full h-full transition-opacity duration-500 ease-out"
+          className={`absolute inset-0 w-full h-full ${fadeTransitionClass}`}
           style={{ opacity: showFocusedStyle ? 0.6 : 0 }}
         >
           <Image
@@ -148,7 +158,7 @@ function TeamCard({
 
         {/* Person Image */}
         <div
-          className={`absolute transition-all duration-500 ease-out ${
+          className={`absolute ${cardTransitionClass} ${
             isFocused
               ? "right-0 bottom-0 w-[200px] md:w-[260px] lg:w-[292px] h-[280px] md:h-[350px] lg:h-[399px]"
               : "left-3/4 -translate-x-1/2 bottom-0 w-[200px] md:w-[250px] lg:w-[298px] h-[280px] md:h-[380px] lg:h-[380px]"
@@ -169,11 +179,11 @@ function TeamCard({
 
         {/* Title and Role Overlay */}
         <div
-          className="absolute left-5 lg:left-6 top-5 lg:top-6 flex flex-col gap-1 z-10 transition-colors duration-500 ease-out"
+          className={`absolute left-5 lg:left-6 top-5 lg:top-6 flex flex-col gap-1 z-10 ${colorTransitionClass}`}
           style={{ color: textColor === "white" ? "white" : "black" }}
         >
           <p
-            className="font-display font-semibold text-[24px] md:text-[30px] lg:text-[36px] tracking-[0.04em] leading-normal transition-all duration-500"
+            className={`font-display font-semibold text-[24px] md:text-[30px] lg:text-[36px] tracking-[0.04em] leading-normal ${cardTransitionClass}`}
             style={{
               textShadow:
                 textColor === "black"
@@ -184,7 +194,7 @@ function TeamCard({
             {title}
           </p>
           <p
-            className="font-display font-medium text-[14px] md:text-[18px] lg:text-[20px] tracking-[0.04em] leading-normal transition-all duration-500"
+            className={`font-display font-medium text-[14px] md:text-[18px] lg:text-[20px] tracking-[0.04em] leading-normal ${cardTransitionClass}`}
             style={{
               textShadow:
                 textColor === "black"

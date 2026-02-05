@@ -50,7 +50,7 @@ export function BlogHeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white pt-20 sm:pt-20 md:pt-20 lg:pt-24 pb-8 md:pb-12 lg:pb-16 overflow-hidden"
+      className="bg-white pt-20 sm:pt-20 md:pt-20 lg:pt-24 pb-8 md:pb-12 lg:pb-16"
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 lg:gap-8">

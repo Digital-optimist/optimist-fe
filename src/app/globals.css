@@ -55,6 +55,8 @@
 /* Base Styles */
 html {
   scroll-behavior: smooth;
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -63,6 +65,19 @@ body {
   font-family: var(--font-abc-solar), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Allow vertical scrolling on touch devices */
+  touch-action: pan-y;
+  /* Prevent iOS text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* iOS Safari viewport fix - use dynamic viewport height */
+@supports (min-height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
 }
 
 /* Display Font Utility */

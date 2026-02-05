@@ -49,7 +49,7 @@ export function BlogCTASection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white py-8 md:py-12 lg:py-16 overflow-hidden"
+      className="bg-white py-8 md:py-12 lg:py-16"
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
         {/* CTA Card with Gradient Background */}
