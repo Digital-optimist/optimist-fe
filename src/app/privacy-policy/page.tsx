@@ -244,10 +244,13 @@ export default function PrivacyPolicyPage() {
               In accordance with the legal requirements, the name and contact details of the Data Privacy/Grievance Officer who can be contacted with respect to any complaints or concerns including those pertaining to breach of this Privacy Policy and other polices are published as under:
             </p>
             <div className="bg-gray-50 rounded-2xl p-6 mb-4 border border-gray-200 text-gray-700 space-y-2">
-              <p>Data Privacy Officer/Grievance Officer Name: [●]</p>
-              <p>Email address: [●]</p>
-              <p>Phone number: [●]</p>
-              <p>Address: [●]</p>
+              <p>Data Privacy Officer/Grievance Officer Name: Anand Ingle</p>
+              <p>Email address: care@optimist.in</p>
+              <p>Phone number: 8147487070</p>
+              <p>
+                Address: Plot No. 82, First Floor, Udyog Vihar, Phase-4,
+                Gurgaon, Haryana – 122015.
+              </p>
             </div>
             <p className="text-gray-600 mb-4 leading-relaxed">
               The Data Privacy/Grievance Officer can be contacted between 10am to 5pm (IST) from Monday to Friday except on public holidays.
@@ -259,7 +262,12 @@ export default function PrivacyPolicyPage() {
               Questions and Contact Information
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              If you would like to access, correct, amend or delete any of your Information shared with us, please register a complaint, or if you want more information about this Privacy Policy, please contact us at [●]. We shall respond to and address all reasonable concerns or inquiries in a reasonable amount of time.
+              If you would like to access, correct, amend or delete any of your
+              Information shared with us, please register a complaint, or if you
+              want more information about this Privacy Policy, please contact us
+              at care@optimist.in or 8147487070. We shall respond to and address
+              all reasonable concerns or inquiries in a reasonable amount of
+              time.
             </p>
           </section>
         </div>
