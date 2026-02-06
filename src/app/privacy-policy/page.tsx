@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import type React from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { Lock } from "lucide-react";
@@ -8,6 +9,9 @@ import { Lock } from "lucide-react";
 export default function PrivacyPolicyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const handleRestrictedAction = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+  };
 
   useGSAP(
     () => {
@@ -21,7 +25,14 @@ export default function PrivacyPolicyPage() {
   );
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-white pt-24 pb-16">
+    <div
+      ref={containerRef}
+      className="min-h-screen bg-white pt-24 pb-16 select-none"
+      onCopy={handleRestrictedAction}
+      onCut={handleRestrictedAction}
+      onContextMenu={handleRestrictedAction}
+      onDragStart={handleRestrictedAction}
+    >
       <div ref={contentRef} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
