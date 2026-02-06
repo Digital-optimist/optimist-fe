@@ -213,12 +213,12 @@ export function UserExperienceSection() {
                         {experience.date}
                       </p>
                     </div>
-                    <button className="w-[54px] h-[54px] bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                    {/* <button className="w-[54px] h-[54px] bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
                       <Play
                         className="w-6 h-6 text-gray-900 ml-1"
                         fill="currentColor"
                       />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
@@ -261,12 +261,12 @@ export function UserExperienceSection() {
                         {experience.date}
                       </p>
                     </div>
-                    <button className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                    {/* <button className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
                       <Play
                         className="w-5 h-5 text-gray-900 ml-0.5"
                         fill="currentColor"
                       />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, type KeyboardEvent } from "react";
+import { memo, useCallback, useRef, type KeyboardEvent, type TouchEvent } from "react";
 import Image from "next/image";
 import { ArrowRightIcon } from "@/components/icons/ProductIcons";
 
@@ -27,6 +27,9 @@ export const ImageGallery = memo(function ImageGallery({
   onPrev, 
   onNext 
 }: ImageGalleryProps) {
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
   // Keyboard navigation handler
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "ArrowLeft") {
@@ -38,6 +41,35 @@ export const ImageGallery = memo(function ImageGallery({
     }
   }, [onPrev, onNext]);
 
+  const handleTouchStart = useCallback((e: TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: TouchEvent<HTMLDivElement>) => {
+    const touch = e.changedTouches[0];
+    if (!touch || touchStartX.current === null || touchStartY.current === null) {
+      return;
+    }
+
+    const deltaX = touch.clientX - touchStartX.current;
+    const deltaY = touch.clientY - touchStartY.current;
+    const swipeThreshold = 40;
+
+    if (Math.abs(deltaX) > swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 0) {
+        onPrev();
+      } else {
+        onNext();
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  }, [onNext, onPrev]);
+
   return (
     <div 
       className="w-full" 
@@ -48,7 +80,11 @@ export const ImageGallery = memo(function ImageGallery({
       aria-roledescription="carousel"
     >
       {/* Main Image */}
-      <div className="relative aspect-square rounded-[24px] md:rounded-[24px] rounded-[16px] overflow-hidden bg-gray-100 mb-4">
+      <div
+        className="relative aspect-square rounded-[24px] md:rounded-[24px] rounded-[16px] overflow-hidden bg-gray-100 mb-4"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <Image
           src={images[selectedIndex]}
           alt={`Product image ${selectedIndex + 1} of ${images.length}`}

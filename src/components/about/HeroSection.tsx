@@ -76,13 +76,13 @@ export function AboutHeroSection() {
         >
           {/* Desktop Layout - 556px height */}
           <div className="hidden md:block relative w-full h-[450px] lg:h-[556px]">
-            <Image
-              src={ASSETS.aboutHero}
-              alt="Indian summers and cooling innovation"
-              fill
-              className="object-cover object-[center_bottom]"
-              sizes="(max-width: 768px) 100vw, 1344px"
-              priority
+            <video
+              src={ASSETS.discussionVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover object-[center_bottom]"
             />
             {/* Gradient overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -100,13 +100,13 @@ export function AboutHeroSection() {
 
           {/* Mobile Layout - 402px height */}
           <div className="md:hidden relative w-full h-[402px]">
-            <Image
-              src={ASSETS.aboutHero}
-              alt="Indian summers and cooling innovation"
-              fill
-              className="object-cover object-[70%_bottom]"
-              sizes="100vw"
-              priority
+            <video
+              src={ASSETS.discussionVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 h-full w-full object-cover object-[70%_bottom]"
             />
             {/* Gradient overlay for text readability */}
             <div className="absolute bottom-0 left-0 right-0 h-[220px] bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
