@@ -222,6 +222,9 @@ export default function ProductsPageClient({
 }: ProductsPageClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const variantsScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
@@ -243,7 +246,9 @@ export default function ProductsPageClient({
   }, [combinedProduct]);
 
   // Initialize selected variant - prefer 1.5 ton (middle), then first available
-  const [selectedVariant, setSelectedVariant] = useState<DisplayVariant | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<DisplayVariant | null>(
+    null,
+  );
 
   // Track if we've initialized with Shopify data
   const [initializedWithShopify, setInitializedWithShopify] = useState(false);
@@ -253,15 +258,21 @@ export default function ProductsPageClient({
     if (variants.length === 0) return;
 
     // If we haven't initialized with Shopify data yet and now have it, update the variant
-    const shouldUpdate = !selectedVariant || (hasShopifyData && !initializedWithShopify);
-    
+    const shouldUpdate =
+      !selectedVariant || (hasShopifyData && !initializedWithShopify);
+
     if (shouldUpdate) {
       // Prefer 1.5 ton as default, then first available, then middle one
-      const preferredVariant = variants.find((v) => v.tonnage === "1.5" && v.available);
+      const preferredVariant = variants.find(
+        (v) => v.tonnage === "1.5" && v.available,
+      );
       const availableVariant = variants.find((v) => v.available);
-      const defaultVariant = preferredVariant || availableVariant || variants[Math.floor(variants.length / 2)];
+      const defaultVariant =
+        preferredVariant ||
+        availableVariant ||
+        variants[Math.floor(variants.length / 2)];
       setSelectedVariant(defaultVariant);
-      
+
       if (hasShopifyData) {
         setInitializedWithShopify(true);
       }
@@ -376,6 +387,50 @@ export default function ProductsPageClient({
     setIsQuantityOpen((prev) => !prev);
   }, []);
 
+  const updateVariantsScrollState = useCallback(() => {
+    const element = variantsScrollRef.current;
+    if (!element) return;
+
+    const maxScrollLeft = element.scrollWidth - element.clientWidth;
+    setCanScrollLeft(element.scrollLeft > 0);
+    setCanScrollRight(element.scrollLeft < maxScrollLeft - 1);
+  }, []);
+
+  const handleVariantsScroll = useCallback((direction: "left" | "right") => {
+    const element = variantsScrollRef.current;
+    if (!element) return;
+
+    const amount = Math.max(180, Math.round(element.clientWidth * 0.8));
+    element.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  }, []);
+
+  useEffect(() => {
+    updateVariantsScrollState();
+    const rafId = requestAnimationFrame(updateVariantsScrollState);
+    return () => cancelAnimationFrame(rafId);
+  }, [variants.length, updateVariantsScrollState]);
+
+  useEffect(() => {
+    const element = variantsScrollRef.current;
+    if (!element) return;
+
+    const handleScroll = () => updateVariantsScrollState();
+    element.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    const resizeObserver = new ResizeObserver(() => updateVariantsScrollState());
+    resizeObserver.observe(element);
+
+    return () => {
+      element.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      resizeObserver.disconnect();
+    };
+  }, [updateVariantsScrollState]);
+
   const handleAddToCart = useCallback(async () => {
     if (!selectedVariant || !selectedVariant.variantId) {
       showToast("Please select a variant", "error");
@@ -447,14 +502,19 @@ export default function ProductsPageClient({
               </motion.div>
 
               {/* Title & Delivery */}
-              <motion.div variants={heroInfoItemVariants} className="flex flex-col gap-2">
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-2"
+              >
                 <h1 className="text-[28px] md:text-[40px] font-semibold text-black leading-tight">
                   Optimist AC {selectedVariant?.name || ""}
                 </h1>
                 <div className="flex items-center gap-2 text-[#6c6a6a]">
                   <PackageIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                   <span className="text-xs md:text-sm">
-                    {selectedVariant?.available ? "Delivery in 3 weeks" : "Currently unavailable"}
+                    {selectedVariant?.available
+                      ? "Delivery in 3 weeks"
+                      : "Currently unavailable"}
                   </span>
                 </div>
               </motion.div>
@@ -478,11 +538,14 @@ export default function ProductsPageClient({
                   </div>
                 ) : (
                   <div
-                    className="w-full overflow-hidden"
+                    className="relative w-full overflow-hidden"
                     role="radiogroup"
                     aria-label="Product variants"
                   >
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+                    <div
+                      ref={variantsScrollRef}
+                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
+                    >
                       {variants.map((variant) => (
                         <VariantCard
                           key={variant.id}
@@ -492,6 +555,26 @@ export default function ProductsPageClient({
                         />
                       ))}
                     </div>
+                    {canScrollLeft && (
+                      <button
+                        type="button"
+                        onClick={() => handleVariantsScroll("left")}
+                        aria-label="Scroll variants left"
+                        className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/85 text-black shadow-sm backdrop-blur"
+                      >
+                        <span className="text-lg leading-none">‹</span>
+                      </button>
+                    )}
+                    {canScrollRight && (
+                      <button
+                        type="button"
+                        onClick={() => handleVariantsScroll("right")}
+                        aria-label="Scroll variants right"
+                        className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/85 text-black shadow-sm backdrop-blur"
+                      >
+                        <span className="text-lg leading-none">›</span>
+                      </button>
+                    )}
                   </div>
                 )}
               </motion.div>
@@ -505,11 +588,12 @@ export default function ProductsPageClient({
                   Total
                 </h3>
                 <div className="flex flex-wrap items-baseline gap-2">
-                  {selectedVariant?.compareAtPrice && selectedVariant.compareAtPrice > selectedVariant.price && (
-                    <span className="text-lg md:text-xl text-[#6c6a6a] line-through">
-                      ₹{formatPrice(selectedVariant.compareAtPrice)}
-                    </span>
-                  )}
+                  {selectedVariant?.compareAtPrice &&
+                    selectedVariant.compareAtPrice > selectedVariant.price && (
+                      <span className="text-lg md:text-xl text-[#6c6a6a] line-through">
+                        ₹{formatPrice(selectedVariant.compareAtPrice)}
+                      </span>
+                    )}
                   <span className="text-2xl md:text-3xl font-semibold text-black">
                     ₹{formatPrice(selectedVariant?.price || 0)}
                   </span>
@@ -547,10 +631,14 @@ export default function ProductsPageClient({
                     buttonState === "loading"
                       ? "border-gray-200 text-gray-400"
                       : buttonState === "outOfStock"
-                      ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                      : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
+                        ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                        : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
                   }`}
-                  whileHover={canAddToCart ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" } : {}}
+                  whileHover={
+                    canAddToCart
+                      ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }
+                      : {}
+                  }
                   whileTap={canAddToCart ? { scale: 0.98 } : {}}
                   transition={{ duration: 0.2 }}
                 >
@@ -559,8 +647,8 @@ export default function ProductsPageClient({
                     {buttonState === "loading"
                       ? "Loading..."
                       : buttonState === "outOfStock"
-                      ? "Out of Stock"
-                      : "Add to Cart"}
+                        ? "Out of Stock"
+                        : "Add to Cart"}
                   </span>
                 </motion.button>
                 <motion.button
@@ -569,8 +657,8 @@ export default function ProductsPageClient({
                     buttonState === "loading"
                       ? "bg-gray-300 text-gray-500"
                       : buttonState === "outOfStock"
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "btn-buy-now text-[#FFFCDC]"
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "btn-buy-now text-[#FFFCDC]"
                   }`}
                   whileHover={canAddToCart ? { scale: 1.02 } : {}}
                   whileTap={canAddToCart ? { scale: 0.98 } : {}}
@@ -579,8 +667,8 @@ export default function ProductsPageClient({
                   {buttonState === "loading"
                     ? "Loading..."
                     : buttonState === "outOfStock"
-                    ? "Unavailable"
-                    : "Buy Now"}
+                      ? "Unavailable"
+                      : "Buy Now"}
                 </motion.button>
               </motion.div>
 
@@ -592,7 +680,7 @@ export default function ProductsPageClient({
 
               {/* Description Accordion */}
               <motion.div variants={heroInfoItemVariants}>
-                <details className="group" open>
+                <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
                       Description
@@ -603,14 +691,21 @@ export default function ProductsPageClient({
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </summary>
                   <div className="pt-2 pb-4 max-h-[400px] overflow-y-auto">
                     {selectedVariant?.descriptionHtml ? (
                       <div
                         className="rich-text-content text-sm md:text-base leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: selectedVariant.descriptionHtml }}
+                        dangerouslySetInnerHTML={{
+                          __html: selectedVariant.descriptionHtml,
+                        }}
                       />
                     ) : selectedVariant?.description ? (
                       <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
@@ -622,8 +717,9 @@ export default function ProductsPageClient({
                           Engineered for Indian reality.
                         </h4>
                         <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed">
-                          Consistent cooling at 45°C. Bills that stay predictable.
-                          Performance that doesn&apos;t fade when you need it most.
+                          Consistent cooling at 45°C. Bills that stay
+                          predictable. Performance that doesn&apos;t fade when
+                          you need it most.
                         </p>
                       </>
                     )}
@@ -650,12 +746,18 @@ export default function ProductsPageClient({
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </summary>
                   <div className="pt-2 pb-4">
                     <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed italic">
-                      No information available at this time. Warranty details will be updated soon.
+                      No information available at this time. Warranty details
+                      will be updated soon.
                     </p>
                   </div>
                 </details>
@@ -680,12 +782,18 @@ export default function ProductsPageClient({
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </summary>
                   <div className="pt-2 pb-4">
                     <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed italic">
-                      No additional information available at this time. Product specifications will be updated soon.
+                      No additional information available at this time. Product
+                      specifications will be updated soon.
                     </p>
                   </div>
                 </details>
@@ -790,8 +898,8 @@ export default function ProductsPageClient({
               buttonState === "loading"
                 ? "bg-gray-300 text-gray-500"
                 : buttonState === "outOfStock"
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-white text-black hover:bg-white/90 disabled:opacity-50"
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-white text-black hover:bg-white/90 disabled:opacity-50"
             }`}
             whileHover={canAddToCart ? { scale: 1.02 } : {}}
             whileTap={canAddToCart ? { scale: 0.98 } : {}}
@@ -801,8 +909,8 @@ export default function ProductsPageClient({
               {buttonState === "loading"
                 ? "Loading..."
                 : buttonState === "outOfStock"
-                ? "Out of Stock"
-                : "Add to Cart"}
+                  ? "Out of Stock"
+                  : "Add to Cart"}
             </span>
           </motion.button>
           <motion.button
@@ -811,8 +919,8 @@ export default function ProductsPageClient({
               buttonState === "loading"
                 ? "bg-gray-400 text-gray-600"
                 : buttonState === "outOfStock"
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "btn-buy-now text-[#FFFCDC]"
+                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                  : "btn-buy-now text-[#FFFCDC]"
             }`}
             whileHover={canAddToCart ? { scale: 1.02 } : {}}
             whileTap={canAddToCart ? { scale: 0.98 } : {}}
@@ -820,8 +928,8 @@ export default function ProductsPageClient({
             {buttonState === "loading"
               ? "Loading..."
               : buttonState === "outOfStock"
-              ? "Unavailable"
-              : "Buy Now"}
+                ? "Unavailable"
+                : "Buy Now"}
           </motion.button>
         </div>
       </motion.div>

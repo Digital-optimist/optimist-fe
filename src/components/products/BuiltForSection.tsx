@@ -88,7 +88,7 @@ export function BuiltForSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-[#E7E7E7] mt-8 py-6 md:py-8 lg:py-10 overflow-hidden"
+      className="bg-white mt-8 py-6 md:py-8 lg:py-10 overflow-hidden"
     >
       <div className="max-w-[1400px]  mx-auto px-4 md:px-6 lg:px-8">
         {/* Title */}
@@ -125,7 +125,7 @@ export function BuiltForSection() {
             >
               <video
                 ref={videoRef}
-                src={ASSETS.videos.productCardAnimationWhite2}
+                src={ASSETS.videos.productCardAnimation2}
                 className="w-full h-full object-contain mix-blend-multiply"
                 muted
                 playsInline
@@ -206,7 +206,7 @@ export function BuiltForSection() {
             >
               <video
                 ref={mobileVideoRef}
-                src={ASSETS.videos.productCardAnimation}
+                src={ASSETS.videos.productCardAnimation2}
                 className="w-full h-full object-contain   mix-blend-multiply"
                 muted
                 playsInline

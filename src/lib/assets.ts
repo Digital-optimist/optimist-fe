@@ -126,6 +126,7 @@ export const ASSETS = {
   timeline5: getAssetUrl("Timeline5.png"),
   timeline6: getAssetUrl("Timeline6.png"),
   timeline7: getAssetUrl("Timeline7.png"),
+  discussionVideo: getAssetUrl("C5488 (1).mp4"),
 
   // Icons
 
