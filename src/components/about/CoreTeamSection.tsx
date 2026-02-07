@@ -160,7 +160,7 @@ function TeamCard({
         <div
           className={`absolute ${cardTransitionClass} ${
             isFocused
-              ? "right-0 bottom-0 w-[200px] md:w-[260px] lg:w-[292px] h-[200px] md:h-[350px] lg:h-[399px]"
+              ? "right-0 bottom-0 w-[200px] md:w-[250px] lg:w-[292px] h-[200px] md:h-[350px] lg:h-[399px]"
               : "left-3/4 -translate-x-1/2 bottom-0 w-[200px] md:w-[250px] lg:w-[298px] h-[200px] md:h-[280px] lg:h-[320px]"
           }`}
         >

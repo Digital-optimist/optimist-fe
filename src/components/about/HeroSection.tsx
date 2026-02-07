@@ -106,7 +106,7 @@ export function AboutHeroSection() {
               loop
               muted
               playsInline
-              className="absolute inset-0 h-full w-full object-cover object-[70%_bottom]"
+              className="absolute inset-0 h-full w-full object-cover"
             />
             {/* Gradient overlay for text readability */}
             <div className="absolute bottom-0 left-0 right-0 h-[220px] bg-gradient-to-t from-black/80 via-black/50 to-transparent" />

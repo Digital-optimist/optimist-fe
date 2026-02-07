@@ -92,14 +92,7 @@ export default function AboutPage() {
       <AboutHeroSection />
 
       {/* Animated sections with various effects */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={slideFromLeft}
-      >
-        <BreathworkSection />
-      </motion.div>
+      <BreathworkSection />
 
       <motion.div
         initial="hidden"
