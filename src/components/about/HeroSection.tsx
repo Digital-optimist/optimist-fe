@@ -82,7 +82,7 @@ export function AboutHeroSection() {
               loop
               muted
               playsInline
-              className="absolute inset-0 h-full w-full object-cover object-[center_bottom]"
+              className="absolute inset-0 h-full w-full object-cover"
             />
             {/* Gradient overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -99,7 +99,7 @@ export function AboutHeroSection() {
           </div>
 
           {/* Mobile Layout - 402px height */}
-          <div className="md:hidden relative w-full h-[402px]">
+          <div className="md:hidden relative w-full h-[362px]">
             <video
               src={ASSETS.discussionVideo}
               autoPlay
