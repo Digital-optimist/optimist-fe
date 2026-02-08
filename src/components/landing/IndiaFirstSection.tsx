@@ -134,7 +134,7 @@ export function IndiaFirstSection() {
               <div className="flex items-center gap-3 md:gap-4">
                 <button
                   onClick={openModal}
-                  className="btn-buy-now w-[160px] hero-btn-mobile md:hero-btn-desktop inline-flex items-center justify-center text-white"
+                  className="btn-buy-now w-[160px] hero-btn-mobile md:hero-btn-desktop inline-flex items-center justify-center text-[#FFFCDC]"
                 >
                   Join the Waitlist
                 </button>
@@ -155,7 +155,7 @@ export function IndiaFirstSection() {
             {/* Mobile AC Image */}
             <div className="absolute bottom-[-12px] right-0 w-[76%] md:hidden">
               <Image
-                src={ASSETS.mobile}
+                src={ASSETS.acTilt}
                 alt="Optimist AC Unit"
                 width={500}
                 height={50}
@@ -165,9 +165,9 @@ export function IndiaFirstSection() {
             </div>
 
             {/* Desktop AC Image */}
-            <div className="hidden md:block absolute bottom-0 right-[-3%] w-[80%] lg:w-[75%]">
+            <div className="hidden md:block absolute bottom-0 right-[-3%] w-[80%] lg:w-[65%]">
               <Image
-                src={ASSETS.desktop}
+                src={ASSETS.acTilt}
                 alt="Optimist AC Unit"
                 width={800}
                 height={400}
@@ -252,7 +252,7 @@ export function IndiaFirstSection() {
                     loading="lazy"
                   />
                   <div>
-                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold italic text-white leading-tight">
+                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold text-white leading-tight">
                       India&apos;s 1st
                     </p>
                     <p className="text-sm md:text-base text-white/90 font-medium">
@@ -296,7 +296,7 @@ export function IndiaFirstSection() {
                   </svg>
 
                   <div>
-                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold italic text-white leading-tight">
+                    <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold text-white leading-tight">
                       4.8 rated
                     </p>
                     {/* Mobile text */}

@@ -149,7 +149,7 @@ export function LoginForm({ redirectTo = "/account" }: LoginFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full btn-primary px-6 py-3 rounded-full text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full btn-primary px-6 py-3 rounded-full text-[#FFFCDC] font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? (
           <>

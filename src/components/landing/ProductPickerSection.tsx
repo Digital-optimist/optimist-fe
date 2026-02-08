@@ -322,7 +322,7 @@ export function ProductPickerSection() {
         <div
           ref={cardRef}
           className="bg-[#F8F8FA] rounded-[24px] md:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
-          style={{ boxShadow: "0px 9px 30px 0px #00000017" }}
+          style={{ boxShadow: "0px -4px 4px 0px #00000014 inset" }}
         >
           {/* Tab Navigation */}
           <div className="border-b border-gray-200">
@@ -402,9 +402,10 @@ export function ProductPickerSection() {
                       className="font-display text-[28px] md:text-[36px] lg:text-[42px] leading-tight font-bold"
                       style={{
                         background:
-                          "linear-gradient(90deg, #3478F6 0%, #074FD5 100%)",
+                          "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
                         WebkitBackgroundClip: "text",
-                        color: "transparent",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
                       }}
                     >
                       {activeProduct.tagline}
@@ -445,7 +446,7 @@ export function ProductPickerSection() {
                   </div>
                   <button
                     onClick={openModal}
-                    className="btn-buy-now inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-3.5 rounded-full text-white font-semibold text-sm md:text-base"
+                    className="btn-buy-now inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-3.5 rounded-full text-[#FFFCDC] font-semibold text-sm md:text-base"
                   >
                     Join the Waitlist
                   </button>
@@ -458,7 +459,7 @@ export function ProductPickerSection() {
                   {/* Share Button */}
                   <button
                     onClick={handleShare}
-                    className="absolute top-5 right-5 z-10 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-md text-sm font-medium text-gray-700 transition-colors border border-gray-100"
+                    className="absolute top-5 right-5 z-10 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-md text-sm font-medium text-gray-700 transition-colors"
                   >
                     <Share2 className="w-4 h-4" />
                     Share

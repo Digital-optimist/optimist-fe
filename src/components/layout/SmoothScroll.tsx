@@ -30,9 +30,11 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   // Initialize false to match SSR output and avoid hydration mismatch.
   const [isMobile, setIsMobile] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Update on resize (for orientation changes)
   useEffect(() => {
+    setIsMounted(true);
     setIsMobile(isMobileDevice());
     setIsIOS(isIOSDevice());
 
@@ -98,7 +100,8 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   }, [isMobile, isIOS]);
 
   // On mobile/iOS, render without the wrapper div that might interfere with scrolling
-  if (isMobile || isIOS) {
+  // Always render the wrapper on SSR (!isMounted) to avoid hydration mismatch
+  if (isMounted && (isMobile || isIOS)) {
     return <>{children}</>;
   }
 

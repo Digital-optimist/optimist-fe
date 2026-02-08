@@ -46,7 +46,7 @@ export function MadeSimpleSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0
+        0,
       );
 
       // Right card animation with slight stagger
@@ -59,10 +59,10 @@ export function MadeSimpleSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0.1 // Slight delay for stagger effect
+        0.1, // Slight delay for stagger effect
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
@@ -83,8 +83,6 @@ export function MadeSimpleSection() {
             className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[400px] md:min-h-[450px] lg:min-h-[500px] will-change-[transform,opacity]"
             style={{
               border: "1px solid #21212133",
-              background:
-                "linear-gradient(180deg, #FFFFFF 0%, #E8F4FF 35%, #B8DEFF 70%, #8ECFFF 100%)",
             }}
           >
             {/* Decorative palm tree watermark */}
@@ -104,12 +102,19 @@ export function MadeSimpleSection() {
             </div>
 
             {/* Content */}
-            <div className="relative z-10 p-4 md:p-8 lg:p-10 flex flex-col justify-start pt-10 md:pt-14 lg:pt-16 h-full">
+            <div
+              className="relative z-10 p-4 md:p-8 lg:p-10 flex flex-col justify-start pt-10 md:pt-14 lg:pt-16 h-full"
+              style={{
+                background:
+                  "linear-gradient(180deg, #FFFFFF 0%, #E8F4FF 35%, #B8DEFF 70%, #8ECFFF 100%)",
+              }}
+            >
               {/* Headline */}
               <h2
                 className="font-display text-[32px] leading-[38px] md:text-[44px] md:leading-[50px] lg:text-[56px] lg:leading-[62px] font-bold mb-6 md:mb-8"
                 style={{
-                  background: "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                  background:
+                    "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -125,7 +130,7 @@ export function MadeSimpleSection() {
               {/* Join Waitlist Button */}
               <button
                 onClick={openModal}
-                className="btn-buy-now inline-flex items-center justify-center w-fit px-8 md:px-10 py-3 md:py-3.5 rounded-full text-white font-semibold text-sm md:text-base"
+                className="btn-buy-now inline-flex items-center justify-center w-fit px-8 md:px-10 py-3 md:py-3.5 rounded-full text-[#FFFCDC] font-semibold text-sm md:text-base"
               >
                 Join the Waitlist
               </button>

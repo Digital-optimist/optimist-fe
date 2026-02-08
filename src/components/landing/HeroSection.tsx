@@ -1,27 +1,12 @@
 "use client";
 
-// COMMENTED OUT: Scroll animation imports - no longer needed for normal section
-// import { useScrollVelocity } from "@/hooks/useScrollVelocity";
 import { gsap } from "@/lib/gsap";
 import { useGSAP } from "@gsap/react";
-// COMMENTED OUT: 3D model imports - not used in simplified version
-// import {
-//   Center,
-//   ContactShadows,
-//   Environment,
-//   PerspectiveCamera,
-//   useGLTF,
-// } from "@react-three/drei";
-// import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-// import * as THREE from "three";
-// Blue gradient component - still used for mobile
-import HeroBlueGradient1 from "./HeroBlueGradient1";
 import { motion } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
-// const MODEL_PATH = "/HomePageAnimation02.glb";
 
 // Smooth scroll to element using GSAP
 const scrollToSection = (elementId: string) => {
@@ -36,158 +21,21 @@ const scrollToSection = (elementId: string) => {
   }
 };
 
-// COMMENTED OUT: Helper function to check if mobile view - no longer used
-// const isMobileView = (width: number) => width < 768;
-
-// COMMENTED OUT: Mobile device check - no longer needed without scroll pinning
-// const isMobileDevice = () => {
-//   if (typeof window === "undefined") return false;
-//   return window.innerWidth < 768;
-// };
-
-// COMMENTED OUT: 3D AC Model Component - not used in simplified version
-// function ACModel({ onLoaded }: { onLoaded: () => void }) {
-//   const { scene } = useGLTF(MODEL_PATH);
-//
-//   useEffect(() => {
-//     // Signal that model is loaded
-//     onLoaded();
-//   }, [onLoaded]);
-//
-//   return <primitive object={scene} scale={1} />;
-// }
-
-// COMMENTED OUT: Responsive Camera with zoom-out animation
-// function ResponsiveCamera({ startAnimation }: { startAnimation: boolean }) {
-//   const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
-//   const hasAnimated = useRef(false);
-//   const { size } = useThree();
-//
-//   useEffect(() => {
-//     if (cameraRef.current && !hasAnimated.current) {
-//       cameraRef.current.position.set(0, 0, 0.05);
-//       cameraRef.current.lookAt(0, 0, 0);
-//     }
-//   }, []);
-//
-//   useEffect(() => {
-//     if (!cameraRef.current || !startAnimation || hasAnimated.current) return;
-//     hasAnimated.current = true;
-//     const isMobile = size.width < 768;
-//     const finalZ = isMobile ? 2.4 : 1.4;
-//     gsap.to(cameraRef.current.position, {
-//       z: finalZ,
-//       duration: 2.5,
-//       delay: 0.1,
-//       ease: "power2.out",
-//       onUpdate: () => {
-//         if (cameraRef.current) {
-//           cameraRef.current.lookAt(0, 0, 0);
-//         }
-//       },
-//     });
-//   }, [startAnimation, size.width]);
-//
-//   useFrame(() => {
-//     if (cameraRef.current) {
-//       cameraRef.current.lookAt(0, 0, 0);
-//     }
-//   });
-//
-//   return (
-//     <PerspectiveCamera
-//       makeDefault
-//       ref={cameraRef}
-//       position={[0, 0, 0.05]}
-//       fov={isMobileView(size.width) ? 45 : 35}
-//     />
-//   );
-// }
-
-// COMMENTED OUT: Scene content component
-// function SceneContent({ onReady }: { onReady?: () => void }) {
-//   const [modelLoaded, setModelLoaded] = useState(false);
-//   const { gl } = useThree();
-//   const isFastScrolling = useScrollVelocity({ threshold: 1200 });
-//
-//   useEffect(() => {
-//     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-//     gl.setPixelRatio(dpr);
-//   }, [gl]);
-//
-//   const handleModelLoaded = useCallback(() => {
-//     setTimeout(() => {
-//       setModelLoaded(true);
-//       if (onReady) onReady();
-//     }, 100);
-//   }, [onReady]);
-//
-//   useFrame(() => {
-//     if (isFastScrolling) {
-//       return false;
-//     }
-//   });
-//
-//   return (
-//     <>
-//       <ResponsiveCamera startAnimation={modelLoaded} />
-//       <ambientLight intensity={1} />
-//       <directionalLight position={[5, 5, 5]} intensity={1.4} />
-//       <Environment preset="city" />
-//       <Center top>
-//         <ACModel onLoaded={handleModelLoaded} />
-//       </Center>
-//       <ContactShadows
-//         position={[0, -0.5, 0]}
-//         opacity={0.4}
-//         scale={15}
-//         blur={2}
-//         far={3}
-//         frames={1}
-//         resolution={512}
-//       />
-//     </>
-//   );
-// }
-
-// COMMENTED OUT: 3D Canvas wrapper component
-// function HeroACCanvas() {
-//   const [isReady, setIsReady] = useState(false);
-//   const handleSceneReady = useCallback(() => setIsReady(true), []);
-//
-//   return (
-//     <Canvas
-//       shadows
-//       dpr={[1, 1.5]}
-//       camera={{ near: 0.01, far: 1000 }}
-//       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-//       style={{ background: "transparent", marginTop: "80px" }}
-//       className={`transition-opacity duration-1000 ease-out ${isReady ? "opacity-100" : "opacity-0"}`}
-//       frameloop="always"
-//     >
-//       <Suspense fallback={null}>
-//         <SceneContent onReady={handleSceneReady} />
-//       </Suspense>
-//     </Canvas>
-//   );
-// }
-
-// Static image fallback for mobile (88MB GLB is too heavy for mobile)
 function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
-    <div className="relative flex items-end justify-center">
+    <div className="relative flex items-end justify-center w-full">
       <motion.img
-        src={ASSETS.heroAc}
+        src={isMobile ? "/ACHeroMobile.png" : "/ACHeroDesktop.png"}
         alt="Optimist AC"
-        className="object-contain h-auto"
+        className="object-contain"
         style={{
-          width: isMobile ? "95%" : "auto",
-          maxWidth: isMobile ? undefined : "1000px",
-          maxHeight: isMobile ? undefined : "380px",
+          width: isMobile ? "90%" : "clamp(680px, 60vw, 1000px)",
+          maxWidth: isMobile ? "400px" : "1050px",
+          height: "auto",
         }}
-        initial={{ opacity: 0, scale: 0.8, y: 50 }}
+        initial={{ opacity: 0, scale: 0.9, y: 40 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+        transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
       />
     </div>
   );
@@ -204,23 +52,26 @@ export function HeroSection() {
   const gradientRef = useRef<HTMLDivElement>(null);
   const parallaxContainerRef = useRef<HTMLDivElement>(null);
   const parallaxContentRef = useRef<HTMLDivElement>(null);
-  // const cardRef = useRef<HTMLDivElement>(null); // COMMENTED OUT: Not needed without card design
+  const leafVideoRef1 = useRef<HTMLVideoElement>(null);
   const { openModal } = useWaitlist();
-
-  // COMMENTED OUT: Scroll progress tracking - not needed for desktop normal section
-  // const scrollProgressRef = useRef(0);
-  // Kept for mobile gradient (still uses scroll progress)
-  const scrollProgress = 0; // Static value for mobile gradient since no scroll animation
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Detect mobile on mount and resize
   useEffect(() => {
+    setIsMounted(true);
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Set leaf video playback speed (slower)
+  useEffect(() => {
+    if (leafVideoRef1.current) {
+      leafVideoRef1.current.playbackRate = 0.3;
+    }
   }, []);
 
   // Mouse parallax effect - push in opposite direction (desktop only)
@@ -292,84 +143,6 @@ export function HeroSection() {
     };
   }, [isMobile]);
 
-  // COMMENTED OUT: Scroll animation for gradient shrink - DESKTOP ONLY
-  // useGSAP(
-  //   () => {
-  //     if (!sectionRef.current) return;
-  //     if (isMobileDevice()) return;
-  //
-  //     ScrollTrigger.create({
-  //       trigger: sectionRef.current,
-  //       start: "top top",
-  //       end: "+=150%",
-  //       pin: true,
-  //       pinSpacing: true,
-  //       anticipatePin: 1,
-  //       scrub: 1,
-  //       onUpdate: (self) => {
-  //         scrollProgressRef.current = self.progress;
-  //         if (Math.abs(self.progress - scrollProgress) > 0.02) {
-  //           setScrollProgress(self.progress);
-  //         }
-  //       },
-  //     });
-  //
-  //     if (contentRef.current) {
-  //       gsap.to(contentRef.current, {
-  //         opacity: 0,
-  //         ease: "power2.inOut",
-  //         scrollTrigger: {
-  //           trigger: sectionRef.current,
-  //           start: "top top",
-  //           end: "+=60%",
-  //           scrub: 1,
-  //         },
-  //       });
-  //     }
-  //
-  //     if (gradientRef.current) {
-  //       gsap.to(gradientRef.current, {
-  //         opacity: 0,
-  //         ease: "power2.inOut",
-  //         scrollTrigger: {
-  //           trigger: sectionRef.current,
-  //           start: "top+=20% top",
-  //           end: "+=60%",
-  //           scrub: 1,
-  //         },
-  //       });
-  //     }
-  //
-  //     if (cardRef.current) {
-  //       gsap.to(cardRef.current, {
-  //         opacity: 0,
-  //         scale: 0.95,
-  //         ease: "power2.inOut",
-  //         scrollTrigger: {
-  //           trigger: sectionRef.current,
-  //           start: "top+=40% top",
-  //           end: "+=50%",
-  //           scrub: 1,
-  //         },
-  //       });
-  //     }
-  //
-  //     if (imageRef.current) {
-  //       gsap.to(imageRef.current, {
-  //         y: -300,
-  //         ease: "power2.out",
-  //         scrollTrigger: {
-  //           trigger: sectionRef.current,
-  //           start: "top+=30% top",
-  //           end: "+=120%",
-  //           scrub: 1,
-  //         },
-  //       });
-  //     }
-  //   },
-  //   { scope: sectionRef }
-  // );
-
   // Initial entrance animations
   useGSAP(
     () => {
@@ -415,17 +188,25 @@ export function HeroSection() {
     { scope: sectionRef },
   );
 
+  // Use CSS-based responsive sizing for SSR, only switch to JS-based after mount
+  const sectionStyle = isMounted
+    ? {
+        height: isMobile ? "85dvh" : "82vh",
+        minHeight: isMobile ? "550px" : "500px",
+      }
+    : {
+        height: "82vh",
+        minHeight: "500px",
+      };
+
   return (
     <section
       ref={sectionRef}
-      className="hero-section relative flex flex-col overflow-hidden bg-black"
-      style={{
-        height: isMobile ? "85vh" : "100vh",
-        minHeight: isMobile ? "600px" : "700px",
-      }}
+      className="hero-section relative flex flex-col bg-black"
+      style={{ ...sectionStyle, overflow: "visible", zIndex: 10 }}
     >
       {/* MOBILE LAYOUT */}
-      {isMobile && (
+      {isMounted && isMobile && (
         <>
           {/* COMMENTED OUT: Previous Blue Gradient Background implementation */}
           {/* <div
@@ -440,60 +221,16 @@ export function HeroSection() {
             <HeroBlueGradient1 progress={scrollProgress} isMobile={isMobile} />
           </div> */}
 
-          {/* Background - same as desktop: layered blue gradient + light rays + shadow */}
-          <div
-            ref={gradientRef}
-            className="absolute inset-0 overflow-hidden"
-            style={{
-              backgroundColor: "#000",
-            }}
-          >
-            {/* Layer 1: Blue radial gradient base */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(ellipse 70% 50% at 50% 50%, #2563EB 0%, #1E40AF 25%, #1E3A8A 45%, #0a1628 75%, #000 100%)",
-              }}
-            />
-            {/* Layer 2: Light rays image with overlay blend mode */}
+          {/* Background - Mobile background image */}
+          <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
+            {/* Mobile background image */}
             <img
-              src={ASSETS.rectangleBg}
+              src="/Heromobilebg.png"
               alt=""
-              className="absolute w-full h-full pointer-events-none"
-              style={{
-                objectFit: "cover",
-                objectPosition: "left top",
-                mixBlendMode: "overlay",
-              }}
-            />
-            {/* Layer 3: Shadow overlay with multiply blend mode */}
-            {/* <img
-              src="/Shadow%20%230011.png"
-              alt=""
-              className="absolute pointer-events-none"
-              style={{
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'left top',
-                mixBlendMode: 'multiply',
-              }}
-            /> */}
-            <video
-              src={ASSETS.videos.heroLeafVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
               className="absolute inset-0 w-full h-full pointer-events-none"
               style={{
                 objectFit: "cover",
-                objectPosition: "left top",
-
-                opacity: 0.06,
+                objectPosition: "center",
               }}
             />
           </div>
@@ -501,16 +238,16 @@ export function HeroSection() {
           {/* Content Container */}
           <div
             ref={contentRef}
-            className="relative z-10 flex-1 flex flex-col px-4 "
-            style={{ willChange: "transform, opacity" }}
+            className="relative z-10 flex flex-col px-6"
+            style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
           >
-            <div className="flex flex-col" style={{ paddingTop: "15vh" }}>
+            <div className="flex flex-col">
               {/* Left Content */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col">
                 {/* Headline */}
                 <h1
                   ref={headlineRef}
-                  className="hero-headline hero-headline-size italic brightness-[0.8]"
+                  className="hero-headline hero-headline-size"
                   style={{ perspective: "1000px" }}
                 >
                   <span className="block">The Real AC </span>
@@ -520,7 +257,7 @@ export function HeroSection() {
                 </h1>
 
                 {/* Badges Row */}
-                <div ref={badgesRef} className="flex items-center gap-4 mt-6">
+                <div ref={badgesRef} className="flex items-center gap-3 mt-6">
                   {/* ISEER Badge */}
                   <div className="flex items-center gap-2">
                     <Image
@@ -539,6 +276,9 @@ export function HeroSection() {
                       </span>
                     </div>
                   </div>
+
+                  {/* Vertical Divider */}
+                  <div className="h-8 w-px bg-white/20" />
 
                   {/* Rating Badge */}
                   <div className="flex items-center gap-2">
@@ -579,136 +319,99 @@ export function HeroSection() {
                   </button>
                   <button
                     onClick={openModal}
-                    className="btn-buy-now hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
+                    className="btn-buy-now-hero hero-btn-mobile flex-1 text-[#1265FF] flex items-center justify-center"
                   >
-                    Join the Waitlist
+                    Buy Now
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* AC Image - Mobile */}
+          {/* AC Image Container - Mobile: Half inside hero, half outside */}
           <div
-            className="absolute left-0 right-0 z-20 brightness-[0.8]"
+            className="absolute left-0 right-0 flex justify-center pointer-events-none"
             style={{
-              top: "70vh",
-              transform: "translateY(-50%)",
+              bottom: 0,
+              transform: "translateY(50%)",
+              zIndex: 30,
             }}
           >
             <HeroACImage isMobile={isMobile} />
           </div>
-
-          {/* Leaves video overlay - above AC image */}
-          <video
-            src={ASSETS.videos.heroLeafVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full pointer-events-none z-30"
-            style={{
-              objectFit: "cover",
-              objectPosition: "left top",
-
-              opacity: 0.06,
-            }}
-          />
         </>
       )}
 
       {/* DESKTOP LAYOUT - Normal section matching Figma design */}
-      {!isMobile && (
+      {/* Render desktop layout on server (default) and when mounted and not mobile */}
+      {(!isMounted || !isMobile) && (
         <div
           ref={parallaxContainerRef}
-          className="relative w-full h-full flex flex-col overflow-hidden"
+          className="relative w-full h-full flex flex-col"
+          style={{ overflow: "visible" }}
         >
-          {/* Background from Figma - layered blue gradient + light rays + shadow with darken blend */}
+          {/* Background - Desktop background image - clipped to section bounds */}
           <div
             ref={gradientRef}
             className="absolute inset-0 overflow-hidden"
-            style={{
-              backgroundColor: "#000",
-            }}
+            style={{ borderRadius: "0 0 0 0" }}
           >
-            {/* Layer 1: Blue radial gradient base */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(ellipse 70% 50% at 50% 50%, #2563EB 0%, #1E40AF 25%, #1E3A8A 45%, #0a1628 75%, #000 100%)",
-              }}
-            />
-            {/* Layer 2: Light rays image with overlay blend mode */}
+            {/* Desktop background image */}
             <img
-              src={ASSETS.rectangleBg}
+              src="/Herodesktopbg.png"
               alt=""
-              className="absolute w-full h-full pointer-events-none"
+              className="absolute inset-0 w-full h-full pointer-events-none"
               style={{
                 objectFit: "cover",
-                objectPosition: "left top",
-                mixBlendMode: "overlay",
+                objectPosition: "center",
               }}
             />
-            {/* Layer 3: Leaves video overlay with screen blend mode */}
+            {/* Leaves video overlay - subtle effect */}
             <video
-              src={ASSETS.videos.heroLeafVideo}
+              ref={leafVideoRef1}
+              src="/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
               autoPlay
               loop
               muted
               playsInline
               className="absolute pointer-events-none"
               style={{
-                top: 0,
-                left: 0,
-                width: "120%",
-                height: "120%",
+                top: "50%",
+                left: "50%",
+                width: "150%",
+                height: "150%",
                 objectFit: "cover",
-                objectPosition: "left top",
-
-                opacity: 0.06,
+                objectPosition: "center",
+                transform: "translate(-50%, -50%) rotate(180deg)",
+                opacity: 0.18,
+                mixBlendMode: "multiply",
               }}
             />
-            {/* Layer 4: Shadow overlay from top-left with multiply blend mode */}
-            {/* <img
-              src="/Shadow%20%230011.png"
-              alt=""
-              className="absolute pointer-events-none"
-              style={{
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'left top',
-                mixBlendMode: 'multiply',
-              }}
-            /> */}
           </div>
 
           {/* Parallax content wrapper for mouse movement effect */}
           <div
             ref={parallaxContentRef}
-            className="relative z-10 flex-1 flex flex-col w-full h-full will-change-transform"
+            className="relative z-10 w-full h-full will-change-transform"
           >
             {/* Content Container - centered with max-width */}
             <div
               ref={contentRef}
-              className="flex-1 flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
-              style={{ paddingTop: "12%" }}
+              className="flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
+              style={{ paddingTop: "24vh" }}
             >
               {/* Top Row: Headline+Badges on Left, Buttons on Right */}
-              <div className="flex flex-row justify-between brightness-[0.8] items-start w-full">
+              <div className="flex flex-row justify-between items-start w-full">
                 {/* Left Content */}
                 <div className="flex flex-col gap-4">
                   {/* Headline */}
                   <h1
                     ref={headlineRef}
-                    className="hero-headline hero-headline-size italic"
+                    className="hero-headline hero-headline-size"
                     style={{ perspective: "1000px" }}
                   >
                     <span className="block">The Real AC </span>
-                    <span className="block  text-[54px] leading-[54px] font-[600]">
+                    <span className="block  text-[54px] mt-1 leading-[54px] font-[600]">
                       Compromise ends here.
                     </span>
                   </h1>
@@ -765,7 +468,7 @@ export function HeroSection() {
                 </div>
 
                 {/* Right Content - Desktop CTA Buttons */}
-                <div ref={buttonsRef} className="flex items-center gap-4 mt-2">
+                <div ref={buttonsRef} className="flex items-center gap-4 mt-20">
                   <button
                     onClick={() => scrollToSection("benefits")}
                     className="btn-why-optimist hero-btn-desktop text-optimist-cream flex items-center justify-center"
@@ -774,51 +477,31 @@ export function HeroSection() {
                   </button>
                   <button
                     onClick={openModal}
-                    className="btn-buy-now hero-btn-desktop text-optimist-cream flex items-center justify-center"
+                    className="btn-buy-now-hero hero-btn-desktop text-[#1265FF] flex items-center justify-center"
                   >
-                    Join the Waitlist
+                    Buy Now
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* AC Image - Desktop: positioned at bottom center */}
+            {/* AC Image Container - Desktop: Half inside hero, half outside */}
+            {/* Outer div handles positioning, inner div handles GSAP animation */}
             <div
-              ref={imageRef}
-              className="relative flex justify-center w-full brightness-[0.8]"
+              className="absolute left-0 right-0 flex justify-center pointer-events-none"
               style={{
-                marginTop: "auto",
-                paddingBottom: "40px",
+                bottom: 0,
+                transform: "translateY(65%)",
+                zIndex: 30,
               }}
             >
-              <HeroACImage isMobile={false} />
+              <div ref={imageRef}>
+                <HeroACImage isMobile={false} />
+              </div>
             </div>
           </div>
-
-          {/* Leaves video overlay - above AC image */}
-          <video
-            src={ASSETS.videos.heroLeafVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute pointer-events-none z-30"
-            style={{
-              top: 0,
-              left: 0,
-              width: "120%",
-              height: "120%",
-              objectFit: "cover",
-              objectPosition: "left top",
-              mixBlendMode: "overlay",
-              opacity: 0.06,
-            }}
-          />
         </div>
       )}
     </section>
   );
 }
-
-// COMMENTED OUT: Preload the GLB model - not used in simplified version
-// useGLTF.preload(MODEL_PATH);

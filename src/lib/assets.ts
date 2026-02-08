@@ -29,10 +29,9 @@ export const ASSETS = {
   ac3: getAssetUrl("AC3.png"),
   heroAc: getAssetUrl("hero_ac.png"),
   mainAcMobile: getAssetUrl("MainACMobile.png"),
+  acTilt: getAssetUrl("/acTiltedAngle.png"),
   builtForAcDesktop: getAssetUrl("/ACTiltDesktop.png"),
   builtForAcMobile: getAssetUrl("/ACTiltMobile.png"),
-  desktop: getAssetUrl("desktop.png"),
-  mobile: getAssetUrl("mobile.png"),
   optimistAcCompare: getAssetUrl("optimist-ac-compare.png"),
   marketAcCompare: getAssetUrl("market-ac-compare.png"),
   comparisonShadowBg: getAssetUrl("comparison-shadow-bg.png"),
@@ -129,13 +128,16 @@ export const ASSETS = {
   discussionVideo: getAssetUrl("C5488 (1).mp4"),
 
   // Icons
+  starIcon: "/icons/star.svg",
+  rocketLaunchIcon: "/icons/rocket-launch.svg",
+  calendarCheckIcon: "/icons/calendar-check.svg",
 
-  calendar: getAssetUrl("calendar.svg"),
-  filter: getAssetUrl("filter.svg"),
-  gastank: getAssetUrl("gastank.svg"),
-  headset: getAssetUrl("headset.svg"),
-  scroll: getAssetUrl("scroll.svg"),
-  thermometer: getAssetUrl("thermometer.svg"),
+  calendar: getAssetUrl("mobilerApp6.png"),
+  filter: getAssetUrl("mobilerApp5.png"),
+  gastank: getAssetUrl("mobilerApp4.png"),
+  headset: getAssetUrl("mobilerApp3.png"),
+  scroll: getAssetUrl("mobilerApp2.png"),
+  thermometer: getAssetUrl("mobilerApp1.png"),
 
   // Videos
   videos: {

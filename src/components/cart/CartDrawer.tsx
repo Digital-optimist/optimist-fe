@@ -129,7 +129,7 @@ export function CartDrawer() {
               <Link
                 href="/products"
                 onClick={closeCart}
-                className="btn-primary px-6 py-3 rounded-full text-white font-medium inline-flex items-center gap-2"
+                className="btn-primary px-6 py-3 rounded-full text-[#FFFCDC] font-medium inline-flex items-center gap-2"
               >
                 Browse Products
                 <ArrowRight className="w-4 h-4" />
@@ -164,7 +164,7 @@ export function CartDrawer() {
             <div className="space-y-2">
               <a
                 href={checkoutUrl || "#"}
-                className={`w-full btn-primary px-6 py-3 rounded-full text-white font-semibold flex items-center justify-center gap-2 ${
+                className={`w-full btn-primary px-6 py-3 rounded-full text-[#FFFCDC] font-semibold flex items-center justify-center gap-2 ${
                   !checkoutUrl || isLoading
                     ? "opacity-50 cursor-not-allowed"
                     : ""

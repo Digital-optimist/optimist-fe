@@ -67,7 +67,7 @@ export default function CartPage() {
             </p>
             <Link
               href="/products"
-              className="btn-primary px-8 py-4 rounded-full text-white font-semibold inline-flex items-center gap-2"
+              className="btn-primary px-8 py-4 rounded-full text-[#FFFCDC] font-semibold inline-flex items-center gap-2"
             >
               Browse Products
               <ArrowRight className="w-5 h-5" />
@@ -235,7 +235,7 @@ export default function CartPage() {
 
                 <a
                   href={checkoutUrl || "#"}
-                  className={`w-full btn-primary px-6 py-4 rounded-full text-white font-semibold flex items-center justify-center gap-2 ${
+                  className={`w-full btn-primary px-6 py-4 rounded-full text-[#FFFCDC] font-semibold flex items-center justify-center gap-2 ${
                     !checkoutUrl || isLoading
                       ? "opacity-50 cursor-not-allowed"
                       : ""

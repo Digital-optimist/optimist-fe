@@ -1,6 +1,12 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect, useLayoutEffect } from "react";
+import {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
@@ -107,27 +113,26 @@ function AccordionItem({
             ? "bg-white/80"
             : "bg-[#F3F4F6]/50 border-transparent hover:bg-white/40"
         }`}
-        style={{ 
-          animationDelay: `${index * 0.1}s`, 
-          boxShadow: isActive 
-            ? "0px 3px 20px 0px #0000001A, 0px -3px 5px 0px #00000033 inset" 
-            : "0px 3px 20px 0px #0000001A"
+        style={{
+          animationDelay: `${index * 0.1}s`,
+          boxShadow: isActive
+            ? "0px 3px 20px 0px #0000001A, 0px -3px 5px 0px #00000033 inset"
+            : "0px 3px 20px 0px #0000001A",
         }}
         aria-expanded={isActive}
       >
         {/* Header row with icon and title */}
         <div className="flex items-center gap-4">
           {/* Icon */}
-        
-            <div className="w-10 h-10 flex-shrink-0 relative">
-              <Image
-                src={isActive ? ASSETS.lightningBlue : ASSETS.lightningWhite}
-                alt="Lightning icon"
-                fill
-                className="object-contain"
-              />
-            </div>
-       
+
+          <div className="w-10 h-10 flex-shrink-0 relative">
+            <Image
+              src={isActive ? ASSETS.lightningBlue : ASSETS.lightningWhite}
+              alt="Lightning icon"
+              fill
+              className="object-contain"
+            />
+          </div>
 
           {/* Title */}
           <div className="flex-1">
@@ -241,7 +246,7 @@ function AnimatedImage({
         duration: 0.5,
         ease: "power2.inOut",
       },
-      0
+      0,
     );
 
     // Slide new image in from right + scale up
@@ -255,7 +260,7 @@ function AnimatedImage({
         duration: 0.5,
         ease: "power2.out",
       },
-      0.15 // Slight delay for staggered effect
+      0.15, // Slight delay for staggered effect
     );
 
     // Settle scale back to normal after expansion
@@ -266,7 +271,7 @@ function AnimatedImage({
         duration: 0.3,
         ease: "power2.out",
       },
-      0.65
+      0.65,
     );
 
     return () => {
@@ -364,13 +369,18 @@ export function EngineeredSection() {
     const observerCallback: IntersectionObserverCallback = (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const cardId = parseInt(entry.target.getAttribute("data-feature-id") || "1");
+          const cardId = parseInt(
+            entry.target.getAttribute("data-feature-id") || "1",
+          );
           setActiveFeature(cardId);
         }
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
 
     // Observe all card elements
     cardRefs.current.forEach((card) => {
@@ -384,10 +394,10 @@ export function EngineeredSection() {
       const scrollLeft = carousel.scrollLeft;
       const scrollWidth = carousel.scrollWidth;
       const clientWidth = carousel.clientWidth;
-      
+
       // Check if scrolled to the end (with a small threshold for tolerance)
       const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
-      
+
       if (isAtEnd) {
         // Select the last feature
         const lastFeatureId = features[features.length - 1].id;
@@ -440,7 +450,7 @@ export function EngineeredSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0
+        0,
       );
 
       // Features stagger animation - Apple-style sequential reveal
@@ -458,7 +468,7 @@ export function EngineeredSection() {
             ease: "power3.out",
             force3D: true,
           },
-          0.2 // Start slightly after header
+          0.2, // Start slightly after header
         );
       }
 
@@ -473,10 +483,10 @@ export function EngineeredSection() {
           ease: "power3.out",
           force3D: true,
         },
-        0.3 // Start slightly after features
+        0.3, // Start slightly after features
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
@@ -484,19 +494,29 @@ export function EngineeredSection() {
       ref={sectionRef}
       id="why-optimist"
       className=" my-6 bg-white md:my-8 lg:my-12"
-     
     >
-      <div className="py-4 md:py-6 lg:py-8 overflow-x-hidden mx-auto px-4 md:px-6 lg:px-8"  style={{
-        background:
-          "linear-gradient(89.33deg, #CAC9C9 1.16%, #EEEAEA 49.5%, #F3F1F1 60.8%, #CAC9C9 115.48%)",
-      }}>
+      <div
+        className="py-4 md:py-6 lg:py-8 overflow-x-hidden mx-auto px-4 md:px-6 lg:px-8"
+        style={{
+          background: "#F8F8F8",
+        }}
+      >
         {/* Header */}
         <div
           ref={headerRef}
           className="flex flex-col lg:flex-row items-start justify-between mb-2 lg:mb-4 gap-8 will-change-[transform,opacity]"
         >
           <h2 className="font-display text-[32px] md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1]">
-            <span className="font-[600] text-[#074FD5]">
+            <span
+              className="font-[600]"
+              style={{
+                background:
+                  "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
               The intelligence you don&apos;t see.
             </span>
             <br />
@@ -551,7 +571,9 @@ export function EngineeredSection() {
             {features.map((feature, index) => (
               <div
                 key={feature.id}
-                ref={(el) => { cardRefs.current[index] = el; }}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
                 data-feature-id={feature.id}
                 onClick={() => handleFeatureClick(feature.id)}
                 className={`feature-card flex-shrink-0 w-[280px] rounded-[20px] p-4 cursor-pointer transition-all duration-500 ease-out ${
@@ -559,19 +581,22 @@ export function EngineeredSection() {
                     ? "bg-white/80 scale-[1.02]"
                     : "bg-[#F3F4F6]/50 scale-100 opacity-70"
                 }`}
-                style={{ 
+                style={{
                   scrollSnapAlign: "start",
-                  boxShadow: activeFeature === feature.id 
-                    ? "0px 3px 20px 0px #0000001A, 0px -3px 5px 0px #00000033 inset" 
-                    : "0px 3px 20px 0px #0000001A"
+                  boxShadow:
+                    activeFeature === feature.id
+                      ? "0px 3px 20px 0px #0000001A, 0px -3px 5px 0px #00000033 inset"
+                      : "0px 3px 20px 0px #0000001A",
                 }}
               >
                 {/* Horizontal layout: Icon + Text */}
                 <div className="flex items-start gap-3">
                   {/* Icon */}
-                  <div className={`w-10 h-10 flex-shrink-0 relative transition-transform duration-500 ${
-                    activeFeature === feature.id ? "scale-110" : "scale-100"
-                  }`}>
+                  <div
+                    className={`w-10 h-10 flex-shrink-0 relative transition-transform duration-500 ${
+                      activeFeature === feature.id ? "scale-110" : "scale-100"
+                    }`}
+                  >
                     <Image
                       src={
                         activeFeature === feature.id
@@ -586,14 +611,22 @@ export function EngineeredSection() {
 
                   {/* Text - Title and Description stacked */}
                   <div className="flex-1 min-w-0">
-                    <h3 className={`text-base font-semibold leading-tight transition-colors duration-500 ${
-                      activeFeature === feature.id ? "text-[#1A1A1A]" : "text-[#6B7280]"
-                    }`}>
+                    <h3
+                      className={`text-base font-semibold leading-tight transition-colors duration-500 ${
+                        activeFeature === feature.id
+                          ? "text-[#1A1A1A]"
+                          : "text-[#6B7280]"
+                      }`}
+                    >
                       {feature.title}
                     </h3>
-                    <p className={`text-sm mt-1 font-medium leading-snug transition-all duration-500 ${
-                      activeFeature === feature.id ? "text-[#6B7280] opacity-100" : "text-[#9CA3AF] opacity-80"
-                    }`}>
+                    <p
+                      className={`text-sm mt-1 font-medium leading-snug transition-all duration-500 ${
+                        activeFeature === feature.id
+                          ? "text-[#6B7280] opacity-100"
+                          : "text-[#9CA3AF] opacity-80"
+                      }`}
+                    >
                       {feature.description}
                     </p>
                   </div>

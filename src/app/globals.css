@@ -134,17 +134,14 @@ body {
 
 /* Button Styles */
 .btn-primary {
-  background: linear-gradient(135deg, var(--optimist-blue-light) 0%, var(--optimist-blue-primary) 100%);
-  box-shadow:
-    0 0 20px rgba(14, 165, 233, 0.4),
-    0 0 40px rgba(14, 165, 233, 0.2);
+  background: #3478F6;
+  color: #FFFCDC;
+  box-shadow: 0px 2px 8px rgba(52, 120, 246, 0.3);
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  box-shadow:
-    0 0 30px rgba(14, 165, 233, 0.6),
-    0 0 60px rgba(14, 165, 233, 0.3);
+  box-shadow: 0px 4px 16px rgba(52, 120, 246, 0.5);
   transform: translateY(-2px);
 }
 
@@ -159,18 +156,29 @@ body {
   border-color: var(--optimist-cream);
 }
 
-/* Hero Buy Now Button */
+/* Hero Buy Now Button - Mint/Teal style (used in Hero section) */
+.btn-buy-now-hero {
+  background: linear-gradient(180deg, #7EEFC4 0%, #46F5A0 100%);
+  box-shadow: 0px 2px 8px rgba(70, 245, 160, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-buy-now-hero:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 16px rgba(70, 245, 160, 0.5);
+}
+
+/* Primary CTA Button - Blue style */
 .btn-buy-now {
-  background: linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%);
-  box-shadow: 0px 2px 12.5px 2px #003FB2 inset;
+  background: #3478F6;
+  color: #FFFCDC;
+  box-shadow: 0px 2px 8px rgba(52, 120, 246, 0.3);
   transition: all 0.3s ease;
 }
 
 .btn-buy-now:hover {
   transform: translateY(-2px);
-  box-shadow:
-    0px 2px 12.5px 2px #003FB2 inset,
-    0px 4px 20px rgba(18, 101, 255, 0.4);
+  box-shadow: 0px 4px 16px rgba(52, 120, 246, 0.5);
 }
 
 /* Primary Gradient Button (alias for btn-buy-now) */

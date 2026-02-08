@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,11 +13,9 @@ import {
   Package,
   MapPin,
 } from "lucide-react";
-import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/cart/CartDrawer";
-import { ASSETS } from "@/lib/assets";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -28,13 +26,20 @@ const navLinks = [
 // Cubic bezier easing
 const easeOutExpo = "easeOut" as const;
 
-// Animation variants
+// Animation variants with bounce effect
 const navVariants = {
-  hidden: { opacity: 0, y: -20 },
+  hidden: { opacity: 0, y: -40, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: easeOutExpo },
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 20,
+      mass: 1,
+      bounce: 0.4,
+    },
   },
 };
 
@@ -77,12 +82,25 @@ const mobileMenuVariants = {
   hidden: {
     opacity: 0,
     height: 0,
-    transition: { duration: 0.3, ease: easeOutExpo },
+    scale: 0.98,
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 25,
+      mass: 0.8,
+    },
   },
   visible: {
     opacity: 1,
     height: "auto",
-    transition: { duration: 0.4, ease: easeOutExpo },
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 20,
+      mass: 1,
+      bounce: 0.3,
+    },
   },
 };
 
@@ -102,26 +120,85 @@ const mobileItemVariants = {
 const dropdownVariants = {
   hidden: {
     opacity: 0,
-    scale: 0.95,
-    y: -10,
-    transition: { duration: 0.2 },
+    scale: 0.9,
+    y: -15,
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 25,
+    },
   },
   visible: {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.3, ease: easeOutExpo },
+    transition: {
+      type: "spring" as const,
+      stiffness: 350,
+      damping: 18,
+      mass: 0.8,
+      bounce: 0.35,
+    },
   },
 };
+
+// Scroll-based navigation visibility variants with bounce effect
+const scrollNavVariants = {
+  visible: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 15,
+      mass: 1,
+      bounce: 0.5,
+    },
+  },
+  hidden: {
+    y: -120,
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 20,
+      mass: 0.8,
+      bounce: 0.3,
+    },
+  },
+};
+
+// List/Menu icon SVG component
+const ListIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M2.1875 3.5H11.8125M2.1875 7H11.8125M2.1875 10.5H11.8125"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const lastScrollY = useRef(0);
+  const scrollThreshold = 10; // Minimum scroll distance before triggering hide/show
+
   const pathname = usePathname();
   const router = useRouter();
-
-  // Determine if we're on the landing page
-  const isLandingPage = pathname === "/";
 
   const {
     isAuthenticated,
@@ -131,313 +208,371 @@ export function Navigation() {
   } = useAuth();
   const { totalQuantity, toggleCart } = useCart();
 
+  // Scroll direction detection for nav visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDifference = currentScrollY - lastScrollY.current;
+
+      // Update hasScrolled state for initial animation vs scroll animation
+      if (currentScrollY > 50) {
+        setHasScrolled(true);
+      } else {
+        setHasScrolled(false);
+      }
+
+      // Only trigger if scroll difference exceeds threshold
+      if (Math.abs(scrollDifference) < scrollThreshold) {
+        return;
+      }
+
+      // Scrolling down - hide nav
+      if (scrollDifference > 0 && currentScrollY > 100) {
+        setIsNavVisible(false);
+        // Close mobile menu when hiding nav
+        if (isMenuOpen) {
+          setIsMenuOpen(false);
+        }
+      }
+      // Scrolling up - show nav
+      else if (scrollDifference < 0) {
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    // Throttle scroll events for performance
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", throttledHandleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", throttledHandleScroll);
+    };
+  }, [isMenuOpen]);
+
   const handleLogout = async () => {
     await logout();
     setIsUserMenuOpen(false);
     router.push("/");
   };
 
-  // White header for non-landing pages
-  if (!true) {
-    return (
-      <>
+  return (
+    <>
+      {/* Navigation Container - Floating pill design */}
+      <motion.div
+        initial="visible"
+        animate={isNavVisible ? "visible" : "hidden"}
+        variants={scrollNavVariants}
+        className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 lg:px-10 pt-4"
+      >
         <motion.nav
           initial="hidden"
           animate="visible"
           variants={navVariants}
-          className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-black/[0.12]"
+          className="max-w-[1400px] mx-auto bg-white border border-black/[0.08] rounded-[44px] px-5 py-3 md:px-10 md:py-4"
         >
-          <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
-            <div className="flex items-center justify-between h-14 md:h-16">
-              {/* Left Navigation - Desktop */}
-              <div className="hidden md:flex items-center gap-8 w-[325px]">
-                {navLinks.map((link, index) => {
-                  // For home, exact match; for others, check if pathname starts with the link
-                  const isActive =
-                    link.href === "/"
-                      ? pathname === "/"
-                      : pathname === link.href ||
-                        pathname.startsWith(link.href + "/");
-                  return (
-                    <motion.div
-                      key={`${link.href}-${index}`}
-                      custom={index}
-                      initial="hidden"
-                      animate="visible"
-                      variants={linkVariants}
+          <div className="flex items-center justify-between relative">
+            {/* Left Navigation - Desktop */}
+            <div className="hidden md:flex items-center justify-between w-[325px]">
+              {navLinks.map((link, index) => {
+                const isActive =
+                  link.href === "/"
+                    ? pathname === "/"
+                    : pathname === link.href ||
+                      pathname.startsWith(link.href + "/");
+                return (
+                  <motion.div
+                    key={`${link.href}-${index}`}
+                    custom={index}
+                    initial="hidden"
+                    animate="visible"
+                    variants={linkVariants}
+                  >
+                    <Link
+                      href={link.href}
+                      className={`relative text-base leading-none transition-colors ${
+                        isActive
+                          ? "text-black font-bold underline decoration-solid"
+                          : "text-black/60 font-normal hover:text-black"
+                      }`}
                     >
-                      <Link
-                        href={link.href}
-                        className={`relative text-base transition-colors ${
-                          isActive
-                            ? "text-black font-bold underline underline-offset-4"
-                            : "text-black/60 font-medium hover:text-black"
-                        }`}
+                      <motion.span
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        <motion.span
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          {link.label}
-                        </motion.span>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* Left Logo - Mobile */}
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={logoVariants}
-                className="md:hidden flex items-center"
-              >
-                <Link href="/" className="flex items-center group">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Image
-                      src={ASSETS.logo}
-                      alt="Optimist"
-                      width={120}
-                      height={32}
-                      className="h-6 w-auto invert"
-                    />
+                        {link.label}
+                      </motion.span>
+                    </Link>
                   </motion.div>
-                </Link>
-              </motion.div>
+                );
+              })}
+            </div>
 
-              {/* Center Logo - Desktop */}
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={logoVariants}
-                className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center"
-              >
-                <Link href="/" className="flex items-center group">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Image
-                      src={ASSETS.logo}
-                      alt="Optimist"
-                      width={150}
-                      height={40}
-                      className="h-8 w-auto invert"
-                    />
-                  </motion.div>
-                </Link>
-              </motion.div>
-
-              {/* Right Actions */}
-              <div className="flex items-center gap-6 justify-end w-[325px]">
-                {/* Cart */}
-                <motion.button
-                  custom={0}
-                  initial="hidden"
-                  animate="visible"
-                  variants={actionVariants}
-                  onClick={toggleCart}
-                  className="hidden md:flex items-center gap-2 text-black transition-colors"
+            {/* Left Logo - Mobile */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={logoVariants}
+              className="md:hidden flex items-center"
+            >
+              <Link href="/" className="flex items-center">
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span className="text-base font-normal">Cart</span>
-                  <div className="relative">
-                    <ShoppingCart className="w-5 h-5" />
-                    <AnimatePresence>
-                      {totalQuantity > 0 && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 25,
-                          }}
-                          className="absolute -top-2 -right-2 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-optimist-blue-primary text-white rounded-full"
-                        >
-                          {totalQuantity > 99 ? "99+" : totalQuantity}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </motion.button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/logo-nav-mobile.svg"
+                    alt="Optimist"
+                    width={95}
+                    height={19}
+                    className="h-[19px] w-auto"
+                  />
+                </motion.div>
+              </Link>
+            </motion.div>
 
-                {/* Account / Login Button */}
-                {isAuthenticated ? (
+            {/* Center Logo - Desktop */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={logoVariants}
+              className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center"
+            >
+              <Link href="/" className="flex items-center">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/logo-nav.svg"
+                    alt="Optimist"
+                    width={149}
+                    height={30}
+                    className="h-[30px] w-auto"
+                  />
+                </motion.div>
+              </Link>
+            </motion.div>
+
+            {/* Right Actions - Desktop */}
+            <div className="hidden md:flex items-center gap-6 justify-end w-[325px]">
+              {/* Cart */}
+              <motion.button
+                custom={0}
+                initial="hidden"
+                animate="visible"
+                variants={actionVariants}
+                onClick={toggleCart}
+                className="flex items-center gap-2 text-black/60 hover:text-black transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="relative w-6 h-6">
+                  <ShoppingCart className="w-6 h-6" />
+                  <AnimatePresence>
+                    {totalQuantity > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 500,
+                          damping: 25,
+                        }}
+                        className="absolute -top-2 -right-2 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-optimist-blue-primary text-white rounded-full"
+                      >
+                        {totalQuantity > 99 ? "99+" : totalQuantity}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <span className="text-base leading-none font-normal">Cart</span>
+              </motion.button>
+
+              {/* Account / Login Button */}
+              {isAuthenticated ? (
+                <motion.div
+                  custom={1}
+                  initial="hidden"
+                  animate="visible"
+                  variants={actionVariants}
+                  className="relative"
+                >
+                  <motion.button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center gap-2.5 px-6 py-3 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <User className="w-6 h-6" />
+                    <span className="text-base leading-none font-normal">
+                      {customer?.firstName || "Account"}
+                    </span>
+                  </motion.button>
+
+                  <AnimatePresence>
+                    {isUserMenuOpen && (
+                      <>
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="fixed inset-0 z-40"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        />
+                        <motion.div
+                          initial="hidden"
+                          animate="visible"
+                          exit="hidden"
+                          variants={dropdownVariants}
+                          className="absolute right-0 top-full mt-2 w-56 bg-white border border-black/[0.12] rounded-xl shadow-lg z-50"
+                        >
+                          <div className="px-4 py-3 border-b border-black/[0.12]">
+                            <p className="text-sm font-medium text-black truncate">
+                              {customer?.firstName} {customer?.lastName}
+                            </p>
+                            <p className="text-xs text-black/60 truncate">
+                              {customer?.email}
+                            </p>
+                          </div>
+                          <div className="py-2">
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <Link
+                                href="/account"
+                                onClick={() => setIsUserMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2 text-sm text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                              >
+                                <User className="w-4 h-4" />
+                                My Account
+                              </Link>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <Link
+                                href="/account/orders"
+                                onClick={() => setIsUserMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2 text-sm text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                              >
+                                <Package className="w-4 h-4" />
+                                Order History
+                              </Link>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <Link
+                                href="/account/addresses"
+                                onClick={() => setIsUserMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2 text-sm text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                              >
+                                <MapPin className="w-4 h-4" />
+                                Addresses
+                              </Link>
+                            </motion.div>
+                          </div>
+                          <div className="border-t border-black/[0.12] py-2">
+                            <motion.button
+                              onClick={handleLogout}
+                              className="flex items-center gap-3 px-4 py-2 w-full text-sm text-red-500 hover:bg-red-50 transition-colors"
+                              whileHover={{ x: 4 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <LogOut className="w-4 h-4" />
+                              Sign Out
+                            </motion.button>
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ) : (
+                !isAuthLoading && (
                   <motion.div
                     custom={1}
                     initial="hidden"
                     animate="visible"
                     variants={actionVariants}
-                    className="relative hidden md:block"
                   >
-                    <motion.button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="flex items-center gap-2.5 px-6 py-3 rounded-full border border-black/[0.15] text-black hover:bg-black/5 transition-all"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <Link
+                      href="/login"
+                      className="flex items-center gap-2.5 px-6 py-3 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
                     >
-                      <span className="text-base font-normal">
-                        {customer?.firstName || "My Account"}
-                      </span>
-                      <User className="w-5 h-5" />
-                    </motion.button>
+                      <motion.span
+                        className="flex items-center gap-2.5"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <User className="w-6 h-6" />
+                        <span className="text-base leading-none font-normal">
+                          Login
+                        </span>
+                      </motion.span>
+                    </Link>
+                  </motion.div>
+                )
+              )}
+            </div>
 
-                    <AnimatePresence>
-                      {isUserMenuOpen && (
-                        <>
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-40"
-                            onClick={() => setIsUserMenuOpen(false)}
-                          />
-                          <motion.div
-                            initial="hidden"
-                            animate="visible"
-                            exit="hidden"
-                            variants={dropdownVariants}
-                            className="absolute right-0 top-full mt-2 w-56 bg-white border border-black/[0.12] rounded-xl shadow-lg z-50"
-                          >
-                            <div className="px-4 py-3 border-b border-black/[0.12]">
-                              <p className="text-sm font-medium text-black truncate">
-                                {customer?.firstName} {customer?.lastName}
-                              </p>
-                              <p className="text-xs text-black/60 truncate">
-                                {customer?.email}
-                              </p>
-                            </div>
-                            <div className="py-2">
-                              <motion.div
-                                whileHover={{ x: 4 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <Link
-                                  href="/account"
-                                  onClick={() => setIsUserMenuOpen(false)}
-                                  className="flex items-center gap-3 px-4 py-2 text-sm text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                                >
-                                  <User className="w-4 h-4" />
-                                  My Account
-                                </Link>
-                              </motion.div>
-                              <motion.div
-                                whileHover={{ x: 4 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <Link
-                                  href="/account/orders"
-                                  onClick={() => setIsUserMenuOpen(false)}
-                                  className="flex items-center gap-3 px-4 py-2 text-sm text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                                >
-                                  <Package className="w-4 h-4" />
-                                  Order History
-                                </Link>
-                              </motion.div>
-                              <motion.div
-                                whileHover={{ x: 4 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <Link
-                                  href="/account/addresses"
-                                  onClick={() => setIsUserMenuOpen(false)}
-                                  className="flex items-center gap-3 px-4 py-2 text-sm text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                                >
-                                  <MapPin className="w-4 h-4" />
-                                  Addresses
-                                </Link>
-                              </motion.div>
-                            </div>
-                            <div className="border-t border-black/[0.12] py-2">
-                              <motion.button
-                                onClick={handleLogout}
-                                className="flex items-center gap-3 px-4 py-2 w-full text-sm text-red-500 hover:bg-red-50 transition-colors"
-                                whileHover={{ x: 4 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <LogOut className="w-4 h-4" />
-                                Sign Out
-                              </motion.button>
-                            </div>
-                          </motion.div>
-                        </>
-                      )}
-                    </AnimatePresence>
+            {/* Mobile Menu Button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden flex items-center gap-2.5 px-5 py-2.5 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span className="text-sm leading-none font-normal">Menu</span>
+              <AnimatePresence mode="wait">
+                {isMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="w-3.5 h-3.5" />
                   </motion.div>
                 ) : (
-                  !isAuthLoading && (
-                    <motion.div
-                      custom={1}
-                      initial="hidden"
-                      animate="visible"
-                      variants={actionVariants}
-                    >
-                      <Link
-                        href="/login"
-                        className="hidden md:flex items-center gap-2.5 px-6 py-3 rounded-full border border-black/[0.15] text-black hover:bg-black/5 transition-all"
-                      >
-                        <motion.span
-                          className="flex items-center gap-2.5"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <span className="text-base font-normal">
-                            My Account
-                          </span>
-                          <User className="w-5 h-5" />
-                        </motion.span>
-                      </Link>
-                    </motion.div>
-                  )
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-black/60"
+                  >
+                    <ListIcon />
+                  </motion.div>
                 )}
-
-                {/* Mobile Menu Button */}
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="md:hidden flex items-center gap-2 px-4 py-2 rounded-full border border-black/[0.15] text-black hover:bg-black/5 transition-all"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span className="text-sm font-medium">Menu</span>
-                  <AnimatePresence mode="wait">
-                    {isMenuOpen ? (
-                      <motion.div
-                        key="close"
-                        initial={{ rotate: -90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: 90, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <X className="w-4 h-4" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="menu"
-                        initial={{ rotate: 90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: -90, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Menu className="w-4 h-4" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              </div>
-            </div>
+              </AnimatePresence>
+            </motion.button>
           </div>
 
-          {/* Mobile Navigation Menu - White Theme */}
+          {/* Mobile Navigation Menu */}
           <AnimatePresence>
             {isMenuOpen && (
               <motion.div
@@ -445,11 +580,10 @@ export function Navigation() {
                 animate="visible"
                 exit="hidden"
                 variants={mobileMenuVariants}
-                className="md:hidden bg-white border-t border-black/[0.12] overflow-hidden"
+                className="md:hidden overflow-hidden mt-4 pt-4 border-t border-black/[0.08]"
               >
-                <div className="px-4 py-4 space-y-1">
+                <div className="space-y-1">
                   {navLinks.map((link, index) => {
-                    // For home, exact match; for others, check if pathname starts with the link
                     const isActive =
                       link.href === "/"
                         ? pathname === "/"
@@ -468,8 +602,8 @@ export function Navigation() {
                           onClick={() => setIsMenuOpen(false)}
                           className={`block px-4 py-3 text-base rounded-lg transition-colors ${
                             isActive
-                              ? "text-black font-bold bg-black/5 underline underline-offset-4"
-                              : "text-black/60 font-medium hover:text-black hover:bg-black/5"
+                              ? "text-black font-bold bg-black/5 underline decoration-solid"
+                              : "text-black/60 font-normal hover:text-black hover:bg-black/5"
                           }`}
                         >
                           {link.label}
@@ -487,7 +621,7 @@ export function Navigation() {
                       toggleCart();
                       setIsMenuOpen(false);
                     }}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-3 text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
                     whileTap={{ scale: 0.98 }}
                   >
                     <ShoppingCart className="w-5 h-5" />
@@ -521,7 +655,7 @@ export function Navigation() {
                         <Link
                           href="/account"
                           onClick={() => setIsMenuOpen(false)}
-                          className="block px-4 py-3 text-base font-medium rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                          className="block px-4 py-3 text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
                         >
                           My Account
                         </Link>
@@ -535,7 +669,7 @@ export function Navigation() {
                         <Link
                           href="/account/orders"
                           onClick={() => setIsMenuOpen(false)}
-                          className="block px-4 py-3 text-base font-medium rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                          className="block px-4 py-3 text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
                         >
                           Order History
                         </Link>
@@ -549,7 +683,7 @@ export function Navigation() {
                           handleLogout();
                           setIsMenuOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-3 text-base font-medium rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                        className="block w-full text-left px-4 py-3 text-base font-normal rounded-lg text-red-500 hover:bg-red-50 transition-colors"
                         whileTap={{ scale: 0.98 }}
                       >
                         Sign Out
@@ -573,7 +707,7 @@ export function Navigation() {
                         <Link
                           href="/login"
                           onClick={() => setIsMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
                         >
                           <User className="w-5 h-5" />
                           Login
@@ -586,467 +720,7 @@ export function Navigation() {
             )}
           </AnimatePresence>
         </motion.nav>
-
-        {/* Cart Drawer */}
-        <CartDrawer />
-      </>
-    );
-  }
-
-  // Dark header for landing page
-  return (
-    <>
-      <motion.nav
-        initial="hidden"
-        animate="visible"
-        variants={navVariants}
-        className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-y border-white/[0.15] shadow-[0_4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none"
-      >
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-10">
-          <div className="flex items-center justify-between h-14 md:h-16">
-            {/* Left Navigation - Desktop */}
-            <div className="hidden md:flex items-center gap-8 w-[325px]">
-              {/* {navLinks.map((link, index) => {
-                // For home, exact match; for others, check if pathname starts with the link
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname === link.href ||
-                      pathname.startsWith(link.href + "/");
-                return (
-                  <motion.div
-                    key={`${link.href}-${index}`}
-                    custom={index}
-                    initial="hidden"
-                    animate="visible"
-                    variants={linkVariants}
-                  >
-                    <Link
-                      href={link.href}
-                      className={`relative text-base transition-colors ${
-                        isActive
-                          ? "text-[#FFFCDC] font-bold underline underline-offset-4"
-                          : "text-[#FFFCDC]/60 font-medium hover:text-[#FFFCDC]"
-                      }`}
-                    >
-                      <motion.span
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {link.label}
-                      </motion.span>
-                    </Link>
-                  </motion.div>
-                );
-              })} */}
-            </div>
-
-            {/* Left Logo - Mobile */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={logoVariants}
-              className="md:hidden flex items-center"
-            >
-              <Link href="/" className="flex items-center group">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex flex-row items-center"
-                >
-                  <svg
-                    width="32"
-                    height="28"
-                    viewBox="0 0 18 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.4122 9.26033C11.784 11.1545 12.6004 13.2679 13.0466 16.0464L10.9765 16.3842C10.5833 13.94 9.87794 12.0954 8.68243 10.4559C8.61718 10.3657 8.47788 10.3975 8.45673 10.5054C7.66325 14.8968 7.8625 19.573 9.1303 23.9661H6.9544C5.80298 19.649 5.60196 15.0967 6.28965 10.7689C6.30728 10.6504 6.16622 10.5744 6.07981 10.6593C5.15409 11.5471 4.17017 12.7922 3.41725 14.2283L1.56051 13.2503C2.53384 11.3915 3.93742 9.64942 5.33571 8.50691C5.4274 8.43086 5.37274 8.28053 5.2546 8.28407C3.53363 8.33005 2.13181 8.83056 0.864011 9.40712L0 7.48997C1.57109 6.7843 3.43841 6.12816 5.80298 6.18298C5.91583 6.18652 5.97578 6.04503 5.89114 5.96722C5.21051 5.33052 4.38177 4.84593 3.3908 4.49752L4.08201 2.5114C5.52085 3.01544 6.72694 3.78124 7.68264 4.79287C7.74612 4.86008 7.85544 4.83886 7.88895 4.7522C8.53078 3.07734 9.32426 1.48208 10.2641 0L12.0344 1.13013C11.3432 2.22488 10.7349 3.38508 10.2165 4.59479C10.1689 4.70444 10.2888 4.81233 10.3928 4.75396C11.8299 3.94749 13.7677 3.17462 16.4814 2.57683L16.9311 4.6284C14.1909 5.23502 12.3536 6.0132 11.0488 6.8073C10.9553 6.86389 10.9765 7.00538 11.0823 7.03544C13.2053 7.64207 15.2454 8.73683 17.088 10.2808L15.7426 11.892C14.5489 10.8927 12.7821 9.71132 10.548 9.06578C10.4334 9.03395 10.3417 9.16482 10.4122 9.26033Z"
-                      fill="#FFFCDC"
-                    />
-                  </svg>
-                  <p className="text-[24px] leading-[24px] font-[600] text-[#FFFCDC]">
-                    optimist
-                  </p>
-                </motion.div>
-              </Link>
-            </motion.div>
-
-            {/* Center Logo - Desktop */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={logoVariants}
-              className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center"
-            >
-              <Link href="/" className="flex items-center group">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Image
-                    src={ASSETS.logo}
-                    alt="Optimist"
-                    width={150}
-                    height={40}
-                    className="h-8 w-auto"
-                  />
-                </motion.div>
-              </Link>
-            </motion.div>
-
-            {/* Right Actions */}
-            <div className="flex items-center gap-6 justify-end w-[325px]">
-              {/* <motion.button
-                custom={0}
-                initial="hidden"
-                animate="visible"
-                variants={actionVariants}
-                onClick={toggleCart}
-                className="hidden md:flex items-center gap-2 text-[#FFFCDC] transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span className="text-base font-normal">Cart</span>
-                <div className="relative">
-                  <ShoppingCart className="w-5 h-5" />
-                  <AnimatePresence>
-                    {totalQuantity > 0 && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 500,
-                          damping: 25,
-                        }}
-                        className="absolute -top-2 -right-2 w-4 h-4 flex items-center justify-center text-[9px] font-bold bg-optimist-blue-primary text-white rounded-full"
-                      >
-                        {totalQuantity > 99 ? "99+" : totalQuantity}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </motion.button>
-
-          
-              {isAuthenticated ? (
-                <motion.div
-                  custom={1}
-                  initial="hidden"
-                  animate="visible"
-                  variants={actionVariants}
-                  className="relative hidden md:block"
-                >
-                  <motion.button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center gap-2.5 px-6 py-3 rounded-full border border-[#FFFCDC]/20 text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-all"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span className="text-base font-normal">
-                      {customer?.firstName || "My Account"}
-                    </span>
-                    <User className="w-5 h-5" />
-                  </motion.button>
-
-                  <AnimatePresence>
-                    {isUserMenuOpen && (
-                      <>
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="fixed inset-0 z-40"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        />
-                        <motion.div
-                          initial="hidden"
-                          animate="visible"
-                          exit="hidden"
-                          variants={dropdownVariants}
-                          className="absolute right-0 top-full mt-2 w-56 bg-black/60 backdrop-blur-3xl backdrop-saturate-200 border border-white/[0.15] rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] z-50"
-                        >
-                          <div className="px-4 py-3 border-b border-[#FFFCDC]/20">
-                            <p className="text-sm font-medium text-[#FFFCDC] truncate">
-                              {customer?.firstName} {customer?.lastName}
-                            </p>
-                            <p className="text-xs text-[#FFFCDC]/60 truncate">
-                              {customer?.email}
-                            </p>
-                          </div>
-                          <div className="py-2">
-                            <motion.div
-                              whileHover={{ x: 4 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <Link
-                                href="/account"
-                                onClick={() => setIsUserMenuOpen(false)}
-                                className="flex items-center gap-3 px-4 py-2 text-sm text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                              >
-                                <User className="w-4 h-4" />
-                                My Account
-                              </Link>
-                            </motion.div>
-                            <motion.div
-                              whileHover={{ x: 4 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <Link
-                                href="/account/orders"
-                                onClick={() => setIsUserMenuOpen(false)}
-                                className="flex items-center gap-3 px-4 py-2 text-sm text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                              >
-                                <Package className="w-4 h-4" />
-                                Order History
-                              </Link>
-                            </motion.div>
-                            <motion.div
-                              whileHover={{ x: 4 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <Link
-                                href="/account/addresses"
-                                onClick={() => setIsUserMenuOpen(false)}
-                                className="flex items-center gap-3 px-4 py-2 text-sm text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                              >
-                                <MapPin className="w-4 h-4" />
-                                Addresses
-                              </Link>
-                            </motion.div>
-                          </div>
-                          <div className="border-t border-[#FFFCDC]/20 py-2">
-                            <motion.button
-                              onClick={handleLogout}
-                              className="flex items-center gap-3 px-4 py-2 w-full text-sm text-red-400 hover:bg-red-500/10 transition-colors"
-                              whileHover={{ x: 4 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <LogOut className="w-4 h-4" />
-                              Sign Out
-                            </motion.button>
-                          </div>
-                        </motion.div>
-                      </>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ) : (
-                !isAuthLoading && (
-                  <motion.div
-                    custom={1}
-                    initial="hidden"
-                    animate="visible"
-                    variants={actionVariants}
-                  >
-                    <Link
-                      href="/login"
-                      className="hidden md:flex items-center gap-2.5 px-6 py-3 rounded-full border border-[#FFFCDC]/20 text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-all"
-                    >
-                      <motion.span
-                        className="flex items-center gap-2.5"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <span className="text-base font-normal">My Account</span>
-                        <User className="w-5 h-5" />
-                      </motion.span>
-                    </Link>
-                  </motion.div>
-                )
-              )}
-
-          
-              <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden flex items-center gap-2 px-4 py-2 rounded-full border border-[#FFFCDC]/20 text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="text-sm font-medium">Menu</span>
-                <AnimatePresence mode="wait">
-                  {isMenuOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <X className="w-4 h-4" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Menu className="w-4 h-4" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button> */}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Menu - Dark Theme */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={mobileMenuVariants}
-              className="md:hidden bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.12] overflow-hidden"
-            >
-              <div className="px-4 py-4 space-y-1">
-                {navLinks.map((link, index) => {
-                  // For home, exact match; for others, check if pathname starts with the link
-                  const isActive =
-                    link.href === "/"
-                      ? pathname === "/"
-                      : pathname === link.href ||
-                        pathname.startsWith(link.href + "/");
-                  return (
-                    <motion.div
-                      key={`${link.href}-${index}`}
-                      custom={index}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className={`block px-4 py-3 text-base rounded-lg transition-colors ${
-                          isActive
-                            ? "text-[#FFFCDC] font-bold bg-[#FFFCDC]/5 underline underline-offset-4"
-                            : "text-[#FFFCDC]/60 font-medium hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-
-                <motion.button
-                  custom={navLinks.length}
-                  initial="hidden"
-                  animate="visible"
-                  variants={mobileItemVariants}
-                  onClick={() => {
-                    toggleCart();
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium rounded-lg text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  Cart
-                  {totalQuantity > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="ml-auto px-2 py-0.5 text-xs font-bold bg-optimist-blue-primary text-white rounded-full"
-                    >
-                      {totalQuantity}
-                    </motion.span>
-                  )}
-                </motion.button>
-
-                {isAuthenticated ? (
-                  <>
-                    <motion.div
-                      custom={navLinks.length + 1}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                      className="h-px bg-[#FFFCDC]/10 my-2"
-                    />
-                    <motion.div
-                      custom={navLinks.length + 2}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                    >
-                      <Link
-                        href="/account"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block px-4 py-3 text-base font-medium rounded-lg text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                      >
-                        My Account
-                      </Link>
-                    </motion.div>
-                    <motion.div
-                      custom={navLinks.length + 3}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                    >
-                      <Link
-                        href="/account/orders"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block px-4 py-3 text-base font-medium rounded-lg text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                      >
-                        Order History
-                      </Link>
-                    </motion.div>
-                    <motion.button
-                      custom={navLinks.length + 4}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-3 text-base font-medium rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Sign Out
-                    </motion.button>
-                  </>
-                ) : (
-                  <>
-                    <motion.div
-                      custom={navLinks.length + 1}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                      className="h-px bg-[#FFFCDC]/10 my-2"
-                    />
-                    <motion.div
-                      custom={navLinks.length + 2}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                    >
-                      <Link
-                        href="/login"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg text-[#FFFCDC]/60 hover:text-[#FFFCDC] hover:bg-[#FFFCDC]/5 transition-colors"
-                      >
-                        <User className="w-5 h-5" />
-                        Login
-                      </Link>
-                    </motion.div>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
+      </motion.div>
 
       {/* Cart Drawer */}
       <CartDrawer />

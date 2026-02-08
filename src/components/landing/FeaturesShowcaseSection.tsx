@@ -21,26 +21,25 @@ const features = [
   {
     id: 1,
     badge: "First in Class",
-    badgeIcon: ASSETS.image24225,
-    headline: "In-Built Gas Indicator.",
-    description: "Stop paying for refills you don't need.",
+    badgeIcon: ASSETS.starIcon,
+    headline: "Lower bills\nhigher comfort",
+    description: "live energy",
     image: ASSETS.ac1,
   },
   {
     id: 2,
-    badge: "5-Year Warranty",
-    badgeIcon: ASSETS.badge41d,
-    headline: "5 Years",
-    description: "Because quality shouldn't need an asterisk.",
+    badge: "135% Capacity Boost",
+    badgeIcon: ASSETS.rocketLaunchIcon,
+    headline: "Turbo+ Mode for Instant Cooling",
+    description: "2 Tons of Cooling in a 1.5 Ton AC.",
     image: ASSETS.ac3,
   },
   {
     id: 3,
-    badgeTitle: "Highest ISEER",
-    badgeSubtitle: "In India",
-    badgeIcon: ASSETS.piggy,
-    headline: "Lower bills. Higher comfort.",
-    description: "Live Energy Meter, Track consumption as it happens.",
+    badge: "Comprehensive Warranty",
+    badgeIcon: ASSETS.calendarCheckIcon,
+    headline: "5 Years",
+    description: "Because quality shouldn't need an asterisk.",
     image: ASSETS.ac2,
   },
 ];
@@ -71,25 +70,14 @@ function MobileFeatureContent({
             className="object-contain"
           />
         </div>
-        {"badgeTitle" in feature ? (
-          <div className="flex flex-col">
-            <span className="text-[11px] leading-[14px] font-[700] text-[#212121]">
-              {feature.badgeTitle}
-            </span>
-            <span className="text-[11px] leading-[14px] font-[400] text-[#212121]">
-              {feature.badgeSubtitle}
-            </span>
-          </div>
-        ) : (
-          <span className="text-[11px] leading-[14px] font-[700] text-[#212121]">
-            {feature.badge}
-          </span>
-        )}
+        <span className="text-[11px] leading-[14px] font-[700] text-[#212121] opacity-60">
+          {feature.badge}
+        </span>
       </div>
 
       {/* Headline */}
       <h2
-        className="font-display text-3xl sm:text-4xl font-bold leading-tight mb-3"
+        className="font-display text-3xl sm:text-4xl font-bold leading-tight mb-3 whitespace-pre-line"
         style={{
           background:
             "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
@@ -102,7 +90,7 @@ function MobileFeatureContent({
       </h2>
 
       {/* Description */}
-      <p className="text-lg sm:text-xl text-[#6B7280] font-normal italic leading-relaxed">
+      <p className="text-lg sm:text-xl text-[#6B7280] font-normal leading-relaxed">
         {feature.description}
       </p>
     </div>
@@ -322,14 +310,18 @@ export function FeaturesShowcaseSection() {
       let currentTime = 0;
       let lastTargetTime = 0;
       let rafId: number | null = null;
+      let lastSeekTime = 0;
+      const seekThrottleMs = 16; // ~60fps throttle for seeking
 
-      // Lerp factors - use faster lerp for reverse scrolling
-      const lerpFactorForward = 0.12;
-      const lerpFactorReverse = 0.35;
+      // Lerp factors - increased for faster, more responsive video updates on mobile
+      const lerpFactorForward = 0.25; // Increased from 0.12 for snappier response
+      const lerpFactorReverse = 0.45; // Increased from 0.35 for faster reverse
 
       // Use requestAnimationFrame with lerp for smoother video updates
       const updateVideoTime = () => {
-        if (video.readyState >= 1 && Number.isFinite(video.duration)) {
+        if (video.readyState >= 2 && Number.isFinite(video.duration)) {
+          const now = performance.now();
+
           // Lerp towards target time for smoother transitions
           const diff = targetTime - currentTime;
           const isReverse = targetTime < lastTargetTime;
@@ -338,10 +330,10 @@ export function FeaturesShowcaseSection() {
           const lerpFactor = isReverse ? lerpFactorReverse : lerpFactorForward;
 
           // For large jumps (like quick scroll direction change), snap faster
-          if (Math.abs(diff) > video.duration * 0.15) {
-            // Jump closer to target for large differences
-            currentTime = currentTime + diff * 0.5;
-          } else if (Math.abs(diff) < 0.01) {
+          if (Math.abs(diff) > video.duration * 0.1) {
+            // Jump closer to target for large differences (increased from 0.5 to 0.7)
+            currentTime = currentTime + diff * 0.7;
+          } else if (Math.abs(diff) < 0.005) {
             // If difference is very small, snap to target
             currentTime = targetTime;
           } else {
@@ -349,17 +341,30 @@ export function FeaturesShowcaseSection() {
             currentTime += diff * lerpFactor;
           }
 
-          // Only seek if there's a meaningful difference
-          if (Math.abs(video.currentTime - currentTime) > 0.02) {
+          // Only seek if there's a meaningful difference and we're not throttled
+          const shouldSeek = Math.abs(video.currentTime - currentTime) > 0.016;
+          const isThrottled = now - lastSeekTime < seekThrottleMs;
+
+          if (shouldSeek && !isThrottled) {
+            lastSeekTime = now;
             try {
-              video.currentTime = currentTime;
+              // Use fastSeek when available and going forward (it's faster but less accurate)
+              if (
+                !isReverse &&
+                "fastSeek" in video &&
+                typeof video.fastSeek === "function"
+              ) {
+                video.fastSeek(currentTime);
+              } else {
+                video.currentTime = currentTime;
+              }
             } catch {
               // Ignore seeking errors
             }
           }
 
           // Continue animation loop if not at target
-          if (Math.abs(targetTime - currentTime) > 0.01) {
+          if (Math.abs(targetTime - currentTime) > 0.005) {
             rafId = requestAnimationFrame(updateVideoTime);
           }
         }
@@ -375,7 +380,7 @@ export function FeaturesShowcaseSection() {
         trigger: section,
         start: "top top", // Start when section top reaches viewport top (sticky visible)
         end: "bottom bottom",
-        scrub: 0.05,
+        scrub: 0.3, // Increased from 0.05 for better scroll responsiveness on mobile
         onUpdate: (self) => {
           const progress = self.progress;
 
@@ -408,7 +413,7 @@ export function FeaturesShowcaseSection() {
     },
     {
       scope: mobileSectionRef,
-      dependencies: [isLargeScreen],
+      dependencies: [isLargeScreen, mobileVideoReady], // Added mobileVideoReady dependency
     },
   );
 
@@ -447,6 +452,7 @@ export function FeaturesShowcaseSection() {
               backgroundColor: "#FFFFFF",
               position: "relative",
               flexShrink: 0,
+              contain: "layout style",
             }}
           >
             <div
@@ -459,6 +465,8 @@ export function FeaturesShowcaseSection() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                willChange: "transform",
+                transform: "translateZ(0)",
               }}
             >
               <video
@@ -471,7 +479,16 @@ export function FeaturesShowcaseSection() {
                 onLoadedMetadata={handleMobileVideoLoaded}
                 onCanPlay={handleMobileVideoLoaded}
                 onCanPlayThrough={handleMobileVideoLoaded}
-                style={{ WebkitTransform: "translateZ(0) translateX(25%)" }}
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
+                style={{
+                  WebkitTransform: "translateZ(0) translateX(25%)",
+                  transform: "translateZ(0) translateX(25%)",
+                  willChange: "contents",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                  contain: "layout style paint",
+                }}
               />
             </div>
           </div>
@@ -574,26 +591,15 @@ export function FeaturesShowcaseSection() {
                           className="object-contain"
                         />
                       </div>
-                      {"badgeTitle" in feature ? (
-                        <div className="flex flex-col">
-                          <span className="text-[14px] leading-[18px] font-[700] text-[#212121]">
-                            {feature.badgeTitle}
-                          </span>
-                          <span className="text-[14px] leading-[18px] font-[400] text-[#212121]">
-                            {feature.badgeSubtitle}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-[14px] leading-[18px] font-[700] text-[#212121]">
-                          {feature.badge}
-                        </span>
-                      )}
+                      <span className="text-[14px] leading-[18px] font-[700] text-[#212121] opacity-60">
+                        {feature.badge}
+                      </span>
                     </div>
 
                     {/* Headline with arrow */}
                     <div className="flex items-center gap-6 mb-6">
                       <h2
-                        className="font-display text-[44px] xl:text-[52px] font-bold leading-[1.1]"
+                        className="font-display text-[44px] xl:text-[52px] font-bold leading-[1.1] whitespace-pre-line"
                         style={{
                           background:
                             "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
@@ -612,7 +618,7 @@ export function FeaturesShowcaseSection() {
                     </div>
 
                     {/* Description */}
-                    <p className="text-lg lg:text-xl text-[#6B7280] font-normal italic leading-relaxed max-w-[400px]">
+                    <p className="text-lg lg:text-xl text-[#6B7280] font-normal leading-relaxed max-w-[400px]">
                       {feature.description}
                     </p>
                   </div>

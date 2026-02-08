@@ -115,6 +115,7 @@ interface FeatureCardProps {
   onHover: (id: FeatureId) => void;
   onLeave: () => void;
   containerWidth: number;
+  isHovered?: boolean;
 }
 
 function DesktopFeatureCard({
@@ -122,6 +123,7 @@ function DesktopFeatureCard({
   onHover,
   onLeave,
   containerWidth,
+  isHovered = false,
 }: FeatureCardProps) {
   // Scale positions based on container width (base design is 1360px)
   const scale = Math.min(1, containerWidth / 1360);
@@ -129,68 +131,99 @@ function DesktopFeatureCard({
     feature.desktopLeft !== undefined ? feature.desktopLeft * scale : undefined;
   const scaledTop = feature.desktopTop * scale;
 
-  // Scale card size for smaller screens
+  // Scale card size for smaller screens (Figma base: 314x142)
   const cardWidth = Math.max(240, 314 * scale);
   const cardHeight = Math.max(110, 142 * scale);
-  const iconSize = Math.max(70, 106 * scale);
+  // Figma: icon box 106x116
+  const iconWidth = Math.max(70, 106 * scale);
   const iconHeight = Math.max(80, 116 * scale);
+  // Figma: image 64x64
+  const imageSize = Math.max(44, 64 * scale);
 
   return (
     <div
-      className="rounded-[16px] lg:rounded-[20px] overflow-hidden absolute transition-all duration-300 hover:shadow-[0px_8px_40px_0px_rgba(0,0,0,0.18)] hover:-translate-y-1 cursor-pointer"
+      className="rounded-[20px] overflow-hidden absolute transition-all duration-300 cursor-pointer"
       style={{
         background: "linear-gradient(180deg, #EAEAEA 0%, #FFFFFF 100%)",
         border: "3px solid rgba(0,0,0,0.03)",
-        boxShadow: "0px 4px 30px 0px rgba(0,0,0,0.12)",
+        boxShadow: isHovered
+          ? "0px 8px 40px 0px rgba(0,0,0,0.18)"
+          : "0px 4px 30px 0px rgba(0,0,0,0.12)",
         left: scaledLeft !== undefined ? `${scaledLeft}px` : undefined,
         top: `${scaledTop}px`,
         width: `${cardWidth}px`,
         height: `${cardHeight}px`,
+        transform: isHovered ? "translateY(-4px)" : "translateY(0)",
       }}
       onMouseEnter={() => onHover(feature.id)}
       onMouseLeave={onLeave}
     >
-      {/* Icon Container */}
+      {/* Icon Container - Figma: left:12px, top:13px, 106x116, rounded:13.117px */}
       <div
-        className="absolute bg-[#181818] rounded-[10px] lg:rounded-[13px] overflow-hidden flex items-center my-auto justify-center"
+        className="absolute overflow-hidden transition-colors duration-300"
         style={{
           left: `${Math.max(8, 12 * scale)}px`,
-          top: `${Math.max(8, 10 * scale)}px`,
-          width: `${iconSize}px`,
+          top: `${Math.max(9, 13 * scale)}px`,
+          width: `${iconWidth}px`,
           height: `${iconHeight}px`,
+          borderRadius: `${Math.max(9, 13.117 * scale)}px`,
+          backgroundColor: isHovered ? "#3478f6" : "rgba(24,24,24,0.05)",
         }}
       >
-        <Image
-          src={feature.icon}
-          alt={feature.title}
-          width={48}
-          height={48}
-          className="object-contain"
+        {/* Image centered using absolute positioning - Figma: 64x64 centered */}
+        <div
+          className="absolute"
           style={{
-            width: `${Math.max(32, 48 * scale)}px`,
-            height: `${Math.max(32, 48 * scale)}px`,
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            width: `${imageSize}px`,
+            height: `${imageSize}px`,
+          }}
+        >
+          <Image
+            src={feature.icon}
+            alt={feature.title}
+            width={64}
+            height={64}
+            className="object-contain w-full h-full"
+          />
+        </div>
+        {/* Inner shadow overlay - Figma: inset 0px 5px 20px rgba(0,0,0,0.07) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            borderRadius: "inherit",
+            boxShadow: "inset 0px 5px 20px 0px rgba(0,0,0,0.07)",
           }}
         />
       </div>
 
-      {/* Text Content */}
+      {/* Text Content - Figma: left:134px, top:20px, width:141px, gap:14px */}
       <div
-        className="absolute flex flex-col gap-2 xl:gap-[14px]"
+        className="absolute flex flex-col"
         style={{
           left: `${Math.max(90, 134 * scale)}px`,
           top: `${Math.max(14, 20 * scale)}px`,
           width: `${Math.max(100, 141 * scale)}px`,
+          gap: `${Math.max(10, 14 * scale)}px`,
         }}
       >
         <p
-          className="font-display font-bold text-black leading-[1.14]"
-          style={{ fontSize: `${Math.max(13, 16 * scale)}px` }}
+          className="font-display font-bold leading-none transition-colors duration-300"
+          style={{
+            fontSize: `${Math.max(13, 16 * scale)}px`,
+            color: isHovered ? "#3478f6" : "#000000",
+          }}
         >
           {feature.title}
         </p>
         <p
-          className="font-display text-black opacity-60 leading-normal"
-          style={{ fontSize: `${Math.max(11, 14 * scale)}px` }}
+          className="font-display leading-normal transition-colors duration-300"
+          style={{
+            fontSize: `${Math.max(11, 14 * scale)}px`,
+            color: isHovered ? "rgba(52, 120, 246, 0.6)" : "rgba(0, 0, 0, 0.6)",
+          }}
         >
           {feature.description}
         </p>
@@ -219,15 +252,13 @@ function MobileFeatureCard({
         flex-shrink-0 
         w-[220px] xs:w-[250px] sm:w-[280px] md:w-[300px]
         h-[100px] xs:h-[110px] sm:h-[120px] md:h-[130px]
-        rounded-[14px] sm:rounded-[16px] overflow-hidden
+        rounded-[14px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden
         transition-all duration-300 cursor-pointer
         ${isActive ? "scale-[1.02] -translate-y-0.5" : ""}
       `}
       style={{
-        background: isActive
-          ? "#3478f6"
-          : "linear-gradient(180deg, #EAEAEA 0%, #FFFFFF 100%)",
-        border: isActive ? "2px solid #3478f6" : "2px solid rgba(0,0,0,0.03)",
+        background: "linear-gradient(180deg, #EAEAEA 0%, #FFFFFF 100%)",
+        border: "3px solid rgba(0,0,0,0.03)",
         boxShadow: isActive
           ? "0px 8px 40px 0px rgba(0,0,0,0.18)"
           : "0px 4px 30px 0px rgba(0,0,0,0.12)",
@@ -236,26 +267,46 @@ function MobileFeatureCard({
     >
       {/* Horizontal layout matching desktop */}
       <div className="flex h-full p-2 sm:p-2.5 gap-2 sm:gap-3">
-        {/* Icon Container - same style as desktop */}
-        <div className="flex-shrink-0 w-[70px] xs:w-[80px] sm:w-[90px] md:w-[100px] h-full bg-[#181818] rounded-[8px] sm:rounded-[10px] flex items-center justify-center">
-          <Image
-            src={feature.icon}
-            alt={feature.title}
-            width={40}
-            height={40}
-            className="w-8 xs:w-9 sm:w-10 h-8 xs:h-9 sm:h-10 object-contain"
+        {/* Icon Container - matching Figma pattern with centered image and overlay shadow */}
+        <div
+          className="flex-shrink-0 w-[70px] xs:w-[80px] sm:w-[90px] md:w-[100px] h-full rounded-[10px] sm:rounded-[12px] md:rounded-[13px] overflow-hidden relative transition-colors duration-300"
+          style={{
+            backgroundColor: isActive ? "#3478f6" : "rgba(24,24,24,0.05)",
+          }}
+        >
+          {/* Image centered using absolute positioning */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-10 xs:w-11 sm:w-12 md:w-14 h-10 xs:h-11 sm:h-12 md:h-14">
+            <Image
+              src={feature.icon}
+              alt={feature.title}
+              width={64}
+              height={64}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          {/* Inner shadow overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              borderRadius: "inherit",
+              boxShadow: "inset 0px 5px 20px 0px rgba(0,0,0,0.07)",
+            }}
           />
         </div>
 
         {/* Text Content - horizontal layout like desktop */}
-        <div className="flex flex-col justify-center gap-1 sm:gap-2 flex-1 min-w-0 pr-1">
+        <div className="flex flex-col justify-center gap-[10px] sm:gap-[12px] md:gap-[14px] flex-1 min-w-0 pr-1">
           <p
-            className={`font-display text-[12px] xs:text-[13px] sm:text-[14px] md:text-[15px] font-bold leading-tight ${isActive ? "text-white" : "text-black"}`}
+            className="font-display text-[12px] xs:text-[13px] sm:text-[14px] md:text-[15px] font-bold leading-none transition-colors duration-300"
+            style={{ color: isActive ? "#3478f6" : "#000000" }}
           >
             {feature.title}
           </p>
           <p
-            className={`font-display text-[10px] xs:text-[11px] sm:text-[12px] md:text-[13px] leading-normal ${isActive ? "text-white/70" : "text-black/60"}`}
+            className="font-display text-[10px] xs:text-[11px] sm:text-[12px] md:text-[13px] leading-normal transition-colors duration-300"
+            style={{
+              color: isActive ? "rgba(52, 120, 246, 0.6)" : "rgba(0, 0, 0, 0.6)",
+            }}
           >
             {feature.description}
           </p>
@@ -659,6 +710,7 @@ export function OptimistAppSection() {
                     onHover={handleCardHover}
                     onLeave={handleCardLeave}
                     containerWidth={containerWidth}
+                    isHovered={hoveredFeature === feature.id}
                   />
                 </div>
               ))}

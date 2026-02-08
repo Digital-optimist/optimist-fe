@@ -3,32 +3,264 @@
 import { useRef, useEffect, useState, useLayoutEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { ASSETS } from "@/lib/assets";
+import Image from "next/image";
 
+// Benefits data with card-specific styling
 const benefits = [
-  {
-    id: 2,
-    badge: "Cooling fails in peak summer?",
-    headline: "Tested to cool at 50°C.",
-    description: "No performance drop when others derate.",
-    image: ASSETS.b2,
-  },
   {
     id: 1,
     badge: "Worried about AC bill shocks?",
-    headline: "India's Most Energy-Efficient AC.",
+    headline: "India's Most\nEnergy-Efficient AC",
     description: "Lowest electricity consumption every single day.",
-    image: ASSETS.b1,
+    variant: "light" as const,
+    mobileAsset: "/Benf1Ass1.png",
+    desktopAsset1: "/Benf1Ass1.png",
+    desktopAsset2: "/Benf1Ass2.png",
   },
-
+  {
+    id: 2,
+    badge: "Cooling fails in peak summer?",
+    headline: "Tested to cool\nat 50°C",
+    description: "No performance drop when others derate.",
+    variant: "blue" as const,
+    mobileAsset: "/Benf2Ass1.png",
+    desktopAsset1: "/Benf2Ass1.png",
+  },
   {
     id: 3,
-    badge: "Cooling taking forever?",
-    headline: "2 Tons of Cooling in 1.5 Tons.",
-    description: "Exclusive Turbo+ Mode for instant cooling.",
-    image: ASSETS.b3,
+    badge: "Cooling suddenly dropping?",
+    headline: "Live Gas Level\nIndicator with alerts",
+    description: "0 Surprises. 100% Control",
+    variant: "light" as const,
+    mobileAsset: "/Benf3Ass2.png",
+    desktopAsset1: "/Benf3Ass2.png",
+    desktopAsset2: "/Benf3Ass1.png",
   },
 ];
+
+// Card 1 Component - Energy Efficient
+function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
+  return (
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+      {/* Mobile Layout */}
+      <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] bg-[rgba(52,120,246,0.08)]">
+        {/* Text Content - Top */}
+        <div className="absolute left-4 top-6 flex flex-col gap-3 w-[85%] z-20">
+          <span className="inline-flex w-fit px-[14px] py-2 bg-[#212121] text-white text-xs font-medium rounded-full leading-[1.2]">
+            {benefit.badge}
+          </span>
+          <h3 className="font-display text-[28px] font-bold text-[#3478f6] leading-[1.1] whitespace-pre-line">
+            {benefit.headline}
+          </h3>
+          <p className="text-[16px] text-[#212121] leading-[1.3] tracking-[-0.64px]">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* Phone Hand Image - Bottom right */}
+        <div className="absolute right-[-15%] bottom-0 w-[85%] h-[65%] z-10">
+          <Image
+            src={benefit.mobileAsset}
+            alt=""
+            fill
+            className="object-contain object-bottom"
+            sizes="(max-width: 768px) 85vw, 380px"
+          />
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex relative h-[70dvh] min-h-[500px] max-h-[700px] bg-[rgba(52,120,246,0.08)]">
+        {/* Light Blue Background Panel - Left portion */}
+        <div className="absolute left-0 top-0 w-[60%] h-full rounded-l-[20px]" />
+
+        {/* Text Content - Left side */}
+        <div className="absolute left-[44px] top-1/2 -translate-y-1/2 flex flex-col gap-4 w-[40%] max-w-[450px] z-20">
+          <div className="flex flex-col gap-4 w-full">
+            <span className="inline-flex w-fit px-6 py-3 bg-[#212121] text-white text-base font-medium rounded-full leading-[1.2]">
+              {benefit.badge}
+            </span>
+            <h3 className="font-display text-[clamp(32px,4vw,52px)] font-bold text-[#3478f6] leading-[1.2] whitespace-pre-line">
+              {benefit.headline}
+            </h3>
+          </div>
+          <p className="text-[clamp(20px,2.5vw,36px)] text-[#212121] leading-[1.3] tracking-[-0.04em]">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* Phone Hand Image - Center-right */}
+        <div className="absolute left-[45%] top-[3%] w-[45%] h-[105%] z-10">
+          <Image
+            src={benefit.desktopAsset1}
+            alt=""
+            fill
+            className="object-contain object-bottom"
+            sizes="(max-width: 1024px) 45vw, 550px"
+          />
+        </div>
+
+        {/* AC Unit Image - Far right background */}
+        {benefit.desktopAsset2 && (
+          <div className="absolute right-0 top-0 w-[35%] h-full z-0">
+            <Image
+              src={benefit.desktopAsset2}
+              alt=""
+              fill
+              className="object-cover object-left"
+              sizes="35vw"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Card 2 Component - 50°C Tested
+function BenefitCard2({ benefit }: { benefit: (typeof benefits)[1] }) {
+  return (
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+      {/* Mobile Layout */}
+      <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] flex flex-col">
+        {/* Blue Background - Top portion with text */}
+        <div className="relative bg-[#3478f6] px-4 pt-6 pb-4 flex-shrink-0">
+          <span className="inline-flex w-fit px-[14px] py-2 bg-[#fffcdc] text-[#212121] text-xs font-medium rounded-full leading-[1.2] mb-3">
+            {benefit.badge}
+          </span>
+          <h3 className="font-display text-[28px] font-bold text-[#aeffd8] leading-[1.1] whitespace-pre-line mb-2">
+            {benefit.headline}
+          </h3>
+          <p className="text-[16px] text-[#fffcdc] leading-[1.3] tracking-[-0.64px]">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* AC with Window Image - Bottom portion */}
+        <div className="relative flex-1 min-h-0">
+          <Image
+            src={benefit.mobileAsset}
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="(max-width: 768px) 100vw, 326px"
+          />
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex relative h-[70dvh] min-h-[500px] max-h-[700px] bg-white">
+        {/* Blue Background Panel - Left side */}
+        <div className="absolute left-0 top-0 w-[45%] z-[20] h-full bg-[#3478f6] rounded-l-[20px]" />
+
+        {/* Text Content - Left side */}
+        <div className="absolute left-[44px] top-1/2 -translate-y-1/2  flex flex-col gap-4 w-[45%] max-w-[420px] z-20">
+          <div className="flex flex-col gap-4 w-full">
+            <span className="inline-flex w-fit px-6 py-3 bg-[#fffcdc] text-[#212121] text-base font-medium rounded-full leading-[1.2]">
+              {benefit.badge}
+            </span>
+            <h3 className="font-display text-[clamp(32px,4vw,52px)] font-bold text-[#aeffd8] leading-[1.2] whitespace-pre-line">
+              {benefit.headline}
+            </h3>
+          </div>
+          <p className="text-[clamp(20px,2.5vw,36px)] text-[#fffcdc] leading-[1.3] tracking-[-0.04em]">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* AC with Window Image - Right side */}
+        <div className="absolute left-[25%] top-0 w-[75%] h-full z-10">
+          <Image
+            src={benefit.desktopAsset1}
+            alt=""
+            fill
+            className="object-cover object-left"
+            sizes="60vw"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Card 3 Component - Gas Level Indicator
+function BenefitCard3({ benefit }: { benefit: (typeof benefits)[2] }) {
+  return (
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+      {/* Mobile Layout */}
+      <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] bg-[rgba(52,120,246,0.08)]">
+        {/* Text Content - Top */}
+        <div className="absolute left-4 top-6 flex flex-col gap-3 w-[85%] z-20">
+          <span className="inline-flex w-fit px-[14px] py-2 bg-[#212121] text-white text-xs font-medium rounded-full leading-[1.2]">
+            {benefit.badge}
+          </span>
+          <h3 className="font-display text-[28px] font-bold text-[#3478f6] leading-[1.1] whitespace-pre-line">
+            {benefit.headline}
+          </h3>
+          <p className="text-[16px] text-[#212121] leading-[1.3] tracking-[-0.64px]">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* Phone Hand Image - Bottom right (larger size) */}
+        <div className="absolute right-[-35%] bottom-[-0%] w-[130%] h-[85%] z-10">
+          <Image
+            src={benefit.mobileAsset}
+            alt=""
+            fill
+            className="object-contain object-bottom"
+            sizes="(max-width: 768px) 130vw, 500px"
+          />
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex relative h-[70dvh] min-h-[500px] max-h-[700px] bg-[#eff4fe]">
+        {/* Light Blue Background Panel - Left portion */}
+        <div className="absolute left-0 top-0 w-[55%] h-full bg-[#eff4fe] rounded-l-[20px]" />
+
+        {/* Text Content - Left side */}
+        <div className="absolute left-[44px] top-1/2 -translate-y-1/2 flex flex-col gap-4 w-[40%] max-w-[450px] z-20">
+          <div className="flex flex-col gap-4 w-full">
+            <span className="inline-flex w-fit px-6 py-3 bg-[#212121] text-white text-base font-medium rounded-full leading-[1.2]">
+              {benefit.badge}
+            </span>
+            <h3 className="font-display text-[clamp(32px,4vw,52px)] font-bold text-[#3478f6] leading-[1.2] whitespace-pre-line">
+              {benefit.headline}
+            </h3>
+          </div>
+          <p className="text-[clamp(20px,2.5vw,36px)] text-[#212121] leading-[1.3] tracking-[-0.04em]">
+            {benefit.description}
+          </p>
+        </div>
+
+        {/* Phone Hand Image - Center (larger size) */}
+        <div className="absolute left-[35%] top-[-30%] w-[65%] h-[135%] z-10">
+          <Image
+            src={benefit.desktopAsset1}
+            alt=""
+            fill
+            className="object-contain object-bottom"
+            sizes="65vw"
+          />
+        </div>
+
+        {/* AC with Leaves Image - Far right */}
+        {benefit.desktopAsset2 && (
+          <div className="absolute right-0 top-0 w-[40%] h-full z-0">
+            <Image
+              src={benefit.desktopAsset2}
+              alt=""
+              fill
+              className="object-cover object-left"
+              sizes="40vw"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function BenefitsSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -56,16 +288,12 @@ export function BenefitsSection() {
 
   useGSAP(
     () => {
-      // Track our own ScrollTrigger instances for cleanup
       const triggers: ScrollTrigger[] = [];
 
-      // Check window width directly as additional safeguard (handles SSR hydration timing)
       const isCurrentlyMobile =
         typeof window !== "undefined" && window.innerWidth < 768;
 
-      // Skip horizontal scroll on mobile - use native scroll instead
       if (isMobile || isCurrentlyMobile) {
-        // Simple fade-in animation for mobile - use 'to' since initial state is set
         const headerTrigger = gsap.to(headerRef.current, {
           opacity: 1,
           y: 0,
@@ -80,7 +308,6 @@ export function BenefitsSection() {
         }).scrollTrigger;
         if (headerTrigger) triggers.push(headerTrigger);
 
-        // Cleanup only our triggers
         return () => {
           triggers.forEach((trigger) => trigger.kill());
         };
@@ -90,40 +317,25 @@ export function BenefitsSection() {
       const section = sectionRef.current;
       if (!carousel || !section) return;
 
-      const gap = 24; // gap-6 = 24px
+      const gap = 24;
       let scrollDistance = 0;
-      let bufferRatio = 0;
-      let totalScrollDistance = 0;
 
       const updateMetrics = () => {
-        // Get the total scroll width needed
         const cards = carousel.querySelectorAll(".benefit-card");
         const cardWidth = cards[0]?.getBoundingClientRect().width || 0;
         const totalWidth = (cardWidth + gap) * cards.length - gap;
 
-        // Use the actual carousel container width instead of full viewport
         const containerWidth =
           carousel.parentElement?.getBoundingClientRect().width ||
           window.innerWidth;
 
-        // Calculate scroll distance: scroll enough to show the last card fully visible
-        // Add small padding (15% of card width) for breathing room
-        scrollDistance = Math.max(
-          totalWidth - containerWidth + cardWidth * 0.15,
-          0,
-        );
-
-        // Buffer zone: extra scroll distance at the start where first card stays visible
-        // This gives users time to view the first card before horizontal scroll begins
-        const bufferDistance = window.innerHeight * 0.4; // 40% of viewport height as buffer
-        totalScrollDistance = bufferDistance + scrollDistance;
-        bufferRatio =
-          totalScrollDistance > 0 ? bufferDistance / totalScrollDistance : 0;
+        // Calculate how much we need to scroll to show all cards
+        scrollDistance = Math.max(totalWidth - containerWidth + 48, 0);
       };
 
       updateMetrics();
 
-      // Header fade in animation - use 'to' since initial state is set
+      // Header fade in animation
       const headerTrigger = gsap.to(headerRef.current, {
         opacity: 1,
         y: 0,
@@ -138,57 +350,43 @@ export function BenefitsSection() {
       }).scrollTrigger;
       if (headerTrigger) triggers.push(headerTrigger);
 
-      // Horizontal scroll animation - pins and scrolls cards horizontally
-      // Smooths the entry by mapping a buffer zone before horizontal movement
-      const carouselTween = gsap.to(carousel, {
-        x: () => -scrollDistance,
-        ease: "none",
-        force3D: true,
-        paused: true,
-      });
-
+      // Create horizontal scroll animation linked directly to scroll progress
       const carouselTrigger = ScrollTrigger.create({
         trigger: triggerRef.current,
-        start: "top top", // Pin when section reaches top of viewport
-        end: () => `+=${totalScrollDistance}`,
+        start: "top top",
+        end: () => `+=${scrollDistance + window.innerHeight * 0.5}`,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
-        fastScrollEnd: true,
+        scrub: 1, // Smooth scrubbing effect
         invalidateOnRefresh: true,
-        refreshPriority: 1,
-        onRefresh: () => {
-          updateMetrics();
-          carouselTween.invalidate();
-        },
+        onRefresh: updateMetrics,
         onUpdate: (self) => {
-          const progress = self.progress;
-          const adjusted =
-            progress <= bufferRatio || bufferRatio >= 1
-              ? 0
-              : (progress - bufferRatio) / (1 - bufferRatio);
-          carouselTween.progress(adjusted);
+          // Apply horizontal scroll based on scroll progress
+          const xMove = -scrollDistance * self.progress;
+          gsap.set(carousel, { x: xMove, force3D: true });
         },
       });
       triggers.push(carouselTrigger);
 
-      // Refresh after images load to avoid pin jump on first entry
+      // Refresh after images load
       const images = carousel.querySelectorAll("img");
-      const handleImageLoad = () => ScrollTrigger.refresh();
+      const handleImageLoad = () => {
+        updateMetrics();
+        ScrollTrigger.refresh();
+      };
       images.forEach((img) => {
         if (!img.complete) {
           img.addEventListener("load", handleImageLoad);
         }
       });
 
-      // Cleanup only our triggers, not all triggers
       return () => {
         images.forEach((img) => {
           if (!img.complete) {
             img.removeEventListener("load", handleImageLoad);
           }
         });
-        carouselTween.kill();
         triggers.forEach((trigger) => trigger.kill());
       };
     },
@@ -199,81 +397,44 @@ export function BenefitsSection() {
     <section
       id="benefits"
       ref={sectionRef}
-      className="relative bg-[#FFFFFF] overflow-x-hidden"
+      className="relative bg-[#FFFFFF] overflow-x-hidden z-[1]"
     >
-      {/* Trigger wrapper for pinning - only on desktop */}
-      <div ref={triggerRef} className="py-8 md:py-12 lg:py-16">
+      {/* Spacer for AC overlap from hero section */}
+      <div className="pt-[100px] md:pt-[200px]" />
+
+      {/* Pinned scroll container - no top padding so pin works correctly */}
+      <div ref={triggerRef} className="pt-4 md:pt-6 pb-8 md:pb-12 lg:pb-16">
         <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
           {/* Section Header */}
-          <div ref={headerRef} className="mb-4 will-change-[transform,opacity]">
-            <p className="text-sm md:text-base text-[#212121] italic mb-2">
+          <div
+            ref={headerRef}
+            className="mb-6 md:mb-8 will-change-[transform,opacity]"
+          >
+            <p className="text-sm md:text-base text-[#212121] mb-2">
               New Generation of AC
             </p>
-            {/* Desktop headline */}
             <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
               Everything you need. Nothing you don&apos;t.
             </h2>
-            {/* Mobile headline */}
             <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
               Everything you need. Nothing you don&apos;t.
             </h2>
           </div>
 
-          {/* Carousel - Desktop: horizontal scroll on vertical, Mobile: native horizontal scroll */}
+          {/* Carousel */}
           <div
             ref={carouselRef}
-            className="flex gap-4 md:gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide mx-0 px-4 md:mx-0 md:px-0 snap-x snap-mandatory md:snap-none"
+            className="flex gap-4 md:gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 scrollbar-hide snap-x snap-mandatory md:snap-none will-change-transform"
           >
-            {benefits.map((benefit) => (
-              <div
-                key={benefit.id}
-                className="benefit-card flex-shrink-0 w-[85vw] md:w-[calc(60%-12px)] lg:w-[calc(70%-12px)] relative rounded-[24px] overflow-hidden snap-start transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
-              >
-                {/* Image Background */}
-                <div className="relative aspect-[4/5] md:aspect-[16/10]">
-                  {/* Base Background Image - Full Coverage */}
-                  <img
-                    src={ASSETS.benefitsBg}
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-
-                  {/* Benefit Image Layer */}
-                  <img
-                    src={benefit.image}
-                    alt={benefit.badge}
-                    className="absolute inset-0 w-full h-full object-cover brightness-[0.9]"
-                  />
-
-                  {/* Bottom Gradient Overlay for text visibility */}
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-[55%]"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(33, 33, 33, 0) 0%, rgba(33, 33, 33, 0.4) 30%, rgba(33, 33, 33, 0.75) 60%, #212121 100%)",
-                    }}
-                  />
-
-                  {/* Content Overlay */}
-                  <div className="absolute inset-0 flex flex-col justify-between p-4 md:p-6">
-                    {/* Top - Badge */}
-                    <div>
-                      <span className="inline-block px-4 py-2 bg-optimist-blue-primary text-white text-sm font-medium rounded-full">
-                        {benefit.badge}
-                      </span>
-                    </div>
-
-                    {/* Bottom - Text */}
-                    <div className="mt-auto">
-                      <h3 className="font-display text-lg md:text-2xl lg:text-[40px] font-bold text-[#AEFFD8] mb-1 leading-tight">
-                        {benefit.headline}
-                      </h3>
-                      <p className="text-base md:text-xl lg:text-[40px] font-bold text-[#FFFCDC] leading-tight">
-                        {benefit.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {benefits.map((benefit, index) => (
+              <div key={benefit.id} className="snap-start">
+                {index === 0 && <BenefitCard1 benefit={benefit} />}
+                {index === 1 && (
+                  <BenefitCard2 benefit={benefit as (typeof benefits)[1]} />
+                )}
+                {index === 2 && (
+                  <BenefitCard3 benefit={benefit as (typeof benefits)[2]} />
+                )}
               </div>
             ))}
           </div>
