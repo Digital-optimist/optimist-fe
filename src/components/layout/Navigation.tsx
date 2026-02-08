@@ -199,6 +199,7 @@ export function Navigation() {
 
   const pathname = usePathname();
   const router = useRouter();
+  const isLandingPage = pathname === "/";
 
   const {
     isAuthenticated,
@@ -282,42 +283,44 @@ export function Navigation() {
           variants={navVariants}
           className="max-w-[1400px] mx-auto bg-white border border-black/[0.08] rounded-[44px] px-5 py-3 md:px-10 md:py-4"
         >
-          <div className="flex items-center justify-between relative">
-            {/* Left Navigation - Desktop */}
-            <div className="hidden md:flex items-center justify-between w-[325px]">
-              {navLinks.map((link, index) => {
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname === link.href ||
-                      pathname.startsWith(link.href + "/");
-                return (
-                  <motion.div
-                    key={`${link.href}-${index}`}
-                    custom={index}
-                    initial="hidden"
-                    animate="visible"
-                    variants={linkVariants}
-                  >
-                    <Link
-                      href={link.href}
-                      className={`relative text-base leading-none transition-colors ${
-                        isActive
-                          ? "text-black font-bold underline decoration-solid"
-                          : "text-black/60 font-normal hover:text-black"
-                      }`}
+          <div className={`flex items-center justify-between relative ${isLandingPage ? "min-h-[30px] justify-center" : ""}`}>
+            {/* Left Navigation - Desktop (hidden on landing page) */}
+            {!isLandingPage && (
+              <div className="hidden md:flex items-center justify-between w-[325px]">
+                {navLinks.map((link, index) => {
+                  const isActive =
+                    link.href === "/"
+                      ? pathname === "/"
+                      : pathname === link.href ||
+                        pathname.startsWith(link.href + "/");
+                  return (
+                    <motion.div
+                      key={`${link.href}-${index}`}
+                      custom={index}
+                      initial="hidden"
+                      animate="visible"
+                      variants={linkVariants}
                     >
-                      <motion.span
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                      <Link
+                        href={link.href}
+                        className={`relative text-base leading-none transition-colors ${
+                          isActive
+                            ? "text-black font-bold underline decoration-solid"
+                            : "text-black/60 font-normal hover:text-black"
+                        }`}
                       >
-                        {link.label}
-                      </motion.span>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
+                        <motion.span
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          {link.label}
+                        </motion.span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Left Logo - Mobile */}
             <motion.div
@@ -367,7 +370,8 @@ export function Navigation() {
               </Link>
             </motion.div>
 
-            {/* Right Actions - Desktop */}
+            {/* Right Actions - Desktop (hidden on landing page) */}
+            {!isLandingPage && (
             <div className="hidden md:flex items-center gap-6 justify-end w-[325px]">
               {/* Cart */}
               <motion.button
@@ -533,46 +537,50 @@ export function Navigation() {
                 )
               )}
             </div>
+            )}
 
-            {/* Mobile Menu Button */}
-            <motion.button
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden flex items-center gap-2.5 px-5 py-2.5 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="text-sm leading-none font-normal">Menu</span>
-              <AnimatePresence mode="wait">
-                {isMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="text-black/60"
-                  >
-                    <ListIcon />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+            {/* Mobile Menu Button (hidden on landing page) */}
+            {!isLandingPage && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden flex items-center gap-2.5 px-5 py-2.5 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span className="text-sm leading-none font-normal">Menu</span>
+                <AnimatePresence mode="wait">
+                  {isMenuOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-black/60"
+                    >
+                      <ListIcon />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            )}
           </div>
 
-          {/* Mobile Navigation Menu */}
+          {/* Mobile Navigation Menu (hidden on landing page) */}
+          {!isLandingPage && (
           <AnimatePresence>
             {isMenuOpen && (
               <motion.div
@@ -719,6 +727,7 @@ export function Navigation() {
               </motion.div>
             )}
           </AnimatePresence>
+          )}
         </motion.nav>
       </motion.div>
 
