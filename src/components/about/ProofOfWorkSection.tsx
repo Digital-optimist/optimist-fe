@@ -42,7 +42,7 @@ const PalmTreeClipDef = memo(function PalmTreeClipDef() {
 // Palm Tree with Video - Using clip-path mask like IndiaFirstSection
 const PalmTreeDecoration = memo(function PalmTreeDecoration() {
   return (
-    <div className="relative bg-white overflow-hidden w-[280px] lg:w-[349px] h-[390px] lg:h-[490px] flex items-center justify-center">
+    <div className="relative bg-white overflow-hidden w-[200px] sm:w-[240px] md:w-[280px] lg:w-[320px] xl:w-[349px] h-[280px] sm:h-[340px] md:h-[390px] lg:h-[450px] xl:h-[490px] flex items-center justify-center">
       <div
         className="relative w-[90%] aspect-[349/490]"
         style={{ clipPath: "url(#palmTreeClipPath)" }}
@@ -87,19 +87,19 @@ const ValueCard = memo(function ValueCard({
   const restOfTitle = title.slice(1);
 
   return (
-    <div className="flex flex-col gap-4 lg:gap-5 w-full lg:w-[440px]">
+    <div className="flex flex-col gap-3 sm:gap-4 lg:gap-5 w-full">
       {/* Header with star icon and title */}
-      <div className="flex items-center gap-2 lg:gap-3">
-        <StarIcon className="w-6 h-6 lg:w-8 lg:h-8 shrink-0" />
-        <h3 className="font-bold text-base lg:text-2xl text-black leading-[1.4]">
-          <span className="text-xl lg:text-3xl">{firstLetter}</span>
+      <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">
+        <StarIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 shrink-0" />
+        <h3 className="font-bold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-black leading-[1.4]">
+          <span className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">{firstLetter}</span>
           {restOfTitle}
         </h3>
       </div>
       {/* Description */}
-      <div className="text-sm lg:text-sm text-black leading-[1.4]">
-        <p className="mb-0">{subtitle}</p>
-        <p>{description}</p>
+      <div className="text-xs sm:text-sm md:text-sm lg:text-base text-black leading-[1.5] sm:leading-[1.55] md:leading-[1.6]">
+        <p className="mb-0 font-medium">{subtitle}</p>
+        <p className="text-black/80">{description}</p>
       </div>
     </div>
   );
@@ -209,32 +209,32 @@ export function ProofOfWorkSection() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-white overflow-hidden">
+    <section ref={sectionRef} className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 overflow-hidden">
       {/* Global clip path definition - rendered once for both desktop and mobile */}
       <PalmTreeClipDef />
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         {/* Header Section */}
         <div
           ref={headerRef}
-          className="flex flex-col gap-4 lg:gap-8 mb-8 lg:mb-12 will-change-[transform,opacity]"
+          className="flex flex-col gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mb-6 sm:mb-8 md:mb-10 lg:mb-12 will-change-[transform,opacity]"
         >
           {/* Label */}
-          <p className="font-normal text-sm lg:text-2xl text-[#3478F6] leading-normal">
+          <p className="font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#3478F6] leading-normal">
             Our Values
           </p>
 
           {/* Title */}
-          <h2 className="font-display font-semibold text-2xl lg:text-5xl text-black leading-normal lg:w-[545px]">
+          <h2 className="font-display font-semibold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black leading-[1.2] sm:leading-[1.25] lg:leading-normal max-w-full sm:max-w-[400px] md:max-w-[480px] lg:max-w-[545px]">
             The standards we hold ourselves to.
           </h2>
         </div>
 
-        {/* Main Content - Desktop: Palm tree left + Grid right, Mobile: Stack */}
-        <div className="flex flex-col lg:flex-row lg:gap-16">
-          {/* Palm Tree - Desktop: Left side, Mobile: Bottom */}
+        {/* Main Content - Desktop: Palm tree left + Grid right, Mobile/Tablet: Stack */}
+        <div className="flex flex-col xl:flex-row gap-8 sm:gap-10 md:gap-12 lg:gap-14 xl:gap-16">
+          {/* Palm Tree - Desktop: Left side, Mobile/Tablet: Bottom */}
           <div
             ref={palmTreeRef}
-            className="hidden lg:block shrink-0 will-change-[transform,opacity]"
+            className="hidden xl:block shrink-0 will-change-[transform,opacity]"
           >
             <PalmTreeDecoration />
           </div>
@@ -242,7 +242,7 @@ export function ProofOfWorkSection() {
           {/* Values Grid */}
           <div
             ref={contentRef}
-            className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-x-11 lg:gap-y-11"
+            className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 md:gap-8 lg:gap-x-10 lg:gap-y-10 xl:gap-x-11 xl:gap-y-11"
           >
             {VALUES_DATA.map((value, index) => (
               <div key={index} data-value-card>
@@ -255,8 +255,8 @@ export function ProofOfWorkSection() {
             ))}
           </div>
 
-          {/* Palm Tree - Mobile: Bottom */}
-          <div className="lg:hidden mt-8 flex justify-center will-change-[transform,opacity]">
+          {/* Palm Tree - Mobile/Tablet: Bottom centered */}
+          <div className="xl:hidden mt-4 sm:mt-6 md:mt-8 flex justify-center will-change-[transform,opacity]">
             <PalmTreeDecoration />
           </div>
         </div>

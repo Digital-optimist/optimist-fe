@@ -725,20 +725,20 @@ export function OptimistAppSection() {
         {/* ============ TABLET LAYOUT (md to lg) ============ */}
         <div
           className="hidden md:block lg:hidden relative bg-white overflow-hidden"
-          style={{ minHeight: "650px" }}
+          style={{ minHeight: "580px" }}
         >
-          {/* Background Ellipses - Tablet */}
+          {/* Background Ellipses - Tablet - better centered */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div
               className="absolute left-1/2 -translate-x-1/2"
-              style={{ top: "150px", width: "120%", maxWidth: "900px" }}
+              style={{ top: "80px", width: "110%", maxWidth: "800px" }}
             >
               <Image
                 src={ASSETS.ellipse6512}
                 alt=""
                 width={1258}
                 height={1258}
-                sizes="120vw"
+                sizes="110vw"
                 className="w-full h-auto"
                 style={{ transform: "scale(1.112)" }}
                 quality={70}
@@ -746,14 +746,14 @@ export function OptimistAppSection() {
             </div>
             <div
               className="absolute left-1/2 -translate-x-1/2"
-              style={{ top: "300px", width: "80%", maxWidth: "600px" }}
+              style={{ top: "200px", width: "70%", maxWidth: "500px" }}
             >
               <Image
                 src={ASSETS.ellipse6513}
                 alt=""
                 width={753}
                 height={753}
-                sizes="80vw"
+                sizes="70vw"
                 className="w-full h-auto"
                 style={{ transform: "scale(1.187)" }}
                 quality={70}
@@ -761,28 +761,27 @@ export function OptimistAppSection() {
             </div>
           </div>
 
-          {/* Header - Tablet */}
-          <div className="relative bg-white z-10 text-center pt-10 px-6">
-            <h2 className="font-display text-[36px] font-bold text-black leading-none mb-3">
+          {/* Header - Tablet - reduced top padding */}
+          <div className="relative bg-white z-10 text-center pt-8 px-6">
+            <h2 className="font-display text-[32px] font-bold text-black leading-none mb-2">
               Optimist App
             </h2>
             <p
-              className="font-display text-[18px] leading-normal max-w-md mx-auto"
+              className="font-display text-[16px] leading-normal max-w-sm mx-auto"
               style={{ color: "rgba(0,0,0,0.42)" }}
             >
               Your full-control panel, right in your hand.
             </p>
           </div>
 
-          {/* Hand/Phone Image Container - Tablet */}
+          {/* Hand/Phone Image Container - Tablet - better centered positioning */}
           <div
             ref={phoneRef}
-            className="absolute z-10 pointer-events-none"
+            className="relative z-10 pointer-events-none mx-auto mt-2"
             style={{
-              right: "-120px",
-              bottom: "140px",
-              width: "650px",
-              height: "450px",
+              width: "100%",
+              maxWidth: "500px",
+              height: "340px",
             }}
           >
             <Image
@@ -793,17 +792,17 @@ export function OptimistAppSection() {
               }
               alt="Optimist App"
               fill
-              sizes="650px"
+              sizes="500px"
               quality={80}
-              className="object-contain object-right-bottom"
+              className="object-contain object-center"
               priority
             />
           </div>
 
-          {/* Carousel - Tablet */}
+          {/* Carousel - Tablet - improved spacing and centered */}
           <div
             ref={mobileCarouselRef}
-            className="absolute bottom-0 bg-white pt-4 left-0 right-0 z-30 flex gap-4 overflow-x-auto pb-8 px-6 scrollbar-hide"
+            className="relative bg-white pt-2 z-30 flex gap-4 overflow-x-auto pb-6 px-6 scrollbar-hide justify-start"
             style={{ scrollSnapType: "x mandatory" }}
           >
             {FEATURES.map((feature) => (

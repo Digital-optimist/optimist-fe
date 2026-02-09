@@ -20,7 +20,11 @@ const teamData = [
     description:
       "Ashish Goel is a climate-tech builder and evangelist, former Founder & CEO of Urban Ladder, and a 5× Fortune 40 Under 40 awardee, now focused on building practical, engineering-led solutions for India's climate challenges.",
     image: ASSETS.team1,
-    previousCompanies: ["/icons/accel.svg", "/icons/sparrow.svg", "/icons/spectrum.svg"],
+    previousCompanies: [
+      "/icons/accel.svg",
+      "/icons/sparrow.svg",
+      "/icons/spectrum.svg",
+    ],
   },
   {
     id: 2,
@@ -475,8 +479,9 @@ export function CoreTeamSection() {
           (containerRect.width - cardRect.width) / 2 +
           container.scrollLeft;
       } else {
-        // For desktop: position card with left padding (matching container padding)
-        const leftPadding = 40; // px-10 = 40px
+        // For desktop: position card with left padding
+        // Use larger padding on first scroll to reduce initial jump
+        const leftPadding = targetIndex === 1 ? 200 : 40;
         scrollOffset =
           cardRect.left -
           containerRect.left -

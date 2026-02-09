@@ -61,27 +61,27 @@ export function MissionSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white py-16 md:py-20 lg:py-24 overflow-hidden"
+      className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 overflow-hidden"
     >
-      <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Main Container - Responsive flexbox */}
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 lg:gap-12">
+        <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-8 sm:gap-10 md:gap-12 lg:gap-14 xl:gap-16">
           {/* Left - Text Content */}
           <div
             ref={textRef}
-            className="flex flex-col gap-8 w-full lg:w-[620px] shrink-0 will-change-[transform,opacity]"
+            className="flex flex-col gap-5 sm:gap-6 md:gap-7 lg:gap-8 w-full xl:w-[580px] 2xl:w-[620px] shrink-0 will-change-[transform,opacity]"
           >
             {/* Label */}
-            <p className="font-normal text-[16px] lg:text-[24px] text-[#3478F6] leading-normal">
+            <p className="font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-[24px] text-[#3478F6] leading-normal">
               Our Mission
             </p>
 
             {/* Title and Description */}
-            <div className="flex flex-col gap-6 text-black">
-              <h2 className="font-display font-semibold text-[24px] lg:text-[48px] leading-[1.2] lg:leading-normal">
+            <div className="flex flex-col gap-4 sm:gap-5 md:gap-6 text-black">
+              <h2 className="font-display font-semibold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[44px] 2xl:text-[48px] leading-[1.2] sm:leading-[1.25] lg:leading-[1.15] xl:leading-normal">
                 Engineering real cooling for a warming India.
               </h2>
-              <p className="font-light text-[16px] lg:text-[20px] leading-[1.6]">
+              <p className="font-light text-sm sm:text-base md:text-lg lg:text-lg xl:text-[20px] leading-[1.6] sm:leading-[1.65] md:leading-[1.7]">
                 Reliable performance at extreme temperatures. Honest efficiency
                 over years of use. Transparent operations, you can verify. We're
                 building air conditioning that respects the intelligence of
@@ -94,16 +94,16 @@ export function MissionSection() {
           {/* Right - Cards */}
           <div
             ref={cardsRef}
-            className="flex flex-col lg:flex-row gap-6 items-center w-full lg:w-auto"
+            className="flex flex-col sm:flex-row xl:flex-row gap-4 sm:gap-5 md:gap-6 items-stretch w-full xl:w-auto"
           >
             {/* Image Card */}
-            <div className="relative w-full lg:w-[396px] h-[356px] lg:h-[480px] rounded-[24px] overflow-hidden will-change-[transform,opacity]">
+            <div className="relative w-full sm:flex-1 xl:w-[320px] 2xl:w-[396px] h-[280px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[480px] rounded-[16px] sm:rounded-[20px] lg:rounded-[24px] overflow-hidden will-change-[transform,opacity]">
               <Image
                 src={ASSETS.missionImage}
                 alt="Comfort redefined for India"
                 fill
                 className="object-cover object-center"
-                sizes="(max-width: 1024px) 100vw, 396px"
+                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 396px"
               />
               {/* Gradient overlay */}
               <div
@@ -116,23 +116,23 @@ export function MissionSection() {
             </div>
 
             {/* ISEER Rating Card */}
-            <div className="bg-gradient-to-br from-[#3478F6] to-[#1E4690] w-full lg:w-[301px] h-[265px] lg:h-[480px] rounded-[20px] overflow-hidden p-6 will-change-[transform,opacity]">
+            <div className="bg-gradient-to-br from-[#3478F6] to-[#1E4690] w-full sm:flex-1 xl:w-[260px] 2xl:w-[301px] h-[220px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[480px] rounded-[16px] sm:rounded-[20px] overflow-hidden p-4 sm:p-5 md:p-6 will-change-[transform,opacity]">
               <div className="flex flex-col justify-between h-full text-white">
-                <div className="flex flex-col gap-2">
-                  <p className="font-medium text-[18px] lg:text-[20px] leading-none opacity-90">
+                <div className="flex flex-col gap-1 sm:gap-2">
+                  <p className="font-medium text-sm sm:text-base md:text-lg lg:text-[18px] xl:text-[20px] leading-none opacity-90">
                     India&apos;s Highest
                   </p>
-                  <p className="font-bold text-[32px] lg:text-[40px] leading-none">
+                  <p className="font-bold text-2xl sm:text-[28px] md:text-[32px] lg:text-[36px] xl:text-[40px] leading-none">
                     ISEER Rating
                   </p>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1 sm:gap-2">
                   {/* Star rating visual */}
-                  <div className="flex gap-1">
+                  <div className="flex gap-0.5 sm:gap-1">
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className="w-8 h-8 lg:w-10 lg:h-10 text-[#FFD700]"
+                        className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 xl:w-10 xl:h-10 text-[#FFD700]"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                       >
@@ -140,7 +140,7 @@ export function MissionSection() {
                       </svg>
                     ))}
                   </div>
-                  <p className="font-bold text-[72px] lg:text-[80px] leading-none">
+                  <p className="font-bold text-5xl sm:text-6xl md:text-[64px] lg:text-[72px] xl:text-[80px] leading-none">
                     5.35
                   </p>
                 </div>
