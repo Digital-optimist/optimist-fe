@@ -59,7 +59,7 @@ export default function BlogDetailPageClient({
       variants={pageVariants}
     >
       {/* Back to Blogs Link */}
-      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px] pt-20 sm:pt-24 md:pt-28">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px] pt-24 sm:pt-28 md:pt-32">
         <Link
           href="/blogs"
           className="inline-flex items-center gap-2 text-[14px] sm:text-[15px] text-[#3478f6] font-medium hover:text-[#1265FF] transition-colors duration-200"

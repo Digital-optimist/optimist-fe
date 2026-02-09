@@ -189,9 +189,11 @@ export function HeroSection() {
   );
 
   // Use CSS-based responsive sizing for SSR, only switch to JS-based after mount
+  // Note: Using 'svh' (small viewport height) on mobile instead of 'dvh' to prevent
+  // height changes when the navigation header hides/shows on scroll
   const sectionStyle = isMounted
     ? {
-        height: isMobile ? "85dvh" : "82vh",
+        height: isMobile ? "85svh" : "82vh",
         minHeight: isMobile ? "550px" : "500px",
       }
     : {

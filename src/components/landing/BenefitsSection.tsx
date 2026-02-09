@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useLayoutEffect } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import Image from "next/image";
@@ -267,34 +267,72 @@ export function BenefitsSection() {
   const triggerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Check if mobile on mount and resize
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  // Set initial states immediately to prevent flash/lag on first scroll
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 40 });
-    }
-  }, []);
 
   useGSAP(
     () => {
-      const triggers: ScrollTrigger[] = [];
+      const mm = gsap.matchMedia();
 
-      const isCurrentlyMobile =
-        typeof window !== "undefined" && window.innerWidth < 768;
+      // Mobile animations — runs only when viewport < 768px
+      mm.add("(max-width: 767px)", () => {
+        // Set initial hidden state (runs before paint via useLayoutEffect)
+        gsap.set(headerRef.current, { opacity: 0, y: 40 });
+        gsap.set(carouselRef.current, { opacity: 0, y: 30 });
 
-      if (isMobile || isCurrentlyMobile) {
-        const headerTrigger = gsap.to(headerRef.current, {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        });
+
+        tl.to(headerRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          force3D: true,
+        }).to(
+          carouselRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            force3D: true,
+          },
+          "-=0.5",
+        );
+      });
+
+      // Desktop animations — runs only when viewport >= 768px
+      mm.add("(min-width: 768px)", () => {
+        const carousel = carouselRef.current;
+        const section = sectionRef.current;
+        if (!carousel || !section) return;
+
+        // Set initial hidden state
+        gsap.set(headerRef.current, { opacity: 0, y: 40 });
+
+        const gap = 24;
+        let scrollDistance = 0;
+
+        const updateMetrics = () => {
+          const cards = carousel.querySelectorAll(".benefit-card");
+          const cardWidth = cards[0]?.getBoundingClientRect().width || 0;
+          const totalWidth = (cardWidth + gap) * cards.length - gap;
+
+          const containerWidth =
+            carousel.parentElement?.getBoundingClientRect().width ||
+            window.innerWidth;
+
+          // Calculate how much we need to scroll to show all cards
+          scrollDistance = Math.max(totalWidth - containerWidth + 48, 0);
+        };
+
+        updateMetrics();
+
+        // Header fade in animation
+        gsap.to(headerRef.current, {
           opacity: 1,
           y: 0,
           duration: 0.8,
@@ -305,92 +343,50 @@ export function BenefitsSection() {
             toggleActions: "play none none none",
             once: true,
           },
-        }).scrollTrigger;
-        if (headerTrigger) triggers.push(headerTrigger);
+        });
 
-        return () => {
-          triggers.forEach((trigger) => trigger.kill());
+        // Create horizontal scroll animation linked directly to scroll progress
+        ScrollTrigger.create({
+          trigger: triggerRef.current,
+          start: "top top",
+          end: () => `+=${scrollDistance + window.innerHeight * 0.5}`,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          scrub: 1, // Smooth scrubbing effect
+          invalidateOnRefresh: true,
+          onRefresh: updateMetrics,
+          onUpdate: (self) => {
+            // Apply horizontal scroll based on scroll progress
+            const xMove = -scrollDistance * self.progress;
+            gsap.set(carousel, { x: xMove, force3D: true });
+          },
+        });
+
+        // Refresh after images load
+        const images = carousel.querySelectorAll("img");
+        const handleImageLoad = () => {
+          updateMetrics();
+          ScrollTrigger.refresh();
         };
-      }
-
-      const carousel = carouselRef.current;
-      const section = sectionRef.current;
-      if (!carousel || !section) return;
-
-      const gap = 24;
-      let scrollDistance = 0;
-
-      const updateMetrics = () => {
-        const cards = carousel.querySelectorAll(".benefit-card");
-        const cardWidth = cards[0]?.getBoundingClientRect().width || 0;
-        const totalWidth = (cardWidth + gap) * cards.length - gap;
-
-        const containerWidth =
-          carousel.parentElement?.getBoundingClientRect().width ||
-          window.innerWidth;
-
-        // Calculate how much we need to scroll to show all cards
-        scrollDistance = Math.max(totalWidth - containerWidth + 48, 0);
-      };
-
-      updateMetrics();
-
-      // Header fade in animation
-      const headerTrigger = gsap.to(headerRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        force3D: true,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      }).scrollTrigger;
-      if (headerTrigger) triggers.push(headerTrigger);
-
-      // Create horizontal scroll animation linked directly to scroll progress
-      const carouselTrigger = ScrollTrigger.create({
-        trigger: triggerRef.current,
-        start: "top top",
-        end: () => `+=${scrollDistance + window.innerHeight * 0.5}`,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        scrub: 1, // Smooth scrubbing effect
-        invalidateOnRefresh: true,
-        onRefresh: updateMetrics,
-        onUpdate: (self) => {
-          // Apply horizontal scroll based on scroll progress
-          const xMove = -scrollDistance * self.progress;
-          gsap.set(carousel, { x: xMove, force3D: true });
-        },
-      });
-      triggers.push(carouselTrigger);
-
-      // Refresh after images load
-      const images = carousel.querySelectorAll("img");
-      const handleImageLoad = () => {
-        updateMetrics();
-        ScrollTrigger.refresh();
-      };
-      images.forEach((img) => {
-        if (!img.complete) {
-          img.addEventListener("load", handleImageLoad);
-        }
-      });
-
-      return () => {
         images.forEach((img) => {
           if (!img.complete) {
-            img.removeEventListener("load", handleImageLoad);
+            img.addEventListener("load", handleImageLoad);
           }
         });
-        triggers.forEach((trigger) => trigger.kill());
-      };
+
+        // matchMedia cleanup — called when this breakpoint no longer matches
+        return () => {
+          images.forEach((img) => {
+            img.removeEventListener("load", handleImageLoad);
+          });
+        };
+      });
+
+      // useGSAP cleanup
+      return () => mm.revert();
     },
-    { scope: sectionRef, dependencies: [isMobile] },
+    { scope: sectionRef },
   );
 
   return (

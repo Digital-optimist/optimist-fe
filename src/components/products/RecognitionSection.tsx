@@ -86,14 +86,15 @@ const FeatureCard = memo(function FeatureCard({
         <img
           src={feature.iconSrc}
           alt={feature.iconAlt}
-          className="w-8 h-8 md:w-10 md:h-10"
+          className="w-6 h-6"
+          style={{ width: "24px", height: "24px" }}
         />
       </div>
       <div className="flex flex-col gap-2 items-center text-center">
         <p className="font-display font-bold text-base md:text-xl text-white">
           {feature.title}
         </p>
-        <p className="text-sm md:text-base text-white/60 max-w-[159px]">
+        <p className="text-sm md:text-base text-[#FFFFFFCC] max-w-[159px]">
           {feature.description}
         </p>
       </div>
@@ -220,13 +221,17 @@ export const RecognitionSection = memo(function RecognitionSection() {
         {/* Card Container */}
         <div
           ref={cardRef}
-          className="relative w-full min-h-[500px] md:min-h-[669px] overflow-hidden rounded-[24px] md:rounded-[44px] will-change-[transform,opacity]"
+          className="relative w-full min-h-[500px] md:min-h-[409px] overflow-hidden rounded-[24px] md:rounded-[44px] will-change-[transform,opacity]"
+          style={{
+            background:
+              " linear-gradient(151.7deg, #1261FF 12.75%, #46F5A0 120.92%)",
+          }}
         >
           {/* Background */}
-          <GradientBackground />
+          {/* <GradientBackground /> */}
 
           {/* Content */}
-          <div className="relative z-10 flex flex-col items-center justify-center gap-10 md:gap-[60px] py-16 md:py-24 lg:py-32 px-4 md:px-8">
+          <div className="relative z-10 flex flex-col items-center justify-center gap-10 md:gap-[60px] py-8 md:py-16 lg:py-20 px-4 md:px-8">
             {/* Header Section */}
             <div
               ref={headerRef}

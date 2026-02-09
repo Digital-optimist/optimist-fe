@@ -59,8 +59,8 @@ export const ASSETS = {
   laurelLeft: "/laurel-left.svg",
   laurelRight: "/laurel-right.svg",
   shieldSlash: "/shield-slash.svg",
-  leafIcon: "/leaf.svg",
-  hourglass: "/hourglass.svg",
+  leafIcon: "/leaf.png",
+  hourglass: "/hourglass.png",
 
   // Ratings & Stars
   fiveStarRating: getAssetUrl("5StarRating.png"),

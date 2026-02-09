@@ -1,0 +1,2370 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Optimist - Shopify API Integration Documentation</title>
+<style>
+  body {
+    font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #333333;
+    margin: 60px 72px;
+    max-width: 100%;
+  }
+
+  /* Cover Page */
+  .cover-page {
+    text-align: center;
+    padding-top: 180px;
+    page-break-after: always;
+  }
+  .cover-page h1 {
+    font-size: 28pt;
+    color: #1a1a1a;
+    font-weight: bold;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .cover-page .subtitle {
+    font-size: 16pt;
+    color: #555555;
+    margin-bottom: 40px;
+  }
+  .cover-page .meta {
+    font-size: 11pt;
+    color: #777777;
+    margin-top: 60px;
+    line-height: 2;
+  }
+  .cover-page .divider {
+    width: 100px;
+    height: 3px;
+    background-color: #2563eb;
+    margin: 30px auto;
+  }
+
+  /* Headings */
+  h1 {
+    font-size: 22pt;
+    color: #1a1a1a;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 8px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    page-break-before: always;
+  }
+  h1:first-of-type {
+    page-break-before: auto;
+  }
+  h2 {
+    font-size: 16pt;
+    color: #1e40af;
+    margin-top: 30px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #dbeafe;
+    padding-bottom: 4px;
+  }
+  h3 {
+    font-size: 13pt;
+    color: #1e3a5f;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  h4 {
+    font-size: 11pt;
+    color: #374151;
+    font-weight: bold;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+
+  /* Table of Contents */
+  .toc {
+    page-break-after: always;
+  }
+  .toc h1 {
+    page-break-before: auto;
+  }
+  .toc-item {
+    padding: 6px 0;
+    border-bottom: 1px dotted #cccccc;
+    font-size: 11pt;
+  }
+  .toc-item-sub {
+    padding: 4px 0 4px 30px;
+    font-size: 10pt;
+    color: #555;
+  }
+  .toc-number {
+    font-weight: bold;
+    color: #2563eb;
+    margin-right: 10px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+  th {
+    background-color: #1e40af;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #1e40af;
+  }
+  td {
+    padding: 8px 14px;
+    border: 1px solid #d1d5db;
+    vertical-align: top;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+  tr:hover {
+    background-color: #eff6ff;
+  }
+
+  /* Code blocks */
+  .code-block {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    padding: 16px 20px;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border-left: 4px solid #2563eb;
+  }
+
+  code {
+    background-color: #f1f5f9;
+    color: #dc2626;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9.5pt;
+  }
+
+  /* Info boxes */
+  .info-box {
+    background-color: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .warning-box {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .success-box {
+    background-color: #ecfdf5;
+    border-left: 4px solid #10b981;
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .box-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 8px 0;
+    padding-left: 24px;
+  }
+  li {
+    margin: 4px 0;
+  }
+
+  /* Flow diagrams (text-based) */
+  .flow-diagram {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    margin: 16px 0;
+    text-align: center;
+    font-family: 'Consolas', monospace;
+    font-size: 9.5pt;
+    line-height: 1.8;
+    border-radius: 6px;
+  }
+  .flow-arrow {
+    color: #2563eb;
+    font-weight: bold;
+  }
+  .flow-step {
+    background-color: #dbeafe;
+    padding: 4px 12px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 4px;
+  }
+
+  /* Page break helper */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Highlighted text */
+  .highlight {
+    background-color: #fef3c7;
+    padding: 2px 4px;
+  }
+
+  /* Section numbering visual */
+  .section-num {
+    color: #2563eb;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 8px 0;
+  }
+
+  .endpoint-box {
+    background-color: #f0fdf4;
+    border: 1px solid #86efac;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-family: 'Consolas', monospace;
+    font-size: 10pt;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover-page">
+  <h1>OPTIMIST</h1>
+  <div class="subtitle">Shopify API Integration Documentation</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <strong>Document Type:</strong> Technical Integration Documentation<br>
+    <strong>Version:</strong> 1.0<br>
+    <strong>Date:</strong> February 9, 2026<br>
+    <strong>Platform:</strong> Next.js 16 + Shopify Storefront API<br>
+    <strong>Shopify API Version:</strong> 2025-01<br>
+    <strong>Classification:</strong> Confidential
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="toc">
+  <h1 style="page-break-before: auto;">Table of Contents</h1>
+
+  <div class="toc-item"><span class="toc-number">1.</span> Executive Summary</div>
+  <div class="toc-item"><span class="toc-number">2.</span> Technology Stack Overview</div>
+  <div class="toc-item-sub">2.1 Frontend Framework</div>
+  <div class="toc-item-sub">2.2 Shopify Integration Layer</div>
+  <div class="toc-item-sub">2.3 Third-Party Integrations</div>
+  <div class="toc-item"><span class="toc-number">3.</span> Architecture Overview</div>
+  <div class="toc-item-sub">3.1 System Architecture Diagram</div>
+  <div class="toc-item-sub">3.2 Application Structure</div>
+  <div class="toc-item-sub">3.3 State Management Architecture</div>
+  <div class="toc-item"><span class="toc-number">4.</span> Shopify API Configuration</div>
+  <div class="toc-item-sub">4.1 API Credentials &amp; Endpoint</div>
+  <div class="toc-item-sub">4.2 GraphQL Client Setup</div>
+  <div class="toc-item-sub">4.3 ShopifyProvider Configuration</div>
+  <div class="toc-item"><span class="toc-number">5.</span> Product Management API</div>
+  <div class="toc-item-sub">5.1 Fetch All Products</div>
+  <div class="toc-item-sub">5.2 Fetch Product by Handle</div>
+  <div class="toc-item-sub">5.3 Product Data Transformation</div>
+  <div class="toc-item"><span class="toc-number">6.</span> Shopping Cart API</div>
+  <div class="toc-item-sub">6.1 Create Cart</div>
+  <div class="toc-item-sub">6.2 Retrieve Cart</div>
+  <div class="toc-item-sub">6.3 Add Items to Cart</div>
+  <div class="toc-item-sub">6.4 Update Cart Line Items</div>
+  <div class="toc-item-sub">6.5 Remove Items from Cart</div>
+  <div class="toc-item-sub">6.6 Associate Cart with Customer</div>
+  <div class="toc-item-sub">6.7 Cart Persistence &amp; Lifecycle</div>
+  <div class="toc-item"><span class="toc-number">7.</span> Customer Authentication API</div>
+  <div class="toc-item-sub">7.1 Customer Registration</div>
+  <div class="toc-item-sub">7.2 Customer Login</div>
+  <div class="toc-item-sub">7.3 Customer Logout</div>
+  <div class="toc-item-sub">7.4 Password Recovery</div>
+  <div class="toc-item-sub">7.5 Password Reset</div>
+  <div class="toc-item-sub">7.6 Session Management</div>
+  <div class="toc-item"><span class="toc-number">8.</span> Customer Profile &amp; Account API</div>
+  <div class="toc-item-sub">8.1 Fetch Customer Data</div>
+  <div class="toc-item-sub">8.2 Update Customer Profile</div>
+  <div class="toc-item-sub">8.3 Fetch Customer Orders</div>
+  <div class="toc-item"><span class="toc-number">9.</span> Customer Address Management API</div>
+  <div class="toc-item-sub">9.1 Create Address</div>
+  <div class="toc-item-sub">9.2 Update Address</div>
+  <div class="toc-item-sub">9.3 Delete Address</div>
+  <div class="toc-item-sub">9.4 Set Default Address</div>
+  <div class="toc-item"><span class="toc-number">10.</span> Blog &amp; Content API</div>
+  <div class="toc-item-sub">10.1 Fetch All Blogs</div>
+  <div class="toc-item-sub">10.2 Fetch Blog by Handle</div>
+  <div class="toc-item-sub">10.3 Fetch Articles with Pagination</div>
+  <div class="toc-item-sub">10.4 Fetch Article by Handle</div>
+  <div class="toc-item-sub">10.5 Fetch Articles by Tag</div>
+  <div class="toc-item"><span class="toc-number">11.</span> Waitlist / Newsletter Subscription API</div>
+  <div class="toc-item"><span class="toc-number">12.</span> Contact Form Integration</div>
+  <div class="toc-item"><span class="toc-number">13.</span> Data Models &amp; Type Definitions</div>
+  <div class="toc-item"><span class="toc-number">14.</span> GraphQL Fragments Reference</div>
+  <div class="toc-item"><span class="toc-number">15.</span> Error Handling Strategy</div>
+  <div class="toc-item"><span class="toc-number">16.</span> Data Flow Diagrams</div>
+  <div class="toc-item"><span class="toc-number">17.</span> Deployment Architecture</div>
+  <div class="toc-item"><span class="toc-number">18.</span> Security Considerations</div>
+  <div class="toc-item"><span class="toc-number">19.</span> Complete API Reference Summary</div>
+</div>
+
+<!-- ==================== 1. EXECUTIVE SUMMARY ==================== -->
+<h1>1. Executive Summary</h1>
+
+<p>The <strong>Optimist</strong> web application is a modern e-commerce storefront built using <strong>Next.js 16</strong> and integrated with <strong>Shopify's Storefront API</strong> as the backend commerce engine. The application serves as the customer-facing website for Optimist products (air conditioning units), providing a complete shopping experience including product browsing, shopping cart management, customer authentication, order tracking, blog content, and waitlist functionality.</p>
+
+<h2>1.1 Key Highlights</h2>
+
+<table>
+  <tr>
+    <th>Aspect</th>
+    <th>Details</th>
+  </tr>
+  <tr>
+    <td><strong>Shopify API Used</strong></td>
+    <td>Storefront API (GraphQL) - Version 2025-01</td>
+  </tr>
+  <tr>
+    <td><strong>Authentication Method</strong></td>
+    <td>Storefront Access Token (public API access)</td>
+  </tr>
+  <tr>
+    <td><strong>Customer Auth</strong></td>
+    <td>Customer Access Tokens (email/password based)</td>
+  </tr>
+  <tr>
+    <td><strong>Integration Type</strong></td>
+    <td>Headless Commerce (custom frontend, Shopify backend)</td>
+  </tr>
+  <tr>
+    <td><strong>Data Source</strong></td>
+    <td>Shopify is the single source of truth for all commerce data</td>
+  </tr>
+  <tr>
+    <td><strong>Deployment</strong></td>
+    <td>Static HTML Export (AWS S3 + CloudFront)</td>
+  </tr>
+  <tr>
+    <td><strong>Shopify Store</strong></td>
+    <td>octolife-3.myshopify.com</td>
+  </tr>
+</table>
+
+<h2>1.2 What is the Shopify Storefront API?</h2>
+
+<p>The Shopify Storefront API is a <strong>GraphQL-based API</strong> that provides access to Shopify store data from a custom frontend. Unlike the Admin API (which requires private credentials and server-side access), the Storefront API is designed for public-facing applications and is safe to use from the browser.</p>
+
+<div class="info-box">
+  <div class="box-title">Storefront API vs Admin API</div>
+  <p>This application uses the <strong>Storefront API</strong>, which provides read access to products, collections, and blogs, plus write access to cart operations and customer accounts. It does NOT use the Admin API, which would be needed for managing inventory, creating products, or accessing backend order management.</p>
+</div>
+
+<h2>1.3 Integration Scope</h2>
+
+<p>The Shopify integration covers the following functional areas:</p>
+
+<ul>
+  <li><strong>Product Catalog</strong> - Browsing and viewing product details</li>
+  <li><strong>Shopping Cart</strong> - Full cart lifecycle (create, add, update, remove items)</li>
+  <li><strong>Checkout</strong> - Redirect to Shopify-hosted checkout</li>
+  <li><strong>Customer Authentication</strong> - Registration, login, logout, password recovery</li>
+  <li><strong>Customer Profile</strong> - View and update profile information</li>
+  <li><strong>Address Management</strong> - CRUD operations on customer addresses</li>
+  <li><strong>Order History</strong> - View past orders and their details</li>
+  <li><strong>Blog / Content</strong> - Fetch and display blog articles from Shopify CMS</li>
+  <li><strong>Waitlist</strong> - Phone number subscription via Shopify customer creation</li>
+</ul>
+
+<!-- ==================== 2. TECHNOLOGY STACK ==================== -->
+<h1>2. Technology Stack Overview</h1>
+
+<h2>2.1 Frontend Framework</h2>
+
+<table>
+  <tr>
+    <th>Technology</th>
+    <th>Version</th>
+    <th>Purpose</th>
+  </tr>
+  <tr>
+    <td>Next.js</td>
+    <td>16.1.1</td>
+    <td>React framework with App Router, static export</td>
+  </tr>
+  <tr>
+    <td>React</td>
+    <td>19.2.3</td>
+    <td>UI component library</td>
+  </tr>
+  <tr>
+    <td>TypeScript</td>
+    <td>5.x</td>
+    <td>Type-safe development</td>
+  </tr>
+  <tr>
+    <td>Tailwind CSS</td>
+    <td>4.x</td>
+    <td>Utility-first CSS framework</td>
+  </tr>
+  <tr>
+    <td>GSAP + Framer Motion</td>
+    <td>3.14 / 12.26</td>
+    <td>Animations and transitions</td>
+  </tr>
+  <tr>
+    <td>React Three Fiber</td>
+    <td>9.5</td>
+    <td>3D graphics and visualizations</td>
+  </tr>
+</table>
+
+<h2>2.2 Shopify Integration Layer</h2>
+
+<table>
+  <tr>
+    <th>Component</th>
+    <th>Details</th>
+  </tr>
+  <tr>
+    <td><strong>Shopify SDK</strong></td>
+    <td><code>@shopify/hydrogen-react</code> v2025.7.1</td>
+  </tr>
+  <tr>
+    <td><strong>API Type</strong></td>
+    <td>GraphQL (Storefront API)</td>
+  </tr>
+  <tr>
+    <td><strong>API Version</strong></td>
+    <td>2025-01</td>
+  </tr>
+  <tr>
+    <td><strong>Custom Client</strong></td>
+    <td><code>src/lib/shopify.ts</code> (1,694 lines)</td>
+  </tr>
+  <tr>
+    <td><strong>State Management</strong></td>
+    <td>React Context API (AuthContext, CartContext, ProductsContext)</td>
+  </tr>
+</table>
+
+<h2>2.3 Third-Party Integrations</h2>
+
+<table>
+  <tr>
+    <th>Service</th>
+    <th>Purpose</th>
+    <th>Integration Type</th>
+  </tr>
+  <tr>
+    <td>Shopify Storefront API</td>
+    <td>E-commerce backend (products, cart, orders, customers, blogs)</td>
+    <td>GraphQL API</td>
+  </tr>
+  <tr>
+    <td>Google Sheets + Apps Script</td>
+    <td>Contact form submissions</td>
+    <td>Webhook (HTTP POST)</td>
+  </tr>
+  <tr>
+    <td>Google Tag Manager</td>
+    <td>Analytics and tracking</td>
+    <td>Script injection</td>
+  </tr>
+  <tr>
+    <td>Google Analytics 4</td>
+    <td>Web analytics</td>
+    <td>Script injection</td>
+  </tr>
+  <tr>
+    <td>AWS S3</td>
+    <td>Static asset storage (images, videos, fonts)</td>
+    <td>CDN URL</td>
+  </tr>
+  <tr>
+    <td>AWS CloudFront</td>
+    <td>CDN for static site hosting</td>
+    <td>CDN distribution</td>
+  </tr>
+</table>
+
+<!-- ==================== 3. ARCHITECTURE OVERVIEW ==================== -->
+<h1>3. Architecture Overview</h1>
+
+<h2>3.1 System Architecture Diagram</h2>
+
+<div class="flow-diagram">
+<pre>
++---------------------------+        GraphQL API         +---------------------------+
+|                           |  ----------------------->  |                           |
+|   OPTIMIST FRONTEND       |                            |   SHOPIFY STOREFRONT API  |
+|   (Next.js 16 - Static)   |  <-----------------------  |   (octolife-3.myshopify)  |
+|                           |        JSON Response       |                           |
++---------------------------+                            +---------------------------+
+       |          |                                              |
+       |          |                                              |
+       v          v                                              v
++----------+  +----------+                            +------------------+
+| AWS S3   |  | AWS      |                            | Shopify Hosted   |
+| (Assets) |  | CloudFront|                           | Checkout         |
++----------+  +----------+                            +------------------+
+                  |
+                  v
+          +----------------+
+          | Google Sheets  |
+          | (Contact Form) |
+          +----------------+
+</pre>
+</div>
+
+<p>The application follows a <strong>headless commerce architecture</strong> where:</p>
+<ol>
+  <li>The <strong>frontend</strong> is a statically exported Next.js application deployed on AWS S3 + CloudFront</li>
+  <li>The <strong>backend</strong> is Shopify, which manages all commerce data (products, orders, customers, inventory)</li>
+  <li>Communication happens via <strong>GraphQL API calls</strong> directly from the browser to Shopify</li>
+  <li>The checkout process redirects users to <strong>Shopify's hosted checkout</strong> page</li>
+  <li>No custom server or API proxy layer exists between the frontend and Shopify</li>
+</ol>
+
+<h2>3.2 Application Structure</h2>
+
+<div class="code-block">
+src/
+├── app/                          # Next.js App Router Pages
+│   ├── products/                 # Product listing page
+│   ├── cart/                     # Shopping cart page
+│   ├── account/                  # Customer account pages
+│   │   ├── orders/               # Order history
+│   │   └── addresses/            # Address management
+│   ├── blogs/                    # Blog listing and article detail pages
+│   ├── login/                    # Login page
+│   ├── sign-up/                  # Registration page
+│   ├── forgot-password/          # Password recovery page
+│   ├── reset-password/           # Password reset page
+│   ├── contact-us/               # Contact form page
+│   └── about/                    # About page
+│
+├── components/                   # React Components
+│   ├── auth/                     # Login form, auth-related components
+│   ├── cart/                     # CartDrawer, CartItem components
+│   ├── products/                 # ProductCard, ProductGrid components
+│   ├── blogs/                    # BlogCard, BlogGrid, FeaturedBlogCard
+│   ├── layout/                   # Navigation, Footer
+│   ├── landing/                  # Landing page sections
+│   └── ui/                       # Toast notifications, WaitlistModal
+│
+├── contexts/                     # React Context Providers
+│   ├── AuthContext.tsx            # Authentication state management
+│   ├── CartContext.tsx            # Shopping cart state management
+│   ├── ProductsContext.tsx        # Product data state management
+│   └── WaitlistContext.tsx        # Waitlist modal state management
+│
+├── hooks/                        # Custom React Hooks
+│
+└── lib/                          # Utility Libraries
+    ├── shopify.ts                # CORE: Shopify API client (all GraphQL operations)
+    ├── assets.ts                 # S3 asset URL helpers
+    └── gsap.ts                   # GSAP animation configuration
+</div>
+
+<h2>3.3 State Management Architecture</h2>
+
+<p>The application uses <strong>React Context API</strong> for state management. All Shopify data flows through context providers that wrap the entire application.</p>
+
+<h3>Provider Hierarchy</h3>
+
+<div class="code-block">
+ShopifyProvider (from @shopify/hydrogen-react)
+  └── ToastProvider (UI notifications)
+      └── AuthProvider (customer authentication)
+          └── CartProvider (shopping cart)
+              └── ProductsProvider (product catalog)
+                  └── WaitlistProvider (waitlist modal)
+                      └── Application Components
+</div>
+
+<table>
+  <tr>
+    <th>Context</th>
+    <th>Purpose</th>
+    <th>Key State</th>
+    <th>Persistence</th>
+  </tr>
+  <tr>
+    <td><strong>AuthContext</strong></td>
+    <td>Customer authentication</td>
+    <td>customer, accessToken, isAuthenticated</td>
+    <td>localStorage (<code>optimist_auth</code>)</td>
+  </tr>
+  <tr>
+    <td><strong>CartContext</strong></td>
+    <td>Shopping cart management</td>
+    <td>cart, totalQuantity, isCartOpen</td>
+    <td>localStorage (<code>optimist_cart_id</code>)</td>
+  </tr>
+  <tr>
+    <td><strong>ProductsContext</strong></td>
+    <td>Product catalog data</td>
+    <td>products, combinedProduct, isLoading</td>
+    <td>In-memory (fetched on load)</td>
+  </tr>
+  <tr>
+    <td><strong>WaitlistContext</strong></td>
+    <td>Waitlist modal state</td>
+    <td>isModalOpen, modalView</td>
+    <td>In-memory</td>
+  </tr>
+</table>
+
+<!-- ==================== 4. SHOPIFY API CONFIGURATION ==================== -->
+<h1>4. Shopify API Configuration</h1>
+
+<h2>4.1 API Credentials &amp; Endpoint</h2>
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td><strong>Shopify Store Domain</strong></td>
+    <td><code>octolife-3.myshopify.com</code></td>
+  </tr>
+  <tr>
+    <td><strong>API Version</strong></td>
+    <td><code>2025-01</code></td>
+  </tr>
+  <tr>
+    <td><strong>Storefront Access Token</strong></td>
+    <td><code>3b12d6020365806434052cc061a5b5e3</code></td>
+  </tr>
+  <tr>
+    <td><strong>GraphQL Endpoint</strong></td>
+    <td><code>https://octolife-3.myshopify.com/api/2025-01/graphql.json</code></td>
+  </tr>
+  <tr>
+    <td><strong>HTTP Method</strong></td>
+    <td><code>POST</code></td>
+  </tr>
+  <tr>
+    <td><strong>Country Code</strong></td>
+    <td><code>IN</code> (India)</td>
+  </tr>
+  <tr>
+    <td><strong>Language</strong></td>
+    <td><code>EN</code> (English)</td>
+  </tr>
+</table>
+
+<h2>4.2 GraphQL Client Setup</h2>
+
+<p>All API communication with Shopify is handled through a custom <code>shopifyFetch</code> function located in <code>src/lib/shopify.ts</code>. This function serves as the central GraphQL client for the entire application.</p>
+
+<h4>Request Structure</h4>
+<div class="code-block">
+POST https://octolife-3.myshopify.com/api/2025-01/graphql.json
+
+Headers:
+  Content-Type: application/json
+  X-Shopify-Storefront-Access-Token: 3b12d6020365806434052cc061a5b5e3
+
+Body:
+  {
+    "query": "...GraphQL query or mutation...",
+    "variables": { ...variables... }
+  }
+</div>
+
+<h4>How It Works</h4>
+
+<ol>
+  <li>Every API function constructs a GraphQL query/mutation string</li>
+  <li>The query and variables are passed to <code>shopifyFetch()</code></li>
+  <li><code>shopifyFetch()</code> sends a POST request to the Shopify GraphQL endpoint</li>
+  <li>The response is parsed as JSON</li>
+  <li>If the HTTP status is not OK, an error is thrown</li>
+  <li>If the response contains GraphQL errors, the first error message is thrown</li>
+  <li>Otherwise, the <code>data</code> field from the response is returned</li>
+</ol>
+
+<h4>Client Implementation</h4>
+<div class="code-block">
+async function shopifyFetch&lt;T&gt;({
+  query,
+  variables = {},
+}: {
+  query: string;
+  variables?: Record&lt;string, unknown&gt;;
+}): Promise&lt;T&gt; {
+  const endpoint = `https://${domain}/api/${apiVersion}/graphql.json`;
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Shopify API error: ${response.status} ${response.statusText}`);
+  }
+
+  const json = await response.json();
+
+  if (json.errors) {
+    throw new Error(json.errors[0]?.message || "Unknown Shopify API error");
+  }
+
+  return json.data;
+}
+</div>
+
+<h2>4.3 ShopifyProvider Configuration</h2>
+
+<p>The application uses <code>@shopify/hydrogen-react</code>'s <code>ShopifyProvider</code> component to provide Shopify context to the entire React component tree.</p>
+
+<div class="code-block">
+&lt;ShopifyProvider
+  storeDomain="https://octolife-3.myshopify.com"
+  storefrontToken="3b12d6020365806434052cc061a5b5e3"
+  storefrontApiVersion="2025-07"
+  countryIsoCode="IN"
+  languageIsoCode="EN"
+&gt;
+  {/* Application Components */}
+&lt;/ShopifyProvider&gt;
+</div>
+
+<!-- ==================== 5. PRODUCT MANAGEMENT API ==================== -->
+<h1>5. Product Management API</h1>
+
+<p>The Product Management API handles fetching product data from Shopify and transforming it for display in the application. Products are fetched via GraphQL and then transformed through the <code>ProductsContext</code> to create a unified product experience.</p>
+
+<h2>5.1 Fetch All Products</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getProducts(first: number = 20)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query</td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Product[]</code></td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>first</code> - Number of products to fetch (default: 20)</td></tr>
+</table>
+
+<h4>GraphQL Query</h4>
+<div class="code-block">
+query GetProducts($first: Int!) {
+  products(first: $first) {
+    edges {
+      node {
+        ...ProductFragment
+      }
+    }
+  }
+}
+</div>
+
+<h4>Response Data Structure</h4>
+<p>Each product in the response includes:</p>
+<ul>
+  <li><strong>id</strong> - Unique Shopify product ID (e.g., <code>gid://shopify/Product/123</code>)</li>
+  <li><strong>handle</strong> - URL-friendly slug (e.g., <code>1-5-ton-split-ac</code>)</li>
+  <li><strong>title</strong> - Product name</li>
+  <li><strong>description / descriptionHtml</strong> - Product description in plain text and HTML</li>
+  <li><strong>featuredImage</strong> - Primary product image</li>
+  <li><strong>images</strong> - All product images (up to 10)</li>
+  <li><strong>options</strong> - Product options (size, color, etc.)</li>
+  <li><strong>variants</strong> - Product variants with individual pricing (up to 100)</li>
+  <li><strong>priceRange</strong> - Min and max prices across all variants</li>
+  <li><strong>tags</strong> - Product tags for categorization</li>
+  <li><strong>vendor</strong> - Product vendor name</li>
+</ul>
+
+<h2>5.2 Fetch Product by Handle</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getProductByHandle(handle: string)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query</td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Product | null</code></td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>handle</code> - The product's URL-friendly handle</td></tr>
+</table>
+
+<h4>GraphQL Query</h4>
+<div class="code-block">
+query GetProductByHandle($handle: String!) {
+  product(handle: $handle) {
+    ...ProductFragment
+  }
+}
+</div>
+
+<h2>5.3 Product Data Transformation</h2>
+
+<p>The application treats each Shopify product as a "tonnage variant" of a single combined product. This transformation happens in the <code>ProductsContext</code>.</p>
+
+<h4>Transformation Logic</h4>
+<ol>
+  <li>All products are fetched from Shopify</li>
+  <li>Each product's tonnage is extracted from its title (e.g., "1.5 Ton Split AC" &rarr; "1.5")</li>
+  <li>Each product becomes a <code>DisplayVariant</code> with tonnage-based naming</li>
+  <li>A <code>CombinedProductData</code> object aggregates all variants sorted by tonnage</li>
+  <li>Helper functions provide lookup by tonnage: <code>getProductByTonnage("1.5")</code></li>
+</ol>
+
+<h4>Tonnage Extraction Rules</h4>
+<table>
+  <tr><th>Product Title / Handle</th><th>Extracted Tonnage</th><th>Display Name</th></tr>
+  <tr><td>"1 Ton Split AC"</td><td>1</td><td>"1 Ton" - For compact rooms</td></tr>
+  <tr><td>"1.5 Ton Split AC"</td><td>1.5</td><td>"1.5 Ton" - For medium-sized rooms</td></tr>
+  <tr><td>"2 Ton Split AC"</td><td>2</td><td>"2 Ton" - For large rooms</td></tr>
+</table>
+
+<!-- ==================== 6. SHOPPING CART API ==================== -->
+<h1>6. Shopping Cart API</h1>
+
+<p>The Shopping Cart API provides complete cart management functionality. The cart is stored on Shopify's servers and referenced by a cart ID stored in the browser's localStorage.</p>
+
+<h2>6.1 Create Cart</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>createCart(lines)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>cartCreate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Cart</code></td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>lines</code> - Array of { merchandiseId, quantity }</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation CreateCart($input: CartInput!) {
+  cartCreate(input: $input) {
+    cart {
+      ...CartFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+</div>
+
+<div class="info-box">
+  <div class="box-title">Cart Country Code</div>
+  <p>All carts are created with <code>buyerIdentity.countryCode: "IN"</code> (India) to ensure correct pricing and tax calculations.</p>
+</div>
+
+<h2>6.2 Retrieve Cart</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getCart(cartId: string)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>cart</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Cart | null</code></td></tr>
+</table>
+
+<h4>GraphQL Query</h4>
+<div class="code-block">
+query GetCart($cartId: ID!) {
+  cart(id: $cartId) {
+    ...CartFragment
+  }
+}
+</div>
+
+<h2>6.3 Add Items to Cart</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>addToCart(cartId, lines)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>cartLinesAdd</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Cart</code> (updated)</td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>cartId</code> - Existing cart ID<br><code>lines</code> - Array of { merchandiseId, quantity }</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation AddToCart($cartId: ID!, $lines: [CartLineInput!]!) {
+  cartLinesAdd(cartId: $cartId, lines: $lines) {
+    cart {
+      ...CartFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+</div>
+
+<h2>6.4 Update Cart Line Items</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>updateCartLines(cartId, lines)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>cartLinesUpdate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Cart</code> (updated)</td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>cartId</code> - Cart ID<br><code>lines</code> - Array of { id (lineId), quantity }</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation UpdateCartLines($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+  cartLinesUpdate(cartId: $cartId, lines: $lines) {
+    cart {
+      ...CartFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+</div>
+
+<h2>6.5 Remove Items from Cart</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>removeFromCart(cartId, lineIds)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>cartLinesRemove</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Cart</code> (updated)</td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>cartId</code> - Cart ID<br><code>lineIds</code> - Array of line item IDs to remove</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation RemoveFromCart($cartId: ID!, $lineIds: [ID!]!) {
+  cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+    cart {
+      ...CartFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+</div>
+
+<h2>6.6 Associate Cart with Customer</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>updateCartBuyerIdentity(cartId, customerAccessToken)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>cartBuyerIdentityUpdate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Cart</code> (updated)</td></tr>
+  <tr><td><strong>Purpose</strong></td><td>Links a guest cart to an authenticated customer for personalized checkout</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation UpdateCartBuyerIdentity($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+  cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+    cart {
+      ...CartFragment
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+</div>
+
+<div class="info-box">
+  <div class="box-title">When is this called?</div>
+  <p>This mutation is called automatically when a user logs in and already has items in their cart. It associates the cart with their customer account so Shopify can pre-fill checkout information.</p>
+</div>
+
+<h2>6.7 Cart Persistence &amp; Lifecycle</h2>
+
+<h4>Cart Creation Flow</h4>
+<div class="flow-diagram">
+<pre>
+User clicks "Add to Cart"
+        |
+        v
+  [Check localStorage for cart ID]
+        |
+   +----+----+
+   |         |
+  Yes        No
+   |         |
+   v         v
+[getCart()]  [createCart() with item]
+   |              |
+   |              v
+   |    [Store cart ID in localStorage]
+   |              |
+   v              v
+[addToCart() with new item]
+        |
+        v
+  [Update CartContext state]
+        |
+        v
+  [Open Cart Drawer]
+</pre>
+</div>
+
+<h4>Cart Persistence Details</h4>
+<table>
+  <tr><th>Aspect</th><th>Details</th></tr>
+  <tr><td><strong>Storage Key</strong></td><td><code>optimist_cart_id</code> in localStorage</td></tr>
+  <tr><td><strong>What's Stored</strong></td><td>Only the Shopify cart ID (e.g., <code>gid://shopify/Cart/...</code>)</td></tr>
+  <tr><td><strong>Cart Data</strong></td><td>Fetched fresh from Shopify on each page load</td></tr>
+  <tr><td><strong>Expiry</strong></td><td>Shopify carts expire after 10 days of inactivity</td></tr>
+  <tr><td><strong>Checkout</strong></td><td>Cart provides a <code>checkoutUrl</code> that redirects to Shopify's hosted checkout</td></tr>
+</table>
+
+<!-- ==================== 7. CUSTOMER AUTHENTICATION API ==================== -->
+<h1>7. Customer Authentication API</h1>
+
+<p>Customer authentication is handled through Shopify's Customer Access Token system. This allows customers to register, log in, and manage their accounts. The access token is used for all authenticated operations.</p>
+
+<h2>7.1 Customer Registration</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerCreate(email, password, firstName?, lastName?)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerCreate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>{ customer, customerAccessToken }</code></td></tr>
+  <tr><td><strong>Auto-Login</strong></td><td>Yes - automatically creates an access token after registration</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation CustomerCreate($input: CustomerCreateInput!) {
+  customerCreate(input: $input) {
+    customer {
+      ...CustomerFragment
+    }
+    customerUserErrors {
+      field
+      message
+      code
+    }
+  }
+}
+</div>
+
+<h4>Input Parameters</h4>
+<div class="code-block">
+{
+  "input": {
+    "email": "user@example.com",
+    "password": "securePassword123",
+    "firstName": "John",          // Optional
+    "lastName": "Doe",            // Optional
+    "acceptsMarketing": false
+  }
+}
+</div>
+
+<h4>Process Flow</h4>
+<ol>
+  <li>Customer account is created on Shopify</li>
+  <li>If successful, <code>customerAccessTokenCreate</code> is called automatically to log the user in</li>
+  <li>Access token is stored in localStorage with expiration timestamp</li>
+  <li>Customer data is loaded into AuthContext</li>
+  <li>If the customer has an existing cart, it is associated with their account</li>
+</ol>
+
+<h2>7.2 Customer Login</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerAccessTokenCreate(email, password)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerAccessTokenCreate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>CustomerAccessToken { accessToken, expiresAt }</code></td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation CustomerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+  customerAccessTokenCreate(input: $input) {
+    customerAccessToken {
+      accessToken
+      expiresAt
+    }
+    customerUserErrors {
+      field
+      message
+      code
+    }
+  }
+}
+</div>
+
+<h4>Login Flow</h4>
+<div class="flow-diagram">
+<pre>
+User submits email + password
+        |
+        v
+[customerAccessTokenCreate()]
+        |
+   +----+----+
+   |         |
+ Success   Error
+   |         |
+   v         v
+[Store token in  [Show error:
+ localStorage]    "Invalid email
+   |              or password"]
+   v
+[getCustomer(token)]
+   |
+   v
+[Update AuthContext with customer data]
+   |
+   v
+[updateCartBuyerIdentity() - link cart to customer]
+   |
+   v
+[Redirect to account page or previous page]
+</pre>
+</div>
+
+<h2>7.3 Customer Logout</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerAccessTokenDelete(customerAccessToken)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerAccessTokenDelete</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>boolean</code></td></tr>
+</table>
+
+<h4>Logout Flow</h4>
+<ol>
+  <li>Call <code>customerAccessTokenDelete</code> to invalidate the token on Shopify</li>
+  <li>Clear access token and customer data from localStorage</li>
+  <li>Reset AuthContext state (customer = null, isAuthenticated = false)</li>
+  <li>Redirect to home page</li>
+</ol>
+
+<h2>7.4 Password Recovery</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerRecover(email)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerRecover</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>boolean</code></td></tr>
+  <tr><td><strong>Behavior</strong></td><td>Sends a password reset email from Shopify to the customer</td></tr>
+</table>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation CustomerRecover($email: String!) {
+  customerRecover(email: $email) {
+    customerUserErrors {
+      field
+      message
+      code
+    }
+  }
+}
+</div>
+
+<h2>7.5 Password Reset</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerResetByUrl(resetUrl, password)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerResetByUrl</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>CustomerAccessToken</code></td></tr>
+  <tr><td><strong>Parameters</strong></td><td><code>resetUrl</code> - The reset URL from the email<br><code>password</code> - The new password</td></tr>
+</table>
+
+<h4>Error Handling</h4>
+<table>
+  <tr><th>Error Code</th><th>User-Friendly Message</th></tr>
+  <tr><td><code>TOKEN_INVALID</code></td><td>"This reset link is invalid. Please request a new one."</td></tr>
+  <tr><td><code>TOKEN_EXPIRED</code></td><td>"This reset link has expired. Please request a new one."</td></tr>
+</table>
+
+<h2>7.6 Session Management</h2>
+
+<h4>Token Storage</h4>
+<div class="code-block">
+localStorage key: "optimist_auth"
+
+Stored value:
+{
+  "accessToken": "abc123...",
+  "expiresAt": "2026-03-09T00:00:00Z"
+}
+</div>
+
+<h4>Session Persistence Logic</h4>
+<ol>
+  <li><strong>On App Load:</strong> Check localStorage for existing token</li>
+  <li><strong>Validate Expiration:</strong> Compare <code>expiresAt</code> with current time</li>
+  <li><strong>If Valid:</strong> Fetch fresh customer data using <code>getCustomer(token)</code></li>
+  <li><strong>If Expired:</strong> Clear localStorage, set isAuthenticated = false</li>
+  <li><strong>If No Token:</strong> User remains in guest state</li>
+</ol>
+
+<!-- ==================== 8. CUSTOMER PROFILE & ACCOUNT API ==================== -->
+<h1>8. Customer Profile &amp; Account API</h1>
+
+<h2>8.1 Fetch Customer Data</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getCustomer(customerAccessToken)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>customer</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Customer | null</code></td></tr>
+  <tr><td><strong>Auth Required</strong></td><td>Yes - Customer Access Token</td></tr>
+</table>
+
+<h4>GraphQL Query</h4>
+<div class="code-block">
+query GetCustomer($customerAccessToken: String!) {
+  customer(customerAccessToken: $customerAccessToken) {
+    ...CustomerFragment
+  }
+}
+</div>
+
+<h4>Customer Data Returned</h4>
+<ul>
+  <li><strong>Personal Info:</strong> id, firstName, lastName, email, phone, acceptsMarketing</li>
+  <li><strong>Default Address:</strong> Full mailing address object</li>
+  <li><strong>All Addresses:</strong> Up to 10 saved addresses</li>
+  <li><strong>Recent Orders:</strong> Up to 10 most recent orders (sorted by date, newest first)</li>
+</ul>
+
+<h2>8.2 Update Customer Profile</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerUpdate(customerAccessToken, customer)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerUpdate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Customer</code> (updated)</td></tr>
+</table>
+
+<h4>Updatable Fields</h4>
+<div class="code-block">
+{
+  "firstName": "John",           // Optional
+  "lastName": "Doe",             // Optional
+  "email": "new@example.com",    // Optional
+  "phone": "+919876543210",      // Optional
+  "acceptsMarketing": true       // Optional
+}
+</div>
+
+<h4>Error Handling</h4>
+<table>
+  <tr><th>Error Code</th><th>User-Friendly Message</th></tr>
+  <tr><td><code>TAKEN</code></td><td>"This email or phone number is already in use by another account."</td></tr>
+  <tr><td><code>INVALID</code></td><td>"Invalid [field]: [original message]"</td></tr>
+</table>
+
+<h2>8.3 Fetch Customer Orders</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getCustomerOrders(customerAccessToken, first = 20)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>customer.orders</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Order[]</code></td></tr>
+  <tr><td><strong>Sort</strong></td><td>By <code>PROCESSED_AT</code>, newest first</td></tr>
+</table>
+
+<h4>Order Data Returned</h4>
+<table>
+  <tr><th>Field</th><th>Description</th><th>Example</th></tr>
+  <tr><td><code>orderNumber</code></td><td>Order number</td><td>1001</td></tr>
+  <tr><td><code>name</code></td><td>Order name/reference</td><td>#1001</td></tr>
+  <tr><td><code>processedAt</code></td><td>Order date</td><td>2026-02-01T10:30:00Z</td></tr>
+  <tr><td><code>financialStatus</code></td><td>Payment status</td><td>PAID, PENDING, REFUNDED</td></tr>
+  <tr><td><code>fulfillmentStatus</code></td><td>Shipping status</td><td>FULFILLED, UNFULFILLED</td></tr>
+  <tr><td><code>totalPrice</code></td><td>Order total</td><td>{ amount: "45000", currencyCode: "INR" }</td></tr>
+  <tr><td><code>lineItems</code></td><td>Items ordered</td><td>Array of { title, quantity, variant }</td></tr>
+  <tr><td><code>shippingAddress</code></td><td>Delivery address</td><td>Full mailing address</td></tr>
+</table>
+
+<!-- ==================== 9. CUSTOMER ADDRESS MANAGEMENT API ==================== -->
+<h1>9. Customer Address Management API</h1>
+
+<p>Customers can manage multiple shipping/billing addresses. All address operations require a valid Customer Access Token.</p>
+
+<h2>9.1 Create Address</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerAddressCreate(customerAccessToken, address)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerAddressCreate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Address</code></td></tr>
+</table>
+
+<h4>Address Input Fields</h4>
+<div class="code-block">
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "company": "Optimist Inc.",     // Optional
+  "address1": "123 Main Street",
+  "address2": "Apt 4B",           // Optional
+  "city": "Mumbai",
+  "province": "Maharashtra",
+  "country": "India",
+  "zip": "400001",
+  "phone": "+919876543210"         // Optional
+}
+</div>
+
+<h2>9.2 Update Address</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerAddressUpdate(customerAccessToken, addressId, address)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerAddressUpdate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Address</code> (updated)</td></tr>
+  <tr><td><strong>Note</strong></td><td>Accepts partial address - only changed fields need to be sent</td></tr>
+</table>
+
+<h2>9.3 Delete Address</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerAddressDelete(customerAccessToken, addressId)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerAddressDelete</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>boolean</code></td></tr>
+</table>
+
+<h2>9.4 Set Default Address</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>customerDefaultAddressUpdate(customerAccessToken, addressId)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerDefaultAddressUpdate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Customer</code> (updated with new default address)</td></tr>
+</table>
+
+<!-- ==================== 10. BLOG & CONTENT API ==================== -->
+<h1>10. Blog &amp; Content API</h1>
+
+<p>The application uses Shopify's built-in CMS to manage blog content. Blogs and articles are fetched via the Storefront API and displayed on the website.</p>
+
+<h2>10.1 Fetch All Blogs</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getBlogs(first = 10)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>blogs</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Blog[]</code></td></tr>
+  <tr><td><strong>Includes</strong></td><td>Each blog includes up to 10 articles</td></tr>
+</table>
+
+<h2>10.2 Fetch Blog by Handle</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getBlogByHandle(handle)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>blog(handle)</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>Blog | null</code></td></tr>
+  <tr><td><strong>Includes</strong></td><td>Up to 50 articles with pagination info</td></tr>
+</table>
+
+<h2>10.3 Fetch Articles with Pagination</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getArticles(first = 20, after?, query?)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>articles</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>{ articles: BlogArticle[], pageInfo }</code></td></tr>
+  <tr><td><strong>Sort</strong></td><td>By <code>PUBLISHED_AT</code>, newest first</td></tr>
+  <tr><td><strong>Pagination</strong></td><td>Cursor-based (using <code>after</code> parameter)</td></tr>
+</table>
+
+<h4>Pagination Info</h4>
+<div class="code-block">
+pageInfo: {
+  hasNextPage: boolean,
+  hasPreviousPage: boolean,
+  startCursor: string | null,
+  endCursor: string | null
+}
+</div>
+
+<h2>10.4 Fetch Article by Handle</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getArticleByHandle(blogHandle, articleHandle)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query - <code>blog.articleByHandle</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>BlogArticle | null</code></td></tr>
+</table>
+
+<h2>10.5 Fetch Articles by Tag</h2>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>getArticlesByTag(tag, first = 20)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Query (uses <code>getArticles</code> with <code>query: "tag:{tag}"</code>)</td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>BlogArticle[]</code></td></tr>
+</table>
+
+<h4>Article Data Structure</h4>
+<table>
+  <tr><th>Field</th><th>Description</th></tr>
+  <tr><td><code>id</code></td><td>Unique article ID</td></tr>
+  <tr><td><code>handle</code></td><td>URL-friendly slug</td></tr>
+  <tr><td><code>title</code></td><td>Article title</td></tr>
+  <tr><td><code>content / contentHtml</code></td><td>Article body (plain text and HTML)</td></tr>
+  <tr><td><code>excerpt / excerptHtml</code></td><td>Short excerpt</td></tr>
+  <tr><td><code>publishedAt</code></td><td>Publication date</td></tr>
+  <tr><td><code>image</code></td><td>Featured image (url, altText, width, height)</td></tr>
+  <tr><td><code>author</code></td><td>Author name and email</td></tr>
+  <tr><td><code>blog</code></td><td>Parent blog (id, handle, title)</td></tr>
+  <tr><td><code>tags</code></td><td>Article tags for filtering</td></tr>
+  <tr><td><code>seo</code></td><td>SEO title and description</td></tr>
+</table>
+
+<h4>Utility Functions</h4>
+<table>
+  <tr><th>Function</th><th>Purpose</th><th>Details</th></tr>
+  <tr><td><code>calculateReadTime(content)</code></td><td>Estimate reading time</td><td>Based on 200 words per minute</td></tr>
+  <tr><td><code>formatArticleDate(dateString)</code></td><td>Format publication date</td><td>Output: "9 Feb 2026"</td></tr>
+</table>
+
+<!-- ==================== 11. WAITLIST API ==================== -->
+<h1>11. Waitlist / Newsletter Subscription API</h1>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>subscribeToWaitlist(phone)</code></td></tr>
+  <tr><td><strong>Operation</strong></td><td>GraphQL Mutation - <code>customerCreate</code></td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>boolean</code></td></tr>
+  <tr><td><strong>Purpose</strong></td><td>Capture customer phone numbers for waitlist/marketing</td></tr>
+</table>
+
+<h4>How It Works</h4>
+
+<p>The waitlist feature creatively uses Shopify's <code>customerCreate</code> mutation to store phone numbers. Since Shopify requires an email address, a placeholder email is generated from the phone number.</p>
+
+<ol>
+  <li><strong>Phone Formatting:</strong> The phone number is cleaned and formatted to E.164 format
+    <ul>
+      <li>10-digit numbers get +91 prefix (India)</li>
+      <li>12-digit numbers starting with 91 get + prefix</li>
+    </ul>
+  </li>
+  <li><strong>Placeholder Email:</strong> Generated as <code>{phoneDigits}@waitlist.optimist.in</code></li>
+  <li><strong>Random Password:</strong> A secure 20-character random password is generated (user won't need it)</li>
+  <li><strong>Customer Created:</strong> Shopify customer record is created with <code>acceptsMarketing: true</code></li>
+  <li><strong>Duplicate Handling:</strong> If the phone/email already exists (TAKEN error), it's treated as success</li>
+</ol>
+
+<h4>GraphQL Mutation</h4>
+<div class="code-block">
+mutation CustomerCreate($input: CustomerCreateInput!) {
+  customerCreate(input: $input) {
+    customer {
+      id
+      phone
+    }
+    customerUserErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+Variables:
+{
+  "input": {
+    "email": "9876543210@waitlist.optimist.in",
+    "phone": "+919876543210",
+    "password": "randomGeneratedPassword",
+    "acceptsMarketing": true
+  }
+}
+</div>
+
+<!-- ==================== 12. CONTACT FORM ==================== -->
+<h1>12. Contact Form Integration</h1>
+
+<div class="info-box">
+  <div class="box-title">Note</div>
+  <p>The contact form does NOT use Shopify API. It submits data to a Google Sheets webhook via Google Apps Script.</p>
+</div>
+
+<table>
+  <tr><th>Property</th><th>Details</th></tr>
+  <tr><td><strong>Function</strong></td><td><code>submitContactForm(data)</code></td></tr>
+  <tr><td><strong>Destination</strong></td><td>Google Apps Script Webhook</td></tr>
+  <tr><td><strong>Method</strong></td><td>HTTP POST (no-cors mode)</td></tr>
+  <tr><td><strong>Returns</strong></td><td><code>{ success: boolean, error?: string }</code></td></tr>
+</table>
+
+<h4>Form Fields</h4>
+<table>
+  <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+  <tr><td>reason</td><td>string</td><td>Yes</td><td>Reason for contact</td></tr>
+  <tr><td>fullName</td><td>string</td><td>Yes</td><td>Customer full name</td></tr>
+  <tr><td>mobileNumber</td><td>string</td><td>Yes</td><td>Phone number (auto-prefixed with +91)</td></tr>
+  <tr><td>email</td><td>string</td><td>No</td><td>Email address</td></tr>
+  <tr><td>cityPincode</td><td>string</td><td>Yes</td><td>City and pincode</td></tr>
+  <tr><td>serialNumber</td><td>string</td><td>No</td><td>Product serial number</td></tr>
+  <tr><td>orderId</td><td>string</td><td>No</td><td>Order ID for reference</td></tr>
+  <tr><td>message</td><td>string</td><td>Yes</td><td>Message body</td></tr>
+  <tr><td>attachedFile</td><td>File</td><td>No</td><td>File attachment (converted to base64)</td></tr>
+</table>
+
+<!-- ==================== 13. DATA MODELS ==================== -->
+<h1>13. Data Models &amp; Type Definitions</h1>
+
+<p>All data models are defined as TypeScript interfaces in <code>src/lib/shopify.ts</code>. These provide type safety across the entire application.</p>
+
+<h2>13.1 Product Types</h2>
+
+<div class="code-block">
+interface ShopifyImage {
+  url: string;
+  altText: string | null;
+  width: number;
+  height: number;
+}
+
+interface ProductVariant {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: { amount: string; currencyCode: string; };
+  compareAtPrice: { amount: string; currencyCode: string; } | null;
+  selectedOptions: { name: string; value: string; }[];
+  image: ShopifyImage | null;
+}
+
+interface Product {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  descriptionHtml: string;
+  featuredImage: ShopifyImage | null;
+  images: { edges: { node: ShopifyImage }[] };
+  options: { id: string; name: string; values: string[] }[];
+  variants: { edges: { node: ProductVariant }[] };
+  priceRange: {
+    minVariantPrice: { amount: string; currencyCode: string };
+    maxVariantPrice: { amount: string; currencyCode: string };
+  };
+  tags: string[];
+  vendor: string;
+}
+</div>
+
+<h2>13.2 Cart Types</h2>
+
+<div class="code-block">
+interface CartLine {
+  id: string;
+  quantity: number;
+  merchandise: {
+    id: string;
+    title: string;
+    product: {
+      id: string;
+      handle: string;
+      title: string;
+      featuredImage: ShopifyImage | null;
+    };
+    price: { amount: string; currencyCode: string };
+    selectedOptions: { name: string; value: string }[];
+  };
+}
+
+interface Cart {
+  id: string;
+  checkoutUrl: string;
+  totalQuantity: number;
+  cost: {
+    subtotalAmount: { amount: string; currencyCode: string };
+    totalAmount: { amount: string; currencyCode: string };
+    totalTaxAmount: { amount: string; currencyCode: string } | null;
+  };
+  lines: { edges: { node: CartLine }[] };
+}
+</div>
+
+<h2>13.3 Customer Types</h2>
+
+<div class="code-block">
+interface Customer {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  phone: string | null;
+  acceptsMarketing: boolean;
+  defaultAddress: Address | null;
+  addresses: { edges: { node: Address }[] };
+  orders: { edges: { node: Order }[] };
+}
+
+interface Address {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  company: string | null;
+  address1: string | null;
+  address2: string | null;
+  city: string | null;
+  province: string | null;
+  provinceCode: string | null;
+  country: string | null;
+  countryCodeV2: string | null;
+  zip: string | null;
+  phone: string | null;
+}
+
+interface CustomerAccessToken {
+  accessToken: string;
+  expiresAt: string;
+}
+
+interface CustomerUpdateInput {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  acceptsMarketing?: boolean;
+}
+</div>
+
+<h2>13.4 Order Types</h2>
+
+<div class="code-block">
+interface Order {
+  id: string;
+  orderNumber: number;
+  name: string;
+  processedAt: string;
+  financialStatus: string;
+  fulfillmentStatus: string;
+  totalPrice: { amount: string; currencyCode: string };
+  lineItems: {
+    edges: {
+      node: {
+        title: string;
+        quantity: number;
+        variant: {
+          image: ShopifyImage | null;
+          price: { amount: string; currencyCode: string };
+        } | null;
+      };
+    }[];
+  };
+  shippingAddress: Address | null;
+}
+</div>
+
+<h2>13.5 Blog Types</h2>
+
+<div class="code-block">
+interface BlogArticle {
+  id: string;
+  handle: string;
+  title: string;
+  content: string;
+  contentHtml: string;
+  excerpt: string | null;
+  excerptHtml: string | null;
+  publishedAt: string;
+  image: ShopifyImage | null;
+  author: { name: string; email: string | null } | null;
+  blog: { id: string; handle: string; title: string };
+  tags: string[];
+  seo: { title: string | null; description: string | null } | null;
+}
+
+interface Blog {
+  id: string;
+  handle: string;
+  title: string;
+  articles: {
+    edges: { node: BlogArticle }[];
+    pageInfo: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor: string | null;
+      endCursor: string | null;
+    };
+  };
+}
+</div>
+
+<!-- ==================== 14. GRAPHQL FRAGMENTS ==================== -->
+<h1>14. GraphQL Fragments Reference</h1>
+
+<p>GraphQL fragments are reusable field sets that avoid duplication across queries and mutations. The application defines the following fragments:</p>
+
+<h2>14.1 ImageFragment</h2>
+<div class="code-block">
+fragment ImageFragment on Image {
+  url
+  altText
+  width
+  height
+}
+</div>
+<p><strong>Used in:</strong> Products, Cart, Orders, Blog Articles</p>
+
+<h2>14.2 ProductVariantFragment</h2>
+<div class="code-block">
+fragment ProductVariantFragment on ProductVariant {
+  id
+  title
+  availableForSale
+  price { amount, currencyCode }
+  compareAtPrice { amount, currencyCode }
+  selectedOptions { name, value }
+  image { ...ImageFragment }
+}
+</div>
+<p><strong>Used in:</strong> Product queries</p>
+
+<h2>14.3 ProductFragment</h2>
+<div class="code-block">
+fragment ProductFragment on Product {
+  id, handle, title, description, descriptionHtml
+  featuredImage { ...ImageFragment }
+  images(first: 10) { edges { node { ...ImageFragment } } }
+  options { id, name, values }
+  variants(first: 100) { edges { node { ...ProductVariantFragment } } }
+  priceRange {
+    minVariantPrice { amount, currencyCode }
+    maxVariantPrice { amount, currencyCode }
+  }
+  tags, vendor
+}
+</div>
+<p><strong>Used in:</strong> getProducts, getProductByHandle</p>
+
+<h2>14.4 CartFragment</h2>
+<div class="code-block">
+fragment CartFragment on Cart {
+  id, checkoutUrl, totalQuantity
+  cost {
+    subtotalAmount { amount, currencyCode }
+    totalAmount { amount, currencyCode }
+    totalTaxAmount { amount, currencyCode }
+  }
+  lines(first: 100) {
+    edges {
+      node {
+        id, quantity
+        merchandise {
+          ... on ProductVariant {
+            id, title
+            product { id, handle, title, featuredImage { ...ImageFragment } }
+            price { amount, currencyCode }
+            selectedOptions { name, value }
+          }
+        }
+      }
+    }
+  }
+}
+</div>
+<p><strong>Used in:</strong> All cart operations (create, get, add, update, remove)</p>
+
+<h2>14.5 AddressFragment</h2>
+<div class="code-block">
+fragment AddressFragment on MailingAddress {
+  id, firstName, lastName, company
+  address1, address2, city, province, provinceCode
+  country, countryCodeV2, zip, phone
+}
+</div>
+<p><strong>Used in:</strong> Customer queries, address operations, order queries</p>
+
+<h2>14.6 CustomerFragment</h2>
+<div class="code-block">
+fragment CustomerFragment on Customer {
+  id, firstName, lastName, email, phone, acceptsMarketing
+  defaultAddress { ...AddressFragment }
+  addresses(first: 10) { edges { node { ...AddressFragment } } }
+  orders(first: 10, sortKey: PROCESSED_AT, reverse: true) {
+    edges {
+      node {
+        id, orderNumber, name, processedAt
+        financialStatus, fulfillmentStatus
+        totalPrice { amount, currencyCode }
+        lineItems(first: 10) { edges { node { title, quantity, variant { ... } } } }
+        shippingAddress { ...AddressFragment }
+      }
+    }
+  }
+}
+</div>
+<p><strong>Used in:</strong> getCustomer, customerCreate, customerUpdate, customerDefaultAddressUpdate</p>
+
+<h2>14.7 ArticleFragment</h2>
+<div class="code-block">
+fragment ArticleFragment on Article {
+  id, handle, title, content, contentHtml
+  excerpt, excerptHtml, publishedAt
+  image { ...ImageFragment }
+  author: authorV2 { name, email }
+  blog { id, handle, title }
+  tags
+  seo { title, description }
+}
+</div>
+<p><strong>Used in:</strong> All blog/article queries</p>
+
+<!-- ==================== 15. ERROR HANDLING ==================== -->
+<h1>15. Error Handling Strategy</h1>
+
+<p>The application implements a multi-layered error handling strategy for Shopify API calls.</p>
+
+<h2>15.1 HTTP-Level Errors</h2>
+<p>If the HTTP response status is not 200 OK, an error is thrown with the status code and status text:</p>
+<div class="code-block">
+"Shopify API error: 429 Too Many Requests"
+"Shopify API error: 500 Internal Server Error"
+</div>
+
+<h2>15.2 GraphQL-Level Errors</h2>
+<p>If the GraphQL response contains an <code>errors</code> array, the first error message is thrown:</p>
+<div class="code-block">
+"Access denied for this field"
+"Variable $first of type Int! was provided invalid value"
+</div>
+
+<h2>15.3 User Errors (Business Logic)</h2>
+<p>Shopify mutations return <code>userErrors</code> or <code>customerUserErrors</code> arrays for business logic errors. These are handled per-operation:</p>
+
+<table>
+  <tr><th>Context</th><th>Error Code</th><th>Handling</th></tr>
+  <tr><td>Registration</td><td>TAKEN</td><td>"Email/phone already in use"</td></tr>
+  <tr><td>Login</td><td>UNIDENTIFIED_CUSTOMER</td><td>"Invalid email or password"</td></tr>
+  <tr><td>Password Reset</td><td>TOKEN_INVALID</td><td>"This reset link is invalid"</td></tr>
+  <tr><td>Password Reset</td><td>TOKEN_EXPIRED</td><td>"This reset link has expired"</td></tr>
+  <tr><td>Profile Update</td><td>TAKEN</td><td>"Email or phone already in use by another account"</td></tr>
+  <tr><td>Profile Update</td><td>INVALID</td><td>"Invalid [field]: [message]"</td></tr>
+  <tr><td>Cart Operations</td><td>Various</td><td>First userError message is thrown</td></tr>
+  <tr><td>Waitlist</td><td>TAKEN</td><td>Treated as success (already subscribed)</td></tr>
+</table>
+
+<h2>15.4 Context-Level Error Handling</h2>
+<p>Each React Context wraps API calls in try/catch blocks and provides error state to components:</p>
+<ul>
+  <li><strong>ProductsContext:</strong> Stores error message in <code>error</code> state</li>
+  <li><strong>CartContext:</strong> Logs errors to console, provides loading states</li>
+  <li><strong>AuthContext:</strong> Throws errors to be caught by the calling component for UI display</li>
+</ul>
+
+<!-- ==================== 16. DATA FLOW DIAGRAMS ==================== -->
+<h1>16. Data Flow Diagrams</h1>
+
+<h2>16.1 Product Data Flow</h2>
+
+<div class="flow-diagram">
+<pre>
+[Shopify Store]                [Frontend Application]
+      |                               |
+      |    getProducts(10)            |
+      | &lt;------- GraphQL Query ------- |  (on app load)
+      |                               |
+      | ------- Product[] ----------> |
+      |                               |
+      |                    [ProductsContext]
+      |                         |
+      |                    Transform products:
+      |                    - Extract tonnage from title
+      |                    - Create DisplayVariant per product
+      |                    - Sort by tonnage (1, 1.5, 2)
+      |                    - Create CombinedProductData
+      |                         |
+      |               +---------+---------+
+      |               |         |         |
+      |           [ProductCard] [ProductPicker] [ProductGrid]
+      |               |         |         |
+      |           Display products with tonnage-based UI
+</pre>
+</div>
+
+<h2>16.2 Authentication Data Flow</h2>
+
+<div class="flow-diagram">
+<pre>
+[User]      [Frontend]          [Shopify API]
+  |             |                      |
+  |-- Login --> |                      |
+  |             |-- customerAccessTokenCreate -->|
+  |             |                      |
+  |             |&lt;-- accessToken --------|
+  |             |                      |
+  |             |-- Store in localStorage  |
+  |             |                      |
+  |             |-- getCustomer(token) ---->|
+  |             |                      |
+  |             |&lt;-- Customer data -------|
+  |             |                      |
+  |             |-- updateCartBuyerIdentity -->|
+  |             |    (link cart to customer)   |
+  |             |                      |
+  |&lt;-- Done --- |                      |
+  |             |                      |
+  |  [Future page load]               |
+  |             |                      |
+  |             |-- Check localStorage     |
+  |             |-- Validate token expiry  |
+  |             |-- getCustomer(token) ---->|
+  |             |&lt;-- Customer data -------|
+  |             |                      |
+</pre>
+</div>
+
+<h2>16.3 Cart &amp; Checkout Flow</h2>
+
+<div class="flow-diagram">
+<pre>
+[User]      [Frontend / CartContext]      [Shopify API]         [Shopify Checkout]
+  |             |                            |                       |
+  |-- Add to   |                            |                       |
+  |   Cart -->  |                            |                       |
+  |             |-- Check localStorage       |                       |
+  |             |   for cart ID              |                       |
+  |             |                            |                       |
+  |    [No cart exists]                      |                       |
+  |             |-- createCart(item) -------->|                       |
+  |             |&lt;-- Cart (with cart ID) ----| |                       |
+  |             |-- Save cart ID to localStorage                     |
+  |             |                            |                       |
+  |    [Cart exists]                         |                       |
+  |             |-- addToCart(cartId, item) ->|                       |
+  |             |&lt;-- Updated Cart -----------|                       |
+  |             |                            |                       |
+  |             |-- Open Cart Drawer         |                       |
+  |             |                            |                       |
+  |-- Checkout  |                            |                       |
+  |   Click --> |                            |                       |
+  |             |-- Redirect to cart.checkoutUrl ------------------>|
+  |             |                            |         [Shopify     |
+  |             |                            |          Hosted      |
+  |             |                            |          Checkout]   |
+</pre>
+</div>
+
+<!-- ==================== 17. DEPLOYMENT ARCHITECTURE ==================== -->
+<h1>17. Deployment Architecture</h1>
+
+<h2>17.1 Build Process</h2>
+
+<table>
+  <tr><th>Aspect</th><th>Details</th></tr>
+  <tr><td><strong>Build Tool</strong></td><td>Next.js 16 with static HTML export (<code>output: "export"</code>)</td></tr>
+  <tr><td><strong>Build Command</strong></td><td><code>yarn build</code></td></tr>
+  <tr><td><strong>Output Directory</strong></td><td><code>out/</code> (static HTML, CSS, JS files)</td></tr>
+  <tr><td><strong>CI/CD</strong></td><td>AWS CodeBuild</td></tr>
+  <tr><td><strong>Package Manager</strong></td><td>Yarn 4.5.1</td></tr>
+</table>
+
+<h2>17.2 Hosting Infrastructure</h2>
+
+<table>
+  <tr><th>Component</th><th>Service</th><th>Purpose</th></tr>
+  <tr><td>Static Site</td><td>AWS S3</td><td>Hosts the built static files</td></tr>
+  <tr><td>CDN</td><td>AWS CloudFront</td><td>Global content delivery with edge caching</td></tr>
+  <tr><td>Static Assets</td><td>AWS S3 (separate bucket)</td><td>Images, videos, fonts</td></tr>
+  <tr><td>Commerce Backend</td><td>Shopify</td><td>Product, order, and customer management</td></tr>
+  <tr><td>Checkout</td><td>Shopify Hosted Checkout</td><td>Secure payment processing</td></tr>
+</table>
+
+<h2>17.3 Deployment Flow</h2>
+
+<ol>
+  <li>Code is pushed to the repository</li>
+  <li>AWS CodeBuild triggers a build using <code>buildspec.yml</code></li>
+  <li><code>yarn build</code> generates static files in the <code>out/</code> directory</li>
+  <li>Static files are synced to the S3 bucket</li>
+  <li><code>index.html</code> is uploaded with <code>no-cache</code> headers to ensure fresh content</li>
+  <li>CloudFront distribution cache is invalidated</li>
+  <li>New version is live globally via CloudFront CDN</li>
+</ol>
+
+<!-- ==================== 18. SECURITY CONSIDERATIONS ==================== -->
+<h1>18. Security Considerations</h1>
+
+<h2>18.1 Storefront Access Token</h2>
+
+<div class="warning-box">
+  <div class="box-title">Important Note</div>
+  <p>The Storefront Access Token is a <strong>public token</strong> designed to be used in client-side code. It provides limited, read-mostly access to store data and is safe to expose in frontend applications. This is by Shopify's design for headless commerce implementations.</p>
+</div>
+
+<h2>18.2 Customer Access Tokens</h2>
+
+<table>
+  <tr><th>Aspect</th><th>Current Implementation</th><th>Details</th></tr>
+  <tr><td>Storage</td><td>localStorage</td><td>Token stored with expiration timestamp</td></tr>
+  <tr><td>Transmission</td><td>HTTPS only</td><td>All Shopify API calls are over HTTPS</td></tr>
+  <tr><td>Expiration</td><td>Checked on app load</td><td>Expired tokens are cleared automatically</td></tr>
+  <tr><td>Logout</td><td>Server-side invalidation</td><td>Token is deleted on Shopify + cleared locally</td></tr>
+</table>
+
+<h2>18.3 API Security</h2>
+
+<ul>
+  <li><strong>HTTPS:</strong> All communication with Shopify is encrypted via HTTPS</li>
+  <li><strong>GraphQL:</strong> Only the fields explicitly requested are returned (no over-fetching)</li>
+  <li><strong>Storefront API Limits:</strong> Shopify enforces rate limits on the Storefront API</li>
+  <li><strong>No Admin Access:</strong> The application cannot modify products, inventory, or backend settings</li>
+  <li><strong>Checkout Security:</strong> Payment processing is handled entirely by Shopify's PCI-compliant checkout</li>
+</ul>
+
+<h2>18.4 Data Privacy</h2>
+
+<ul>
+  <li>Customer passwords are never stored in the application - only access tokens</li>
+  <li>Password recovery is handled by Shopify's email system</li>
+  <li>Customer data is fetched on-demand and stored only in React state (memory)</li>
+  <li>Only the cart ID and auth token are persisted in localStorage</li>
+</ul>
+
+<!-- ==================== 19. COMPLETE API REFERENCE ==================== -->
+<h1>19. Complete API Reference Summary</h1>
+
+<p>Below is a comprehensive reference table of all Shopify API operations implemented in the application:</p>
+
+<h2>19.1 Product Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>GraphQL Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>getProducts(first)</code></td>
+    <td>Query</td>
+    <td><code>products(first: $first)</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>getProductByHandle(handle)</code></td>
+    <td>Query</td>
+    <td><code>product(handle: $handle)</code></td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h2>19.2 Cart Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>GraphQL Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><code>createCart(lines)</code></td>
+    <td>Mutation</td>
+    <td><code>cartCreate</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><code>getCart(cartId)</code></td>
+    <td>Query</td>
+    <td><code>cart(id: $cartId)</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><code>addToCart(cartId, lines)</code></td>
+    <td>Mutation</td>
+    <td><code>cartLinesAdd</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><code>updateCartLines(cartId, lines)</code></td>
+    <td>Mutation</td>
+    <td><code>cartLinesUpdate</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><code>removeFromCart(cartId, lineIds)</code></td>
+    <td>Mutation</td>
+    <td><code>cartLinesRemove</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><code>updateCartBuyerIdentity(cartId, token)</code></td>
+    <td>Mutation</td>
+    <td><code>cartBuyerIdentityUpdate</code></td>
+    <td>Customer Token</td>
+  </tr>
+</table>
+
+<h2>19.3 Customer Authentication Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>GraphQL Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><code>customerCreate(email, password, ...)</code></td>
+    <td>Mutation</td>
+    <td><code>customerCreate</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><code>customerAccessTokenCreate(email, password)</code></td>
+    <td>Mutation</td>
+    <td><code>customerAccessTokenCreate</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>11</td>
+    <td><code>customerAccessTokenDelete(token)</code></td>
+    <td>Mutation</td>
+    <td><code>customerAccessTokenDelete</code></td>
+    <td>Customer Token</td>
+  </tr>
+  <tr>
+    <td>12</td>
+    <td><code>customerRecover(email)</code></td>
+    <td>Mutation</td>
+    <td><code>customerRecover</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>13</td>
+    <td><code>customerResetByUrl(resetUrl, password)</code></td>
+    <td>Mutation</td>
+    <td><code>customerResetByUrl</code></td>
+    <td>No (uses reset URL token)</td>
+  </tr>
+</table>
+
+<h2>19.4 Customer Profile Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>GraphQL Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>14</td>
+    <td><code>getCustomer(token)</code></td>
+    <td>Query</td>
+    <td><code>customer(customerAccessToken)</code></td>
+    <td>Customer Token</td>
+  </tr>
+  <tr>
+    <td>15</td>
+    <td><code>customerUpdate(token, data)</code></td>
+    <td>Mutation</td>
+    <td><code>customerUpdate</code></td>
+    <td>Customer Token</td>
+  </tr>
+  <tr>
+    <td>16</td>
+    <td><code>getCustomerOrders(token, first)</code></td>
+    <td>Query</td>
+    <td><code>customer.orders</code></td>
+    <td>Customer Token</td>
+  </tr>
+</table>
+
+<h2>19.5 Address Management Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>GraphQL Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>17</td>
+    <td><code>customerAddressCreate(token, address)</code></td>
+    <td>Mutation</td>
+    <td><code>customerAddressCreate</code></td>
+    <td>Customer Token</td>
+  </tr>
+  <tr>
+    <td>18</td>
+    <td><code>customerAddressUpdate(token, id, address)</code></td>
+    <td>Mutation</td>
+    <td><code>customerAddressUpdate</code></td>
+    <td>Customer Token</td>
+  </tr>
+  <tr>
+    <td>19</td>
+    <td><code>customerAddressDelete(token, id)</code></td>
+    <td>Mutation</td>
+    <td><code>customerAddressDelete</code></td>
+    <td>Customer Token</td>
+  </tr>
+  <tr>
+    <td>20</td>
+    <td><code>customerDefaultAddressUpdate(token, id)</code></td>
+    <td>Mutation</td>
+    <td><code>customerDefaultAddressUpdate</code></td>
+    <td>Customer Token</td>
+  </tr>
+</table>
+
+<h2>19.6 Blog &amp; Content Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>GraphQL Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>21</td>
+    <td><code>getBlogs(first)</code></td>
+    <td>Query</td>
+    <td><code>blogs(first: $first)</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>22</td>
+    <td><code>getBlogByHandle(handle)</code></td>
+    <td>Query</td>
+    <td><code>blog(handle: $handle)</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>23</td>
+    <td><code>getArticles(first, after, query)</code></td>
+    <td>Query</td>
+    <td><code>articles(first, after, query)</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>24</td>
+    <td><code>getArticleByHandle(blogHandle, articleHandle)</code></td>
+    <td>Query</td>
+    <td><code>blog.articleByHandle</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>25</td>
+    <td><code>getArticlesByTag(tag, first)</code></td>
+    <td>Query</td>
+    <td><code>articles(query: "tag:...")</code></td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h2>19.7 Other Operations</h2>
+
+<table>
+  <tr>
+    <th>#</th>
+    <th>Function</th>
+    <th>Type</th>
+    <th>Operation</th>
+    <th>Auth Required</th>
+  </tr>
+  <tr>
+    <td>26</td>
+    <td><code>subscribeToWaitlist(phone)</code></td>
+    <td>Mutation</td>
+    <td><code>customerCreate</code> (Shopify GraphQL)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>27</td>
+    <td><code>submitContactForm(data)</code></td>
+    <td>HTTP POST</td>
+    <td>Google Sheets Webhook (not Shopify)</td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h2>19.8 Utility Functions</h2>
+
+<table>
+  <tr>
+    <th>Function</th>
+    <th>Purpose</th>
+    <th>Details</th>
+  </tr>
+  <tr>
+    <td><code>formatPrice(amount, currencyCode)</code></td>
+    <td>Format price for display</td>
+    <td>Uses <code>Intl.NumberFormat</code> for Indian Rupee formatting</td>
+  </tr>
+  <tr>
+    <td><code>calculateReadTime(content)</code></td>
+    <td>Estimate article read time</td>
+    <td>Based on 200 words per minute</td>
+  </tr>
+  <tr>
+    <td><code>formatArticleDate(dateString)</code></td>
+    <td>Format date for display</td>
+    <td>Output format: "9 Feb 2026"</td>
+  </tr>
+</table>
+
+<br><br>
+
+<div class="success-box">
+  <div class="box-title">Summary</div>
+  <p>The Optimist application implements a comprehensive headless commerce solution with <strong>27 API operations</strong> covering products, cart, authentication, customer management, addresses, orders, blogs, and waitlist functionality. The architecture follows modern best practices with TypeScript type safety, React Context state management, and a clean separation between the API layer and UI components. Shopify serves as the single source of truth for all commerce data, while the frontend provides a fully customized user experience.</p>
+</div>
+
+<br>
+<hr>
+<p style="text-align: center; color: #999; font-size: 9pt;">
+  <em>Optimist - Shopify API Integration Documentation v1.0 | Confidential | February 2026</em>
+</p>
+
+</body>
+</html>

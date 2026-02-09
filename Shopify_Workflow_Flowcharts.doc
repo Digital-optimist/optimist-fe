@@ -1,0 +1,1558 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Optimist - Functional Workflow Flowcharts</title>
+<style>
+  body {
+    font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #333333;
+    margin: 60px 72px;
+  }
+
+  .cover-page {
+    text-align: center;
+    padding-top: 180px;
+    page-break-after: always;
+  }
+  .cover-page h1 {
+    font-size: 28pt;
+    color: #1a1a1a;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .cover-page .subtitle {
+    font-size: 16pt;
+    color: #555555;
+    margin-bottom: 40px;
+  }
+  .cover-page .meta {
+    font-size: 11pt;
+    color: #777777;
+    margin-top: 60px;
+    line-height: 2;
+  }
+  .cover-page .divider {
+    width: 100px;
+    height: 3px;
+    background-color: #2563eb;
+    margin: 30px auto;
+  }
+
+  h1 {
+    font-size: 20pt;
+    color: #1a1a1a;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 8px;
+    margin-top: 40px;
+    margin-bottom: 18px;
+    page-break-before: always;
+  }
+  h1:first-of-type { page-break-before: auto; }
+  h2 {
+    font-size: 14pt;
+    color: #1e40af;
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 12pt;
+    color: #1e3a5f;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+
+  p { margin: 6px 0; }
+  ul { margin: 6px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9.5pt;
+  }
+  th {
+    background-color: #1e40af;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #1e40af;
+  }
+  td {
+    padding: 7px 12px;
+    border: 1px solid #d1d5db;
+    vertical-align: top;
+  }
+  tr:nth-child(even) { background-color: #f8fafc; }
+
+  code {
+    background-color: #f1f5f9;
+    color: #dc2626;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9pt;
+  }
+
+  .info-box {
+    background-color: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .note-box {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .box-title { font-weight: bold; margin-bottom: 4px; }
+
+  /* ===== FLOWCHART STYLES ===== */
+  .flowchart {
+    margin: 20px auto;
+    max-width: 700px;
+  }
+
+  .fc-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    position: relative;
+  }
+
+  /* Start / End (rounded pill) */
+  .fc-start, .fc-end {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: white;
+    padding: 10px 32px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 10pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 180px;
+  }
+  .fc-end {
+    background: linear-gradient(135deg, #059669, #10b981);
+  }
+
+  /* Process box */
+  .fc-process {
+    background-color: #dbeafe;
+    border: 2px solid #3b82f6;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 9.5pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 240px;
+    max-width: 380px;
+  }
+
+  /* API call box */
+  .fc-api {
+    background-color: #fef3c7;
+    border: 2px solid #f59e0b;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 9.5pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 240px;
+    max-width: 380px;
+  }
+  .fc-api-label {
+    font-size: 7.5pt;
+    color: #92400e;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  /* Decision diamond (displayed as a box with diamond-like styling) */
+  .fc-decision {
+    background-color: #fce7f3;
+    border: 2px solid #ec4899;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 9.5pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 200px;
+    font-weight: bold;
+    transform: rotate(0deg);
+  }
+  .fc-decision::before {
+    content: "◆ ";
+    color: #ec4899;
+  }
+
+  /* Data store */
+  .fc-store {
+    background-color: #ecfdf5;
+    border: 2px solid #10b981;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 9.5pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 240px;
+  }
+  .fc-store-label {
+    font-size: 7.5pt;
+    color: #065f46;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  /* Error box */
+  .fc-error {
+    background-color: #fef2f2;
+    border: 2px solid #ef4444;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 9.5pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 180px;
+    color: #991b1b;
+  }
+
+  /* External system */
+  .fc-external {
+    background-color: #f3e8ff;
+    border: 2px solid #8b5cf6;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 9.5pt;
+    text-align: center;
+    display: inline-block;
+    min-width: 240px;
+  }
+  .fc-external-label {
+    font-size: 7.5pt;
+    color: #5b21b6;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  /* Arrow */
+  .fc-arrow {
+    text-align: center;
+    color: #6b7280;
+    font-size: 16pt;
+    margin: 2px 0;
+    line-height: 1;
+  }
+  .fc-arrow-label {
+    font-size: 8pt;
+    color: #6b7280;
+    font-style: italic;
+  }
+
+  /* Branch container for YES/NO */
+  .fc-branch {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 4px 0;
+    align-items: flex-start;
+  }
+  .fc-branch-item {
+    text-align: center;
+    flex: 1;
+    max-width: 280px;
+  }
+  .fc-branch-label {
+    font-size: 9pt;
+    font-weight: bold;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .fc-branch-label-yes { color: #16a34a; }
+  .fc-branch-label-no { color: #dc2626; }
+
+  /* Merge arrow */
+  .fc-merge {
+    text-align: center;
+    margin: 2px 0;
+  }
+  .fc-merge-line {
+    width: 60%;
+    border-top: 2px solid #6b7280;
+    margin: 0 auto;
+  }
+
+  /* Section divider */
+  .fc-section-divider {
+    border: none;
+    border-top: 2px dashed #d1d5db;
+    margin: 14px 0;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 16px 0;
+    padding: 14px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9pt;
+  }
+  .legend-box {
+    width: 24px;
+    height: 16px;
+    border-radius: 4px;
+    border: 2px solid;
+    display: inline-block;
+  }
+
+  .page-break { page-break-before: always; }
+
+  /* Workflow description */
+  .workflow-desc {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 10pt;
+  }
+  .workflow-desc strong { color: #1e40af; }
+
+  .toc {
+    page-break-after: always;
+  }
+  .toc-item {
+    padding: 6px 0;
+    border-bottom: 1px dotted #cccccc;
+    font-size: 11pt;
+  }
+  .toc-number {
+    font-weight: bold;
+    color: #2563eb;
+    margin-right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover-page">
+  <h1>OPTIMIST</h1>
+  <div class="subtitle">Functional Workflow Flowcharts</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <strong>Document Type:</strong> Workflow &amp; Flowchart Reference<br>
+    <strong>Version:</strong> 1.0<br>
+    <strong>Date:</strong> February 9, 2026<br>
+    <strong>Total Workflows:</strong> 15 Flowcharts<br>
+    <strong>Classification:</strong> Confidential
+  </div>
+</div>
+
+<!-- ==================== TABLE OF CONTENTS ==================== -->
+<div class="toc">
+  <h1 style="page-break-before:auto;">Table of Contents</h1>
+  <div class="toc-item"><span class="toc-number">1.</span> Flowchart Legend</div>
+  <div class="toc-item"><span class="toc-number">2.</span> Application Startup Flow</div>
+  <div class="toc-item"><span class="toc-number">3.</span> Overall API Call Architecture</div>
+  <div class="toc-item"><span class="toc-number">4.</span> Product Loading Workflow</div>
+  <div class="toc-item"><span class="toc-number">5.</span> Add to Cart Workflow</div>
+  <div class="toc-item"><span class="toc-number">6.</span> Update Cart Quantity Workflow</div>
+  <div class="toc-item"><span class="toc-number">7.</span> Remove from Cart Workflow</div>
+  <div class="toc-item"><span class="toc-number">8.</span> Checkout Workflow</div>
+  <div class="toc-item"><span class="toc-number">9.</span> Customer Registration Workflow</div>
+  <div class="toc-item"><span class="toc-number">10.</span> Customer Login Workflow</div>
+  <div class="toc-item"><span class="toc-number">11.</span> Customer Logout Workflow</div>
+  <div class="toc-item"><span class="toc-number">12.</span> Password Recovery Workflow</div>
+  <div class="toc-item"><span class="toc-number">13.</span> Customer Profile Update Workflow</div>
+  <div class="toc-item"><span class="toc-number">14.</span> Address Management Workflow</div>
+  <div class="toc-item"><span class="toc-number">15.</span> Blog / Article Loading Workflow</div>
+  <div class="toc-item"><span class="toc-number">16.</span> Waitlist Subscription Workflow</div>
+  <div class="toc-item"><span class="toc-number">17.</span> Contact Form Submission Workflow</div>
+</div>
+
+
+<!-- ==================== 1. LEGEND ==================== -->
+<h1 style="page-break-before:auto;">1. Flowchart Legend</h1>
+
+<p>All flowcharts in this document use the following color-coded elements:</p>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-box" style="background-color:#dbeafe; border-color:#3b82f6;"></div>
+    <span><strong>Process / Action</strong> &mdash; A step the application performs</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background-color:#fef3c7; border-color:#f59e0b;"></div>
+    <span><strong>API Call</strong> &mdash; A call to Shopify's GraphQL API</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background-color:#fce7f3; border-color:#ec4899;"></div>
+    <span><strong>Decision</strong> &mdash; A conditional check (Yes / No)</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background-color:#ecfdf5; border-color:#10b981;"></div>
+    <span><strong>Data Store</strong> &mdash; localStorage or React state update</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background-color:#f3e8ff; border-color:#8b5cf6;"></div>
+    <span><strong>External System</strong> &mdash; Shopify checkout, Google Sheets, etc.</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background-color:#fef2f2; border-color:#ef4444;"></div>
+    <span><strong>Error</strong> &mdash; Error handling or failure path</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:linear-gradient(135deg,#1e40af,#3b82f6); border-color:#1e40af;"></div>
+    <span><strong>Start</strong> &mdash; Entry point of the workflow</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:linear-gradient(135deg,#059669,#10b981); border-color:#059669;"></div>
+    <span><strong>End</strong> &mdash; Workflow completion</span>
+  </div>
+</div>
+
+
+<!-- ==================== 2. APPLICATION STARTUP ==================== -->
+<h1>2. Application Startup Flow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User opens the website or refreshes the page.<br>
+  <strong>Purpose:</strong> Initialize all providers, restore session from localStorage, and load product data.<br>
+  <strong>APIs Called:</strong> getProducts, getCart (conditional), getCustomer (conditional), updateCartBuyerIdentity (conditional)
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Opens Website</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">ShopifyProvider initializes<br><span style="font-size:8pt;color:#6b7280;">(SDK connection configured)</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">AuthProvider initializes</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Auth token exists in localStorage?</div></div>
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-decision">Token expired?</div>
+      <div class="fc-branch" style="gap:20px;">
+        <div class="fc-branch-item">
+          <div class="fc-branch-label fc-branch-label-no">&#10007; NO (Valid)</div>
+          <div class="fc-arrow">&#9660;</div>
+          <div class="fc-api"><div class="fc-api-label">API Call</div>getCustomer(token)</div>
+          <div class="fc-arrow">&#9660;</div>
+          <div class="fc-store"><div class="fc-store-label">State Update</div>Set customer data<br>isAuthenticated = true</div>
+        </div>
+        <div class="fc-branch-item">
+          <div class="fc-branch-label fc-branch-label-yes">&#10003; YES (Expired)</div>
+          <div class="fc-arrow">&#9660;</div>
+          <div class="fc-store"><div class="fc-store-label">Clear</div>Remove token from<br>localStorage</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">User remains as guest</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">CartProvider initializes</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Cart ID exists in localStorage?</div></div>
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-api"><div class="fc-api-label">API Call</div>getCart(cartId)</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-decision">Cart returned?</div>
+      <div class="fc-branch" style="gap:20px;">
+        <div class="fc-branch-item">
+          <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+          <div class="fc-arrow">&#9660;</div>
+          <div class="fc-store"><div class="fc-store-label">State</div>Load cart into state</div>
+        </div>
+        <div class="fc-branch-item">
+          <div class="fc-branch-label fc-branch-label-no">&#10007; NULL (Expired)</div>
+          <div class="fc-arrow">&#9660;</div>
+          <div class="fc-store"><div class="fc-store-label">Clear</div>Remove cart ID from<br>localStorage</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Cart remains empty</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">User logged in AND cart exists?</div></div>
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-api"><div class="fc-api-label">API Call</div>updateCartBuyerIdentity<br>(cartId, accessToken)</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Skip</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">ProductsProvider initializes</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>getProducts(10)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Transform products into tonnage-based variants<br><span style="font-size:8pt;color:#6b7280;">Extract tonnage from title &rarr; Create DisplayVariants &rarr; Sort by tonnage</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">State Update</div>Products loaded into ProductsContext</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-end">App Ready &mdash; UI Renders</div></div>
+
+</div>
+
+
+<!-- ==================== 3. OVERALL API CALL ARCHITECTURE ==================== -->
+<h1>3. Overall API Call Architecture</h1>
+
+<div class="workflow-desc">
+  <strong>Purpose:</strong> Shows how every API call flows through the application layers.<br>
+  <strong>Pattern:</strong> Component &rarr; Context &rarr; shopify.ts &rarr; shopifyFetch &rarr; Shopify API
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Interaction (Click / Page Load)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process"><strong>UI Component</strong><br><span style="font-size:8pt;color:#6b7280;">ProductCard, CartDrawer, LoginForm, AccountPage, etc.</span></div></div>
+  <div class="fc-arrow">&#9660;<br><span class="fc-arrow-label">calls hook: useCart(), useAuth(), useProducts()</span></div>
+
+  <div class="fc-row"><div class="fc-process"><strong>React Context Provider</strong><br><span style="font-size:8pt;color:#6b7280;">AuthContext, CartContext, ProductsContext, WaitlistContext</span><br>Manages state + business logic</div></div>
+  <div class="fc-arrow">&#9660;<br><span class="fc-arrow-label">calls API function</span></div>
+
+  <div class="fc-row"><div class="fc-process"><strong>API Function</strong> (in src/lib/shopify.ts)<br><span style="font-size:8pt;color:#6b7280;">getProducts(), addToCart(), customerCreate(), etc.</span><br>Builds GraphQL query + variables</div></div>
+  <div class="fc-arrow">&#9660;<br><span class="fc-arrow-label">passes query to shopifyFetch()</span></div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">Core Function</div><strong>shopifyFetch()</strong><br>Sends HTTP POST with auth headers<br>Parses response &amp; handles errors</div></div>
+  <div class="fc-arrow">&#9660;<br><span class="fc-arrow-label">HTTPS POST (GraphQL)</span></div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">External</div><strong>Shopify Storefront API</strong><br>https://octolife-3.myshopify.com/api/2025-01/graphql.json</div></div>
+  <div class="fc-arrow">&#9660;<br><span class="fc-arrow-label">JSON response</span></div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">Response Processing</div>shopifyFetch() checks:<br>1. HTTP status OK? 2. GraphQL errors? 3. User errors?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">State Update</div>Context updates React state<br>UI re-renders with new data</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-end">User Sees Updated UI</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Error thrown with message<br>Context catches the error</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show error toast / message to user</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 4. PRODUCT LOADING ==================== -->
+<h1>4. Product Loading Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> App starts / Products page loads.<br>
+  <strong>APIs Called:</strong> <code>getProducts(10)</code><br>
+  <strong>Context:</strong> ProductsContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">App Load / Products Page Visit</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">ProductsProvider mounts<br><span style="font-size:8pt;color:#6b7280;">Sets isLoading = true</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>getProducts(10)<br><span style="font-size:8pt;">Query: products(first: 10) { ...ProductFragment }</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">API Response OK?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process"><strong>Transform Each Product:</strong><br>1. Extract tonnage from title<br>2. Create DisplayVariant<br>3. Map images &amp; prices<br>4. Set room size subtitle</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process"><strong>Create CombinedProductData:</strong><br>1. Collect all variants<br>2. Sort by tonnage (1, 1.5, 2)<br>3. Merge all images<br>4. Calculate price range</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">State Update</div>products = transformedProducts<br>combinedProduct = combined data<br>isLoading = false</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-end">Products Displayed on UI</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Log error to console</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">State</div>error = error message<br>isLoading = false</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show error state on UI</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 5. ADD TO CART ==================== -->
+<h1>5. Add to Cart Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User clicks "Add to Cart" button.<br>
+  <strong>APIs Called:</strong> <code>createCart()</code> (first time) or <code>addToCart()</code> (existing cart)<br>
+  <strong>Context:</strong> CartContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Add to Cart"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">CartContext.addToCart(variantId, quantity) called<br><span style="font-size:8pt;color:#6b7280;">Sets isLoading = true</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Cart ID exists in localStorage?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO (First time)</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-api"><div class="fc-api-label">API Call #1</div>createCart([{ merchandiseId, quantity }])<br><span style="font-size:8pt;">Creates cart with the item already in it</span></div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">localStorage</div>Save cart ID to<br>"optimist_cart_id"</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES (Cart exists)</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-api"><div class="fc-api-label">API Call #2</div>addToCart(cartId,<br>[{ merchandiseId, quantity }])<br><span style="font-size:8pt;">Adds item to existing cart</span></div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">API Response OK?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">State Update</div>cart = updated cart data<br>totalQuantity = cart.totalQuantity<br>isLoading = false</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Open Cart Drawer<br><span style="font-size:8pt;color:#6b7280;">isCartOpen = true</span></div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-end">Cart Drawer Shows Updated Items</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error toast to user<br>isLoading = false</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 6. UPDATE CART QUANTITY ==================== -->
+<h1>6. Update Cart Quantity Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User clicks +/- quantity buttons in cart.<br>
+  <strong>APIs Called:</strong> <code>updateCartLines()</code><br>
+  <strong>Context:</strong> CartContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks + or - on Cart Item</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">CartContext.updateQuantity(lineId, newQuantity) called</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">New quantity = 0?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES (Quantity = 0)</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-api"><div class="fc-api-label">API Call</div>removeFromCart(cartId, [lineId])<br><span style="font-size:8pt;">Removes item entirely</span></div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO (Quantity &gt; 0)</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-api"><div class="fc-api-label">API Call</div>updateCartLines(cartId,<br>[{ id: lineId, quantity: newQty }])</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">State Update</div>cart = updated cart from Shopify<br>totalQuantity recalculated</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-end">Cart UI Refreshed with New Quantities &amp; Totals</div></div>
+
+</div>
+
+
+<!-- ==================== 7. REMOVE FROM CART ==================== -->
+<h1>7. Remove from Cart Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User clicks "Remove" button on a cart item.<br>
+  <strong>APIs Called:</strong> <code>removeFromCart()</code><br>
+  <strong>Context:</strong> CartContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Remove" on Cart Item</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">CartContext.removeFromCart(lineId) called</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>removeFromCart(cartId, [lineId])<br><span style="font-size:8pt;">Mutation: cartLinesRemove</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">State Update</div>cart = updated cart (without removed item)<br>totalQuantity recalculated</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Cart now empty?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show "Your cart is empty" message</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show remaining items</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Cart UI Updated</div></div>
+
+</div>
+
+
+<!-- ==================== 8. CHECKOUT ==================== -->
+<h1>8. Checkout Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User clicks "Checkout" button.<br>
+  <strong>APIs Called:</strong> None (uses checkoutUrl already provided by Shopify)<br>
+  <strong>Key Point:</strong> Payment is handled entirely by Shopify's hosted checkout.
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Checkout"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Read cart.checkoutUrl from Cart state<br><span style="font-size:8pt;color:#6b7280;">This URL was provided when cart was created/updated</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Browser redirects to Shopify checkout URL<br><span style="font-size:8pt;color:#6b7280;">https://octolife-3.myshopify.com/cart/c/...</span></div></div>
+  <div class="fc-arrow">&#9660;<br><span class="fc-arrow-label">User leaves our website</span></div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">Shopify Hosted Checkout</div><strong>Step 1: Contact Information</strong><br>Email, phone (pre-filled if logged in)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">Shopify Hosted Checkout</div><strong>Step 2: Shipping Address</strong><br>Pre-filled from saved addresses if logged in</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">Shopify Hosted Checkout</div><strong>Step 3: Shipping Method</strong><br>Select delivery option</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">Shopify Hosted Checkout</div><strong>Step 4: Payment</strong><br>Credit card, UPI, COD, etc.<br><span style="font-size:8pt;">PCI-compliant &amp; secure</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">Shopify</div><strong>Order Created</strong><br>Order appears in Shopify Admin<br>Confirmation email sent to customer</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-end">Customer Can View Order<br>on Account &rarr; Orders Page</div></div>
+
+</div>
+
+<div class="note-box">
+  <div class="box-title">Important</div>
+  <p>Our website never handles credit card numbers or payment data. All payment processing is done by Shopify's PCI-compliant checkout. This is the most secure approach for e-commerce.</p>
+</div>
+
+
+<!-- ==================== 9. CUSTOMER REGISTRATION ==================== -->
+<h1>9. Customer Registration Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User fills the sign-up form and clicks "Create Account".<br>
+  <strong>APIs Called:</strong> <code>customerCreate()</code> &rarr; <code>customerAccessTokenCreate()</code> &rarr; <code>getCustomer()</code> &rarr; <code>updateCartBuyerIdentity()</code><br>
+  <strong>Context:</strong> AuthContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Submits Registration Form</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">AuthContext.register(email, password, firstName, lastName)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call #1</div>customerCreate(email, password, firstName, lastName)<br><span style="font-size:8pt;">Mutation: customerCreate</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Customer created successfully?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error:<br>"Email already taken"<br>"Password too short"<br>etc.</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-api"><div class="fc-api-label">API Call #2 (Auto)</div>customerAccessTokenCreate(email, password)<br><span style="font-size:8pt;">Auto-login after registration</span></div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-store"><div class="fc-store-label">localStorage</div>Store accessToken + expiresAt<br>in "optimist_auth"</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-api"><div class="fc-api-label">API Call #3</div>getCustomer(accessToken)</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-store"><div class="fc-store-label">State Update</div>customer = customer data<br>isAuthenticated = true</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-decision">Cart exists?</div>
+      <div class="fc-arrow">&#9660; <span class="fc-arrow-label">If yes</span></div>
+
+      <div class="fc-api"><div class="fc-api-label">API Call #4</div>updateCartBuyerIdentity<br>(cartId, accessToken)</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-end">Redirect to Account Page<br>User is Logged In</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 10. CUSTOMER LOGIN ==================== -->
+<h1>10. Customer Login Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User submits email + password on Login page.<br>
+  <strong>APIs Called:</strong> <code>customerAccessTokenCreate()</code> &rarr; <code>getCustomer()</code> &rarr; <code>updateCartBuyerIdentity()</code><br>
+  <strong>Context:</strong> AuthContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Submits Login Form</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">AuthContext.login(email, password)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call #1</div>customerAccessTokenCreate(email, password)<br><span style="font-size:8pt;">Mutation: customerAccessTokenCreate</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Credentials valid?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; INVALID</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error:<br>"Invalid email or password"</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; VALID</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-store"><div class="fc-store-label">localStorage</div>Store { accessToken, expiresAt }<br>in "optimist_auth"</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-api"><div class="fc-api-label">API Call #2</div>getCustomer(accessToken)<br><span style="font-size:8pt;">Fetch full profile, addresses, orders</span></div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-store"><div class="fc-store-label">State Update</div>customer = full customer data<br>isAuthenticated = true</div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-decision">Cart exists in state?</div>
+      <div class="fc-arrow">&#9660; <span class="fc-arrow-label">If yes</span></div>
+
+      <div class="fc-api"><div class="fc-api-label">API Call #3</div>updateCartBuyerIdentity(cartId, token)<br><span style="font-size:8pt;">Link cart to customer for checkout</span></div>
+      <div class="fc-arrow">&#9660;</div>
+
+      <div class="fc-end">User Logged In &mdash; Redirect to Account</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 11. CUSTOMER LOGOUT ==================== -->
+<h1>11. Customer Logout Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User clicks "Logout".<br>
+  <strong>APIs Called:</strong> <code>customerAccessTokenDelete()</code><br>
+  <strong>Context:</strong> AuthContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Logout"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">AuthContext.logout() called</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerAccessTokenDelete(accessToken)<br><span style="font-size:8pt;">Invalidates token on Shopify server</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">localStorage</div>Remove "optimist_auth" from localStorage</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">State Update</div>customer = null<br>accessToken = null<br>isAuthenticated = false</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Redirect to Home Page</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-end">User is Logged Out<br>Cart remains but unlinked from customer</div></div>
+
+</div>
+
+
+<!-- ==================== 12. PASSWORD RECOVERY ==================== -->
+<h1>12. Password Recovery Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User clicks "Forgot Password" and submits email.<br>
+  <strong>APIs Called:</strong> <code>customerRecover()</code> &rarr; <code>customerResetByUrl()</code><br>
+  <strong>Two-step process:</strong> Request reset email &rarr; Reset password via link
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Forgot Password"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Navigate to /forgot-password page</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User enters email and clicks "Send Reset Link"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call #1</div>customerRecover(email)<br><span style="font-size:8pt;">Mutation: customerRecover</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Email exists in Shopify?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error message</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-external"><div class="fc-external-label">Shopify Email Service</div>Shopify sends password reset email<br>with unique reset URL</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show success: "Check your email"</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow"><br>&#9660; <span class="fc-arrow-label">User clicks link in email</span></div>
+
+  <div class="fc-row"><div class="fc-process">User arrives at /reset-password page<br><span style="font-size:8pt;color:#6b7280;">Reset URL token extracted from link</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User enters new password and confirms</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call #2</div>customerResetByUrl(resetUrl, newPassword)<br><span style="font-size:8pt;">Mutation: customerResetByUrl</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Reset token valid?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; INVALID / EXPIRED</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">"This reset link is invalid/expired.<br>Please request a new one."</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; VALID</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Password updated on Shopify</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">Auto Login</div>New accessToken returned<br>Stored in localStorage</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-end">User Logged In with New Password</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 13. PROFILE UPDATE ==================== -->
+<h1>13. Customer Profile Update Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User edits profile on Account page.<br>
+  <strong>APIs Called:</strong> <code>customerUpdate()</code><br>
+  <strong>Context:</strong> AuthContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Edits Profile on Account Page</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User changes name / email / phone / marketing preference</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User clicks "Save Changes"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerUpdate(accessToken, { firstName, lastName, email, phone })<br><span style="font-size:8pt;">Mutation: customerUpdate &mdash; Only changed fields sent</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Update successful?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error:<br>"Email/phone already in use"<br>"Invalid input"</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-store"><div class="fc-store-label">State Update</div>customer = updated customer data</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show success toast: "Profile updated"</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-end">Account Page Shows Updated Info</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ==================== 14. ADDRESS MANAGEMENT ==================== -->
+<h1>14. Address Management Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User manages addresses on Account &rarr; Addresses page.<br>
+  <strong>APIs Called:</strong> <code>customerAddressCreate()</code>, <code>customerAddressUpdate()</code>, <code>customerAddressDelete()</code>, <code>customerDefaultAddressUpdate()</code><br>
+  <strong>All operations require:</strong> Customer Access Token
+</div>
+
+<h3>14a. Add New Address</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Add New Address"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">Address form appears<br><span style="font-size:8pt;color:#6b7280;">firstName, lastName, address1, address2, city, province, country, zip, phone</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">User fills form and clicks "Save"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerAddressCreate(token, addressData)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">State</div>Refresh customer data with new address</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">New Address Appears in List</div></div>
+
+</div>
+
+<h3>14b. Edit Existing Address</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Edit" on an Address</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">Address form pre-filled with current data</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">User modifies fields and clicks "Save"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerAddressUpdate(token, addressId, changedFields)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Address Updated in List</div></div>
+
+</div>
+
+<h3>14c. Delete Address</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Delete" on an Address</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">Confirmation prompt shown</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerAddressDelete(token, addressId)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Address Removed from List</div></div>
+
+</div>
+
+<h3>14d. Set Default Address</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Set as Default"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerDefaultAddressUpdate(token, addressId)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-store"><div class="fc-store-label">State</div>customer.defaultAddress updated</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Address Marked as Default<br><span style="font-size:8pt;color:#6b7280;">Pre-selected during checkout</span></div></div>
+
+</div>
+
+
+<!-- ==================== 15. BLOG / ARTICLES ==================== -->
+<h1>15. Blog / Article Loading Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User visits blog pages.<br>
+  <strong>APIs Called:</strong> <code>getArticles()</code>, <code>getArticleByHandle()</code>, <code>getArticlesByTag()</code><br>
+  <strong>Features:</strong> Pagination, tag-based filtering
+</div>
+
+<h3>15a. Blog Listing Page</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Visits /blogs</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>getArticles(first: 20)<br><span style="font-size:8pt;">Sorted by PUBLISHED_AT, newest first</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Display articles in grid<br><span style="font-size:8pt;color:#6b7280;">Featured article + article cards with images, titles, excerpts</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Has more pages? (pageInfo.hasNextPage)</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show "Load More" button</div>
+      <div class="fc-arrow">&#9660;<span class="fc-arrow-label"> User clicks</span></div>
+      <div class="fc-api"><div class="fc-api-label">API Call</div>getArticles(20, endCursor)<br><span style="font-size:8pt;">Cursor-based pagination</span></div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Append new articles to list</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">All articles loaded</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Blog Page Fully Loaded</div></div>
+
+</div>
+
+<h3>15b. Article Detail Page</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks on Article Card</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">Navigate to /blogs/[blogHandle]/[articleHandle]</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>getArticleByHandle(blogHandle, articleHandle)<br><span style="font-size:8pt;">Fetches full HTML content, author, image, SEO, tags</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">Calculate read time: calculateReadTime(content)<br><span style="font-size:8pt;color:#6b7280;">Based on 200 words per minute</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Article Displayed with Full Content</div></div>
+
+</div>
+
+<h3>15c. Filter Articles by Tag</h3>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks a Tag Filter</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>getArticlesByTag(tag, 20)<br><span style="font-size:8pt;">Internally: getArticles(20, null, "tag:sustainability")</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-process">Display filtered articles</div></div>
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Filtered Blog View</div></div>
+
+</div>
+
+
+<!-- ==================== 16. WAITLIST ==================== -->
+<h1>16. Waitlist Subscription Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User enters phone number in waitlist modal.<br>
+  <strong>APIs Called:</strong> <code>subscribeToWaitlist()</code> (uses customerCreate internally)<br>
+  <strong>Context:</strong> WaitlistContext
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Clicks "Join Waitlist"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">Waitlist Modal opens<br><span style="font-size:8pt;color:#6b7280;">WaitlistContext.openModal()</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User enters phone number and submits</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process"><strong>Phone Formatting:</strong><br>
+    "9876543210" &rarr; "+919876543210"<br>
+    <span style="font-size:8pt;color:#6b7280;">Clean digits, add +91 prefix for India</span>
+  </div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process"><strong>Generate Placeholder Data:</strong><br>
+    Email: 9876543210@waitlist.optimist.in<br>
+    Password: random 20-character string
+  </div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">API Call</div>customerCreate({ email, phone, password, acceptsMarketing: true })<br><span style="font-size:8pt;">Creates Shopify customer record for the phone number</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Response?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show success screen<br>"You're on the waitlist!"</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label" style="color:#f59e0b;">&#9888; TAKEN ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Treat as success<br><span style="font-size:8pt;color:#6b7280;">Phone already registered = already on waitlist</span></div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; OTHER ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error message to user</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Subscriber Visible in Shopify Customers<br>with "Accepts Marketing" = Yes</div></div>
+
+</div>
+
+
+<!-- ==================== 17. CONTACT FORM ==================== -->
+<h1>17. Contact Form Submission Workflow</h1>
+
+<div class="workflow-desc">
+  <strong>Trigger:</strong> User fills and submits the contact form.<br>
+  <strong>API Called:</strong> <code>submitContactForm()</code> &mdash; HTTP POST to Google Sheets webhook (NOT Shopify)<br>
+  <strong>File Support:</strong> Attachments converted to base64
+</div>
+
+<div class="flowchart">
+
+  <div class="fc-row"><div class="fc-start">User Visits /contact-us</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User fills contact form:<br>
+    <span style="font-size:8pt;color:#6b7280;">
+      Reason, Full Name, Mobile, Email (optional),<br>
+      City/Pincode, Serial Number (optional), Order ID (optional),<br>
+      Message, File Attachment (optional)
+    </span>
+  </div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process">User clicks "Submit"</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">File attached?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; YES</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Convert file to base64<br><span style="font-size:8pt;color:#6b7280;">fileToBase64(file) &rarr; { name, type, base64 }</span></div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; NO</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Set file = null</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-process"><strong>Build Payload:</strong><br>
+    { reason, fullName, mobileNumber: "+91...",<br>
+    email, cityPincode, serialNumber, orderId,<br>
+    message, file: { name, type, base64 } }
+  </div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-api"><div class="fc-api-label">HTTP POST (no-cors)</div>POST to Google Apps Script Webhook URL<br><span style="font-size:8pt;">Content-Type: application/json</span></div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-external"><div class="fc-external-label">Google Apps Script</div>Receives data &rarr; Writes to Google Sheet<br>Saves file to Google Drive (if attached)</div></div>
+  <div class="fc-arrow">&#9660;</div>
+
+  <div class="fc-row"><div class="fc-decision">Submission successful?</div></div>
+
+  <div class="fc-branch">
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-yes">&#10003; SUCCESS</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-process">Show success message:<br>"Thank you! We'll get back to you soon."</div>
+    </div>
+    <div class="fc-branch-item">
+      <div class="fc-branch-label fc-branch-label-no">&#10007; ERROR</div>
+      <div class="fc-arrow">&#9660;</div>
+      <div class="fc-error">Show error: "Failed to submit form"</div>
+    </div>
+  </div>
+
+  <div class="fc-arrow">&#9660;</div>
+  <div class="fc-row"><div class="fc-end">Form Data in Google Sheets<br>for Team to Review</div></div>
+
+</div>
+
+
+<!-- ==================== SUMMARY ==================== -->
+<h1>Summary of All Workflows</h1>
+
+<table>
+  <tr>
+    <th style="width:30px">#</th>
+    <th>Workflow</th>
+    <th>Trigger</th>
+    <th>APIs Called</th>
+    <th>Total API Calls</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Application Startup</td>
+    <td>User opens website</td>
+    <td>getProducts, getCart, getCustomer, updateCartBuyerIdentity</td>
+    <td>2-4</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Product Loading</td>
+    <td>App load</td>
+    <td>getProducts</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Add to Cart</td>
+    <td>Click "Add to Cart"</td>
+    <td>createCart or addToCart</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Update Quantity</td>
+    <td>Click +/- in cart</td>
+    <td>updateCartLines or removeFromCart</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>Remove from Cart</td>
+    <td>Click "Remove"</td>
+    <td>removeFromCart</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>Checkout</td>
+    <td>Click "Checkout"</td>
+    <td>None (redirect to Shopify)</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>Registration</td>
+    <td>Submit sign-up form</td>
+    <td>customerCreate, customerAccessTokenCreate, getCustomer, updateCartBuyerIdentity</td>
+    <td>3-4</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>Login</td>
+    <td>Submit login form</td>
+    <td>customerAccessTokenCreate, getCustomer, updateCartBuyerIdentity</td>
+    <td>2-3</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td>Logout</td>
+    <td>Click "Logout"</td>
+    <td>customerAccessTokenDelete</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>Password Recovery</td>
+    <td>Forgot + Reset password</td>
+    <td>customerRecover, customerResetByUrl</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>11</td>
+    <td>Profile Update</td>
+    <td>Edit profile form</td>
+    <td>customerUpdate</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>12</td>
+    <td>Address Add</td>
+    <td>Click "Add Address"</td>
+    <td>customerAddressCreate</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>13</td>
+    <td>Address Edit</td>
+    <td>Click "Edit Address"</td>
+    <td>customerAddressUpdate</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>14</td>
+    <td>Address Delete</td>
+    <td>Click "Delete Address"</td>
+    <td>customerAddressDelete</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>15</td>
+    <td>Set Default Address</td>
+    <td>Click "Set as Default"</td>
+    <td>customerDefaultAddressUpdate</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>16</td>
+    <td>Blog Listing</td>
+    <td>Visit /blogs</td>
+    <td>getArticles</td>
+    <td>1+</td>
+  </tr>
+  <tr>
+    <td>17</td>
+    <td>Article Detail</td>
+    <td>Click article</td>
+    <td>getArticleByHandle</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>18</td>
+    <td>Blog Tag Filter</td>
+    <td>Click tag</td>
+    <td>getArticlesByTag</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>19</td>
+    <td>Waitlist Subscribe</td>
+    <td>Submit phone</td>
+    <td>subscribeToWaitlist (customerCreate)</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>20</td>
+    <td>Contact Form</td>
+    <td>Submit form</td>
+    <td>submitContactForm (Google Sheets POST)</td>
+    <td>1</td>
+  </tr>
+</table>
+
+<div class="info-box">
+  <div class="box-title">Total</div>
+  <p>The application has <strong>15 distinct functional workflows</strong> (with 20 sub-flows) that collectively use all <strong>27 API operations</strong>. A single user session (browsing products, adding to cart, logging in, and checking out) triggers approximately <strong>8-12 API calls</strong> to Shopify.</p>
+</div>
+
+<br>
+<hr>
+<p style="text-align: center; color: #999; font-size: 9pt;">
+  <em>Optimist - Functional Workflow Flowcharts v1.0 | Confidential | February 2026</em>
+</p>
+
+</body>
+</html>

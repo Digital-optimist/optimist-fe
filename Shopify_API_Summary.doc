@@ -1,0 +1,1253 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Optimist - Shopify API Summary</title>
+<style>
+  body {
+    font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #333333;
+    margin: 60px 72px;
+    max-width: 100%;
+  }
+
+  .cover-page {
+    text-align: center;
+    padding-top: 180px;
+    page-break-after: always;
+  }
+  .cover-page h1 {
+    font-size: 28pt;
+    color: #1a1a1a;
+    font-weight: bold;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .cover-page .subtitle {
+    font-size: 16pt;
+    color: #555555;
+    margin-bottom: 40px;
+  }
+  .cover-page .meta {
+    font-size: 11pt;
+    color: #777777;
+    margin-top: 60px;
+    line-height: 2;
+  }
+  .cover-page .divider {
+    width: 100px;
+    height: 3px;
+    background-color: #2563eb;
+    margin: 30px auto;
+  }
+
+  h1 {
+    font-size: 20pt;
+    color: #1a1a1a;
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 8px;
+    margin-top: 36px;
+    margin-bottom: 18px;
+  }
+  h2 {
+    font-size: 14pt;
+    color: #1e40af;
+    margin-top: 26px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dbeafe;
+    padding-bottom: 4px;
+  }
+  h3 {
+    font-size: 12pt;
+    color: #1e3a5f;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9.5pt;
+  }
+  th {
+    background-color: #1e40af;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #1e40af;
+  }
+  td {
+    padding: 7px 12px;
+    border: 1px solid #d1d5db;
+    vertical-align: top;
+  }
+  tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  .code-block {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    padding: 14px 18px;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    margin: 10px 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border-left: 4px solid #2563eb;
+  }
+
+  code {
+    background-color: #f1f5f9;
+    color: #dc2626;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9pt;
+  }
+
+  .info-box {
+    background-color: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .note-box {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .box-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  ul { margin: 6px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  p { margin: 6px 0; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 8.5pt;
+    font-weight: bold;
+    color: white;
+  }
+  .badge-query { background-color: #16a34a; }
+  .badge-mutation { background-color: #dc2626; }
+  .badge-post { background-color: #9333ea; }
+  .badge-no { background-color: #6b7280; }
+  .badge-yes { background-color: #f59e0b; color: #1a1a1a; }
+
+  .api-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .api-card-header {
+    background-color: #f1f5f9;
+    padding: 10px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: bold;
+    font-size: 11pt;
+  }
+  .api-card-body {
+    padding: 12px 16px;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 20px;
+    margin: 16px 0;
+  }
+  .stat-box {
+    flex: 1;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-number {
+    font-size: 24pt;
+    font-weight: bold;
+    color: #1e40af;
+  }
+  .stat-label {
+    font-size: 9pt;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+
+  .page-break { page-break-before: always; }
+
+  .section-divider {
+    border: none;
+    border-top: 2px solid #e2e8f0;
+    margin: 30px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover-page">
+  <h1>OPTIMIST</h1>
+  <div class="subtitle">Shopify API Summary Reference</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <strong>Document Type:</strong> API Quick Reference<br>
+    <strong>Version:</strong> 1.0<br>
+    <strong>Date:</strong> February 9, 2026<br>
+    <strong>Total APIs:</strong> 27 Operations<br>
+    <strong>API Type:</strong> Shopify Storefront GraphQL API v2025-01<br>
+    <strong>Store:</strong> octolife-3.myshopify.com
+  </div>
+</div>
+
+<!-- ==================== OVERVIEW ==================== -->
+<h1>1. Quick Overview</h1>
+
+<p>This document provides a concise summary of every API integrated into the Optimist application. Use this as a quick reference to understand what each API does, its inputs, outputs, and where it is used.</p>
+
+<h2>1.1 API Statistics</h2>
+
+<table>
+  <tr>
+    <th>Category</th>
+    <th>Queries</th>
+    <th>Mutations</th>
+    <th>Total</th>
+  </tr>
+  <tr>
+    <td>Product Management</td>
+    <td>2</td>
+    <td>0</td>
+    <td><strong>2</strong></td>
+  </tr>
+  <tr>
+    <td>Shopping Cart</td>
+    <td>1</td>
+    <td>5</td>
+    <td><strong>6</strong></td>
+  </tr>
+  <tr>
+    <td>Customer Authentication</td>
+    <td>0</td>
+    <td>5</td>
+    <td><strong>5</strong></td>
+  </tr>
+  <tr>
+    <td>Customer Profile</td>
+    <td>2</td>
+    <td>1</td>
+    <td><strong>3</strong></td>
+  </tr>
+  <tr>
+    <td>Address Management</td>
+    <td>0</td>
+    <td>4</td>
+    <td><strong>4</strong></td>
+  </tr>
+  <tr>
+    <td>Blog &amp; Content</td>
+    <td>5</td>
+    <td>0</td>
+    <td><strong>5</strong></td>
+  </tr>
+  <tr>
+    <td>Waitlist</td>
+    <td>0</td>
+    <td>1</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr>
+    <td>Contact Form (Non-Shopify)</td>
+    <td>0</td>
+    <td>1 (HTTP POST)</td>
+    <td><strong>1</strong></td>
+  </tr>
+  <tr style="background-color: #dbeafe;">
+    <td><strong>TOTAL</strong></td>
+    <td><strong>10</strong></td>
+    <td><strong>17</strong></td>
+    <td><strong>27</strong></td>
+  </tr>
+</table>
+
+<h2>1.2 API Endpoint</h2>
+
+<div class="code-block">
+Endpoint:  POST https://octolife-3.myshopify.com/api/2025-01/graphql.json
+
+Headers:
+  Content-Type: application/json
+  X-Shopify-Storefront-Access-Token: 3b12d6020365806434052cc061a5b5e3
+</div>
+
+<!-- ==================== MASTER TABLE ==================== -->
+<h1>2. Master API Table</h1>
+
+<p>Complete list of all 27 API operations at a glance:</p>
+
+<table>
+  <tr>
+    <th style="width:30px">#</th>
+    <th style="width:200px">Function Name</th>
+    <th style="width:60px">Type</th>
+    <th>GraphQL Operation</th>
+    <th style="width:60px">Auth</th>
+    <th>Used In</th>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">PRODUCT MANAGEMENT</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>getProducts</code></td>
+    <td>Query</td>
+    <td><code>products</code></td>
+    <td>No</td>
+    <td>Products page, Landing page</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>getProductByHandle</code></td>
+    <td>Query</td>
+    <td><code>product</code></td>
+    <td>No</td>
+    <td>Product detail page</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">SHOPPING CART</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><code>createCart</code></td>
+    <td>Mutation</td>
+    <td><code>cartCreate</code></td>
+    <td>No</td>
+    <td>CartContext (first add-to-cart)</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><code>getCart</code></td>
+    <td>Query</td>
+    <td><code>cart</code></td>
+    <td>No</td>
+    <td>CartContext (page load)</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><code>addToCart</code></td>
+    <td>Mutation</td>
+    <td><code>cartLinesAdd</code></td>
+    <td>No</td>
+    <td>Product pages, ProductPicker</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><code>updateCartLines</code></td>
+    <td>Mutation</td>
+    <td><code>cartLinesUpdate</code></td>
+    <td>No</td>
+    <td>CartDrawer, Cart page</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><code>removeFromCart</code></td>
+    <td>Mutation</td>
+    <td><code>cartLinesRemove</code></td>
+    <td>No</td>
+    <td>CartDrawer, Cart page</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><code>updateCartBuyerIdentity</code></td>
+    <td>Mutation</td>
+    <td><code>cartBuyerIdentityUpdate</code></td>
+    <td>Token</td>
+    <td>CartContext (on login)</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">CUSTOMER AUTHENTICATION</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><code>customerCreate</code></td>
+    <td>Mutation</td>
+    <td><code>customerCreate</code></td>
+    <td>No</td>
+    <td>Sign-up page</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><code>customerAccessTokenCreate</code></td>
+    <td>Mutation</td>
+    <td><code>customerAccessTokenCreate</code></td>
+    <td>No</td>
+    <td>Login page, after registration</td>
+  </tr>
+  <tr>
+    <td>11</td>
+    <td><code>customerAccessTokenDelete</code></td>
+    <td>Mutation</td>
+    <td><code>customerAccessTokenDelete</code></td>
+    <td>Token</td>
+    <td>Logout action</td>
+  </tr>
+  <tr>
+    <td>12</td>
+    <td><code>customerRecover</code></td>
+    <td>Mutation</td>
+    <td><code>customerRecover</code></td>
+    <td>No</td>
+    <td>Forgot password page</td>
+  </tr>
+  <tr>
+    <td>13</td>
+    <td><code>customerResetByUrl</code></td>
+    <td>Mutation</td>
+    <td><code>customerResetByUrl</code></td>
+    <td>No</td>
+    <td>Reset password page</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">CUSTOMER PROFILE &amp; ORDERS</td>
+  </tr>
+  <tr>
+    <td>14</td>
+    <td><code>getCustomer</code></td>
+    <td>Query</td>
+    <td><code>customer</code></td>
+    <td>Token</td>
+    <td>AuthContext, Account page</td>
+  </tr>
+  <tr>
+    <td>15</td>
+    <td><code>customerUpdate</code></td>
+    <td>Mutation</td>
+    <td><code>customerUpdate</code></td>
+    <td>Token</td>
+    <td>Account page (edit profile)</td>
+  </tr>
+  <tr>
+    <td>16</td>
+    <td><code>getCustomerOrders</code></td>
+    <td>Query</td>
+    <td><code>customer.orders</code></td>
+    <td>Token</td>
+    <td>Orders page</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">ADDRESS MANAGEMENT</td>
+  </tr>
+  <tr>
+    <td>17</td>
+    <td><code>customerAddressCreate</code></td>
+    <td>Mutation</td>
+    <td><code>customerAddressCreate</code></td>
+    <td>Token</td>
+    <td>Addresses page</td>
+  </tr>
+  <tr>
+    <td>18</td>
+    <td><code>customerAddressUpdate</code></td>
+    <td>Mutation</td>
+    <td><code>customerAddressUpdate</code></td>
+    <td>Token</td>
+    <td>Addresses page</td>
+  </tr>
+  <tr>
+    <td>19</td>
+    <td><code>customerAddressDelete</code></td>
+    <td>Mutation</td>
+    <td><code>customerAddressDelete</code></td>
+    <td>Token</td>
+    <td>Addresses page</td>
+  </tr>
+  <tr>
+    <td>20</td>
+    <td><code>customerDefaultAddressUpdate</code></td>
+    <td>Mutation</td>
+    <td><code>customerDefaultAddressUpdate</code></td>
+    <td>Token</td>
+    <td>Addresses page</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">BLOG &amp; CONTENT</td>
+  </tr>
+  <tr>
+    <td>21</td>
+    <td><code>getBlogs</code></td>
+    <td>Query</td>
+    <td><code>blogs</code></td>
+    <td>No</td>
+    <td>Blog listing page</td>
+  </tr>
+  <tr>
+    <td>22</td>
+    <td><code>getBlogByHandle</code></td>
+    <td>Query</td>
+    <td><code>blog</code></td>
+    <td>No</td>
+    <td>Blog detail page</td>
+  </tr>
+  <tr>
+    <td>23</td>
+    <td><code>getArticles</code></td>
+    <td>Query</td>
+    <td><code>articles</code></td>
+    <td>No</td>
+    <td>Blog listing page</td>
+  </tr>
+  <tr>
+    <td>24</td>
+    <td><code>getArticleByHandle</code></td>
+    <td>Query</td>
+    <td><code>articles.articleByHandle</code></td>
+    <td>No</td>
+    <td>Article detail page</td>
+  </tr>
+  <tr>
+    <td>25</td>
+    <td><code>getArticlesByTag</code></td>
+    <td>Query</td>
+    <td><code>articles(query: tag:...)</code></td>
+    <td>No</td>
+    <td>Blog filtering</td>
+  </tr>
+  <tr>
+    <td colspan="6" style="background-color:#dbeafe; font-weight:bold; color:#1e40af;">WAITLIST &amp; CONTACT</td>
+  </tr>
+  <tr>
+    <td>26</td>
+    <td><code>subscribeToWaitlist</code></td>
+    <td>Mutation</td>
+    <td><code>customerCreate</code></td>
+    <td>No</td>
+    <td>Waitlist modal</td>
+  </tr>
+  <tr>
+    <td>27</td>
+    <td><code>submitContactForm</code></td>
+    <td>HTTP POST</td>
+    <td>Google Sheets Webhook</td>
+    <td>No</td>
+    <td>Contact Us page</td>
+  </tr>
+</table>
+
+<!-- ==================== DETAILED API CARDS ==================== -->
+<h1 class="page-break">3. Detailed API Reference</h1>
+
+<!-- ===== PRODUCT MANAGEMENT ===== -->
+<h2>3.1 Product Management</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #1 &mdash; getProducts</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>products(first: $first)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>first</code> (Int) &mdash; Number of products to fetch. Default: 20</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Product[]</code> &mdash; Array of product objects</td></tr>
+      <tr><td><strong>Used In</strong></td><td>ProductsContext (on app load), Products page, Landing page ProductPicker</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches the list of all products from the Shopify store. Each product includes its full details: title, description, images (up to 10), variants (up to 100), price range, tags, and vendor. Products are then transformed into tonnage-based display variants by the ProductsContext.</td></tr>
+    </table>
+    <h4 style="margin-top:10px">Response Fields per Product:</h4>
+    <div class="code-block">id, handle, title, description, descriptionHtml, featuredImage,
+images (url, altText, width, height), options (id, name, values),
+variants (id, title, availableForSale, price, compareAtPrice, selectedOptions, image),
+priceRange (minVariantPrice, maxVariantPrice), tags, vendor</div>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #2 &mdash; getProductByHandle</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>product(handle: $handle)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>handle</code> (String) &mdash; URL-friendly product slug (e.g. <code>1-5-ton-split-ac</code>)</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Product | null</code> &mdash; Single product or null if not found</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Product detail page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches a single product by its URL handle. Used for individual product detail pages. Returns the same complete product data as getProducts but for one specific product.</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== SHOPPING CART ===== -->
+<h2>3.2 Shopping Cart</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #3 &mdash; createCart</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>cartCreate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>lines</code> (Array) &mdash; Optional initial items: <code>[{ merchandiseId, quantity }]</code></td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Cart</code> &mdash; New cart object with ID and checkout URL</td></tr>
+      <tr><td><strong>Used In</strong></td><td>CartContext &mdash; called on first add-to-cart when no cart exists</td></tr>
+      <tr><td><strong>Description</strong></td><td>Creates a new shopping cart on Shopify. The cart is created with <code>countryCode: "IN"</code> for Indian pricing. The returned cart ID is stored in localStorage (<code>optimist_cart_id</code>) for persistence across page reloads.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #4 &mdash; getCart</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>cart(id: $cartId)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>cartId</code> (ID) &mdash; The Shopify cart ID from localStorage</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Cart | null</code> &mdash; Cart object or null if expired/invalid</td></tr>
+      <tr><td><strong>Used In</strong></td><td>CartContext &mdash; called on every page load to restore cart state</td></tr>
+      <tr><td><strong>Description</strong></td><td>Retrieves an existing cart from Shopify by its ID. Returns full cart details including all line items, quantities, prices, subtotal, total, taxes, and checkout URL. Returns null if the cart has expired (Shopify carts expire after 10 days of inactivity).</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #5 &mdash; addToCart</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>cartLinesAdd</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>cartId</code> (ID) &mdash; Existing cart ID<br><code>lines</code> (Array) &mdash; Items to add: <code>[{ merchandiseId, quantity }]</code></td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Cart</code> &mdash; Updated cart with new items</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Product pages, ProductPicker component, Buy Now buttons</td></tr>
+      <tr><td><strong>Description</strong></td><td>Adds one or more product variants to an existing cart. The <code>merchandiseId</code> is the Shopify variant ID (e.g. <code>gid://shopify/ProductVariant/123</code>). If the same variant already exists in the cart, quantities are combined.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #6 &mdash; updateCartLines</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>cartLinesUpdate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>cartId</code> (ID) &mdash; Cart ID<br><code>lines</code> (Array) &mdash; Lines to update: <code>[{ id (lineId), quantity }]</code></td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Cart</code> &mdash; Updated cart</td></tr>
+      <tr><td><strong>Used In</strong></td><td>CartDrawer (quantity +/- buttons), Cart page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Updates the quantity of existing line items in the cart. The <code>id</code> here is the cart line ID (not the product/variant ID). Setting quantity to 0 effectively removes the item.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #7 &mdash; removeFromCart</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>cartLinesRemove</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>cartId</code> (ID) &mdash; Cart ID<br><code>lineIds</code> (Array) &mdash; Array of line item IDs to remove</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Cart</code> &mdash; Updated cart without removed items</td></tr>
+      <tr><td><strong>Used In</strong></td><td>CartDrawer (remove button), Cart page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Completely removes one or more line items from the cart. Unlike updateCartLines with quantity 0, this removes the line entirely.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #8 &mdash; updateCartBuyerIdentity</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>cartBuyerIdentityUpdate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>cartId</code> (ID) &mdash; Cart ID<br><code>customerAccessToken</code> (String) &mdash; Logged-in customer's token</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Cart</code> &mdash; Cart associated with the customer</td></tr>
+      <tr><td><strong>Used In</strong></td><td>CartContext &mdash; called automatically when a user logs in</td></tr>
+      <tr><td><strong>Description</strong></td><td>Associates an existing cart with a logged-in customer. This enables Shopify to pre-fill the checkout with the customer's saved information (name, email, addresses). Also sets <code>countryCode: "IN"</code> for Indian pricing.</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== CUSTOMER AUTHENTICATION ===== -->
+<h2 class="page-break">3.3 Customer Authentication</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #9 &mdash; customerCreate</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerCreate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>email</code> (String) &mdash; Customer's email<br><code>password</code> (String) &mdash; Account password<br><code>firstName</code> (String, optional) &mdash; First name<br><code>lastName</code> (String, optional) &mdash; Last name</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>{ customer, customerAccessToken }</code> &mdash; Customer data + auth token</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Sign-up page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Creates a new customer account on Shopify. After successful creation, it <strong>automatically calls</strong> <code>customerAccessTokenCreate</code> to log the user in. The customer is created with <code>acceptsMarketing: false</code> by default. Returns both the customer object and an access token for immediate authentication.</td></tr>
+    </table>
+    <h4>Common Errors:</h4>
+    <ul>
+      <li><strong>Email already taken</strong> &mdash; An account with this email already exists</li>
+      <li><strong>Password too short</strong> &mdash; Shopify requires minimum password length</li>
+    </ul>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #10 &mdash; customerAccessTokenCreate (Login)</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerAccessTokenCreate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>email</code> (String) &mdash; Customer's email<br><code>password</code> (String) &mdash; Account password</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>CustomerAccessToken { accessToken, expiresAt }</code></td></tr>
+      <tr><td><strong>Used In</strong></td><td>Login page, after registration (auto-login)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Authenticates a customer and returns an access token. The token has an expiration date and is stored in localStorage under <code>optimist_auth</code>. After obtaining the token, the app fetches customer data and associates the cart with the customer.</td></tr>
+    </table>
+    <h4>Token Storage Format:</h4>
+    <div class="code-block">localStorage["optimist_auth"] = {
+  "accessToken": "abc123...",
+  "expiresAt": "2026-03-09T00:00:00Z"
+}</div>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #11 &mdash; customerAccessTokenDelete (Logout)</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerAccessTokenDelete</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String) &mdash; Token to invalidate</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>boolean</code> &mdash; true if token was successfully deleted</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Logout action (Navigation, Account page)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Invalidates the customer's access token on Shopify's servers. After calling this, the app clears the token from localStorage and resets the authentication state. The cart remains intact but is no longer associated with the customer.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #12 &mdash; customerRecover (Forgot Password)</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerRecover</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>email</code> (String) &mdash; Customer's email address</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>boolean</code> &mdash; true if recovery email was sent</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Forgot Password page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Triggers Shopify to send a password reset email to the customer. The email contains a unique reset URL that expires after a set time. The customer clicks the link and is directed to the Reset Password page.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #13 &mdash; customerResetByUrl (Reset Password)</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerResetByUrl</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No (uses reset URL token)</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>resetUrl</code> (URL) &mdash; The full reset URL from the email<br><code>password</code> (String) &mdash; The new password</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>CustomerAccessToken</code> &mdash; New access token (auto-login after reset)</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Reset Password page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Resets the customer's password using the URL from the recovery email. On success, returns a new access token so the customer is automatically logged in. Handles expired and invalid tokens with user-friendly error messages.</td></tr>
+    </table>
+    <h4>Error Handling:</h4>
+    <ul>
+      <li><code>TOKEN_INVALID</code> &rarr; "This reset link is invalid. Please request a new one."</li>
+      <li><code>TOKEN_EXPIRED</code> &rarr; "This reset link has expired. Please request a new one."</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== CUSTOMER PROFILE ===== -->
+<h2>3.4 Customer Profile &amp; Orders</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #14 &mdash; getCustomer</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customer(customerAccessToken)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String) &mdash; Valid auth token</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Customer | null</code> &mdash; Full customer profile</td></tr>
+      <tr><td><strong>Used In</strong></td><td>AuthContext (on login, on app load), Account page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches the complete customer profile including personal information, default address, all saved addresses (up to 10), and recent orders (up to 10, sorted newest first). This is the primary method for loading customer data after authentication.</td></tr>
+    </table>
+    <h4>Data Returned:</h4>
+    <div class="code-block">Personal: id, firstName, lastName, email, phone, acceptsMarketing
+Addresses: defaultAddress + up to 10 saved addresses
+Orders: up to 10 most recent orders with line items and shipping address</div>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #15 &mdash; customerUpdate</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerUpdate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String) &mdash; Auth token<br><code>customer</code> (Object) &mdash; Fields to update: <code>{ firstName?, lastName?, email?, phone?, acceptsMarketing? }</code></td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Customer</code> &mdash; Updated customer profile</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Account page (edit profile form)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Updates one or more fields of the customer's profile. Only changed fields need to be included. Shopify may issue a new access token if the email changes. Handles duplicate email/phone errors with user-friendly messages.</td></tr>
+    </table>
+    <h4>Error Handling:</h4>
+    <ul>
+      <li><code>TAKEN</code> &rarr; "This email or phone number is already in use by another account."</li>
+      <li><code>INVALID</code> &rarr; "Invalid [field]: [message]"</li>
+    </ul>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #16 &mdash; getCustomerOrders</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customer.orders</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String) &mdash; Auth token<br><code>first</code> (Int) &mdash; Number of orders to fetch. Default: 20</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Order[]</code> &mdash; Array of order objects</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Orders page (/account/orders)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches the customer's order history, sorted by processing date (newest first). Each order includes order number, financial status (PAID, PENDING, etc.), fulfillment status (FULFILLED, UNFULFILLED), total price, line items with images, and shipping address.</td></tr>
+    </table>
+    <h4>Order Data per Item:</h4>
+    <div class="code-block">orderNumber, name (#1001), processedAt, financialStatus, fulfillmentStatus,
+totalPrice (amount + currency), lineItems (title, quantity, variant image + price),
+shippingAddress (full mailing address)</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== ADDRESS MANAGEMENT ===== -->
+<h2 class="page-break">3.5 Address Management</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #17 &mdash; customerAddressCreate</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerAddressCreate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String)<br><code>address</code> (Object) &mdash; Full address: <code>{ firstName, lastName, company?, address1, address2?, city, province, country, zip, phone? }</code></td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Address</code> &mdash; Newly created address with ID</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Addresses page (/account/addresses)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Creates a new mailing address for the customer. The address is saved to their Shopify account and can be used during checkout. Customers can save up to 10 addresses.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #18 &mdash; customerAddressUpdate</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerAddressUpdate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String)<br><code>addressId</code> (ID) &mdash; ID of address to update<br><code>address</code> (Object) &mdash; Partial address with only changed fields</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Address</code> &mdash; Updated address</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Addresses page (edit address form)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Updates an existing address. Accepts partial updates &mdash; only the fields that need to change should be included in the input.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #19 &mdash; customerAddressDelete</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerAddressDelete</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String)<br><code>addressId</code> (ID) &mdash; ID of address to delete</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>boolean</code> &mdash; true if deleted successfully</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Addresses page (delete button)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Permanently deletes a saved address from the customer's account. The default address cannot be deleted without first setting a different default.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #20 &mdash; customerDefaultAddressUpdate</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerDefaultAddressUpdate</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>Customer Access Token</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>customerAccessToken</code> (String)<br><code>addressId</code> (ID) &mdash; ID of address to set as default</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Customer</code> &mdash; Updated customer with new default address</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Addresses page (set default button)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Sets one of the customer's saved addresses as their default address. The default address is pre-selected during checkout.</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== BLOG & CONTENT ===== -->
+<h2>3.6 Blog &amp; Content</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #21 &mdash; getBlogs</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>blogs(first: $first)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>first</code> (Int) &mdash; Number of blogs to fetch. Default: 10</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Blog[]</code> &mdash; Array of blog objects, each with up to 10 articles</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Blog listing page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches all blogs from the Shopify store. Each blog contains a title, handle, and its first 10 articles with pagination info.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #22 &mdash; getBlogByHandle</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>blog(handle: $handle)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>handle</code> (String) &mdash; Blog's URL-friendly handle</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>Blog | null</code> &mdash; Blog with up to 50 articles</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Blog detail page</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches a single blog by its handle, including up to 50 articles with cursor-based pagination support.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #23 &mdash; getArticles</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>articles(first, after, query, sortKey: PUBLISHED_AT, reverse: true)</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>first</code> (Int) &mdash; Number of articles. Default: 20<br><code>after</code> (String, optional) &mdash; Cursor for pagination<br><code>query</code> (String, optional) &mdash; Search/filter query</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>{ articles: BlogArticle[], pageInfo }</code></td></tr>
+      <tr><td><strong>Used In</strong></td><td>Blog listing page (with load more / pagination)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches articles across all blogs with support for cursor-based pagination and search queries. Articles are sorted by publication date (newest first). The <code>pageInfo</code> object indicates whether more pages exist and provides cursors for navigation.</td></tr>
+    </table>
+    <h4>Pagination:</h4>
+    <div class="code-block">// First page
+getArticles(10)
+
+// Next page
+getArticles(10, pageInfo.endCursor)
+
+// Search/filter
+getArticles(10, undefined, "tag:sustainability")</div>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #24 &mdash; getArticleByHandle</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>blog.articleByHandle</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>blogHandle</code> (String) &mdash; Parent blog's handle<br><code>articleHandle</code> (String) &mdash; Article's URL handle</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>BlogArticle | null</code></td></tr>
+      <tr><td><strong>Used In</strong></td><td>Article detail page (/blogs/[blogHandle]/[articleHandle])</td></tr>
+      <tr><td><strong>Description</strong></td><td>Fetches a single article by its blog handle and article handle combination. Returns the complete article including HTML content, author info, featured image, tags, and SEO metadata.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #25 &mdash; getArticlesByTag</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Query</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>articles(query: "tag:...")</code></td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>tag</code> (String) &mdash; Tag to filter by<br><code>first</code> (Int) &mdash; Number of articles. Default: 20</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>BlogArticle[]</code></td></tr>
+      <tr><td><strong>Used In</strong></td><td>Blog tag filtering</td></tr>
+      <tr><td><strong>Description</strong></td><td>Convenience function that fetches articles filtered by a specific tag. Internally uses <code>getArticles</code> with <code>query: "tag:{tag}"</code>.</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== WAITLIST & CONTACT ===== -->
+<h2>3.7 Waitlist &amp; Contact Form</h2>
+
+<div class="api-card">
+  <div class="api-card-header">API #26 &mdash; subscribeToWaitlist</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>GraphQL Mutation</td></tr>
+      <tr><td><strong>Operation</strong></td><td><code>customerCreate</code> (repurposed for waitlist)</td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td><code>phone</code> (String) &mdash; Customer's phone number (10-digit Indian number)</td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>boolean</code> &mdash; true on success (including if already subscribed)</td></tr>
+      <tr><td><strong>Used In</strong></td><td>Waitlist modal (WaitlistModal component)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Subscribes a phone number to the waitlist by creating a Shopify customer record. Since Shopify requires an email, a placeholder email is generated (<code>{phone}@waitlist.optimist.in</code>). A random password is generated for the account. The customer is created with <code>acceptsMarketing: true</code> for marketing outreach. If the phone/email is already registered (TAKEN error), it's silently treated as success.</td></tr>
+    </table>
+    <h4>Phone Formatting Logic:</h4>
+    <div class="code-block">Input: "9876543210" (10 digits)  -->  "+919876543210"
+Input: "919876543210" (12 digits) -->  "+919876543210"
+Input: "+919876543210" (with +)   -->  "+919876543210"</div>
+  </div>
+</div>
+
+<div class="api-card">
+  <div class="api-card-header">API #27 &mdash; submitContactForm</div>
+  <div class="api-card-body">
+    <table>
+      <tr><td style="width:140px"><strong>Type</strong></td><td>HTTP POST (not Shopify)</td></tr>
+      <tr><td><strong>Destination</strong></td><td>Google Apps Script Webhook &rarr; Google Sheets</td></tr>
+      <tr><td><strong>Auth Required</strong></td><td>No</td></tr>
+      <tr><td><strong>Parameters</strong></td><td>
+        <code>reason</code> (String) &mdash; Contact reason<br>
+        <code>fullName</code> (String) &mdash; Customer name<br>
+        <code>mobileNumber</code> (String) &mdash; Phone (auto-prefixed +91)<br>
+        <code>email</code> (String, optional) &mdash; Email address<br>
+        <code>cityPincode</code> (String) &mdash; City and pincode<br>
+        <code>serialNumber</code> (String, optional) &mdash; Product serial number<br>
+        <code>orderId</code> (String, optional) &mdash; Order reference<br>
+        <code>message</code> (String) &mdash; Message body<br>
+        <code>attachedFile</code> (File, optional) &mdash; File attachment (converted to base64)
+      </td></tr>
+      <tr><td><strong>Returns</strong></td><td><code>{ success: boolean, error?: string }</code></td></tr>
+      <tr><td><strong>Used In</strong></td><td>Contact Us page (/contact-us)</td></tr>
+      <tr><td><strong>Description</strong></td><td>Submits customer contact/support inquiries to a Google Sheets spreadsheet via a Google Apps Script webhook. This is NOT a Shopify API &mdash; it's a separate integration. File attachments are converted to base64 before submission. The request is sent in <code>no-cors</code> mode.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== UTILITY FUNCTIONS ==================== -->
+<h1 class="page-break">4. Utility Functions</h1>
+
+<p>These helper functions support the API operations and data display:</p>
+
+<table>
+  <tr>
+    <th style="width:30px">#</th>
+    <th style="width:200px">Function</th>
+    <th>Purpose</th>
+    <th>Input</th>
+    <th>Output</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><code>formatPrice</code></td>
+    <td>Format price amount for Indian Rupee display</td>
+    <td><code>("45000", "INR")</code></td>
+    <td><code>"&#8377;45,000"</code></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><code>calculateReadTime</code></td>
+    <td>Estimate article reading time</td>
+    <td>HTML content string</td>
+    <td><code>5</code> (minutes)</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><code>formatArticleDate</code></td>
+    <td>Format ISO date for display</td>
+    <td><code>"2026-02-09T..."</code></td>
+    <td><code>"9 Feb 2026"</code></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><code>extractTonnageFromProduct</code></td>
+    <td>Extract tonnage value from product title/handle</td>
+    <td>Product object</td>
+    <td><code>"1.5"</code></td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><code>getSubtitleForTonnage</code></td>
+    <td>Get room size description for tonnage</td>
+    <td><code>"1.5"</code></td>
+    <td><code>"For medium-sized rooms"</code></td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><code>productToVariant</code></td>
+    <td>Transform Shopify Product to DisplayVariant</td>
+    <td>Product object</td>
+    <td>DisplayVariant object</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><code>transformProduct</code></td>
+    <td>Transform Shopify Product to ProductData</td>
+    <td>Product object</td>
+    <td>ProductData object</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><code>generateRandomPassword</code></td>
+    <td>Generate secure password for waitlist subscribers</td>
+    <td>None</td>
+    <td>20-character string</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><code>fileToBase64</code></td>
+    <td>Convert file to base64 string for contact form</td>
+    <td>File object</td>
+    <td>Base64 string</td>
+  </tr>
+</table>
+
+<!-- ==================== FILE REFERENCE ==================== -->
+<h1>5. File Reference</h1>
+
+<p>Quick reference of all files involved in the Shopify integration:</p>
+
+<table>
+  <tr>
+    <th>File Path</th>
+    <th>Purpose</th>
+    <th>APIs Contained</th>
+  </tr>
+  <tr>
+    <td><code>src/lib/shopify.ts</code></td>
+    <td>Core Shopify API client</td>
+    <td>All 27 API functions, types, fragments</td>
+  </tr>
+  <tr>
+    <td><code>src/contexts/AuthContext.tsx</code></td>
+    <td>Authentication state</td>
+    <td>Uses APIs #9-15 (auth + profile)</td>
+  </tr>
+  <tr>
+    <td><code>src/contexts/CartContext.tsx</code></td>
+    <td>Cart state management</td>
+    <td>Uses APIs #3-8 (all cart operations)</td>
+  </tr>
+  <tr>
+    <td><code>src/contexts/ProductsContext.tsx</code></td>
+    <td>Product data + transformation</td>
+    <td>Uses API #1 (getProducts)</td>
+  </tr>
+  <tr>
+    <td><code>src/contexts/WaitlistContext.tsx</code></td>
+    <td>Waitlist modal state</td>
+    <td>Uses API #26 (subscribeToWaitlist)</td>
+  </tr>
+  <tr>
+    <td><code>src/components/providers/Providers.tsx</code></td>
+    <td>ShopifyProvider setup</td>
+    <td>Configures @shopify/hydrogen-react</td>
+  </tr>
+  <tr>
+    <td><code>src/app/login/page.tsx</code></td>
+    <td>Login page</td>
+    <td>Uses API #10</td>
+  </tr>
+  <tr>
+    <td><code>src/app/sign-up/page.tsx</code></td>
+    <td>Registration page</td>
+    <td>Uses API #9</td>
+  </tr>
+  <tr>
+    <td><code>src/app/forgot-password/page.tsx</code></td>
+    <td>Password recovery</td>
+    <td>Uses API #12</td>
+  </tr>
+  <tr>
+    <td><code>src/app/reset-password/page.tsx</code></td>
+    <td>Password reset</td>
+    <td>Uses API #13</td>
+  </tr>
+  <tr>
+    <td><code>src/app/account/page.tsx</code></td>
+    <td>Customer profile</td>
+    <td>Uses APIs #14, #15</td>
+  </tr>
+  <tr>
+    <td><code>src/app/account/orders/page.tsx</code></td>
+    <td>Order history</td>
+    <td>Uses API #16</td>
+  </tr>
+  <tr>
+    <td><code>src/app/account/addresses/page.tsx</code></td>
+    <td>Address management</td>
+    <td>Uses APIs #17-20</td>
+  </tr>
+  <tr>
+    <td><code>src/app/blogs/page.tsx</code></td>
+    <td>Blog listing</td>
+    <td>Uses APIs #21, #23</td>
+  </tr>
+  <tr>
+    <td><code>src/app/blogs/[blogHandle]/[articleHandle]/page.tsx</code></td>
+    <td>Article detail</td>
+    <td>Uses API #24</td>
+  </tr>
+  <tr>
+    <td><code>src/app/contact-us/page.tsx</code></td>
+    <td>Contact form</td>
+    <td>Uses API #27</td>
+  </tr>
+</table>
+
+<!-- ==================== SUMMARY ==================== -->
+<h1>6. Summary</h1>
+
+<div class="info-box">
+  <div class="box-title">Total Integration Summary</div>
+  <p>The Optimist application integrates <strong>27 API operations</strong> across <strong>7 functional areas</strong>, using <strong>Shopify's Storefront GraphQL API (v2025-01)</strong> as the primary commerce backend. The integration is fully client-side with no server proxy, using <strong>10 queries</strong> for data retrieval and <strong>17 mutations</strong> for data modification. All commerce data (products, carts, customers, orders, addresses, blogs) is managed by Shopify, making it the single source of truth.</p>
+</div>
+
+<table>
+  <tr>
+    <th>Metric</th>
+    <th>Value</th>
+  </tr>
+  <tr><td>Total API Operations</td><td><strong>27</strong></td></tr>
+  <tr><td>GraphQL Queries</td><td><strong>10</strong></td></tr>
+  <tr><td>GraphQL Mutations</td><td><strong>16</strong></td></tr>
+  <tr><td>HTTP POST (Non-Shopify)</td><td><strong>1</strong></td></tr>
+  <tr><td>Utility Functions</td><td><strong>9</strong></td></tr>
+  <tr><td>TypeScript Interfaces</td><td><strong>14</strong></td></tr>
+  <tr><td>GraphQL Fragments</td><td><strong>7</strong></td></tr>
+  <tr><td>React Context Providers</td><td><strong>4</strong></td></tr>
+  <tr><td>Source Files Involved</td><td><strong>16</strong></td></tr>
+  <tr><td>Core API Client File</td><td><code>src/lib/shopify.ts</code> (1,694 lines)</td></tr>
+</table>
+
+<br>
+<hr>
+<p style="text-align: center; color: #999; font-size: 9pt;">
+  <em>Optimist - Shopify API Summary Reference v1.0 | Confidential | February 2026</em>
+</p>
+
+</body>
+</html>

@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-white pt-24 pb-16 select-none"
+      className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16 select-none"
       onCopy={handleRestrictedAction}
       onCut={handleRestrictedAction}
       onContextMenu={handleRestrictedAction}

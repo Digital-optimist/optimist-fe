@@ -25,7 +25,7 @@ const teamData = [
   {
     id: 2,
     title: "Co-Founder",
-    role: "Product & Engineering",
+    role: "CTO",
     name: "Pranav Chopra",
     description:
       "Pranav Chopra is a technology entrepreneur and co-founder of Optimist, building India-first climate tech cooling solutions to solve heat challenges. He drives product innovation and engineering execution with a focus on impact and scale.",

@@ -772,7 +772,7 @@ export default function ContactPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#f5f5f5] pt-24 pb-16 px-2 sm:px-6 lg:px-8"
+      className="min-h-screen bg-[#f5f5f5] pt-24 md:pt-28 lg:pt-32 pb-16 px-2 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
         {/* Main white container card */}
