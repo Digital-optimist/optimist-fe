@@ -239,15 +239,15 @@ export const ComparisonSection = memo(function ComparisonSection() {
       </div>
 
       {/* White Background Section for bottom half of AC images */}
-      <div className="relative bg-white h-[95px] md:h-[225px]" />
+      <div className="relative bg-white h-[95px] md:h-[200px] lg:min-h-[350px]" />
 
       {/* AC Product Images - Single merged image positioned to span both sections */}
       <div
         ref={imagesRef}
-        className="absolute bottom-0 left-0 right-5 md:right-10 z-[20] will-change-[transform,opacity]"
+        className="absolute bottom-0 left-0 right-5 md:right-10 lg:right-[60px] z-[20] will-change-[transform,opacity]"
       >
         <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
-          <div className="relative w-full h-[200px] md:h-[450px]">
+          <div className="relative w-full h-[200px] md:h-[450px] lg:h-[650px]">
             <Image
               src={ASSETS.acComparison}
               alt="Optimist AC vs Market AC comparison"
