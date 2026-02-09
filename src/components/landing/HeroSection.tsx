@@ -23,21 +23,25 @@ const scrollToSection = (elementId: string) => {
 
 function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
-    <div className="relative flex items-end justify-center w-full">
-      <motion.img
+    <motion.div
+      className="relative flex items-end justify-center w-full"
+      initial={{ opacity: 0, scale: 0.9, y: 40 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+      style={{
+        width: isMobile ? "90%" : "clamp(680px, 60vw, 1000px)",
+        maxWidth: isMobile ? "400px" : "1050px",
+      }}
+    >
+      <Image
         src={isMobile ? ASSETS.acHeroMobile : ASSETS.acHeroDesktop}
-        alt="Optimist AC"
-        className="object-contain"
-        style={{
-          width: isMobile ? "90%" : "clamp(680px, 60vw, 1000px)",
-          maxWidth: isMobile ? "400px" : "1050px",
-          height: "auto",
-        }}
-        initial={{ opacity: 0, scale: 0.9, y: 40 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+        alt="Optimist AC - India's highest ISEER rated air conditioner"
+        width={1050}
+        height={700}
+        className="object-contain w-full h-auto"
+        priority
       />
-    </div>
+    </motion.div>
   );
 }
 
@@ -225,15 +229,14 @@ export function HeroSection() {
 
           {/* Background - Mobile background image */}
           <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
-            {/* Mobile background image */}
-            <img
+            {/* Mobile background image - decorative */}
+            <Image
               src={ASSETS.heroMobileBg}
               alt=""
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{
-                objectFit: "cover",
-                objectPosition: "center",
-              }}
+              fill
+              sizes="100vw"
+              className="object-cover object-center pointer-events-none"
+              priority
             />
           </div>
 
@@ -268,6 +271,7 @@ export function HeroSection() {
                       width={56}
                       height={56}
                       className="w-12 h-12"
+                      priority
                     />
                     <div className="flex flex-col">
                       <span className="hero-badge-title text-optimist-cream">
@@ -358,15 +362,14 @@ export function HeroSection() {
             className="absolute inset-0 overflow-hidden"
             style={{ borderRadius: "0 0 0 0" }}
           >
-            {/* Desktop background image */}
-            <img
+            {/* Desktop background image - decorative */}
+            <Image
               src={ASSETS.heroDesktopBg}
               alt=""
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{
-                objectFit: "cover",
-                objectPosition: "center",
-              }}
+              fill
+              sizes="100vw"
+              className="object-cover object-center pointer-events-none"
+              priority
             />
             {/* Leaves video overlay - subtle effect */}
             <video
@@ -428,6 +431,7 @@ export function HeroSection() {
                         width={56}
                         height={56}
                         className="w-14 h-14"
+                        priority
                       />
                       <div className="flex flex-col">
                         <span className="hero-badge-title text-optimist-cream">

@@ -595,7 +595,6 @@ export function OptimistAppSection() {
                 height={1258}
                 className="w-full h-full"
                 style={{ transform: "scale(1.112)" }}
-                loading="lazy"
                 quality={75}
               />
             </div>
@@ -616,7 +615,6 @@ export function OptimistAppSection() {
                 height={753}
                 className="w-full h-full"
                 style={{ transform: "scale(1.187)" }}
-                loading="lazy"
                 quality={75}
               />
             </div>
@@ -656,7 +654,7 @@ export function OptimistAppSection() {
                   >
                     <Image
                       src={feature.handImage}
-                      alt="Optimist App"
+                      alt={`Optimist App - ${feature.title}`}
                       width={800}
                       height={700}
                       quality={85}
@@ -666,9 +664,6 @@ export function OptimistAppSection() {
                         objectPosition: "center center",
                       }}
                       priority={feature.id === "energy-meter"}
-                      loading={
-                        feature.id === "energy-meter" ? undefined : "lazy"
-                      }
                     />
                   </div>
                 );
@@ -746,7 +741,6 @@ export function OptimistAppSection() {
                 sizes="120vw"
                 className="w-full h-auto"
                 style={{ transform: "scale(1.112)" }}
-                loading="lazy"
                 quality={70}
               />
             </div>
@@ -762,7 +756,6 @@ export function OptimistAppSection() {
                 sizes="80vw"
                 className="w-full h-auto"
                 style={{ transform: "scale(1.187)" }}
-                loading="lazy"
                 quality={70}
               />
             </div>
@@ -850,7 +843,6 @@ export function OptimistAppSection() {
                 sizes="150vw"
                 className="w-full h-auto"
                 style={{ transform: "scale(1.112)" }}
-                loading="lazy"
                 quality={60}
               />
             </div>
@@ -867,7 +859,6 @@ export function OptimistAppSection() {
                 sizes="100vw"
                 className="w-full h-auto"
                 style={{ transform: "scale(1.187)" }}
-                loading="lazy"
                 quality={60}
               />
             </div>
