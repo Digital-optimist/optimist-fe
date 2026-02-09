@@ -238,7 +238,7 @@ export function BuiltForSection() {
               {/* Callout: Tracks energy - Top Right (blue) */}
               <motion.div
                 className="absolute flex flex-col items-end text-right"
-                style={{ right: "0", top: "20px" }}
+                style={{ right: "0", top: "120px" }}
                 variants={calloutVariants}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
