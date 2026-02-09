@@ -142,7 +142,7 @@ function SuccessView() {
 
   // Fetch the Lottie animation JSON from public folder
   useEffect(() => {
-    fetch("/Confetti.json")
+    fetch("/animations/Confetti.json")
       .then((res) => res.json())
       .then((data) => setConfettiData(data))
       .catch((err) => console.error("Failed to load confetti animation:", err));

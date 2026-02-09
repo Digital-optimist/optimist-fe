@@ -75,7 +75,7 @@ export function BreathworkSection() {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source
-            src="/68e6057dd670c86ab26c8544_Kore Hero Banner Ripple BG-transcode.mp4"
+            src="/animations/68e6057dd670c86ab26c8544_Kore Hero Banner Ripple BG-transcode.mp4"
             type="video/mp4"
           />
         </video>

@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import Link from "next/link";
 import Image from "next/image";
+import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
 // Blog CTA Section - "Want to know more about us?" with gradient background
@@ -105,7 +106,7 @@ export function BlogCTASection() {
             className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-[180px] h-[280px] md:w-[200px] md:h-[320px] lg:w-[220px] lg:h-[346px] xl:w-[222px] will-change-[transform,opacity]"
           >
             <Image
-              src="/blogs/Clip path group2.png"
+              src={ASSETS.clipPathGroup2}
               alt=""
               fill
               className="object-contain"

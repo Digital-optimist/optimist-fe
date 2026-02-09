@@ -336,7 +336,7 @@ export function Navigation() {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/logo-nav-mobile.svg"
+                    src="/icons/logo-nav-mobile.svg"
                     alt="Optimist"
                     width={95}
                     height={19}
@@ -360,7 +360,7 @@ export function Navigation() {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/logo-nav.svg"
+                    src="/icons/logo-nav.svg"
                     alt="Optimist"
                     width={149}
                     height={30}

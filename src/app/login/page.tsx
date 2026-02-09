@@ -183,7 +183,7 @@ export default function LoginPage() {
               transition={{ duration: 0.8, ease: [0.68, -0.55, 0.265, 1.55] }}
             >
               <Image
-                src="/signin/optimist-logo.svg"
+                src="/icons/optimist-logo.svg"
                 alt="Optimist"
                 width={52}
                 height={73}
@@ -336,7 +336,7 @@ export default function LoginPage() {
             {/* Logo */}
             <div className="absolute top-[84px] left-1/2 -translate-x-1/2">
               <Image
-                src="/signin/optimist-logo.svg"
+                src="/icons/optimist-logo.svg"
                 alt="Optimist"
                 width={26}
                 height={36}

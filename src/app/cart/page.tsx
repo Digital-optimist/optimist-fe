@@ -33,7 +33,7 @@ export default function CartPage() {
   );
 
   return (
-    <div ref={containerRef} className="min-h-screen pt-24 pb-16">
+    <div ref={containerRef} className="min-h-screen pt-24 md:pt-28 lg:pt-32 pb-16">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="animate-in mb-8">

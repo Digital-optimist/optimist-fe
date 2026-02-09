@@ -185,16 +185,18 @@ export function IndiaFirstSection() {
               className="relative bg-white border border-gray-200 rounded-[24px] md:rounded-[32px] overflow-hidden flex-1 min-h-[240px] md:min-h-[300px] lg:min-h-[340px] flex items-center justify-center will-change-[transform,opacity]"
             >
               {/* Star shape with palm tree video */}
-              <svg width="0" height="0" className="absolute">
-                <defs>
-                  <clipPath id="starClip" clipPathUnits="objectBoundingBox">
-                    <path d="M0.609 0.609C0.690 0.733 0.738 0.872 0.764 1.055L0.643 1.077C0.619 0.917 0.578 0.795 0.508 0.687C0.504 0.681 0.496 0.683 0.495 0.690C0.448 0.979 0.460 1.287 0.534 1.576H0.407C0.340 1.292 0.328 0.993 0.368 0.708C0.369 0.700 0.361 0.695 0.356 0.701C0.302 0.759 0.244 0.841 0.200 0.935L0.091 0.871C0.148 0.749 0.231 0.634 0.312 0.559C0.318 0.554 0.315 0.544 0.308 0.545C0.207 0.548 0.125 0.581 0.051 0.618L0 0.492C0.092 0.446 0.201 0.403 0.340 0.407C0.347 0.407 0.350 0.398 0.345 0.392C0.305 0.350 0.257 0.318 0.198 0.296L0.239 0.165C0.323 0.198 0.394 0.249 0.450 0.315C0.454 0.320 0.460 0.318 0.462 0.312C0.499 0.202 0.546 0.097 0.601 0L0.705 0.074C0.664 0.146 0.629 0.222 0.598 0.302C0.595 0.309 0.602 0.316 0.608 0.312C0.692 0.260 0.806 0.209 0.965 0.169L0.991 0.304C0.831 0.344 0.723 0.395 0.647 0.447C0.641 0.451 0.642 0.461 0.649 0.463C0.773 0.503 0.893 0.575 1 0.676L0.921 0.782C0.851 0.716 0.748 0.639 0.617 0.596C0.611 0.594 0.605 0.603 0.609 0.609Z" />
-                  </clipPath>
-                </defs>
-              </svg>
               <div
                 className="relative w-[80%] aspect-[349/311]"
-                style={{ clipPath: "url(#starClip)" }}
+                style={{
+                  WebkitMaskImage: "url(/Flower.svg)",
+                  maskImage: "url(/Flower.svg)",
+                  WebkitMaskSize: "contain",
+                  maskSize: "contain" as string,
+                  WebkitMaskRepeat: "no-repeat",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskPosition: "center",
+                }}
               >
                 <video
                   autoPlay

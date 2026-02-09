@@ -460,7 +460,7 @@ export default function ProductsPageClient({
       variants={pageVariants}
     >
       {/* Product Detail Section */}
-      <div ref={heroRef} className="pt-16 md:pt-20 lg:pt-24 pb-8 md:pb-16">
+      <div ref={heroRef} className="pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-16">
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Left Column - Image Gallery */}

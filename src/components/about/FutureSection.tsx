@@ -13,24 +13,24 @@ import { ASSETS } from "@/lib/assets";
 // Four pillars of the future
 const features = [
   {
-    icon: "/shield-slash.svg",
+    icon: ASSETS.shieldSlash,
     title: "Energy-efficient design",
     description:
       "World-class efficiency that reduces consumption from day one.",
   },
   {
-    icon: "/leaf.svg",
+    icon: ASSETS.leafIcon,
     title: "Sustained performance",
     description: "Consistent cooling at extreme temperatures, year after year.",
   },
   {
-    icon: "/hourglass.svg",
+    icon: ASSETS.hourglass,
     title: "Complete transparency",
     description:
       "Real-time visibility into energy use, gas levels, and system health.",
   },
   {
-    icon: "/hourglass.svg",
+    icon: ASSETS.hourglass,
     title: "Long-term value",
     description: "Built to perform for years. Designed to cost less over time.",
   },

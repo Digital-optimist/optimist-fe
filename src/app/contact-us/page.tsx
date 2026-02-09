@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Paperclip, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { submitContactForm } from "@/lib/shopify";
+import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
 // Types & Constants
@@ -772,7 +773,7 @@ export default function ContactPage() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#f5f5f5] pt-24 pb-16 px-2 sm:px-6 lg:px-8"
+      className="min-h-screen bg-[#f5f5f5] pt-24 md:pt-28 lg:pt-32 pb-16 px-2 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
         {/* Main white container card */}
@@ -814,7 +815,7 @@ export default function ContactPage() {
                   {/* Image */}
                   <div className="absolute bottom-0 left-0 right-0">
                     <Image
-                      src="/contact-us/sleeping-woman.png"
+                      src={ASSETS.sleepingWoman}
                       alt="Happy customer"
                       width={432}
                       height={300}

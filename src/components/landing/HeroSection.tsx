@@ -25,7 +25,7 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
     <div className="relative flex items-end justify-center w-full">
       <motion.img
-        src={isMobile ? "/ACHeroMobile.png" : "/ACHeroDesktop.png"}
+        src={isMobile ? ASSETS.acHeroMobile : ASSETS.acHeroDesktop}
         alt="Optimist AC"
         className="object-contain"
         style={{
@@ -189,9 +189,11 @@ export function HeroSection() {
   );
 
   // Use CSS-based responsive sizing for SSR, only switch to JS-based after mount
+  // Note: Using 'svh' (small viewport height) on mobile instead of 'dvh' to prevent
+  // height changes when the navigation header hides/shows on scroll
   const sectionStyle = isMounted
     ? {
-        height: isMobile ? "85dvh" : "82vh",
+        height: isMobile ? "85svh" : "82vh",
         minHeight: isMobile ? "550px" : "500px",
       }
     : {
@@ -225,7 +227,7 @@ export function HeroSection() {
           <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
             {/* Mobile background image */}
             <img
-              src="/Heromobilebg.png"
+              src={ASSETS.heroMobileBg}
               alt=""
               className="absolute inset-0 w-full h-full pointer-events-none"
               style={{
@@ -358,7 +360,7 @@ export function HeroSection() {
           >
             {/* Desktop background image */}
             <img
-              src="/Herodesktopbg.png"
+              src={ASSETS.heroDesktopBg}
               alt=""
               className="absolute inset-0 w-full h-full pointer-events-none"
               style={{
@@ -369,7 +371,7 @@ export function HeroSection() {
             {/* Leaves video overlay - subtle effect */}
             <video
               ref={leafVideoRef1}
-              src="/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
+              src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
               autoPlay
               loop
               muted

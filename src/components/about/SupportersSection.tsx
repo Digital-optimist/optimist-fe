@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useAnimationControls, useInView } from "framer-motion";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
+import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
 // Supporters Section - Infinite horizontal scroll marquee with smooth animation
@@ -15,42 +16,42 @@ const supporters = [
   {
     id: 1,
     name: "IIT",
-    logo: "/supporters/iit-logo.png",
+    logo: ASSETS.iitLogo,
   },
   {
     id: 2,
     name: "CEPT University",
-    logo: "/supporters/cept-university.png",
+    logo: ASSETS.ceptUniversity,
   },
   {
     id: 3,
     name: "IIHS",
-    logo: "/supporters/iihs.png",
+    logo: ASSETS.iihs,
   },
   {
     id: 4,
     name: "Accel",
-    logo: "/supporters/accel.png",
+    logo: ASSETS.accelLogo,
   },
   {
     id: 5,
     name: "Sparrow",
-    logo: "/supporters/sparrow.png",
+    logo: ASSETS.sparrowLogo,
   },
   {
     id: 6,
     name: "Spectrum Impact",
-    logo: "/supporters/spectrum-impact.png",
+    logo: ASSETS.spectrumImpact,
   },
   {
     id: 7,
     name: "Arkam Ventures",
-    logo: "/supporters/arkam-ventures.png",
+    logo: ASSETS.arkamVentures,
   },
   {
     id: 8,
     name: "Spectrum Impact",
-    logo: "/supporters/spectrum-impact.png",
+    logo: ASSETS.spectrumImpact,
   },
 ];
 

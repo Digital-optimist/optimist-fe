@@ -21,7 +21,7 @@ export default function ReturnPolicyPage() {
   );
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-white pt-24 pb-16">
+    <div ref={containerRef} className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
       <div ref={contentRef} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

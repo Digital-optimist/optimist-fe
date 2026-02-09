@@ -20,17 +20,17 @@ const teamData = [
     description:
       "Ashish Goel is a climate-tech builder and evangelist, former Founder & CEO of Urban Ladder, and a 5× Fortune 40 Under 40 awardee, now focused on building practical, engineering-led solutions for India's climate challenges.",
     image: ASSETS.team1,
-    previousCompanies: ["/accel.svg", "/sparrow.svg", "/spectrum.svg"],
+    previousCompanies: ["/icons/accel.svg", "/icons/sparrow.svg", "/icons/spectrum.svg"],
   },
   {
     id: 2,
     title: "Co-Founder",
-    role: "Product & Engineering",
+    role: "CTO",
     name: "Pranav Chopra",
     description:
       "Pranav Chopra is a technology entrepreneur and co-founder of Optimist, building India-first climate tech cooling solutions to solve heat challenges. He drives product innovation and engineering execution with a focus on impact and scale.",
     image: ASSETS.team2,
-    previousCompanies: ["/accel.svg", "/sparrow.svg"],
+    previousCompanies: ["/icons/accel.svg", "/icons/sparrow.svg"],
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ const teamData = [
     description:
       "Manjunath Vittala Rao is the Chief Innovation Officer at Optimist, leading innovation and standards-led quality thinking as the company builds India-first, high-performance cooling for real heat conditions.",
     image: ASSETS.team3,
-    previousCompanies: ["/spectrum.svg"],
+    previousCompanies: ["/icons/spectrum.svg"],
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const teamData = [
     description:
       "Prof. Anurag Goyal is an advisor at Optimist, bringing deep research and practical insight from his work on HVAC, heat transfer, and energy storage as an Assistant Professor of Mechanical Engineering at IIT Delhi, grounded in rigorous engineering principles.",
     image: ASSETS.team4,
-    previousCompanies: ["/accel.svg"],
+    previousCompanies: ["/icons/accel.svg"],
   },
 ];
 

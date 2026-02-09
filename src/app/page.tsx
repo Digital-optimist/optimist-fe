@@ -50,16 +50,8 @@ export default function HomePage() {
       {/* Hero Section - Immediate display, no delay */}
       <HeroSection />
       
-      {/* Animated sections with staggered reveal */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        custom={0}
-        variants={sectionVariants}
-      >
-        <BenefitsSection />
-      </motion.div>
+      {/* BenefitsSection handles its own scroll-triggered reveal via GSAP */}
+      <BenefitsSection />
       
       <motion.div
         initial="hidden"
