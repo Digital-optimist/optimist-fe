@@ -25,17 +25,17 @@ interface ResultFeature {
 
 const RESULT_FEATURES: ResultFeature[] = [
   {
-    icon: <SnowflakeIcon className="w-6 h-6 text-[#3478F6]" />,
+    icon: <SnowflakeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#3478F6]" />,
     title: "Consistent cooling",
     description: "No peaks. No drops.",
   },
   {
-    icon: <PiggyBankIcon className="w-6 h-6 text-[#3478F6]" />,
+    icon: <PiggyBankIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#3478F6]" />,
     title: "Lower running cost",
     description: "Efficiency that holds.",
   },
   {
-    icon: <PersonWalkIcon className="w-6 h-6 text-[#3478F6]" />,
+    icon: <PersonWalkIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#3478F6]" />,
     title: "Less to manage",
     description: "It just works.",
   },
@@ -51,18 +51,18 @@ interface FeatureCardProps {
 
 const FeatureCard = memo(function FeatureCard({ feature }: FeatureCardProps) {
   return (
-    <div className="bg-black/[0.04] flex flex-col gap-2 md:gap-3 items-center p-4 md:p-6 rounded-xl w-full md:w-[436px] flex-shrink-0">
+    <div className="bg-black/[0.04] flex flex-col gap-2 sm:gap-2.5 md:gap-3 items-center p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg sm:rounded-xl w-full h-full">
       {/* Icon Container */}
-      <div className="bg-[rgba(52,120,246,0.12)] flex items-center justify-center rounded-full w-11 h-11 md:w-12 md:h-12">
+      <div className="bg-[rgba(52,120,246,0.12)] flex items-center justify-center rounded-full w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12">
         {feature.icon}
       </div>
       
       {/* Text Content */}
-      <div className="flex flex-col gap-1 md:gap-2 items-center text-center">
-        <h3 className="font-display text-base md:text-2xl font-semibold text-black">
+      <div className="flex flex-col gap-0.5 sm:gap-1 md:gap-2 items-center text-center">
+        <h3 className="font-display text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-black leading-tight">
           {feature.title}
         </h3>
-        <p className="text-sm md:text-base text-[#6c6a6a] font-light">
+        <p className="text-xs xs:text-sm sm:text-sm md:text-base text-[#6c6a6a] font-light leading-relaxed">
           {feature.description}
         </p>
       </div>
@@ -138,24 +138,30 @@ export const ResultSection = memo(function ResultSection() {
   return (
     <section 
       ref={sectionRef}
-      className="w-full py-12 md:py-16 lg:py-20 bg-white"
+      className="w-full py-8 xs:py-10 sm:py-12 md:py-16 lg:py-20 xl:py-24 bg-white"
       aria-labelledby="result-heading"
     >
-      <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
+      <div className="w-full max-w-[1440px] mx-auto px-4 xs:px-5 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Title */}
         <h2 
           ref={titleRef}
           id="result-heading"
-          className="font-display text-[32px] md:text-[40px] font-semibold text-black text-center mb-7 md:mb-10 will-change-[transform,opacity]"
+          className="font-display text-2xl xs:text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] xl:text-[44px] font-semibold text-black text-center mb-5 xs:mb-6 sm:mb-7 md:mb-8 lg:mb-10 will-change-[transform,opacity]"
         >
           The Result.
         </h2>
         
         {/* Feature Cards Container */}
-        {/* Mobile: Vertical stack, Desktop: Horizontal row */}
-        <div ref={cardsRef} className="flex flex-col md:flex-row gap-4 md:gap-[26px] items-center justify-center w-full">
+        {/* Mobile: Single column, Tablet: 2 columns, Desktop: 3 columns row */}
+        <div 
+          ref={cardsRef} 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 md:gap-6 lg:gap-[26px] w-full max-w-[400px] sm:max-w-none mx-auto"
+        >
           {RESULT_FEATURES.map((feature, index) => (
-            <div key={index} className="result-card will-change-[transform,opacity] w-full md:w-auto">
+            <div 
+              key={index} 
+              className="result-card will-change-[transform,opacity] w-full"
+            >
               <FeatureCard feature={feature} />
             </div>
           ))}
