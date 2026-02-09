@@ -104,17 +104,16 @@ export function IndiaFirstSection() {
                 "linear-gradient(180deg, #000000 0%, #1a1a1a 40%, #666666 70%, #cccccc 90%, #f5f5f5 100%)",
             }}
           >
-            {/* Background Image Layer */}
-            <div
-              className="absolute inset-0 z-0"
-              style={{
-                backgroundImage: `url("${ASSETS.ellipse1}")`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                opacity: 0.3,
-              }}
-            />
+            {/* Background Image Layer - decorative */}
+            <div className="absolute inset-0 z-0 opacity-30">
+              <Image
+                src={ASSETS.ellipse1}
+                alt=""
+                fill
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                className="object-cover object-center"
+              />
+            </div>
 
             {/* Content */}
             <div className="relative z-10 p-6 md:p-10 lg:p-12">
@@ -151,28 +150,15 @@ export function IndiaFirstSection() {
               </div>
             </div>
 
-            {/* AC Image - Positioned at bottom right */}
-            {/* Mobile AC Image */}
-            <div className="absolute bottom-[-12px] right-0 w-[76%] md:hidden">
+            {/* AC Image - Positioned at bottom right, responsive sizing */}
+            <div className="absolute bottom-[-12px] md:bottom-0 right-0 md:right-[-3%] w-[76%] md:w-[80%] lg:w-[65%]">
               <Image
                 src={ASSETS.acTilt}
-                alt="Optimist AC Unit"
-                width={500}
-                height={50}
-                className="object-cover"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Desktop AC Image */}
-            <div className="hidden md:block absolute bottom-0 right-[-3%] w-[80%] lg:w-[65%]">
-              <Image
-                src={ASSETS.acTilt}
-                alt="Optimist AC Unit"
+                alt="Optimist AC Unit with built-in gas level indicator"
                 width={800}
-                height={400}
-                className="w-full h-auto"
-                loading="lazy"
+                height={500}
+                sizes="(max-width: 768px) 76vw, (max-width: 1024px) 80vw, 65vw"
+                className="w-full h-auto object-contain"
               />
             </div>
           </div>
@@ -188,8 +174,8 @@ export function IndiaFirstSection() {
               <div
                 className="relative w-[80%] aspect-[349/311]"
                 style={{
-                  WebkitMaskImage: "url(/Flower.svg)",
-                  maskImage: "url(/Flower.svg)",
+                  WebkitMaskImage: "url(/icons/Flower.svg)",
+                  maskImage: "url(/icons/Flower.svg)",
                   WebkitMaskSize: "contain",
                   maskSize: "contain" as string,
                   WebkitMaskRepeat: "no-repeat",
@@ -251,7 +237,6 @@ export function IndiaFirstSection() {
                     width={56}
                     height={56}
                     className="w-12 h-12 md:w-14 md:h-14"
-                    loading="lazy"
                   />
                   <div>
                     <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold text-white leading-tight">

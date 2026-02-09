@@ -174,8 +174,8 @@ export const ComparisonSection = memo(function ComparisonSection() {
               src={ASSETS.comparisonShadowBg}
               alt=""
               fill
+              sizes="100vw"
               className="object-top opacity-[0.3]"
-              loading="lazy"
             />
           </div>
         </div>
@@ -252,8 +252,8 @@ export const ComparisonSection = memo(function ComparisonSection() {
               src={ASSETS.acComparison}
               alt="Optimist AC vs Market AC comparison"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1440px) 90vw, 1440px"
               className="object-contain object-bottom"
-              loading="lazy"
             />
           </div>
         </div>

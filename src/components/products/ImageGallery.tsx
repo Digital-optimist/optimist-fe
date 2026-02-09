@@ -151,7 +151,6 @@ export const ImageGallery = memo(function ImageGallery({
                   fill
                   sizes="84px"
                   className="object-cover rounded-[12px]"
-                  loading="lazy"
                 />
                 {/* Faded overlay for non-selected thumbnails */}
                 {!isSelected && (
