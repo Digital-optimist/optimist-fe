@@ -14,7 +14,7 @@ import { ASSETS } from "@/lib/assets";
 const teamData = [
   {
     id: 1,
-    title: "Founder",
+    title: "Co-Founder",
     role: "CEO & Director",
     name: "Ashish Goel",
     description:
