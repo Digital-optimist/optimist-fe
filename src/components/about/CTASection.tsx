@@ -82,8 +82,7 @@ export function CTASection() {
             href="#"
             className="group relative flex items-center justify-center gap-2.5 min-w-[180px] sm:min-w-[200px] md:min-w-[220px] lg:min-w-[241px] w-auto px-8 md:px-10 lg:px-[48px] h-[52px] sm:h-[56px] md:h-[60px] lg:h-[64px] rounded-[36px] overflow-hidden shrink-0 will-change-[transform,opacity] transition-transform duration-300 hover:scale-[1.03]"
             style={{
-              background:
-                "linear-gradient(171.86deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+              background: "#3478F6",
             }}
           >
             {/* Button Text */}
