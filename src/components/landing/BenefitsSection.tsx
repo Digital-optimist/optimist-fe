@@ -11,7 +11,7 @@ const benefits = [
   {
     id: 1,
     badge: "Worried about AC bill shocks?",
-    headline: "India's Most\nEnergy-Efficient AC",
+    headline: "India’s #1 Rated Energy Efficient AC",
     description: "Lowest electricity consumption every single day.",
     variant: "light" as const,
     mobileAsset: ASSETS.benf1Ass1,
@@ -407,14 +407,15 @@ export function BenefitsSection() {
             ref={headerRef}
             className="mb-6 md:mb-8 will-change-[transform,opacity]"
           >
-            <p className="text-sm md:text-base text-[#212121] mb-2">
-              New Generation of AC
-            </p>
             <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
-              Everything you need. Nothing you don&apos;t.
+              Best Cooling. Lowest Bills.
+              <br />
+              Designed for Tomorrow.
             </h2>
             <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
-              Everything you need. Nothing you don&apos;t.
+              Best Cooling. Lowest Bills.
+              <br />
+              Designed for Tomorrow.
             </h2>
           </div>
 

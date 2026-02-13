@@ -120,13 +120,13 @@ export function IndiaFirstSection() {
               {/* Headline */}
               <h2 className="font-display text-[#AEFFD8] text-[32px] leading-[36px] md:text-[48px] md:leading-[52px] lg:text-[92px] lg:leading-[92px] font-[600] mb-4 md:mb-6">
                 <span>
-                  Built-in gas level
+                  Live Gas Level
                   <br />
-                  indicator.
+                  Indicator.
                 </span>
               </h2>
               <p className="font-display text-[24px] leading-[28px] md:text-[32px] md:leading-[36px] lg:text-[40px] lg:leading-[44px] font-bold text-optimist-headline mb-6 md:mb-8">
-                See when service is needed.
+                0 Surprises. 100% Control.
               </p>
 
               {/* Buttons */}
@@ -240,10 +240,10 @@ export function IndiaFirstSection() {
                   />
                   <div>
                     <p className="font-display text-[24px] md:text-[28px] lg:text-[32px] font-bold text-white leading-tight">
-                      India&apos;s 1st
+                      India’s #1 Rated
                     </p>
                     <p className="text-sm md:text-base text-white/90 font-medium">
-                      Highest ISEER
+                      Energy Efficient AC.
                     </p>
                   </div>
                 </div>

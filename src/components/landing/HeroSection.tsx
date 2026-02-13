@@ -255,7 +255,7 @@ export function HeroSection() {
                   className="hero-headline hero-headline-size"
                   style={{ perspective: "1000px" }}
                 >
-                  <span className="block">The Real AC </span>
+                  <span className="block">India’s Real AC </span>
                   <span className="block text-[36px] leading-[36px]">
                     Compromise ends here.
                   </span>
@@ -263,29 +263,6 @@ export function HeroSection() {
 
                 {/* Badges Row */}
                 <div ref={badgesRef} className="flex items-center gap-3 mt-6">
-                  {/* ISEER Badge */}
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={ASSETS.fiveStarRating}
-                      alt="5 Star ISEER Rating"
-                      width={56}
-                      height={56}
-                      className="w-12 h-12"
-                      priority
-                    />
-                    <div className="flex flex-col">
-                      <span className="hero-badge-title text-optimist-cream">
-                        Highest ISEER
-                      </span>
-                      <span className="hero-badge-subtitle text-optimist-cream-muted">
-                        In India
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Vertical Divider */}
-                  <div className="h-8 w-px bg-white/20" />
-
                   {/* Rating Badge */}
                   <div className="flex items-center gap-2">
                     <svg
@@ -303,10 +280,33 @@ export function HeroSection() {
 
                     <div className="flex flex-col">
                       <span className="hero-badge-title text-optimist-cream">
-                        4.8 rated
+                        No BS. Proven Cooling at 50°C{" "}
                       </span>
                       <span className="hero-badge-subtitle text-optimist-cream-muted">
                         by early users
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Vertical Divider */}
+                  <div className="h-8 w-px bg-white/20" />
+
+                  {/* ISEER Badge */}
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={ASSETS.fiveStarRating}
+                      alt="5 Star ISEER Rating"
+                      width={56}
+                      height={56}
+                      className="w-12 h-12"
+                      priority
+                    />
+                    <div className="flex flex-col">
+                      <span className="hero-badge-title text-optimist-cream">
+                        India’s #1 Rated Energy Efficient
+                      </span>
+                      <span className="hero-badge-subtitle text-optimist-cream-muted">
+                        AC. Try Us!
                       </span>
                     </div>
                   </div>
@@ -415,7 +415,7 @@ export function HeroSection() {
                     className="hero-headline hero-headline-size"
                     style={{ perspective: "1000px" }}
                   >
-                    <span className="block">The Real AC </span>
+                    <span className="block">India’s Real AC </span>
                     <span className="block  text-[54px] mt-1 leading-[54px] font-[600]">
                       Compromise ends here.
                     </span>
@@ -423,29 +423,6 @@ export function HeroSection() {
 
                   {/* Badges Row */}
                   <div ref={badgesRef} className="flex items-center gap-6 mt-6">
-                    {/* ISEER Badge */}
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={ASSETS.fiveStarRating}
-                        alt="5 Star ISEER Rating"
-                        width={56}
-                        height={56}
-                        className="w-14 h-14"
-                        priority
-                      />
-                      <div className="flex flex-col">
-                        <span className="hero-badge-title text-optimist-cream">
-                          Highest ISEER
-                        </span>
-                        <span className="hero-badge-subtitle text-optimist-cream-muted">
-                          In India
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Vertical Divider */}
-                    <div className="h-11 w-px bg-white/20" />
-
                     {/* Rating Badge */}
                     <div className="flex items-center gap-3">
                       <svg
@@ -463,10 +440,33 @@ export function HeroSection() {
 
                       <div className="flex flex-col">
                         <span className="hero-badge-title text-optimist-cream">
-                          4.8 rated
+                          No BS. Proven Cooling at 50°C
                         </span>
                         <span className="hero-badge-subtitle text-optimist-cream-muted">
                           by early users
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Vertical Divider */}
+                    <div className="h-11 w-px bg-white/20" />
+
+                    {/* ISEER Badge */}
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={ASSETS.fiveStarRating}
+                        alt="5 Star ISEER Rating"
+                        width={56}
+                        height={56}
+                        className="w-14 h-14"
+                        priority
+                      />
+                      <div className="flex flex-col">
+                        <span className="hero-badge-title text-optimist-cream">
+                          India’s #1 Rated Energy Efficient
+                        </span>
+                        <span className="hero-badge-subtitle text-optimist-cream-muted">
+                          AC. Try Us!
                         </span>
                       </div>
                     </div>
@@ -485,7 +485,7 @@ export function HeroSection() {
                     onClick={openModal}
                     className="btn-buy-now-hero hero-btn-desktop text-[#1265FF] flex items-center justify-center"
                   >
-                    Buy Now
+                    Join the Waitlist
                   </button>
                 </div>
               </div>

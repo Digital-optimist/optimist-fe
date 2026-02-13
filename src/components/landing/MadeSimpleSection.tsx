@@ -120,7 +120,7 @@ export function MadeSimpleSection() {
                   backgroundClip: "text",
                 }}
               >
-                Made simple.
+                Made minimal.
                 <br />
                 Nothing more,
                 <br />

@@ -305,7 +305,9 @@ function MobileFeatureCard({
           <p
             className="font-display text-[10px] xs:text-[11px] sm:text-[12px] md:text-[13px] leading-normal transition-colors duration-300"
             style={{
-              color: isActive ? "rgba(52, 120, 246, 0.6)" : "rgba(0, 0, 0, 0.6)",
+              color: isActive
+                ? "rgba(52, 120, 246, 0.6)"
+                : "rgba(0, 0, 0, 0.6)",
             }}
           >
             {feature.description}
@@ -676,14 +678,14 @@ export function OptimistAppSection() {
               className="absolute left-1/2 -translate-x-1/2 text-center z-10 will-change-[transform,opacity] px-4"
               style={{
                 top: `${Math.max(30, 43 * scale)}px`,
-                width: `${Math.min(444, containerWidth * 0.4)}px`,
+                width: `${Math.min(600, containerWidth * 0.5)}px`,
               }}
             >
               <h2
                 className="font-display font-bold text-black leading-none mb-2 lg:mb-[14px]"
                 style={{ fontSize: `${Math.max(28, 40 * scale)}px` }}
               >
-                Optimist App
+                Optimist App - Designed for Tomorrow.
               </h2>
               <p
                 className="font-display leading-normal"
@@ -692,7 +694,7 @@ export function OptimistAppSection() {
                   fontSize: `${Math.max(16, 20 * scale)}px`,
                 }}
               >
-                Your full-control panel, right in your hand.
+                Control. Track. Predict. From Anywhere.
               </p>
             </div>
 
@@ -764,13 +766,13 @@ export function OptimistAppSection() {
           {/* Header - Tablet - reduced top padding */}
           <div className="relative bg-white z-10 text-center pt-8 px-6">
             <h2 className="font-display text-[32px] font-bold text-black leading-none mb-2">
-              Optimist App
+              Optimist App - Designed for Tomorrow.
             </h2>
             <p
               className="font-display text-[16px] leading-normal max-w-sm mx-auto"
               style={{ color: "rgba(0,0,0,0.42)" }}
             >
-              Your full-control panel, right in your hand.
+              Control. Track. Predict. From Anywhere.
             </p>
           </div>
 
@@ -869,13 +871,13 @@ export function OptimistAppSection() {
             className="relative bg-white z-10 text-center pt-[43px] px-4"
           >
             <h2 className="font-display text-[28px] xs:text-[30px] sm:text-[32px] font-bold text-black leading-none mb-3">
-              Optimist App
+              Optimist App - Designed for Tomorrow.
             </h2>
             <p
               className="font-display text-[15px] xs:text-[16px] sm:text-[16px] leading-normal"
               style={{ color: "rgba(0,0,0,0.42)" }}
             >
-              Your full-control panel, right in your hand.
+              Control. Track. Predict. From Anywhere.
             </p>
           </div>
 

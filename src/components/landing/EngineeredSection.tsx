@@ -517,11 +517,11 @@ export function EngineeredSection() {
                 backgroundClip: "text",
               }}
             >
-              The intelligence you don&apos;t see.
+              Engineered for Extremes.
             </span>
             <br />
             <span className="font-[600] text-[#1A1A1A]">
-              The performance you will.
+              The performance you will feel.
             </span>
           </h2>
 

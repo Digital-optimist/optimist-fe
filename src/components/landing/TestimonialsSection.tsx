@@ -212,10 +212,8 @@ export function TestimonialsSection() {
           className="text-center mb-10 md:mb-14 will-change-[transform,opacity]"
         >
           <h2 className="font-display text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-            Hear it from people who{" "}
-            <span className="text-optimist-blue-primary">
-              actually live with it.
-            </span>
+            Real Stories From{" "}
+            <span className="text-optimist-blue-primary">India’s Real AC.</span>
           </h2>
         </div>
 

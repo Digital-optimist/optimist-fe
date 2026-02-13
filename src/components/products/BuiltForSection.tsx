@@ -99,7 +99,7 @@ export function BuiltForSection() {
           variants={sectionVariants}
         >
           <p className="text-[#3478F6] text-sm md:text-base mb-2">
-            Product Callout
+            India’s Real AC{" "}
           </p>
           <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black">
             Your Optimist
@@ -147,29 +147,29 @@ export function BuiltForSection() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <p className="font-semibold text-[32px] leading-normal text-black">
-                  Cools consistently
+                  Tested to cool
                 </p>
                 <p className="font-semibold text-[32px] leading-normal text-[#3478F6]">
-                  at 45°C
+                  at 50°C
                 </p>
               </motion.div>
 
-              {/* Callout: Tracks energy - Top Right (blue) */}
+              {/* Callout: Live Energy Meter - Top Right (blue) */}
               <motion.div
                 className="absolute flex flex-col items-start"
                 style={{ right: "0px", top: "122px", width: "324px" }}
                 variants={calloutVariants}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <p className="font-semibold text-[32px] leading-normal text-[#3478F6]">
-                  Tracks energy
+                <p className="font-semibold text-[32px] leading-normal text-black">
+                  Live Energy
                 </p>
                 <p className="font-semibold text-[32px] leading-normal text-[#3478F6]">
-                  in real-time
+                  Meter
                 </p>
               </motion.div>
 
-              {/* Callout: Shows exact gas levels - Bottom Left */}
+              {/* Callout: Live Gas Level Indicator - Bottom Left */}
               <motion.div
                 className="absolute flex flex-col items-start"
                 style={{ left: "208px", bottom: 0, width: "324px" }}
@@ -177,10 +177,10 @@ export function BuiltForSection() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <p className="font-semibold text-[32px] leading-normal text-black">
-                  Shows exact
+                  Live Gas Level
                 </p>
                 <p className="font-semibold text-[32px] leading-normal text-[#3478F6]">
-                  gas levels
+                  Indicator
                 </p>
               </motion.div>
             </motion.div>
@@ -228,29 +228,29 @@ export function BuiltForSection() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <p className="font-semibold text-base leading-normal text-black">
-                  Cools consistently
+                  Tested to cool
                 </p>
                 <p className="font-semibold text-base leading-normal text-[#3478F6]">
-                  at 45°C
+                  at 50°C
                 </p>
               </motion.div>
 
-              {/* Callout: Tracks energy - Top Right (blue) */}
+              {/* Callout: Live Energy Meter - Top Right */}
               <motion.div
                 className="absolute flex flex-col items-end text-right"
                 style={{ right: "0", top: "120px" }}
                 variants={calloutVariants}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <p className="font-semibold text-base leading-normal text-[#3478F6]">
-                  Tracks energy
+                <p className="font-semibold text-base leading-normal text-black">
+                  Live Energy
                 </p>
                 <p className="font-semibold text-base leading-normal text-[#3478F6]">
-                  in real-time
+                  Meter
                 </p>
               </motion.div>
 
-              {/* Callout: Shows exact gas levels - Bottom Left */}
+              {/* Callout: Live Gas Level Indicator - Bottom Left */}
               <motion.div
                 className="absolute flex flex-col items-start"
                 style={{ left: "0", bottom: "20px" }}
@@ -258,10 +258,10 @@ export function BuiltForSection() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <p className="font-semibold text-base leading-normal text-black">
-                  Shows exact
+                  Live Gas Level
                 </p>
                 <p className="font-semibold text-base leading-normal text-[#3478F6]">
-                  gas levels
+                  Indicator
                 </p>
               </motion.div>
             </motion.div>
@@ -285,7 +285,7 @@ export function BuiltForSection() {
             </p>
             <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight mt-1">
               <span className="text-[#3478F6]">
-                Nothing that gets in the way.
+                Nothing more, nothing less.
               </span>
             </p>
           </div>
