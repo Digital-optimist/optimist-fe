@@ -255,10 +255,10 @@ export function HeroSection() {
                   className="hero-headline hero-headline-size"
                   style={{ perspective: "1000px" }}
                 >
-                  <span className="block">The Real AC </span>
-                  <span className="block text-[36px] leading-[36px]">
+                  <span className="block">India’s Real AC </span>
+                  {/* <span className="block text-[36px] leading-[36px]">
                     Compromise ends here.
-                  </span>
+                  </span> */}
                 </h1>
 
                 {/* Badges Row */}
@@ -415,10 +415,10 @@ export function HeroSection() {
                     className="hero-headline hero-headline-size"
                     style={{ perspective: "1000px" }}
                   >
-                    <span className="block">The Real AC </span>
-                    <span className="block  text-[54px] mt-1 leading-[54px] font-[600]">
+                    <span className="block">India’s Real AC</span>
+                    {/* <span className="block  text-[54px] mt-1 leading-[54px] font-[600]">
                       Compromise ends here.
-                    </span>
+                    </span> */}
                   </h1>
 
                   {/* Badges Row */}
