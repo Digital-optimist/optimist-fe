@@ -20,20 +20,21 @@ const isIOSSafari = () => {
 const features = [
   {
     id: 1,
-    badge: "ISEER 6.02",
-    badgeIcon: ASSETS.starIcon,
-    headline: "Lowest AC Bills. Proven.",
-    description: "Smart Energy Meter in App",
-    image: ASSETS.ac1,
-  },
-  {
-    id: 2,
     badge: "135% Capacity Boost",
     badgeIcon: ASSETS.rocketLaunchIcon,
     headline: "Turbo+ Mode. 42°C → 25°C, Fastest.",
     description: "2 Tons of Cooling in a 1.5 Ton AC.",
     image: ASSETS.ac3,
   },
+  {
+    id: 2,
+    badge: "ISEER 6.02",
+    badgeIcon: ASSETS.starIcon,
+    headline: "Lowest AC Bills. Proven.",
+    description: "Smart Energy Meter in App",
+    image: ASSETS.ac1,
+  },
+
   {
     id: 3,
     badge: "Comprehensive",
