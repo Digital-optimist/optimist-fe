@@ -22,7 +22,7 @@ const features = [
     id: 1,
     badge: "135% Capacity Boost",
     badgeIcon: ASSETS.rocketLaunchIcon,
-    headline: "Turbo+ Mode. 42°C → 25°C, Fastest.",
+    headline: "Turbo+ Mode.\n42°C → 25°C, Fastest.",
     description: "2 Tons of Cooling in a 1.5 Ton AC.",
     image: ASSETS.ac3,
   },
