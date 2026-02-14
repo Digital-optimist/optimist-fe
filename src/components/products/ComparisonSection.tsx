@@ -14,48 +14,33 @@ import { CheckCircleIcon, XCircleIcon } from "@/components/icons/ProductIcons";
 const COMPARISON_DATA = [
   {
     category: "Extreme heat cooling",
-    optimist: "Operates up to 50°C",
-    market: "Cooling drops beyond 40°C",
+    optimist: "Tested to deliver full cooling at 50°C",
+    market: "Only claims, rarely tested beyond 43°C",
   },
   {
-    category: "True 1.5 Ton output",
-    optimist: "Rated capacity disclosed on BEE label and delivered",
-    market: "Often sold as 1.5 Ton, rated capacity lower",
+    category: "Turbo cooling",
+    optimist: "Turbo+ delivers real 2 Ton cooling in a 1.5 Ton AC",
+    market: "Turbo mostly increases fan speed",
   },
   {
-    category: "Quick cooling",
-    optimist: "Turbo+ delivers up to 2 Tons in a 1.5 Ton AC",
-    market: "Turbo mainly increases fan speed",
-  },
-  {
-    category: "Annual energy use",
-    optimist: "Lower consumption due to reduced heat derating",
-    market: "Higher consumption in peak heat",
-  },
-  {
-    category: "Heat exchanger durability",
-    optimist: "1000-hour salt spray tested",
-    market: "~72-hour salt spray testing",
-  },
-  {
-    category: "Heat exchanger warranty",
-    optimist: "5-year warranty",
-    market: "Usually 1 year",
+    category: "Energy efficiency",
+    optimist: "Lower electricity bills even in peak summer (ISEER rated)",
+    market: "Efficiency drops, bills rise in peak heat",
   },
   {
     category: "Gas visibility",
-    optimist: "Built-in gas level indicator",
-    market: "No visibility",
+    optimist: "Built-in Gas Level Indicator. No guesswork.",
+    market: "No gas visibility, service dependent",
   },
   {
-    category: "Service dependency",
-    optimist: "Fewer unnecessary gas refill claims",
-    market: "Higher risk of extra service charges",
+    category: "Warranty",
+    optimist: "5 Years All-Inclusive Warranty. No hidden charges.",
+    market: "Hidden charges, AMC push",
   },
   {
-    category: "Long-term cost",
-    optimist: "Predictable over years",
-    market: "Often higher and variable",
+    category: "Durability",
+    optimist: "1000-hour salt spray tested",
+    market: "~72-hour salt spray testing",
   },
 ] as const;
 
