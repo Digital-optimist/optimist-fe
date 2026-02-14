@@ -279,14 +279,10 @@ export function BuiltForSection() {
           {/* Outcome */}
           <div className="font-display text-center md:text-left">
             <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight">
-              <span className="text-black">
-                Everything you need to stay cool.
-              </span>
+              <span className="text-black">Nothing more,</span>
             </p>
             <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight mt-1">
-              <span className="text-[#3478F6]">
-                Nothing more, nothing less.
-              </span>
+              <span className="text-[#3478F6]">nothing less.</span>
             </p>
           </div>
 
