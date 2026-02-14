@@ -24,43 +24,37 @@ export function CTASection() {
 
   useGSAP(
     () => {
-      gsap.to(
-        topCardRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-          scrollTrigger: {
-            trigger: topCardRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        }
-      );
+      gsap.to(topCardRef.current, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        ease: "power3.out",
+        force3D: true,
+        scrollTrigger: {
+          trigger: topCardRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+          once: true,
+        },
+      });
 
-      gsap.to(
-        bottomGridRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-          scrollTrigger: {
-            trigger: bottomGridRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        }
-      );
+      gsap.to(bottomGridRef.current, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        ease: "power3.out",
+        force3D: true,
+        scrollTrigger: {
+          trigger: bottomGridRef.current,
+          start: "top 80%",
+          toggleActions: "play none none none",
+          once: true,
+        },
+      });
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
@@ -90,7 +84,8 @@ export function CTASection() {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(circle at center, rgba(52, 120, 246, 0.5) 0%, rgba(52, 120, 246, 0.3) 50%, transparent 70%)",
+              background:
+                "radial-gradient(circle at center, rgba(52, 120, 246, 0.5) 0%, rgba(52, 120, 246, 0.3) 50%, transparent 70%)",
               transform: "translateZ(0)",
             }}
           />
@@ -109,7 +104,7 @@ export function CTASection() {
             <div className="flex items-end justify-between">
               <div>
                 <h2 className="font-display text-[32px] md:text-[48px] lg:text-[56px] font-bold text-[#AEFFD8] leading-tight">
-                  45°C+ performance.
+                  50°C+ performance.
                 </h2>
                 <p className="text-white/80 text-base md:text-lg mt-1">
                   Tested for consistent cooling.
@@ -121,8 +116,6 @@ export function CTASection() {
               >
                 Join the Waitlist
               </button>
-              
-      
             </div>
           </div>
         </div>

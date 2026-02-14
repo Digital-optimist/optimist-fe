@@ -262,46 +262,46 @@ export function HeroSection() {
                 </h1>
 
                 {/* Badges Row */}
-                <div ref={badgesRef} className="flex items-center gap-6 mt-6">
+                <div ref={badgesRef} className="flex items-center gap-3 mt-6">
                   {/* Cooling Badge */}
-                  <div className="flex items-center gap-1 py-3">
+                  <div className="flex items-center gap-2 py-2">
                     <Image
                       src={ASSETS.thermometerBadge}
                       alt="Proven Cooling at 50°C"
-                      width={44}
-                      height={44}
-                      className="w-10 h-10"
+                      width={36}
+                      height={36}
+                      className="w-9 h-9 flex-shrink-0"
                       priority
                     />
-                    <div className="flex flex-col">
-                      <span className="hero-badge-title text-optimist-cream leading-[1.2]">
+                    <div className="flex flex-col justify-center">
+                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
                         No BS. Proven
                       </span>
-                      <span className="hero-badge-title text-optimist-cream leading-[1.2]">
+                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
                         Cooling at 50°C
                       </span>
                     </div>
                   </div>
 
                   {/* Vertical Divider */}
-                  <div className="h-10 w-px bg-white/20" />
+                  <div className="h-9 w-px bg-white/20 flex-shrink-0" />
 
                   {/* ISEER Badge */}
-                  <div className="flex items-center gap-1 py-2">
+                  <div className="flex items-center gap-2 py-2">
                     <Image
                       src={ASSETS.iseer5StarBadge}
                       alt="India's #1 Rated Energy Efficient AC"
-                      width={56}
-                      height={44}
-                      className="w-12 h-10 object-contain"
+                      width={44}
+                      height={36}
+                      className="w-10 h-9 object-contain flex-shrink-0"
                       priority
                     />
-                    <div className="flex flex-col">
-                      <span className="hero-badge-title text-optimist-cream leading-[1.2]">
-                        India's #1 Rated Energy
+                    <div className="flex flex-col justify-center">
+                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
+                        India's #1 Rated
                       </span>
-                      <span className="hero-badge-title text-optimist-cream leading-[1.2]">
-                        Efficient AC. Try Us!
+                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
+                        Energy Efficient AC
                       </span>
                     </div>
                   </div>
@@ -312,15 +312,15 @@ export function HeroSection() {
                   ref={mobileButtonsRef}
                   className="flex items-center gap-3 mt-8"
                 >
-                  <button
+                  {/* <button
                     onClick={() => scrollToSection("benefits")}
                     className="btn-why-optimist hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
                   >
                     Why Optimist ?
-                  </button>
+                  </button> */}
                   <button
                     onClick={openModal}
-                    className="btn-buy-now-hero hero-btn-mobile flex-1 text-[#1265FF] flex items-center justify-center"
+                    className="btn-buy-now-hero  hero-btn-mobile flex-1 text-[#1265FF] flex items-center justify-center"
                   >
                     Join the Waitlist
                   </button>
@@ -465,12 +465,12 @@ export function HeroSection() {
 
                 {/* Right Content - Desktop CTA Buttons */}
                 <div ref={buttonsRef} className="flex items-center gap-4 mt-20">
-                  <button
+                  {/* <button
                     onClick={() => scrollToSection("benefits")}
                     className="btn-why-optimist hero-btn-desktop text-optimist-cream flex items-center justify-center"
                   >
                     Why Optimist ?
-                  </button>
+                  </button> */}
                   <button
                     onClick={openModal}
                     className="btn-buy-now-hero hero-btn-desktop text-[#1265FF] flex items-center justify-center"

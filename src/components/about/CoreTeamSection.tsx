@@ -18,12 +18,11 @@ const teamData = [
     role: "CEO & Director",
     name: "Ashish Goel",
     description:
-      "Ashish Goel is a climate-tech builder and evangelist, former Founder & CEO of Urban Ladder, and a 5× Fortune 40 Under 40 awardee, now focused on building practical, engineering-led solutions for India's climate challenges.",
+      "Ashish Goel is a climate tech builder and entrepreneur, former Founder and CEO of Urban Ladder trusted by thousands of Indian households and a five time Fortune 40 Under 40 awardee, now focused on building dependable, energy efficient cooling solutions for real Indian summers.",
     image: ASSETS.team1,
     previousCompanies: [
-      "/icons/accel.svg",
-      "/icons/sparrow.svg",
-      "/icons/spectrum.svg",
+      "/images/urban-ladder-logo-2674e3f448834dab08913d191a967aa1.webp",
+      "/images/download.png",
     ],
   },
   {
@@ -34,7 +33,10 @@ const teamData = [
     description:
       "Pranav Chopra is a technology entrepreneur and co-founder of Optimist, building India-first climate tech cooling solutions to solve heat challenges. He drives product innovation and engineering execution with a focus on impact and scale.",
     image: ASSETS.team2,
-    previousCompanies: ["/icons/accel.svg", "/icons/sparrow.svg"],
+    previousCompanies: [
+      "/images/urban-ladder-logo-2674e3f448834dab08913d191a967aa1.webp",
+      "/images/download.png",
+    ],
   },
   {
     id: 3,
@@ -44,7 +46,10 @@ const teamData = [
     description:
       "Manjunath Vittala Rao is the Chief Innovation Officer at Optimist, leading innovation and standards-led quality thinking as the company builds India-first, high-performance cooling for real heat conditions.",
     image: ASSETS.team3,
-    previousCompanies: ["/icons/spectrum.svg"],
+    previousCompanies: [
+      "/images/urban-ladder-logo-2674e3f448834dab08913d191a967aa1.webp",
+      "/images/download.png",
+    ],
   },
   {
     id: 4,
@@ -54,7 +59,10 @@ const teamData = [
     description:
       "Prof. Anurag Goyal is an advisor at Optimist, bringing deep research and practical insight from his work on HVAC, heat transfer, and energy storage as an Assistant Professor of Mechanical Engineering at IIT Delhi, grounded in rigorous engineering principles.",
     image: ASSETS.team4,
-    previousCompanies: ["/icons/accel.svg"],
+    previousCompanies: [
+      "/images/urban-ladder-logo-2674e3f448834dab08913d191a967aa1.webp",
+      "/images/download.png",
+    ],
   },
 ];
 
