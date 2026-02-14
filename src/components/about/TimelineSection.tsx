@@ -38,62 +38,62 @@ function ScrollArrowIcon({
 // Timeline Section - "Engineering a new standard."
 // =============================================================================
 
-// Timeline data - 14 milestones
+// Timeline data - 7 milestones
 const timelineData = [
   {
     id: 1,
-    label: "Mission Locked",
+    label: "A Problem Worth Solving",
     year: "Feb 2024",
     description:
-      "Heat stress chosen as the problem to solve. Optimist commits to climate adaptation through thermal comfort.",
+      "Heat stress was identified as a growing reality. The focus became clear: rethink air conditioning for a warming world and build reliable thermal comfort for extreme Indian summers.",
     image: ASSETS.timeline1,
   },
   {
     id: 2,
-    label: "First-Principle Designing",
+    label: "From Idea to Engineering",
     year: "Mar 2024",
     description:
-      "Pranav Chopra joins. First-principles engineering begins. The problem shifts from 'what' to 'how'.",
+      "Pranav Chopra joined as Co-founder and CTO. First principles engineering began, shifting focus from defining the problem to designing cooling systems that perform reliably in real heat.",
     image: ASSETS.timeline2,
   },
   {
     id: 3,
-    label: "Company Incorporated",
+    label: "Turning Vision Into Reality",
     year: "Aug 2024",
     description:
-      "Optimist formally comes into existence. From research project to real company.",
+      "Optimist was formally incorporated, transitioning from a research initiative into a company building dependable, real world cooling solutions.",
     image: ASSETS.timeline3,
   },
   {
     id: 4,
-    label: "Lab + Manufacturing Live",
+    label: "Learning Through Real Conditions",
     year: "Nov 2024",
     description:
-      "Nalanda-1 R&D Lab and dedicated workshop commissioned. Ability to test, fail, iterate, and build at scale. Before: theory. After: execution engine.",
+      "Nalanda 1 R&D Lab and dedicated workshop became operational, enabling real world testing, rapid iteration, and the ability to build, test, and refine systems continuously.",
     image: ASSETS.timeline4,
   },
   {
     id: 5,
-    label: "Technology Breakthrough",
+    label: "Where Performance Came Together",
     year: "July 2025",
     description:
-      "Super-efficient AC architecture validated for Indian conditions. Performance, efficiency, and buildability converge. Before: experiments. After: product direction locked.",
+      "After extensive engineering and validation, high efficiency cooling architecture was proven for Indian conditions, bringing together performance, efficiency, and buildability.",
     image: ASSETS.timeline5,
   },
   {
     id: 6,
-    label: "Conviction Backed",
+    label: "Belief Strengthened",
     year: "Dec 2025",
     description:
-      "USD 12M raised from Accel, Arkam Ventures & Sparrow Capital. External validation that climate-first engineering deserved scale.",
+      "USD 12M raised from Accel, Arkam Ventures, and Sparrow Capital, strengthening the ability to scale climate driven cooling innovation.",
     image: ASSETS.timeline6,
   },
   {
     id: 7,
-    label: "Market Entry",
+    label: "India's Real AC",
     year: "Jan 2026",
     description:
-      "Optimist's first product launches in India. A new cooling standard enters the market.",
+      "Optimist launched its first high performance platform, delivering reliable cooling, honest efficiency, and dependable comfort engineered for real Indian heat.",
     image: ASSETS.timeline7,
   },
 ];

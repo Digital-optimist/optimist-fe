@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // =============================================================================
 // Animated Lines Section - Cooling reimagined for Indian reality
@@ -21,43 +21,53 @@ export function BreathworkSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const linesRef = useRef<HTMLDivElement>(null);
 
+  // Refresh ScrollTrigger after component mounts to handle desktop layout
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   useGSAP(
     () => {
+      if (!linesRef.current) return;
+      
+      const lines = linesRef.current.querySelectorAll(".animated-line");
+      
+      // Set initial state using GSAP (not inline styles)
+      gsap.set(lines, {
+        opacity: 0,
+        y: 60,
+        scale: 0.95,
+      });
+
       // Main timeline triggered once on scroll
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
+          end: "top 30%",
           toggleActions: "play none none none",
-          once: true,
         },
       });
 
       // Animate each text line one by one with stagger
-      if (linesRef.current) {
-        const lines = linesRef.current.querySelectorAll(".animated-line");
-
-        lines.forEach((line, index) => {
-          tl.fromTo(
-            line,
-            {
-              opacity: 0,
-              y: 60,
-              scale: 0.95,
-            },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 1.2,
-              ease: "power3.out",
-            },
-            index * 0.7, // Each line starts 0.7s after the previous
-          );
-        });
-      }
+      lines.forEach((line, index) => {
+        tl.to(
+          line,
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.2,
+            ease: "power3.out",
+          },
+          index * 0.7, // Each line starts 0.7s after the previous
+        );
+      });
     },
-    { scope: sectionRef },
+    { scope: sectionRef, dependencies: [] },
   );
 
   return (
@@ -92,7 +102,6 @@ export function BreathworkSection() {
             <p
               key={index}
               className="animated-line font-light text-[22px] md:text-[32px] lg:text-[42px] text-center leading-[1.3] tracking-[-0.01em] will-change-transform"
-              style={{ opacity: 0 }}
             >
               {index === 0 ? (
                 <>

@@ -65,8 +65,8 @@ export function AboutHeroSection() {
           ref={titleRef}
           className="font-display text-[32px] md:text-[48px] lg:text-[64px] font-bold text-center mb-6 md:mb-8 lg:mb-10 will-change-[transform,opacity]"
         >
-          <span className="text-black">Real Cooling, built for a </span>
-          <span className="text-[#3478F6]">warming world.</span>
+          <span className="text-black">Real Cooling for a </span>
+          <span className="text-[#3478F6]">Warming India</span>
         </h1>
 
         {/* Hero Card with Background Video/Image */}
@@ -87,13 +87,14 @@ export function AboutHeroSection() {
             {/* Gradient overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
             {/* Text overlay */}
-            <div className="absolute left-[48px] bottom-[48px] lg:bottom-[64px] max-w-[700px]">
+            <div className="absolute left-[48px] bottom-[48px] lg:bottom-[64px] max-w-[900px]">
               <p className="font-light text-[20px] lg:text-[24px] leading-[1.5] text-white">
-                Indian summers demand more than Normal ACs deliver. Real solid
-                cooling at 45°C and more. Lowest and predictable costs.
-                Transparent service. In 2024, we set out to build what should
-                have already existed. The Real AC, engineered for reality, not
-                marketing talk, nor spec sheets.
+                India isn’t getting cooler. Summers are getting harsher, heat
+                lasts longer, and cooling is becoming a major energy expense at
+                home. Yet most air conditioners aren’t built for real Indian
+                heat. Optimist exists to change that by building India’s Real
+                AC; delivering best cooling, lowest bills, and designed for
+                tomorrow.
               </p>
             </div>
           </div>
@@ -113,9 +114,12 @@ export function AboutHeroSection() {
             {/* Text overlay */}
             <div className="absolute left-[16px] right-[16px] bottom-[24px]">
               <p className="font-light text-[15px] leading-[1.5] text-white">
-                Indian summers demand more than ACs were delivering. Consistent
-                cooling at 45°C. Predictable costs. Transparent service. In
-                2023, we set out to build what should have already existed.
+                India isn’t getting cooler. Summers are getting harsher, heat
+                lasts longer, and cooling is becoming a major energy expense at
+                home. Yet most air conditioners aren’t built for real Indian
+                heat. Optimist exists to change that by building India’s Real
+                AC; delivering best cooling, lowest bills, and designed for
+                tomorrow.
               </p>
             </div>
           </div>

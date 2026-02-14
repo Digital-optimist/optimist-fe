@@ -66,12 +66,13 @@ export function CTASection() {
             className="flex flex-col font-display text-center lg:text-left will-change-[transform,opacity] lg:max-w-[809px]"
           >
             {/* Line 1: Everything you need. */}
-            <p className="font-semibold text-[32px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[80px] text-black leading-[1.2] lg:leading-normal">
-              Everything you <span className="text-[#3478F6]">need.</span>
+            <p className="font-semibold text-[28px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[64px] text-black leading-[1.2] lg:leading-normal">
+              Best Cooling.{" "}
+              <span className="text-[#3478F6]">Lowest Bills.</span>
             </p>
 
             {/* Line 2: Nothing you don't. */}
-            <p className="font-semibold text-[32px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[80px] text-black leading-[1.2] lg:leading-normal">
+            <p className="font-semibold text-[32px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[64px] text-black leading-[1.2] lg:leading-normal">
               Nothing you <span className="text-[#3478F6]">don&apos;t.</span>
             </p>
           </div>
