@@ -103,7 +103,7 @@ export default function AboutPage() {
         <MissionSection />
       </motion.div>
 
-      <motion.div
+      {/* <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
@@ -111,7 +111,7 @@ export default function AboutPage() {
         variants={sectionVariants}
       >
         <ProofOfWorkSection />
-      </motion.div>
+      </motion.div> */}
 
       <motion.div
         initial="hidden"

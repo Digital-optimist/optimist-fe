@@ -6,6 +6,7 @@ import { type Product } from "@/lib/shopify";
 import { useCart } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
 import { useToast } from "@/components/ui/Toast";
+import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
 import { ImageGallery } from "@/components/products/ImageGallery";
 import {
@@ -217,6 +218,8 @@ interface ProductsPageClientProps {
 // Main Component
 // =============================================================================
 
+const userAllowedToBuy = false;
+
 export default function ProductsPageClient({
   product,
 }: ProductsPageClientProps) {
@@ -231,6 +234,7 @@ export default function ProductsPageClient({
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { showToast } = useToast();
   const { combinedProduct, isLoading: isProductsLoading } = useProducts();
+  const { openModal: openWaitlistModal } = useWaitlist();
 
   // Get variants from combined product (each Shopify product = one variant option)
   const variants = useMemo((): DisplayVariant[] => {
@@ -421,7 +425,9 @@ export default function ProductsPageClient({
     element.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleScroll);
 
-    const resizeObserver = new ResizeObserver(() => updateVariantsScrollState());
+    const resizeObserver = new ResizeObserver(() =>
+      updateVariantsScrollState(),
+    );
     resizeObserver.observe(element);
 
     return () => {
@@ -624,52 +630,66 @@ export default function ProductsPageClient({
                 variants={heroInfoItemVariants}
                 className="hidden md:flex gap-4"
               >
-                <motion.button
-                  onClick={handleAddToCart}
-                  disabled={isCartLoading || !canAddToCart}
-                  className={`flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border rounded-full font-medium text-base transition-all ${
-                    buttonState === "loading"
-                      ? "border-gray-200 text-gray-400"
-                      : buttonState === "outOfStock"
-                        ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                        : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
-                  }`}
-                  whileHover={
-                    canAddToCart
-                      ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }
-                      : {}
-                  }
-                  whileTap={canAddToCart ? { scale: 0.98 } : {}}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ShoppingBagIcon className="w-6 h-6" />
-                  <span>
-                    {buttonState === "loading"
-                      ? "Loading..."
-                      : buttonState === "outOfStock"
-                        ? "Out of Stock"
-                        : "Add to Cart"}
-                  </span>
-                </motion.button>
-                <motion.button
-                  disabled={!canAddToCart}
-                  className={`flex-1 px-6 py-4 rounded-full font-medium text-base text-center transition-all ${
-                    buttonState === "loading"
-                      ? "bg-gray-300 text-gray-500"
-                      : buttonState === "outOfStock"
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "btn-buy-now text-[#FFFCDC]"
-                  }`}
-                  whileHover={canAddToCart ? { scale: 1.02 } : {}}
-                  whileTap={canAddToCart ? { scale: 0.98 } : {}}
-                  transition={{ duration: 0.2 }}
-                >
-                  {buttonState === "loading"
-                    ? "Loading..."
-                    : buttonState === "outOfStock"
-                      ? "Unavailable"
-                      : "Buy Now"}
-                </motion.button>
+                {userAllowedToBuy ? (
+                  <>
+                    <motion.button
+                      onClick={handleAddToCart}
+                      disabled={isCartLoading || !canAddToCart}
+                      className={`flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border rounded-full font-medium text-base transition-all ${
+                        buttonState === "loading"
+                          ? "border-gray-200 text-gray-400"
+                          : buttonState === "outOfStock"
+                            ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                            : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
+                      }`}
+                      whileHover={
+                        canAddToCart
+                          ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }
+                          : {}
+                      }
+                      whileTap={canAddToCart ? { scale: 0.98 } : {}}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ShoppingBagIcon className="w-6 h-6" />
+                      <span>
+                        {buttonState === "loading"
+                          ? "Loading..."
+                          : buttonState === "outOfStock"
+                            ? "Out of Stock"
+                            : "Add to Cart"}
+                      </span>
+                    </motion.button>
+                    <motion.button
+                      disabled={!canAddToCart}
+                      className={`flex-1 px-6 py-4 rounded-full font-medium text-base text-center transition-all ${
+                        buttonState === "loading"
+                          ? "bg-gray-300 text-gray-500"
+                          : buttonState === "outOfStock"
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "btn-buy-now text-[#FFFCDC]"
+                      }`}
+                      whileHover={canAddToCart ? { scale: 1.02 } : {}}
+                      whileTap={canAddToCart ? { scale: 0.98 } : {}}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {buttonState === "loading"
+                        ? "Loading..."
+                        : buttonState === "outOfStock"
+                          ? "Unavailable"
+                          : "Buy Now"}
+                    </motion.button>
+                  </>
+                ) : (
+                  <motion.button
+                    onClick={openWaitlistModal}
+                    className="flex-1 px-6 py-4 rounded-full font-medium text-base text-center btn-buy-now text-[#FFFCDC] transition-all"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    Join the Waitlist
+                  </motion.button>
+                )}
               </motion.div>
 
               {/* Divider */}
@@ -891,46 +911,59 @@ export default function ProductsPageClient({
         className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.15] shadow-[0_-4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none"
       >
         <div className="px-4 py-4 flex items-center gap-3">
-          <motion.button
-            onClick={handleAddToCart}
-            disabled={isCartLoading || !canAddToCart}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-full font-medium text-sm transition-all ${
-              buttonState === "loading"
-                ? "bg-gray-300 text-gray-500"
-                : buttonState === "outOfStock"
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-white text-black hover:bg-white/90 disabled:opacity-50"
-            }`}
-            whileHover={canAddToCart ? { scale: 1.02 } : {}}
-            whileTap={canAddToCart ? { scale: 0.98 } : {}}
-          >
-            <CartIcon className="w-5 h-5" />
-            <span>
-              {buttonState === "loading"
-                ? "Loading..."
-                : buttonState === "outOfStock"
-                  ? "Out of Stock"
-                  : "Add to Cart"}
-            </span>
-          </motion.button>
-          <motion.button
-            disabled={!canAddToCart}
-            className={`flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center transition-all ${
-              buttonState === "loading"
-                ? "bg-gray-400 text-gray-600"
-                : buttonState === "outOfStock"
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "btn-buy-now text-[#FFFCDC]"
-            }`}
-            whileHover={canAddToCart ? { scale: 1.02 } : {}}
-            whileTap={canAddToCart ? { scale: 0.98 } : {}}
-          >
-            {buttonState === "loading"
-              ? "Loading..."
-              : buttonState === "outOfStock"
-                ? "Unavailable"
-                : "Buy Now"}
-          </motion.button>
+          {userAllowedToBuy ? (
+            <>
+              <motion.button
+                onClick={handleAddToCart}
+                disabled={isCartLoading || !canAddToCart}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-full font-medium text-sm transition-all ${
+                  buttonState === "loading"
+                    ? "bg-gray-300 text-gray-500"
+                    : buttonState === "outOfStock"
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-white text-black hover:bg-white/90 disabled:opacity-50"
+                }`}
+                whileHover={canAddToCart ? { scale: 1.02 } : {}}
+                whileTap={canAddToCart ? { scale: 0.98 } : {}}
+              >
+                <CartIcon className="w-5 h-5" />
+                <span>
+                  {buttonState === "loading"
+                    ? "Loading..."
+                    : buttonState === "outOfStock"
+                      ? "Out of Stock"
+                      : "Add to Cart"}
+                </span>
+              </motion.button>
+              <motion.button
+                disabled={!canAddToCart}
+                className={`flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center transition-all ${
+                  buttonState === "loading"
+                    ? "bg-gray-400 text-gray-600"
+                    : buttonState === "outOfStock"
+                      ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                      : "btn-buy-now text-[#FFFCDC]"
+                }`}
+                whileHover={canAddToCart ? { scale: 1.02 } : {}}
+                whileTap={canAddToCart ? { scale: 0.98 } : {}}
+              >
+                {buttonState === "loading"
+                  ? "Loading..."
+                  : buttonState === "outOfStock"
+                    ? "Unavailable"
+                    : "Buy Now"}
+              </motion.button>
+            </>
+          ) : (
+            <motion.button
+              onClick={openWaitlistModal}
+              className="flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center btn-buy-now text-[#FFFCDC] transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Join the Waitlist
+            </motion.button>
+          )}
         </div>
       </motion.div>
     </motion.div>

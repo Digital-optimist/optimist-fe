@@ -217,7 +217,7 @@ export function Footer() {
           className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-0 md:mb-4"
         >
           {/* Column 1 - Nav Links */}
-          {/* <motion.nav variants={itemVariants} className="flex flex-col gap-4">
+          <motion.nav variants={itemVariants} className="flex flex-col gap-4">
             {navLinksCol1.map((link, index) => (
               <motion.div
                 key={link.href}
@@ -232,7 +232,7 @@ export function Footer() {
                 </Link>
               </motion.div>
             ))}
-          </motion.nav> */}
+          </motion.nav>
 
           {/* Column 2 - Nav Links */}
           {/* <motion.nav variants={itemVariants} className="flex flex-col gap-4">
@@ -276,7 +276,7 @@ export function Footer() {
               ))}
             </div>
           </motion.div>
-          <div />
+
           <div />
           {/* Column 4 - Newsletter */}
           <motion.div

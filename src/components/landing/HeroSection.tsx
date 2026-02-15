@@ -243,7 +243,7 @@ export function HeroSection() {
           {/* Content Container */}
           <div
             ref={contentRef}
-            className="relative z-10 flex flex-col px-6"
+            className="relative z-10 flex flex-col px-5 sm:px-6"
             style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
           >
             <div className="flex flex-col">
@@ -275,10 +275,10 @@ export function HeroSection() {
                     />
                     <div className="flex flex-col justify-center">
                       <span className="hero-badge-title text-optimist-cream leading-[1.3]">
-                        No BS. Proven
+                        No Bullshit.
                       </span>
                       <span className="hero-badge-title text-optimist-cream leading-[1.3]">
-                        Cooling at 50°C
+                        Real Cooling at 50°C
                       </span>
                     </div>
                   </div>
@@ -320,7 +320,7 @@ export function HeroSection() {
                   </button> */}
                   <button
                     onClick={openModal}
-                    className="btn-buy-now-hero  hero-btn-mobile flex-1 text-[#1265FF] flex items-center justify-center"
+                    className="btn-buy-now-hero  hero-btn-mobile min-w-[150px] text-[#1265FF] flex items-center justify-center"
                   >
                     Join the Waitlist
                   </button>
@@ -430,10 +430,10 @@ export function HeroSection() {
                       />
                       <div className="flex flex-col">
                         <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                          No BS. Proven
+                          No Bullshit.
                         </span>
                         <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                          Cooling at 50°C
+                          Real Cooling at 50°C
                         </span>
                       </div>
                     </div>

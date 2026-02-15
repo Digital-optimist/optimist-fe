@@ -179,14 +179,14 @@ function SuccessView() {
 
         {/* Headline */}
         <h2 className="font-display text-[28px] md:text-[40px] lg:text-[48px] font-bold leading-tight mb-3 text-gray-900">
-          Thank you for signing
+          You're In. Welcome to
           <br />
-          up on waitlist
+          India's Real AC.
         </h2>
 
         {/* Subtext */}
         <p className="text-gray-600 text-base md:text-lg max-w-md">
-          you will be notified on your phone number when Optimist launches!
+          Thanks for joining the Cooling Revolution. Optimist A, India's Real AC, is in its final intense quality process. You will be the first to know when we are ready to ship. Stay cool till then.
         </p>
       </div>
     </div>

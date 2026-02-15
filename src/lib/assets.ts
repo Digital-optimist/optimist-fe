@@ -136,7 +136,7 @@ export const ASSETS = {
   starIcon: "/icons/star.svg",
   rocketLaunchIcon: "/icons/rocket-launch.svg",
   calendarCheckIcon: "/icons/calendar-check.svg",
-  
+
   // Hero Badge Icons
   thermometerBadge: "/icons/thermometer-badge.png",
   iseer5StarBadge: "/icons/iseer-5star-badge.png",
