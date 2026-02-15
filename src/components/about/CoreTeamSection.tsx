@@ -237,7 +237,7 @@ function TeamCard({
               {previousCompanies.map((logo, index) => (
                 <div
                   key={index}
-                  className="w-[100px] lg:w-[126px] h-[44px] lg:h-[56px] rounded-lg border border-black/8 bg-white flex items-center justify-center p-2"
+                  className="w-[120px] lg:w-[150px] h-[52px] lg:h-[68px] rounded-lg border border-black/8 bg-white flex items-center justify-center p-2"
                 >
                   <div className="relative w-full h-full">
                     <Image
@@ -245,7 +245,7 @@ function TeamCard({
                       alt="Company logo"
                       fill
                       className="object-contain"
-                      sizes="(max-width: 1024px) 100px, 126px"
+                      sizes="(max-width: 1024px) 120px, 150px"
                     />
                   </div>
                 </div>
