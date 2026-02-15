@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import ASSETS from "@/lib/assets";
+import { useWaitlist } from "@/contexts/WaitlistContext";
 
 // =============================================================================
 // Main Component
@@ -17,6 +17,7 @@ export function BuiltForSection() {
 
   const [videoEnded, setVideoEnded] = useState(false);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+  const { openModal } = useWaitlist();
 
   // Use Framer Motion's useInView to detect when section is visible
   const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
@@ -286,14 +287,14 @@ export function BuiltForSection() {
             </p>
           </div>
 
-          {/* Buy Now Button */}
-          <Link
-            href="/products"
+          {/* Join the Waitlist Button */}
+          <button
+            onClick={openModal}
             className="btn-buy-now flex items-center justify-center gap-2.5 px-8 md:px-12 py-4 h-14 md:h-16 rounded-full text-[#FFFCDC] font-semibold text-base md:text-xl whitespace-nowrap"
           >
-            <span>Buy Now</span>
+            <span>Join the Waitlist</span>
             <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6" />
-          </Link>
+          </button>
         </motion.div>
       </div>
     </section>

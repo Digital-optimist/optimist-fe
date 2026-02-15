@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
+import { useWaitlist } from "@/contexts/WaitlistContext";
 
 // =============================================================================
 // CTA Section - "Nothing extra. Nothing unnecessary" with Buy Now button
@@ -11,7 +12,8 @@ import { gsap } from "@/lib/gsap";
 export function CTASection() {
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLAnchorElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const { openModal } = useWaitlist();
 
   useGSAP(
     () => {
@@ -77,10 +79,10 @@ export function CTASection() {
             </p>
           </div>
 
-          {/* Buy Now Button */}
-          <a
+          {/* Join the Waitlist Button */}
+          <button
             ref={buttonRef}
-            href="#"
+            onClick={openModal}
             className="group relative flex items-center justify-center gap-2.5 min-w-[180px] sm:min-w-[200px] md:min-w-[220px] lg:min-w-[241px] w-auto px-8 md:px-10 lg:px-[48px] h-[52px] sm:h-[56px] md:h-[60px] lg:h-[64px] rounded-[36px] overflow-hidden shrink-0 will-change-[transform,opacity] transition-transform duration-300 hover:scale-[1.03]"
             style={{
               background: "#3478F6",
@@ -88,7 +90,7 @@ export function CTASection() {
           >
             {/* Button Text */}
             <span className="font-display font-semibold text-[16px] md:text-[18px] lg:text-[20px] text-[#FFFCDC] text-center whitespace-nowrap">
-              Buy Now
+              Join the Waitlist
             </span>
 
             {/* Arrow Icon */}
@@ -108,15 +110,7 @@ export function CTASection() {
                 strokeLinejoin="round"
               />
             </svg>
-
-            {/* Inner Shadow Overlay */}
-            <div
-              className="absolute inset-0 pointer-events-none rounded-[inherit]"
-              style={{
-                boxShadow: "inset 0px 2px 12.5px 2px #003FB2",
-              }}
-            />
-          </a>
+          </button>
         </div>
       </div>
     </section>

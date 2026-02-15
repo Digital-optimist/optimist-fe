@@ -543,196 +543,194 @@ export function Navigation() {
             )}
 
             {/* Mobile Menu Button (hidden on landing page) */}
-            {!isLandingPage && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="text-xs xs:text-sm leading-none font-normal">
-                  Menu
-                </span>
-                <AnimatePresence mode="wait">
-                  {isMenuOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <X className="w-3 h-3 xs:w-3.5 xs:h-3.5" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-black/60"
-                    >
-                      <ListIcon />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-            )}
+
+            <motion.button
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 rounded-[40px] border border-black/[0.15] text-black/60 hover:text-black hover:bg-black/5 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span className="text-xs xs:text-sm leading-none font-normal">
+                Menu
+              </span>
+              <AnimatePresence mode="wait">
+                {isMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="w-3 h-3 xs:w-3.5 xs:h-3.5" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-black/60"
+                  >
+                    <ListIcon />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
           </div>
 
           {/* Mobile Navigation Menu (hidden on landing page) */}
-          {!isLandingPage && (
-            <AnimatePresence>
-              {isMenuOpen && (
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={mobileMenuVariants}
-                  className="md:hidden overflow-hidden mt-3 xs:mt-4 pt-3 xs:pt-4 border-t border-black/[0.08]"
-                >
-                  <div className="space-y-0.5 xs:space-y-1">
-                    {navLinks.map((link, index) => {
-                      const isActive =
-                        link.href === "/"
-                          ? pathname === "/"
-                          : pathname === link.href ||
-                            pathname.startsWith(link.href + "/");
-                      return (
-                        <motion.div
-                          key={`${link.href}-${index}`}
-                          custom={index}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                        >
-                          <Link
-                            href={link.href}
-                            onClick={() => setIsMenuOpen(false)}
-                            className={`block px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base rounded-lg transition-colors ${
-                              isActive
-                                ? "text-black font-bold bg-black/5 decoration-solid"
-                                : "text-black/60 font-normal hover:text-black hover:bg-black/5"
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        </motion.div>
-                      );
-                    })}
 
-                    <motion.button
-                      custom={navLinks.length}
-                      initial="hidden"
-                      animate="visible"
-                      variants={mobileItemVariants}
-                      onClick={() => {
-                        toggleCart();
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center gap-2 xs:gap-3 w-full px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <ShoppingCart className="w-4 h-4 xs:w-5 xs:h-5" />
-                      Cart
-                      {totalQuantity > 0 && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="ml-auto px-1.5 xs:px-2 py-0.5 text-[10px] xs:text-xs font-bold bg-optimist-blue-primary text-white rounded-full"
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={mobileMenuVariants}
+                className="md:hidden overflow-hidden mt-3 xs:mt-4 pt-3 xs:pt-4 border-t border-black/[0.08]"
+              >
+                <div className="space-y-0.5 xs:space-y-1">
+                  {navLinks.map((link, index) => {
+                    const isActive =
+                      link.href === "/"
+                        ? pathname === "/"
+                        : pathname === link.href ||
+                          pathname.startsWith(link.href + "/");
+                    return (
+                      <motion.div
+                        key={`${link.href}-${index}`}
+                        custom={index}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                      >
+                        <Link
+                          href={link.href}
+                          onClick={() => setIsMenuOpen(false)}
+                          className={`block px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base rounded-lg transition-colors ${
+                            isActive
+                              ? "text-black font-bold bg-black/5 decoration-solid"
+                              : "text-black/60 font-normal hover:text-black hover:bg-black/5"
+                          }`}
                         >
-                          {totalQuantity}
-                        </motion.span>
-                      )}
-                    </motion.button>
+                          {link.label}
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
 
-                    {isAuthenticated ? (
-                      <>
-                        <motion.div
-                          custom={navLinks.length + 1}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                          className="h-px bg-black/10 my-1.5 xs:my-2"
-                        />
-                        <motion.div
-                          custom={navLinks.length + 2}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                        >
-                          <Link
-                            href="/account"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="block px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                          >
-                            My Account
-                          </Link>
-                        </motion.div>
-                        <motion.div
-                          custom={navLinks.length + 3}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                        >
-                          <Link
-                            href="/account/orders"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="block px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                          >
-                            Order History
-                          </Link>
-                        </motion.div>
-                        <motion.button
-                          custom={navLinks.length + 4}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                          onClick={() => {
-                            handleLogout();
-                            setIsMenuOpen(false);
-                          }}
-                          className="block w-full text-left px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          Sign Out
-                        </motion.button>
-                      </>
-                    ) : (
-                      <>
-                        <motion.div
-                          custom={navLinks.length + 1}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                          className="h-px bg-black/10 my-1.5 xs:my-2"
-                        />
-                        <motion.div
-                          custom={navLinks.length + 2}
-                          initial="hidden"
-                          animate="visible"
-                          variants={mobileItemVariants}
-                        >
-                          <Link
-                            href="/login"
-                            onClick={() => setIsMenuOpen(false)}
-                            className="flex items-center gap-2 xs:gap-3 px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
-                          >
-                            <User className="w-4 h-4 xs:w-5 xs:h-5" />
-                            Login
-                          </Link>
-                        </motion.div>
-                      </>
+                  {/* <motion.button
+                    custom={navLinks.length}
+                    initial="hidden"
+                    animate="visible"
+                    variants={mobileItemVariants}
+                    onClick={() => {
+                      toggleCart();
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 xs:gap-3 w-full px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <ShoppingCart className="w-4 h-4 xs:w-5 xs:h-5" />
+                    Cart
+                    {totalQuantity > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="ml-auto px-1.5 xs:px-2 py-0.5 text-[10px] xs:text-xs font-bold bg-optimist-blue-primary text-white rounded-full"
+                      >
+                        {totalQuantity}
+                      </motion.span>
                     )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          )}
+                  </motion.button> */}
+
+                  {isAuthenticated ? (
+                    <>
+                      <motion.div
+                        custom={navLinks.length + 1}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                        className="h-px bg-black/10 my-1.5 xs:my-2"
+                      />
+                      <motion.div
+                        custom={navLinks.length + 2}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                      >
+                        <Link
+                          href="/account"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                        >
+                          My Account
+                        </Link>
+                      </motion.div>
+                      <motion.div
+                        custom={navLinks.length + 3}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                      >
+                        <Link
+                          href="/account/orders"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                        >
+                          Order History
+                        </Link>
+                      </motion.div>
+                      <motion.button
+                        custom={navLinks.length + 4}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                        onClick={() => {
+                          handleLogout();
+                          setIsMenuOpen(false);
+                        }}
+                        className="block w-full text-left px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Sign Out
+                      </motion.button>
+                    </>
+                  ) : (
+                    <>
+                      <motion.div
+                        custom={navLinks.length + 1}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                        className="h-px bg-black/10 my-1.5 xs:my-2"
+                      />
+                      <motion.div
+                        custom={navLinks.length + 2}
+                        initial="hidden"
+                        animate="visible"
+                        variants={mobileItemVariants}
+                      >
+                        <Link
+                          href="/login"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center gap-2 xs:gap-3 px-3 xs:px-4 py-2.5 xs:py-3 text-sm xs:text-base font-normal rounded-lg text-black/60 hover:text-black hover:bg-black/5 transition-colors"
+                        >
+                          <User className="w-4 h-4 xs:w-5 xs:h-5" />
+                          Login
+                        </Link>
+                      </motion.div>
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.nav>
       </motion.div>
 
