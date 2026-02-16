@@ -91,6 +91,12 @@ const navLinksCol2 = [
   { href: "/faq", label: "FAQ's" },
 ];
 
+const policyLinks = [
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
+  { href: "/return-policy", label: "Return Policy" },
+];
+
 const socialLinks = [
   { href: "https://x.com/optimist_AC", icon: XIcon, label: "X" },
   {
@@ -234,9 +240,9 @@ export function Footer() {
             ))}
           </motion.nav>
 
-          {/* Column 2 - Nav Links */}
-          {/* <motion.nav variants={itemVariants} className="flex flex-col gap-4">
-            {navLinksCol2.map((link, index) => (
+          {/* Column 2 - Policy Links */}
+          <motion.nav variants={itemVariants} className="flex flex-col gap-4">
+            {policyLinks.map((link) => (
               <motion.div
                 key={link.href}
                 variants={linkHoverVariants}
@@ -244,13 +250,13 @@ export function Footer() {
               >
                 <Link
                   href={link.href}
-                  className="text-[14px] md:text-[16px] text-[#FFFCDC] hover:text-white transition-colors inline-block"
+                  className="text-base md:text-[16px] text-[#FFFCDC] hover:text-white transition-colors inline-block"
                 >
                   {link.label}
                 </Link>
               </motion.div>
             ))}
-          </motion.nav> */}
+          </motion.nav>
 
           {/* Column 3 - Social Links */}
           <motion.div
@@ -277,7 +283,6 @@ export function Footer() {
             </div>
           </motion.div>
 
-          <div />
           {/* Column 4 - Newsletter */}
           <motion.div
             variants={itemVariants}
