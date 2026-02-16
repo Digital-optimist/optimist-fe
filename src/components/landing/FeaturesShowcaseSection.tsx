@@ -29,7 +29,7 @@ const features = [
   {
     id: 2,
     badge: "ISEER 6.02",
-    badgeIcon: ASSETS.starIcon,
+    badgeIcon: ASSETS.iseer5StarBadge,
     headline: "Lowest AC Bills. Proven.",
     description: "Smart Energy Meter in App",
     image: ASSETS.ac1,

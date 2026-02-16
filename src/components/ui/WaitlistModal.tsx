@@ -7,7 +7,6 @@ import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import Lottie from "lottie-react";
 
-
 // =============================================================================
 // Phone Validation
 // =============================================================================
@@ -15,7 +14,7 @@ import Lottie from "lottie-react";
 function isValidPhone(phone: string): boolean {
   // Indian phone: 10 digits, optionally with +91 prefix
   const phoneRegex = /^(\+91)?[6-9]\d{9}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
+  return phoneRegex.test(phone.replace(/\s/g, ""));
 }
 
 // =============================================================================
@@ -79,7 +78,8 @@ function PhoneFormView() {
 
       {/* Subtext */}
       <p className="text-gray-600 text-base md:text-lg mb-8 max-w-md">
-        by entering your phone number, and be the first to know when Optimist launches!
+        by entering your phone number, and be the first to know when Optimist
+        launches!
       </p>
 
       {/* Form */}
@@ -174,11 +174,14 @@ function SuccessView() {
       <div className="relative z-10">
         {/* Success Icon */}
         <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#3478F6] flex items-center justify-center mb-6 mx-auto">
-          <Check className="w-10 h-10 md:w-12 md:h-12 text-white" strokeWidth={3} />
+          <Check
+            className="w-10 h-10 md:w-12 md:h-12 text-white"
+            strokeWidth={3}
+          />
         </div>
 
         {/* Headline */}
-        <h2 className="font-display text-[28px] md:text-[40px] lg:text-[48px] font-bold leading-tight mb-3 text-gray-900">
+        <h2 className="font-display text-[24px] md:text-[40px] lg:text-[42px] font-bold leading-tight mb-3 text-gray-900">
           You're In. Welcome to
           <br />
           India's Real AC.
@@ -186,7 +189,9 @@ function SuccessView() {
 
         {/* Subtext */}
         <p className="text-gray-600 text-base md:text-lg max-w-md">
-          Thanks for joining the Cooling Revolution. Optimist A, India's Real AC, is in its final intense quality process. You will be the first to know when we are ready to ship. Stay cool till then.
+          Thanks for joining the Cooling Revolution. Optimist A, India's Real
+          AC, is in its final intense quality process. You will be the first to
+          know when we are ready to ship. Stay cool till then.
         </p>
       </div>
     </div>
@@ -224,7 +229,7 @@ export function WaitlistModal() {
           y: 0,
           duration: 0.4,
           ease: "power3.out",
-        }
+        },
       );
     } else {
       // Hide modal

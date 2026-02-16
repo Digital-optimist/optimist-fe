@@ -14,12 +14,14 @@ import { ASSETS } from "@/lib/assets";
 // =============================================================================
 
 type ContactReason =
-  | "service_support"
-  | "warranty"
-  | "orders"
-  | "product_enquiry"
-  | "bulk_enquiry"
-  | "feedback";
+  | "choosing_ac"
+  | "order_delivery"
+  | "installation_service"
+  | "cooling_performance"
+  | "app_smart_features"
+  | "warranty_service"
+  | "business_partnership"
+  | "something_else";
 
 interface FormData {
   reason: ContactReason | "";
@@ -46,23 +48,25 @@ interface FormErrors {
 }
 
 const CONTACT_REASONS: { value: ContactReason; label: string }[] = [
-  { value: "service_support", label: "Service Support" },
-  { value: "warranty", label: "Warranty" },
-  { value: "orders", label: "Orders" },
-  { value: "product_enquiry", label: "Product Enquiry" },
-  { value: "bulk_enquiry", label: "Bulk Enquiry" },
-  { value: "feedback", label: "Feedback" },
+  { value: "choosing_ac", label: "Choosing the right AC" },
+  { value: "order_delivery", label: "Order / delivery support" },
+  { value: "installation_service", label: "Installation / service request" },
+  { value: "cooling_performance", label: "Cooling or performance help" },
+  { value: "app_smart_features", label: "App / smart features help" },
+  { value: "warranty_service", label: "Warranty / service clarification" },
+  { value: "business_partnership", label: "Business / partnership inquiry" },
+  { value: "something_else", label: "Something else" },
 ];
 
 // Reasons that require serial number field
 const SERIAL_NUMBER_REASONS: ContactReason[] = [
-  "service_support",
-  "warranty",
-  "orders",
+  "installation_service",
+  "cooling_performance",
+  "warranty_service",
 ];
 
 // Reasons that require order ID field
-const ORDER_ID_REASONS: ContactReason[] = ["orders"];
+const ORDER_ID_REASONS: ContactReason[] = ["order_delivery"];
 
 // =============================================================================
 // Success Modal Component
@@ -583,7 +587,7 @@ function ContactForm({ onSuccess }: ContactFormProps) {
         {/* Reason for Contact */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Reason to contact<span className="text-red-500">*</span>
+            How can we help you today?<span className="text-red-500">*</span>
           </label>
           <Dropdown
             value={formData.reason}
@@ -643,7 +647,7 @@ function ContactForm({ onSuccess }: ContactFormProps) {
             <textarea
               value={formData.message}
               onChange={(e) => updateField("message", e.target.value)}
-              placeholder="Briefly describe your request"
+              placeholder="Tell us briefly. Our team will respond with clarity."
               rows={4}
               disabled={isSubmitting}
               className={`w-full px-4 py-3 bg-white border rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 transition-all resize-none ${
@@ -696,7 +700,7 @@ function ContactForm({ onSuccess }: ContactFormProps) {
               </svg>
             </div>
             <span className="text-gray-600 text-sm leading-relaxed">
-              You agree to our friendly privacy policy.
+              Your information stays private. Always.
             </span>
           </label>
           {errors.consent && (
@@ -777,43 +781,152 @@ export default function ContactPage() {
     >
       <div className="max-w-7xl mx-auto">
         {/* Main white container card */}
-        <div className="bg-white rounded-[32px] p-8 px-4  md:p-12 lg:p-16">
+        <div className="bg-white rounded-[32px] p-8 px-4 md:p-12 lg:p-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
             {/* Left Column - Heading & Info */}
             <div ref={leftContentRef} className="lg:sticky lg:top-32">
               {/* Headline */}
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                <span className="text-blue-500">Get in touch</span>
+                <span className="text-blue-500">Talk to the team</span>
                 <br />
-                <span className="text-gray-900">with our team</span>
+                <span className="text-gray-900">behind Optimist</span>
               </h1>
 
               {/* Subtext */}
-              <p className="text-gray-600 text-lg mb-12 max-w-md">
-                Use the contact form to get in touch or email us at{" "}
-                <a
-                  href="mailto:support@optimist.in"
-                  className="text-blue-500 font-medium hover:underline"
-                >
-                  support@optimist.in
-                </a>
-                . We'll get back to you asap.
-              </p>
+              <div className="text-gray-600 text-lg mb-12 max-w-md space-y-4">
+                <p>
+                  Whether you need product guidance, service support, or clarity
+                  about your Optimist AC — we're here to help.
+                </p>
+                <p className="font-medium text-gray-700">
+                  Real people. Clear answers. No runaround.
+                </p>
+                <div className="pt-2 space-y-3">
+                  <div>
+                    <p className="text-gray-500">
+                      Prefer email? Write to{" "}
+                      <a
+                        href="mailto:care@optimist.in"
+                        className="text-blue-500 font-medium hover:underline"
+                      >
+                        care@optimist.in
+                      </a>
+                    </p>
+                    <p className="text-gray-500 text-base">
+                      We typically respond within 24 hours.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">
+                      Or call us at{" "}
+                      <a
+                        href="tel:+918147487070"
+                        className="text-blue-500 font-medium hover:underline"
+                      >
+                        81 4748 7070
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               {/* Trust Badge Card */}
               <div className="hidden lg:block">
-                <div className="relative w-full max-w-md h-[400px] rounded-3xl overflow-hidden bg-blue-500/10">
-                  {/* Text Overlay */}
-                  <div className="absolute top-8 left-6 z-10">
-                    <p className="text-4xl font-bold text-black/20 leading-tight">
-                      Trusted by
+                <div className="relative w-full max-w-md rounded-3xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 p-8">
+                  {/* Trust Content */}
+                  <div className="">
+                    <h3 className="text-2xl font-bold text-gray-900 leading-snug mb-6">
+                      Built for real heat.
                       <br />
-                      2Cr+ people
-                    </p>
+                      Trusted for real performance.
+                    </h3>
+
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-gray-700">
+                          Proven cooling performance at 50°C
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-gray-700">
+                          High energy efficiency, verified by ISEER
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-gray-700">
+                          5-Year all-inclusive warranty
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-gray-700">
+                          Transparent service. No surprises.
+                        </span>
+                      </li>
+                    </ul>
                   </div>
 
                   {/* Image */}
-                  <div className="absolute bottom-0 left-0 right-0">
+                  <div className="relative -mt-68 -mx-8 -mb-8">
                     <Image
                       src={ASSETS.sleepingWoman}
                       alt="Happy customer"
@@ -831,6 +944,15 @@ export default function ContactPage() {
             <div ref={formRef}>
               <ContactForm onSuccess={handleFormSuccess} />
             </div>
+          </div>
+
+          {/* Footer Micro Line */}
+          <div className="mt-16 pt-8 border-t border-gray-100 text-center">
+            <p className="text-gray-400 text-sm">
+              <span className="font-semibold text-gray-500">Optimist</span>
+              <span className="mx-2">·</span>
+              Engineered for real heat. Built for real life.
+            </p>
           </div>
         </div>
       </div>
