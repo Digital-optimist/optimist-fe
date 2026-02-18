@@ -29,8 +29,8 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
       style={{
-        width: isMobile ? "90%" : "clamp(680px, 60vw, 1000px)",
-        maxWidth: isMobile ? "400px" : "1050px",
+        width: isMobile ? "99%" : "clamp(680px, 60vw, 1000px)",
+        maxWidth: isMobile ? "450px" : "1050px",
       }}
     >
       <Image
@@ -276,7 +276,7 @@ export function HeroSection() {
                   <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
                     Proven Cooling
                     <br />
-                    at 50C
+                    at 50°C
                   </span>
                 </div>
 
@@ -316,7 +316,7 @@ export function HeroSection() {
             {/* Buy Now CTA */}
             <div
               ref={mobileButtonsRef}
-              className="flex justify-center mt-4 pb-15"
+              className="flex justify-center mt-4 pb-12"
               style={{ zIndex: 31 }}
             >
               <button
