@@ -282,8 +282,7 @@ export function BenefitsSection() {
       const updateMetrics = () => {
         const cards = carousel.querySelectorAll(".benefit-card");
         if (!cards.length) return;
-        const gap =
-          parseFloat(getComputedStyle(carousel).columnGap) || 16;
+        const gap = parseFloat(getComputedStyle(carousel).columnGap) || 16;
         const cardWidth = cards[0].getBoundingClientRect().width;
         const totalWidth = (cardWidth + gap) * cards.length - gap;
         const containerWidth =
@@ -353,7 +352,7 @@ export function BenefitsSection() {
       className="relative bg-[#FFFFFF] overflow-x-hidden z-[1]"
     >
       {/* Spacer for AC image + Buy Now button overflow from hero section */}
-      <div className="pt-[140px] md:pt-[200px]" />
+      <div className="pt-[20px] md:pt-[200px]" />
 
       {/* Pinned scroll container - no top padding so pin works correctly */}
       <div ref={triggerRef} className="pt-4 md:pt-6 pb-8 md:pb-12 lg:pb-16">

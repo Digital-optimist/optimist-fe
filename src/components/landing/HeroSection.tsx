@@ -244,7 +244,7 @@ export function HeroSection() {
           <div
             ref={contentRef}
             className="relative z-10 flex flex-col items-center h-full px-5 sm:px-6"
-            style={{ willChange: "transform, opacity", paddingTop: "16vh" }}
+            style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
           >
             {/* Headline + Badges */}
             <div className="flex flex-col items-center text-center">
