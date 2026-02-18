@@ -114,7 +114,7 @@ export const ASSETS = {
   ananyaRao: getAssetUrl("AnanyaRao.png"),
   kunalShah: getAssetUrl("KunalShah.png"),
   rohanMehta: getAssetUrl("RohanMehta.png"),
-  anupam: getAssetUrl("Anupam.jpeg"),
+  anupam: getAssetUrl("Anupam.png"),
   sera: getAssetUrl("Sera.jpeg"),
   krishnakanth: getAssetUrl("Krishnakanth.jpeg"),
 

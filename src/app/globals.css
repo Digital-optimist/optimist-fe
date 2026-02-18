@@ -229,14 +229,14 @@ body {
 
 /* Hero Section Responsive Typography */
 .hero-headline-size {
-  font-size: 42px;
-  line-height: 42px;
+  font-size: 34px;
+  line-height: 38px;
 }
 
 @media (min-width: 768px) {
   .hero-headline-size {
-    font-size: 82px;
-    line-height: 82px;
+    font-size: 64px;
+    line-height: 68px;
   }
 }
 

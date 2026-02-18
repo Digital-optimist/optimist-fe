@@ -352,8 +352,8 @@ export function BenefitsSection() {
       ref={sectionRef}
       className="relative bg-[#FFFFFF] overflow-x-hidden z-[1]"
     >
-      {/* Spacer for AC overlap from hero section */}
-      <div className="pt-[100px] md:pt-[200px]" />
+      {/* Spacer for AC image + Buy Now button overflow from hero section */}
+      <div className="pt-[140px] md:pt-[200px]" />
 
       {/* Pinned scroll container - no top padding so pin works correctly */}
       <div ref={triggerRef} className="pt-4 md:pt-6 pb-8 md:pb-12 lg:pb-16">

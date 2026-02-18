@@ -197,7 +197,7 @@ export function HeroSection() {
   // height changes when the navigation header hides/shows on scroll
   const sectionStyle = isMounted
     ? {
-        height: isMobile ? "65svh" : "82vh",
+        height: isMobile ? "75svh" : "82vh",
         minHeight: isMobile ? "550px" : "500px",
       }
     : {
@@ -240,99 +240,92 @@ export function HeroSection() {
             />
           </div>
 
-          {/* Content Container */}
+          {/* Content Container - normal flow layout */}
           <div
             ref={contentRef}
-            className="relative z-10 flex flex-col px-5 sm:px-6"
-            style={{ willChange: "transform, opacity", paddingTop: "15vh" }}
+            className="relative z-10 flex flex-col items-center h-full px-5 sm:px-6"
+            style={{ willChange: "transform, opacity", paddingTop: "16vh" }}
           >
-            <div className="flex flex-col">
-              {/* Left Content */}
-              <div className="flex flex-col">
-                {/* Headline */}
-                <h1
-                  ref={headlineRef}
-                  className="hero-headline hero-headline-size"
-                  style={{ perspective: "1000px" }}
-                >
-                  <span className="block">India’s Real AC </span>
-                  {/* <span className="block text-[36px] leading-[36px]">
-                    Compromise ends here.
-                  </span> */}
-                </h1>
+            {/* Headline + Badges */}
+            <div className="flex flex-col items-center text-center">
+              <h1
+                ref={headlineRef}
+                className="hero-headline hero-headline-size"
+                style={{ perspective: "1000px" }}
+              >
+                <span className="block">India&apos;s Real AC.</span>
+                <span className="block text-[#7EEFC4]">
+                  Cools More. Uses Less.
+                </span>
+              </h1>
 
-                {/* Badges Column */}
-                <div ref={badgesRef} className="flex flex-col mt-6">
-                  {/* Cooling Badge */}
-                  <div className="flex items-center gap-3 py-3">
-                    <Image
-                      src={ASSETS.thermometerBadge}
-                      alt="Proven Cooling at 50°C"
-                      width={36}
-                      height={36}
-                      className="w-9 h-9 flex-shrink-0"
-                      priority
-                    />
-                    <div className="flex flex-col justify-center">
-                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
-                        No Bullshit.
-                      </span>
-                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
-                        Real Cooling at 50°C
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Horizontal Divider */}
-                  <div className="w-full h-px bg-white/20" />
-
-                  {/* ISEER Badge */}
-                  <div className="flex items-center gap-3 py-3">
-                    <Image
-                      src={ASSETS.iseer5StarBadge}
-                      alt="India's #1 Rated Energy Efficient AC"
-                      width={44}
-                      height={36}
-                      className="w-10 h-9 object-contain flex-shrink-0"
-                      priority
-                    />
-                    <div className="flex flex-col justify-center">
-                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
-                        India's #1 Rated
-                      </span>
-                      <span className="hero-badge-title text-optimist-cream leading-[1.3]">
-                        Energy Efficient AC
-                      </span>
-                    </div>
-                  </div>
+              <div
+                ref={badgesRef}
+                className="flex items-center justify-center gap-4 mt-6"
+              >
+                {/* Cooling Badge */}
+                <div className="flex items-center gap-2 py-3">
+                  <Image
+                    src={ASSETS.thermometerBadge}
+                    alt="Proven Cooling at 50°C"
+                    width={36}
+                    height={36}
+                    className="w-9 h-9 flex-shrink-0"
+                    priority
+                  />
+                  <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
+                    Proven Cooling
+                    <br />
+                    at 50C
+                  </span>
                 </div>
 
-                {/* CTA Buttons - Mobile */}
-                <div
-                  ref={mobileButtonsRef}
-                  className="flex items-center gap-3 mt-8"
-                >
-                  <button
-                    onClick={openModal}
-                    className="btn-buy-now-hero  hero-btn-mobile min-w-[150px] text-[#1265FF] flex items-center justify-center"
-                  >
-                    Join the Waitlist
-                  </button>
+                {/* Vertical Divider */}
+                <div className="h-10 w-px bg-white/20" />
+
+                {/* ISEER Badge */}
+                <div className="flex items-center gap-2 py-3">
+                  <Image
+                    src={ASSETS.iseer5StarBadge}
+                    alt="India's #1 Energy Efficient AC"
+                    width={44}
+                    height={36}
+                    className="w-10 h-9 object-contain flex-shrink-0"
+                    priority
+                  />
+                  <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
+                    India&apos;s #1 Energy
+                    <br />
+                    Efficient AC
+                  </span>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* AC Image Container - Mobile: Half inside hero, half outside */}
-          <div
-            className="absolute left-0 right-0 flex justify-center pointer-events-none"
-            style={{
-              bottom: 0,
-              transform: "translateY(50%)",
-              zIndex: 30,
-            }}
-          >
-            <HeroACImage isMobile={isMobile} />
+            {/* Spacer pushes AC to bottom of hero */}
+            <div className="flex-1" />
+
+            {/* AC Image - in normal flow, overflows below hero */}
+            <div
+              className="flex justify-center w-full pointer-events-none"
+              style={{ zIndex: 30 }}
+            >
+              <HeroACImage isMobile={isMobile} />
+            </div>
+
+            {/* Buy Now CTA */}
+            <div
+              ref={mobileButtonsRef}
+              className="flex justify-center mt-4 pb-15"
+              style={{ zIndex: 31 }}
+            >
+              <button
+                onClick={openModal}
+                className="btn-buy-now-hero hero-btn-mobile min-w-[200px] text-[#1265FF] flex items-center justify-center"
+              >
+                Join the Waitlist
+              </button>
+            </div>
           </div>
         </>
       )}
@@ -404,10 +397,10 @@ export function HeroSection() {
                     className="hero-headline hero-headline-size"
                     style={{ perspective: "1000px" }}
                   >
-                    <span className="block">India’s Real AC</span>
-                    {/* <span className="block  text-[54px] mt-1 leading-[54px] font-[600]">
-                      Compromise ends here.
-                    </span> */}
+                    <span className="block">India&apos;s Real AC.</span>
+                    <span className="block text-[#7EEFC4]">
+                      Cools More. Uses Less.
+                    </span>
                   </h1>
 
                   {/* Badges Row */}
@@ -422,14 +415,9 @@ export function HeroSection() {
                         className="w-11 h-11"
                         priority
                       />
-                      <div className="flex flex-col">
-                        <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                          No Bullshit.
-                        </span>
-                        <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                          Real Cooling at 50°C
-                        </span>
-                      </div>
+                      <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
+                        Proven Cooling at 50°C
+                      </span>
                     </div>
 
                     {/* Vertical Divider */}
@@ -445,14 +433,9 @@ export function HeroSection() {
                         className="w-14 h-11 object-contain"
                         priority
                       />
-                      <div className="flex flex-col">
-                        <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                          India's #1 Rated Energy
-                        </span>
-                        <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                          Efficient AC. Try Us!
-                        </span>
-                      </div>
+                      <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
+                        India&apos;s #1 Energy Efficient AC
+                      </span>
                     </div>
                   </div>
                 </div>
