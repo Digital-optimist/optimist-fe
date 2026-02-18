@@ -18,11 +18,11 @@ const easeOutExpo = "easeOut" as const;
 // Page transition variants
 const pageVariants = {
   initial: { opacity: 0 },
-  animate: { 
+  animate: {
     opacity: 1,
-    transition: { duration: 0.4, ease: easeOutExpo }
+    transition: { duration: 0.4, ease: easeOutExpo },
   },
-  exit: { opacity: 0 }
+  exit: { opacity: 0 },
 };
 
 // Staggered section reveal
@@ -34,9 +34,9 @@ const sectionVariants = {
     transition: {
       delay: i * 0.05,
       duration: 0.6,
-      ease: easeOutExpo
-    }
-  })
+      ease: easeOutExpo,
+    },
+  }),
 };
 
 export default function HomePage() {
@@ -49,10 +49,8 @@ export default function HomePage() {
     >
       {/* Hero Section - Immediate display, no delay */}
       <HeroSection />
-      
       {/* BenefitsSection handles its own scroll-triggered reveal via GSAP */}
       <BenefitsSection />
-      
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -62,27 +60,6 @@ export default function HomePage() {
       >
         <FeaturesShowcaseSection />
       </motion.div>
-      
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        custom={2}
-        variants={sectionVariants}
-      >
-        <EngineeredSection />
-      </motion.div>
-      
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        custom={3}
-        variants={sectionVariants}
-      >
-        <MadeSimpleSection />
-      </motion.div>
-      
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -92,7 +69,24 @@ export default function HomePage() {
       >
         <OptimistAppSection />
       </motion.div>
-      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={3}
+        variants={sectionVariants}
+      >
+        <MadeSimpleSection />
+      </motion.div>{" "}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={2}
+        variants={sectionVariants}
+      >
+        <EngineeredSection />
+      </motion.div>
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -102,7 +96,6 @@ export default function HomePage() {
       >
         <TestimonialsSection />
       </motion.div>
-      
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -112,7 +105,6 @@ export default function HomePage() {
       >
         <ProductPickerSection />
       </motion.div>
-      
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -122,7 +114,6 @@ export default function HomePage() {
       >
         <CTASection />
       </motion.div>
-      
       <motion.div
         initial="hidden"
         whileInView="visible"

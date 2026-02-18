@@ -41,8 +41,8 @@ interface FeatureCardData {
 const FEATURES: FeatureCardData[] = [
   {
     id: "energy-meter",
-    title: "Live Energy Meter",
-    description: "Track. Predict. Save.",
+    title: "Live Energy tracking",
+    description: "Control your Bills\nSave even more!",
     icon: ASSETS.thermometer,
     handImage: ASSETS.liveEnergyMeter,
     desktopLeft: 120,
@@ -52,8 +52,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "bills",
-    title: "Projected Monthly Bills",
-    description: "No surprises. Just real numbers.",
+    title: "Unified App",
+    description: "Need we say more!",
     icon: ASSETS.scroll,
     handImage: ASSETS.projectedMonthlyBills,
     desktopLeft: 30,
@@ -63,8 +63,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "filter",
-    title: "Filter Health",
-    description: "Clean when needed. No more guessing.",
+    title: "Filter health track",
+    description: "Always clean air\nNo cooling drops",
     icon: ASSETS.filter,
     handImage: ASSETS.filterTracking,
     desktopLeft: 120,
@@ -74,8 +74,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "gas-level",
-    title: "Gas Level Indicator",
-    description: "Know before it's an issue.",
+    title: "First Ever Gas-level Indicator",
+    description: "Eliminate cooling drop shocks\nNo wasteful gas-filling",
     icon: ASSETS.gastank,
     handImage: ASSETS.gasLevelIndicator,
     desktopLeft: 906,
@@ -85,8 +85,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "service",
-    title: "Intelligence Service Assistance",
-    description: "Diagnose remotely. Service seamlessly",
+    title: "Intelligent Diagnostics",
+    description: "Automated and Remote\nSeamless hassle-free servicing",
     icon: ASSETS.headset,
     handImage: ASSETS.serviceAssistance,
     desktopLeft: 1016,
@@ -96,8 +96,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "scheduling",
-    title: "Scheduling",
-    description: "Start or stop automatically, on your time.",
+    title: "Control anywhere",
+    description: "Walk into pre-cooled rooms\nSchedule your cooling",
     icon: ASSETS.calendar,
     handImage: ASSETS.scheduling,
     desktopLeft: 906,
@@ -559,7 +559,7 @@ export function OptimistAppSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-white px-3 sm:px-4 md:px-6 lg:px-10"
+      className="bg-white py-10 px-3 sm:px-4 md:px-6 lg:px-10"
     >
       {/* Main Container - responsive max-width */}
       <div

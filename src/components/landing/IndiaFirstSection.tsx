@@ -118,9 +118,9 @@ export function IndiaFirstSection() {
             {/* Content */}
             <div className="relative z-10 p-6 md:p-10 lg:p-12">
               {/* Headline */}
-              <h2 className="font-display text-[#AEFFD8] text-[32px] leading-[36px] md:text-[48px] md:leading-[52px] lg:text-[92px] lg:leading-[92px] font-[600] mb-4 md:mb-6">
+              <h2 className="font-display text-[#AEFFD8] text-[32px] leading-[36px] md:text-[44px] md:leading-[44px] lg:text-[64px] lg:leading-[64px] xl:text-[76px] xl:leading-[76px] font-[600] mb-4 md:mb-6">
                 <span>
-                  Live Gas Level
+                  First Ever Gas Level
                   <br />
                   Indicator.
                 </span>

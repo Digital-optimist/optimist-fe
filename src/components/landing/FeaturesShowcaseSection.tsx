@@ -28,7 +28,7 @@ const features = [
   },
   {
     id: 2,
-    badge: "ISEER 6.02",
+    badge: "Highest Efficiency: ISEER 6.05",
     badgeIcon: ASSETS.iseer5StarBadge,
     headline: "Lowest AC Bills. Proven.",
     description: "Smart Energy Meter in App",

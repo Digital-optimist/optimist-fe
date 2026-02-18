@@ -44,30 +44,30 @@ function ScrollArrowIcon({
 const testimonials = [
   {
     id: 1,
-    name: "Rohan Mehta",
-    location: "Jaipur",
-    date: "May 2025",
+    name: "Anupam",
+    profession: "Banker",
+    location: "Gurgaon",
     quote:
-      "We hit 47–48°C outside and the cooling never dropped. Airflow stayed steady through the day. No power dips, no noise spikes.",
-    image: ASSETS.rohanMehta,
+      "We hit 47–48°C outside and the cooling never dropped. Airflow stayed steady through the day. It felt like the AC knew what I wanted!",
+    image: ASSETS.anupam,
   },
   {
     id: 2,
-    name: "Ananya Rao",
-    location: "Bengaluru",
-    date: "April 2025",
+    name: "Sera",
+    profession: "Chartered Accountant",
+    location: "Delhi",
     quote:
-      "What surprised me wasn't just the cooling. Our electricity bill was noticeably lower than last summer, even with longer usage.",
-    image: ASSETS.ananyaRao,
+      "What surprised me wasn't just the cooling. Our electricity bill was noticeably lower, even with longer usage.",
+    image: ASSETS.sera,
   },
   {
     id: 3,
-    name: "Kunal Shah",
-    location: "Mumbai",
-    date: "June 2025",
+    name: "Krishnakanth",
+    profession: "Semi-conductor Research",
+    location: "Hyderabad",
     quote:
-      "The gas level indicator is a small thing, but it changes everything. I finally know when service is actually needed.",
-    image: ASSETS.kunalShah,
+      "Optimist managed both heat and humidity easily. The App is brilliant - the gas level indicator, while a small widget, is a game changer.",
+    image: ASSETS.krishnakanth,
   },
 ];
 
@@ -212,8 +212,8 @@ export function TestimonialsSection() {
           className="text-center mb-10 md:mb-14 will-change-[transform,opacity]"
         >
           <h2 className="font-display text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-            Real Stories From{" "}
-            <span className="text-optimist-blue-primary">India’s Real AC.</span>
+            Real Stories from{" "}
+            <span className="text-optimist-blue-primary">Our Early Users</span>
           </h2>
         </div>
 
@@ -273,7 +273,7 @@ export function TestimonialsSection() {
                 {/* Mobile Layout - Stacked */}
                 <div className="md:hidden">
                   {/* Video Thumbnail */}
-                  <div className="relative aspect-[4/5] rounded-[24px]">
+                  <div className="relative aspect-[7/8] rounded-[24px]">
                     <Image
                       src={testimonial.image}
                       alt={testimonial.name}
@@ -290,7 +290,7 @@ export function TestimonialsSection() {
                         {testimonial.name}
                       </p>
                       <p className="text-white/70 text-sm">
-                        {testimonial.location} · {testimonial.date}
+                        {testimonial.profession}, {testimonial.location}
                       </p>
                     </div>
 
@@ -315,7 +315,7 @@ export function TestimonialsSection() {
                 <div className="hidden md:flex">
                   {/* Video Thumbnail */}
                   <div className="relative w-[280px] lg:w-[320px] flex-shrink-0">
-                    <div className="relative h-full min-h-[320px]">
+                    <div className="relative h-full min-h-[350px]">
                       <Image
                         src={testimonial.image}
                         alt={testimonial.name}
@@ -332,7 +332,7 @@ export function TestimonialsSection() {
                           {testimonial.name}
                         </p>
                         <p className="text-white/70 text-sm">
-                          {testimonial.location} · {testimonial.date}
+                          {testimonial.profession}, {testimonial.location}
                         </p>
                       </div>
 

@@ -525,13 +525,13 @@ export function EngineeredSection() {
             </span>
           </h2>
 
-          <Link
+          {/* <Link
             href="#"
             className="hidden lg:flex items-center gap-2 px-6 py-3 border border-[#00000033] rounded-full text-[#1A1A1A] font-semibold text-sm hover:bg-white transition-all shadow-sm hover:shadow-md whitespace-nowrap lg:mt-2"
           >
             Learn how our core works
             <ArrowUpRight className="w-4 h-4" />
-          </Link>
+          </Link> */}
         </div>
 
         {/* Desktop Layout - 2 columns with Apple-style accordion */}

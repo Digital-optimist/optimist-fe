@@ -114,6 +114,9 @@ export const ASSETS = {
   ananyaRao: getAssetUrl("AnanyaRao.png"),
   kunalShah: getAssetUrl("KunalShah.png"),
   rohanMehta: getAssetUrl("RohanMehta.png"),
+  anupam: getAssetUrl("Anupam.jpeg"),
+  sera: getAssetUrl("Sera.jpeg"),
+  krishnakanth: getAssetUrl("Krishnakanth.jpeg"),
 
   // Hand Images (Optimist App Section)
   filterTracking: getAssetUrl("Filter tracking.png"),

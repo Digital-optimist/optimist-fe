@@ -244,7 +244,7 @@ export function HeroSection() {
           <div
             ref={contentRef}
             className="relative z-10 flex flex-col px-5 sm:px-6"
-            style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
+            style={{ willChange: "transform, opacity", paddingTop: "15vh" }}
           >
             <div className="flex flex-col">
               {/* Left Content */}
@@ -261,10 +261,10 @@ export function HeroSection() {
                   </span> */}
                 </h1>
 
-                {/* Badges Row */}
-                <div ref={badgesRef} className="flex items-center gap-3 mt-6">
+                {/* Badges Column */}
+                <div ref={badgesRef} className="flex flex-col mt-6">
                   {/* Cooling Badge */}
-                  <div className="flex items-center gap-2 py-2">
+                  <div className="flex items-center gap-3 py-3">
                     <Image
                       src={ASSETS.thermometerBadge}
                       alt="Proven Cooling at 50°C"
@@ -283,11 +283,11 @@ export function HeroSection() {
                     </div>
                   </div>
 
-                  {/* Vertical Divider */}
-                  <div className="h-9 w-px bg-white/20 flex-shrink-0" />
+                  {/* Horizontal Divider */}
+                  <div className="w-full h-px bg-white/20" />
 
                   {/* ISEER Badge */}
-                  <div className="flex items-center gap-2 py-2">
+                  <div className="flex items-center gap-3 py-3">
                     <Image
                       src={ASSETS.iseer5StarBadge}
                       alt="India's #1 Rated Energy Efficient AC"
@@ -312,12 +312,6 @@ export function HeroSection() {
                   ref={mobileButtonsRef}
                   className="flex items-center gap-3 mt-8"
                 >
-                  {/* <button
-                    onClick={() => scrollToSection("benefits")}
-                    className="btn-why-optimist hero-btn-mobile flex-1 text-optimist-cream flex items-center justify-center"
-                  >
-                    Why Optimist ?
-                  </button> */}
                   <button
                     onClick={openModal}
                     className="btn-buy-now-hero  hero-btn-mobile min-w-[150px] text-[#1265FF] flex items-center justify-center"
