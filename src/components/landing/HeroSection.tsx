@@ -24,13 +24,14 @@ const scrollToSection = (elementId: string) => {
 function HeroACImage({ isMobile }: { isMobile: boolean }) {
   return (
     <motion.div
-      className="relative flex items-end justify-center w-full"
+      className="relative flex items-end justify-center"
       initial={{ opacity: 0, scale: 0.9, y: 40 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
       style={{
-        width: isMobile ? "99%" : "clamp(680px, 60vw, 1000px)",
-        maxWidth: isMobile ? "450px" : "1050px",
+        width: isMobile ? "100vw" : "clamp(680px, 60vw, 1000px)",
+        maxWidth: isMobile ? "none" : "1050px",
+        flexShrink: 0,
       }}
     >
       <Image
@@ -243,7 +244,7 @@ export function HeroSection() {
           {/* Content Container - normal flow layout */}
           <div
             ref={contentRef}
-            className="relative z-10 flex flex-col items-center h-full px-5 sm:px-6"
+            className="relative z-10 flex flex-col items-center h-full px-5 sm:px-6 overflow-visible"
             style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
           >
             {/* Headline + Badges */}
@@ -307,7 +308,7 @@ export function HeroSection() {
 
             {/* AC Image - in normal flow, overflows below hero */}
             <div
-              className="flex justify-center w-full pointer-events-none"
+              className="flex justify-center w-full pointer-events-none overflow-visible"
               style={{ zIndex: 30 }}
             >
               <HeroACImage isMobile={isMobile} />

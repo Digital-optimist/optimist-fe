@@ -97,7 +97,7 @@ body {
 .hero-section {
   background: var(--optimist-pure-black);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-section::before {

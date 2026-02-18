@@ -277,7 +277,11 @@ export function BenefitsSection() {
 
       const isMobile = window.innerWidth < 768;
 
-      gsap.set(headerRef.current, { opacity: 0, y: 40 });
+      if (isMobile) {
+        gsap.set(headerRef.current, { opacity: 1, y: 0 });
+      } else {
+        gsap.set(headerRef.current, { opacity: 0, y: 40 });
+      }
 
       let scrollDistance = 0;
 
@@ -295,19 +299,21 @@ export function BenefitsSection() {
 
       updateMetrics();
 
-      // Header fade in (desktop only — mobile header is outside pinned container)
-      gsap.to(headerRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        force3D: true,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
+      // Header fade in — desktop only (mobile header is shown immediately)
+      if (!isMobile) {
+        gsap.to(headerRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          force3D: true,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+            once: true,
+          },
+        });
+      }
 
       // Horizontal scroll driven by vertical scroll — all devices
       ScrollTrigger.create({
@@ -356,24 +362,20 @@ export function BenefitsSection() {
       {/* Spacer for AC image + Buy Now button overflow from hero section */}
       <div className="pt-[20px] md:pt-[200px]" />
 
-      {/* Mobile header — outside pinned container so it scrolls away naturally */}
-      <div className="md:hidden px-4 pt-4 mb-6">
-        <h2 className="font-display text-3xl font-bold text-gray-900 leading-tight">
-          Best Cooling. Lowest Bills.
-          <br />
-          Designed for Tomorrow.
-        </h2>
-      </div>
-
       {/* Pinned scroll container */}
-      <div ref={triggerRef} className="md:pt-6 pb-8 md:pb-12 lg:pb-16">
+      <div ref={triggerRef} className="pt-4 md:pt-6 pb-8 md:pb-12 lg:pb-16">
         <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
-          {/* Desktop header — inside pinned container */}
+          {/* Section Header */}
           <div
             ref={headerRef}
-            className="hidden md:block mb-8 will-change-[transform,opacity]"
+            className="mb-6 md:mb-8 will-change-[transform,opacity]"
           >
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
+            <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
+              Best Cooling. Lowest Bills.
+              <br />
+              Designed for Tomorrow.
+            </h2>
+            <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
               Best Cooling. Lowest Bills.
               <br />
               Designed for Tomorrow.
