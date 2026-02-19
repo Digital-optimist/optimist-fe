@@ -20,17 +20,17 @@ const benefits = [
   },
   {
     id: 2,
-    badge: "Cooling fails in peak summer?",
-    headline: "Tested to cool\nat 50°C",
-    description: "No performance drop when others derate.",
+    badge: "What can an AC app give me?",
+    headline: "Real\nIntelligence",
+    description: "Anytime. Anywhere",
     variant: "blue" as const,
-    mobileAsset: ASSETS.benf2Ass1,
+    mobileAsset: ASSETS.benf2Ass2,
     desktopAsset1: ASSETS.benf2Ass1,
   },
   {
     id: 3,
-    badge: "Cooling suddenly dropping?",
-    headline: "Live Gas Level\nIndicator with alerts",
+    badge: "Gas level doubts? Not anymore.",
+    headline: "First Ever\nGas Level Indicator",
     description: "0 Surprises. 100% Control",
     variant: "light" as const,
     mobileAsset: ASSETS.benf3Ass2,
@@ -47,7 +47,7 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
       <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] bg-[rgba(52,120,246,0.08)]">
         {/* Text Content - Top */}
         <div className="absolute left-4 top-6 flex flex-col gap-3 w-[85%] z-20">
-          <span className="inline-flex w-fit px-[14px] py-2 bg-[#212121] text-white text-xs font-medium rounded-full leading-[1.2]">
+          <span className="inline-flex w-fit px-[14px] py-2 bg-[#AEFFD8] text-[#3478F6] text-xs font-medium rounded-full leading-[1.2]">
             {benefit.badge}
           </span>
           <h3 className="font-display text-[28px] font-bold text-[#3478f6] leading-[1.1] whitespace-pre-line">
@@ -78,7 +78,7 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
         {/* Text Content - Left side */}
         <div className="absolute left-[44px] top-1/2 -translate-y-1/2 flex flex-col gap-4 w-[40%] max-w-[450px] z-20">
           <div className="flex flex-col gap-4 w-full">
-            <span className="inline-flex w-fit px-6 py-3 bg-[#212121] text-white text-base font-medium rounded-full leading-[1.2]">
+            <span className="inline-flex w-fit px-6 py-3 bg-[#AEFFD8] text-[#3478F6] text-base font-medium rounded-full leading-[1.2]">
               {benefit.badge}
             </span>
             <h3 className="font-display text-[clamp(32px,4vw,52px)] font-bold text-[#3478f6] leading-[1.2] whitespace-pre-line">
@@ -126,7 +126,7 @@ function BenefitCard2({ benefit }: { benefit: (typeof benefits)[1] }) {
       <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] flex flex-col">
         {/* Blue Background - Top portion with text */}
         <div className="relative bg-[#3478f6] px-4 pt-6 pb-4 flex-shrink-0">
-          <span className="inline-flex w-fit px-[14px] py-2 bg-[#fffcdc] text-[#212121] text-xs font-medium rounded-full leading-[1.2] mb-3">
+          <span className="inline-flex w-fit px-[14px] py-2 bg-[#AEFFD8] text-[#3478F6] text-xs font-medium rounded-full leading-[1.2] mb-3">
             {benefit.badge}
           </span>
           <h3 className="font-display text-[28px] font-bold text-[#aeffd8] leading-[1.1] whitespace-pre-line mb-2">
@@ -143,7 +143,7 @@ function BenefitCard2({ benefit }: { benefit: (typeof benefits)[1] }) {
             src={benefit.mobileAsset}
             alt=""
             fill
-            className="object-cover object-center"
+            className="object-cover object-top"
             sizes="(max-width: 768px) 100vw, 326px"
           />
         </div>
@@ -152,12 +152,12 @@ function BenefitCard2({ benefit }: { benefit: (typeof benefits)[1] }) {
       {/* Desktop Layout */}
       <div className="hidden md:flex relative h-[70dvh] min-h-[500px] max-h-[700px] bg-white">
         {/* Blue Background Panel - Left side */}
-        <div className="absolute left-0 top-0 w-[45%] z-[20] h-full bg-[#3478f6] rounded-l-[20px]" />
+        <div className="absolute left-0 top-0 w-[40%]  z-[20] h-full bg-[#3478f6] rounded-l-[20px]" />
 
         {/* Text Content - Left side */}
-        <div className="absolute left-[44px] top-1/2 -translate-y-1/2  flex flex-col gap-4 w-[45%] max-w-[420px] z-20">
+        <div className="absolute left-[44px] top-1/2 -translate-y-1/2  flex flex-col gap-4 w-[40%] max-w-[350px] z-20">
           <div className="flex flex-col gap-4 w-full">
-            <span className="inline-flex w-fit px-6 py-3 bg-[#fffcdc] text-[#212121] text-base font-medium rounded-full leading-[1.2]">
+            <span className="inline-flex w-fit px-6 py-3 bg-[#AEFFD8] text-[#3478F6] text-base font-medium rounded-full leading-[1.2]">
               {benefit.badge}
             </span>
             <h3 className="font-display text-[clamp(32px,4vw,52px)] font-bold text-[#aeffd8] leading-[1.2] whitespace-pre-line">
@@ -192,7 +192,7 @@ function BenefitCard3({ benefit }: { benefit: (typeof benefits)[2] }) {
       <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] bg-[rgba(52,120,246,0.08)]">
         {/* Text Content - Top */}
         <div className="absolute left-4 top-6 flex flex-col gap-3 w-[85%] z-20">
-          <span className="inline-flex w-fit px-[14px] py-2 bg-[#212121] text-white text-xs font-medium rounded-full leading-[1.2]">
+          <span className="inline-flex w-fit px-[14px] py-2 bg-[#AEFFD8] text-[#3478F6] text-xs font-medium rounded-full leading-[1.2]">
             {benefit.badge}
           </span>
           <h3 className="font-display text-[28px] font-bold text-[#3478f6] leading-[1.1] whitespace-pre-line">
@@ -223,10 +223,10 @@ function BenefitCard3({ benefit }: { benefit: (typeof benefits)[2] }) {
         {/* Text Content - Left side */}
         <div className="absolute left-[44px] top-1/2 -translate-y-1/2 flex flex-col gap-4 w-[40%] max-w-[450px] z-20">
           <div className="flex flex-col gap-4 w-full">
-            <span className="inline-flex w-fit px-6 py-3 bg-[#212121] text-white text-base font-medium rounded-full leading-[1.2]">
+            <span className="inline-flex w-fit px-6 py-3 bg-[#AEFFD8] text-[#3478F6] text-base font-medium rounded-full leading-[1.2]">
               {benefit.badge}
             </span>
-            <h3 className="font-display text-[clamp(32px,4vw,52px)] font-bold text-[#3478f6] leading-[1.2] whitespace-pre-line">
+            <h3 className="font-display text-[clamp(32px,4vw,48px)] font-bold text-[#3478f6] leading-[1.2] whitespace-pre-line">
               {benefit.headline}
             </h3>
           </div>
@@ -371,14 +371,36 @@ export function BenefitsSection() {
             className="mb-6 md:mb-8 will-change-[transform,opacity]"
           >
             <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
-              Best Cooling. Lowest Bills.
-              <br />
-              Designed for Tomorrow.
+              <span
+                style={{
+                  background:
+                    "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                {" "}
+                Best Cooling. Lowest Bills.
+              </span>
+              <br />{" "}
+              <span className="font-[#000000]">Designed for Tomorrow.</span>
             </h2>
             <h2 className="md:hidden font-display text-[28px] font-bold text-gray-900 leading-tight">
-              Best Cooling. Lowest Bills.
-              <br />
-              Designed for Tomorrow.
+              <span
+                style={{
+                  background:
+                    "linear-gradient(151.7deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                {" "}
+                Best Cooling. Lowest Bills.
+              </span>
+              <br />{" "}
+              <span className="font-[#000000]">Designed for Tomorrow.</span>
             </h2>
           </div>
 

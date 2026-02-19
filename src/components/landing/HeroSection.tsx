@@ -215,19 +215,6 @@ export function HeroSection() {
       {/* MOBILE LAYOUT */}
       {isMounted && isMobile && (
         <>
-          {/* COMMENTED OUT: Previous Blue Gradient Background implementation */}
-          {/* <div
-            ref={gradientRef}
-            className="absolute inset-0"
-            style={{ 
-              willChange: "auto", 
-              transformStyle: "preserve-3d",
-              WebkitTransformStyle: "preserve-3d",
-            }}
-          >
-            <HeroBlueGradient1 progress={scrollProgress} isMobile={isMobile} />
-          </div> */}
-
           {/* Background - Mobile background image */}
           <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
             {/* Mobile background image - decorative */}
@@ -238,6 +225,26 @@ export function HeroSection() {
               sizes="100vw"
               className="object-cover object-center pointer-events-none"
               priority
+            />
+            {/* Leaves video overlay - subtle effect */}
+            <video
+              src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute pointer-events-none"
+              style={{
+                top: "50%",
+                left: "50%",
+                width: "150%",
+                height: "150%",
+                objectFit: "cover",
+                objectPosition: "center",
+                transform: "translate(-50%, -50%) rotate(180deg)",
+                opacity: 0.18,
+                mixBlendMode: "multiply",
+              }}
             />
           </div>
 

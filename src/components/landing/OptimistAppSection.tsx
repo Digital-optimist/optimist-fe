@@ -871,13 +871,13 @@ export function OptimistAppSection() {
             className="relative bg-white z-10 text-center pt-[43px] px-4"
           >
             <h2 className="font-display text-[28px] xs:text-[30px] sm:text-[32px] font-bold text-black leading-none mb-3">
-              Real Intelligence in your Hand.
+              Real Intelligence <br /> in your Hand.
             </h2>
             <p
               className="font-display text-[15px] xs:text-[16px] sm:text-[16px] leading-normal"
               style={{ color: "rgba(0,0,0,0.42)" }}
             >
-              Control. Monitor. Diagnose. Anytime. Anywhere
+              Control. Monitor. Diagnose. <br /> Anytime. Anywhere
             </p>
           </div>
 

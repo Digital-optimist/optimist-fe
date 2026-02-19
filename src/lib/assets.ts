@@ -65,6 +65,7 @@ export const ASSETS = {
   benf1Ass1: getAssetUrl("Benf1Ass1.png"),
   benf1Ass2: getAssetUrl("Benf1Ass2.png"),
   benf2Ass1: getAssetUrl("Benf2Ass1.png"),
+  benf2Ass2: getAssetUrl("Benf2Ass2.png"),
   benf3Ass1: getAssetUrl("Benf3Ass1.png"),
   benf3Ass2: getAssetUrl("Benf3Ass2.png"),
 

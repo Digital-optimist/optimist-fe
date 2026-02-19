@@ -104,10 +104,15 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  box-shadow:
-    0px 35px 120px 0px rgba(52, 120, 246, 0.2),
-    0px 145px 120px 4px rgba(52, 120, 246, 0.12);
   pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .hero-section::before {
+    box-shadow:
+      0px 35px 120px 0px rgba(52, 120, 246, 0.2),
+      0px 145px 120px 4px rgba(52, 120, 246, 0.12);
+  }
 }
 
 /* Blue Ellipse Glow */
@@ -229,7 +234,7 @@ body {
 
 /* Hero Section Responsive Typography */
 .hero-headline-size {
-  font-size: 28px;
+  font-size: 32px;
   line-height: 32px;
 }
 

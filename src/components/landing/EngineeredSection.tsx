@@ -506,7 +506,7 @@ export function EngineeredSection() {
           ref={headerRef}
           className="flex flex-col lg:flex-row items-start justify-between mb-2 lg:mb-4 gap-8 will-change-[transform,opacity]"
         >
-          <h2 className="font-display text-[32px] md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1]">
+          <h2 className="font-display text-[28px] md:text-5xl lg:text-6xl xl:text-7xl leading-[1.1]">
             <span
               className="font-[600]"
               style={{
