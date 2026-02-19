@@ -553,9 +553,9 @@ export function Navigation() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span className="text-xs xs:text-sm leading-none font-normal">
+              {/* <span className="text-xs xs:text-sm leading-none font-normal">
                 Menu
-              </span>
+              </span> */}
               <AnimatePresence mode="wait">
                 {isMenuOpen ? (
                   <motion.div
