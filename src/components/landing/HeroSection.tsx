@@ -198,8 +198,8 @@ export function HeroSection() {
   // height changes when the navigation header hides/shows on scroll
   const sectionStyle = isMounted
     ? {
-        height: isMobile ? "75svh" : "82vh",
-        minHeight: isMobile ? "550px" : "500px",
+        height: isMobile ? "85svh" : "82vh",
+        minHeight: isMobile ? "600px" : "500px",
       }
     : {
         height: "82vh",
