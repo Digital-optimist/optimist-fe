@@ -121,7 +121,7 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
 // Card 2 Component - 50°C Tested
 function BenefitCard2({ benefit }: { benefit: (typeof benefits)[1] }) {
   return (
-    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[366px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
       {/* Mobile Layout */}
       <div className="md:hidden relative h-[70dvh] min-h-[500px] max-h-[580px] flex flex-col">
         {/* Blue Background - Top portion with text */}
