@@ -685,7 +685,7 @@ export function OptimistAppSection() {
                 className="font-display font-bold text-black leading-none mb-2 lg:mb-[14px]"
                 style={{ fontSize: `${Math.max(28, 40 * scale)}px` }}
               >
-                Optimist App - Designed for Tomorrow.
+                Real Intelligence in your Hand.
               </h2>
               <p
                 className="font-display leading-normal"
@@ -694,7 +694,7 @@ export function OptimistAppSection() {
                   fontSize: `${Math.max(16, 20 * scale)}px`,
                 }}
               >
-                Control. Track. Predict. From Anywhere.
+                Control. Monitor. Diagnose. Anytime. Anywhere
               </p>
             </div>
 
@@ -766,13 +766,13 @@ export function OptimistAppSection() {
           {/* Header - Tablet - reduced top padding */}
           <div className="relative bg-white z-10 text-center pt-8 px-6">
             <h2 className="font-display text-[32px] font-bold text-black leading-none mb-2">
-              Optimist App - Designed for Tomorrow.
+              Real Intelligence in your Hand.
             </h2>
             <p
               className="font-display text-[16px] leading-normal max-w-sm mx-auto"
               style={{ color: "rgba(0,0,0,0.42)" }}
             >
-              Control. Track. Predict. From Anywhere.
+              Control. Monitor. Diagnose. Anytime. Anywhere
             </p>
           </div>
 
@@ -827,7 +827,7 @@ export function OptimistAppSection() {
         {/* ============ MOBILE LAYOUT (below md) ============ */}
         <div
           className="md:hidden relative bg-white overflow-hidden"
-          style={{ minHeight: "750px" }}
+          style={{ minHeight: "690px" }}
         >
           {/* Background Ellipses - Mobile */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -871,13 +871,13 @@ export function OptimistAppSection() {
             className="relative bg-white z-10 text-center pt-[43px] px-4"
           >
             <h2 className="font-display text-[28px] xs:text-[30px] sm:text-[32px] font-bold text-black leading-none mb-3">
-              Optimist App - Designed for Tomorrow.
+              Real Intelligence in your Hand.
             </h2>
             <p
               className="font-display text-[15px] xs:text-[16px] sm:text-[16px] leading-normal"
               style={{ color: "rgba(0,0,0,0.42)" }}
             >
-              Control. Track. Predict. From Anywhere.
+              Control. Monitor. Diagnose. Anytime. Anywhere
             </p>
           </div>
 
@@ -886,10 +886,10 @@ export function OptimistAppSection() {
             ref={phoneRef}
             className="absolute z-10 pointer-events-none"
             style={{
-              right: "-180px",
-              bottom: "150px",
-              width: "800px",
-              height: "520px",
+              right: "-200px",
+              bottom: "50px",
+              width: "700px",
+              height: "580px",
             }}
           >
             <Image
@@ -900,7 +900,7 @@ export function OptimistAppSection() {
               }
               alt="Optimist App"
               fill
-              sizes="620px"
+              sizes="580px"
               quality={80}
               className="object-contain object-right-bottom"
               priority

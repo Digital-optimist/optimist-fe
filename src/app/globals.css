@@ -229,8 +229,8 @@ body {
 
 /* Hero Section Responsive Typography */
 .hero-headline-size {
-  font-size: 34px;
-  line-height: 38px;
+  font-size: 28px;
+  line-height: 32px;
 }
 
 @media (min-width: 768px) {

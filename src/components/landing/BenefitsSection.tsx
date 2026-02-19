@@ -375,7 +375,7 @@ export function BenefitsSection() {
               <br />
               Designed for Tomorrow.
             </h2>
-            <h2 className="md:hidden font-display text-3xl font-bold text-gray-900 leading-tight">
+            <h2 className="md:hidden font-display text-[28px] font-bold text-gray-900 leading-tight">
               Best Cooling. Lowest Bills.
               <br />
               Designed for Tomorrow.
