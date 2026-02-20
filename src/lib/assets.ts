@@ -68,6 +68,8 @@ export const ASSETS = {
   benf2Ass2: getAssetUrl("Benf2Ass2.png"),
   benf3Ass1: getAssetUrl("Benf3Ass1.png"),
   benf3Ass2: getAssetUrl("Benf3Ass2.png"),
+  benf4Ass1: getAssetUrl("Benf4Ass1.png"),
+  benf4Ass2: getAssetUrl("Benf4Ass2.png"),
 
   // Supporters Section
   iitLogo: getAssetUrl("iit-logo.png"),
@@ -155,6 +157,7 @@ export const ASSETS = {
   // Videos
   videos: {
     pointersAnimation: getAssetUrl("PointerssAnimation.mp4"),
+    pointersAnimationMobile: getAssetUrl("PointersAnimationMobile.mp4"),
     productCardAnimation2: getAssetUrl("ProductCardAnimation2.mp4"),
     treeCool: getAssetUrl("TreeCool.mp4"),
     heroLeafVideo: getAssetUrl(
@@ -171,6 +174,9 @@ export const ASSETS = {
   loginMobileGradient: getAssetUrl("loginMobileGradient.png"),
   desktopMobileGradient: getAssetUrl("DesktopMobileGradient.png"),
   clipPathGroup: getAssetUrl("Clip path group.png"),
+
+  remoteSectionMobile: getAssetUrl("RemoteSectionMobile.png"),
+  remoteSectionDesktop: getAssetUrl("RemoteSectionDesktop.png"),
 } as const;
 
 export default ASSETS;

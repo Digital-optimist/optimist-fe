@@ -472,7 +472,7 @@ export function FeaturesShowcaseSection() {
             >
               <video
                 ref={mobileVideoRef}
-                src={`${ASSETS.videos.pointersAnimation}`}
+                src={`${ASSETS.videos.pointersAnimationMobile}`}
                 className="h-[100%] w-auto max-w-none object-cover translate-x-[5%]"
                 muted
                 playsInline
