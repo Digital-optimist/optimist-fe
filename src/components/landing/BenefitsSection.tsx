@@ -52,7 +52,7 @@ function BenefitCard0({ benefit }: { benefit: (typeof benefits)[0] }) {
   return (
     <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
-      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[580px] flex flex-col">
+      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] flex flex-col">
         {/* Blue Background - Top portion with text */}
         <div className="relative bg-[#3478f6] px-4 pt-6 pb-4 flex-shrink-0">
           <span className="inline-flex w-fit px-[14px] py-2 bg-[#AEFFD8] text-[#3478F6] text-xs font-medium rounded-full leading-[1.2] mb-3">
@@ -118,7 +118,7 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
   return (
     <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
-      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[580px] bg-[rgba(52,120,246,0.08)] rounded-[20px]">
+      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] bg-[rgba(52,120,246,0.08)] rounded-[20px]">
         {/* Text Content - Top */}
         <div className="absolute left-[15px] top-6 flex flex-col gap-3 w-[296px] max-w-[90%] z-20">
           <div className="flex flex-col gap-4">
@@ -135,7 +135,7 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
         </div>
 
         {/* AC with Bill Comparison Chart */}
-        <div className="absolute inset-x-0 top-[35%] bottom-0 z-10">
+        <div className="absolute inset-x-0 top-[38%] bottom-0 z-10">
           <Image
             src={benefit.mobileAsset}
             alt="Optimist AC saves 34% on electricity bills"
@@ -181,9 +181,9 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
 // Card 2 Component - 50°C Tested
 function BenefitCard2({ benefit }: { benefit: (typeof benefits)[2] }) {
   return (
-    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[366px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
-      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[580px] flex flex-col">
+      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] flex flex-col">
         {/* Blue Background - Top portion with text */}
         <div className="relative bg-[#3478f6] px-4 pt-6 pb-4 flex-shrink-0">
           <span className="inline-flex w-fit px-[14px] py-2 bg-[#AEFFD8] text-[#3478F6] text-xs font-medium rounded-full leading-[1.2] mb-3">
@@ -249,7 +249,7 @@ function BenefitCard3({ benefit }: { benefit: (typeof benefits)[3] }) {
   return (
     <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
-      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[580px] bg-[rgba(52,120,246,0.08)]">
+      <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] bg-[rgba(52,120,246,0.08)]">
         {/* Text Content - Top */}
         <div className="absolute left-4 top-6 flex flex-col gap-3 w-[85%] z-20">
           <span className="inline-flex w-fit px-[14px] py-2 bg-[#AEFFD8] text-[#3478F6] text-xs font-medium rounded-full leading-[1.2]">
@@ -338,7 +338,7 @@ export function BenefitsSection() {
       const isMobile = window.innerWidth < 768;
 
       if (isMobile) {
-        gsap.set(headerRef.current, { opacity: 1, y: 0 });
+        gsap.set(headerRef.current, { opacity: 1, y: 30 });
       } else {
         gsap.set(headerRef.current, { opacity: 0, y: 40 });
       }
@@ -428,7 +428,7 @@ export function BenefitsSection() {
           {/* Section Header */}
           <div
             ref={headerRef}
-            className="mb-6 md:mb-8 will-change-[transform,opacity]"
+            className="mb-16 md:mb-8 will-change-[transform,opacity]"
           >
             <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
               <span
