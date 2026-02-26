@@ -315,8 +315,8 @@ export function FeaturesShowcaseSection() {
       const seekThrottleMs = 16; // ~60fps throttle for seeking
 
       // Lerp factors - increased for faster, more responsive video updates on mobile
-      const lerpFactorForward = 0.12; // Reduced for slower video progression
-      const lerpFactorReverse = 0.25; // Reduced for smoother reverse
+      const lerpFactorForward = 0.18; // Reduced for slower video progression
+      const lerpFactorReverse = 0.35; // Reduced for smoother reverse
 
       // Use requestAnimationFrame with lerp for smoother video updates
       const updateVideoTime = () => {
