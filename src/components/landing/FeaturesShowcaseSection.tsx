@@ -315,8 +315,8 @@ export function FeaturesShowcaseSection() {
       const seekThrottleMs = 16; // ~60fps throttle for seeking
 
       // Lerp factors - increased for faster, more responsive video updates on mobile
-      const lerpFactorForward = 0.25; // Increased from 0.12 for snappier response
-      const lerpFactorReverse = 0.45; // Increased from 0.35 for faster reverse
+      const lerpFactorForward = 0.12; // Reduced for slower video progression
+      const lerpFactorReverse = 0.25; // Reduced for smoother reverse
 
       // Use requestAnimationFrame with lerp for smoother video updates
       const updateVideoTime = () => {
@@ -371,15 +371,11 @@ export function FeaturesShowcaseSection() {
         }
       };
 
-      // Feature breakpoints - evenly distributed for sync with video
-      // Feature 1: 0-33%, Feature 2: 33-66%, Feature 3: 66-100%
       const featureBreakpoints = [0, 0.33, 0.66, 1];
 
-      // Single unified ScrollTrigger for both video and content
-      // This ensures they stay perfectly in sync
       ScrollTrigger.create({
         trigger: section,
-        start: "top top", // Start when section top reaches viewport top (sticky visible)
+        start: "top 25%",
         end: "bottom bottom",
         scrub: 0.3, // Increased from 0.05 for better scroll responsiveness on mobile
         onUpdate: (self) => {
@@ -426,7 +422,7 @@ export function FeaturesShowcaseSection() {
         ref={mobileSectionRef}
         className="lg:hidden block w-full relative"
         style={{
-          height: `${features.length * 70}vh`,
+          height: `${features.length * 80}vh`,
           backgroundColor: "#FFFFFF",
         }}
       >
