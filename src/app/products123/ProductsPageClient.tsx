@@ -1,29 +1,37 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
-import { type Product } from "@/lib/shopify";
+import {
+  CartIcon,
+  HeadphoneIcon,
+  InstallationIcon,
+  ServiceCommitmentIcon,
+  ShoppingBagIcon,
+  WarrantyIcon,
+} from "@/components/icons/ProductIcons";
+import {
+  AsFeaturedSection,
+  BuiltForSection,
+  ComparisonSection,
+  CustomerVideosSection,
+  ExpertTestimonialsSection,
+  ImageGallery,
+  InsideOptimistSection,
+  ProofSection,
+  QuantityDropdown,
+  ResultSection,
+  ReviewsSection,
+  TeamSection,
+  VariantCard,
+  WarrantySection,
+} from "@/components/products123";
+import { useToast } from "@/components/ui/Toast";
 import { useCart } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
-import { useToast } from "@/components/ui/Toast";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
-import { ImageGallery } from "@/components/products/ImageGallery";
-import {
-  PackageIcon,
-  ShoppingBagIcon,
-  CartIcon,
-} from "@/components/icons/ProductIcons";
-import { QuantityDropdown } from "@/components/products/QuantityDropdown";
-import { ComparisonSection } from "@/components/products/ComparisonSection";
-import { ResultSection } from "@/components/products/ResultSection";
-import { VariantCard } from "@/components/products/VariantCard";
-import { UserExperienceSection } from "@/components/products/UserExperienceSection";
-import { IndiaStorySection } from "@/components/products/IndiaStorySection";
-import { AfterBuySection } from "@/components/products/AfterBuySection";
-import { WarrantySection } from "@/components/products/WarrantySection";
-import { RecognitionSection } from "@/components/products/RecognitionSection";
-import { BuiltForSection } from "@/components/products/BuiltForSection";
+import { type Product } from "@/lib/shopify";
+import { motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Easing
 const easeOutExpo = "easeOut" as const;
@@ -490,7 +498,7 @@ export default function ProductsPageClient({
 
             {/* Right Column - Product Info */}
             <motion.div
-              className="w-full space-y-4 md:space-y-6"
+              className="w-full space-y-4 md:space-y-5"
               initial="hidden"
               animate="visible"
               variants={heroInfoContainerVariants}
@@ -510,28 +518,196 @@ export default function ProductsPageClient({
                 )}
               </motion.div>
 
-              {/* Title & Delivery */}
+              {/* Title & Star Rating */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="flex flex-col gap-2"
+                className="flex flex-col gap-1.5"
               >
                 <h1 className="text-[28px] md:text-[40px] font-semibold text-black leading-tight">
-                  Optimist AC {selectedVariant?.name || ""}
+                  {selectedVariant?.productTitle ||
+                    `Optimist ${selectedVariant?.name || ""} 5 Star Inverter Split AC`}
                 </h1>
-                <div className="flex items-center gap-2 text-[#6c6a6a]">
-                  <PackageIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
-                  <span className="text-xs md:text-sm">
-                    {selectedVariant?.available
-                      ? "Delivery in 3 weeks"
-                      : "Currently unavailable"}
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4].map((star) => (
+                      <svg
+                        key={star}
+                        className="w-4 h-4 md:w-5 md:h-5 text-[#F5A623]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                    <svg
+                      className="w-4 h-4 md:w-5 md:h-5 text-gray-300"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <defs>
+                        <linearGradient id="halfStar">
+                          <stop offset="50%" stopColor="#F5A623" />
+                          <stop offset="50%" stopColor="#D1D5DB" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        fill="url(#halfStar)"
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-sm md:text-base text-[#6c6a6a]">
+                    (2,401)
                   </span>
+                </div>
+              </motion.div>
+
+              {/* Total/Price */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-1.5"
+              >
+                <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                  Total
+                </h3>
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-2xl md:text-3xl font-semibold text-black">
+                    Rs {formatPrice(selectedVariant?.price || 0)}.00
+                  </span>
+                  {selectedVariant?.compareAtPrice &&
+                    selectedVariant.compareAtPrice > selectedVariant.price && (
+                      <>
+                        <span className="text-base md:text-lg text-[#6c6a6a] line-through">
+                          Rs{" "}
+                          {formatPrice(selectedVariant.compareAtPrice)}
+                        </span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs md:text-sm font-medium bg-[#E8F5E9] text-[#2E7D32]">
+                          {Math.round(
+                            ((selectedVariant.compareAtPrice -
+                              selectedVariant.price) /
+                              selectedVariant.compareAtPrice) *
+                              100,
+                          )}
+                          % off
+                        </span>
+                      </>
+                    )}
+                </div>
+                <span className="text-[#6c6a6a] text-sm md:text-base font-light">
+                  (inclusive of all the taxes)
+                </span>
+                {selectedVariantOutOfStock && (
+                  <span className="text-red-500 text-sm font-medium">
+                    This variant is currently out of stock
+                  </span>
+                )}
+              </motion.div>
+
+              {/* Quantity */}
+              <motion.div variants={heroInfoItemVariants}>
+                <QuantityDropdown
+                  quantity={quantity}
+                  onQuantityChange={handleQuantityChange}
+                  isOpen={isQuantityOpen}
+                  onToggle={handleQuantityToggle}
+                  options={QUANTITY_OPTIONS}
+                />
+              </motion.div>
+
+              {/* Action Buttons - Desktop */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="hidden md:flex gap-4"
+              >
+                {userAllowedToBuy ? (
+                  <>
+                    <motion.button
+                      onClick={handleAddToCart}
+                      disabled={isCartLoading || !canAddToCart}
+                      className={`flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border rounded-full font-medium text-base transition-all ${
+                        buttonState === "loading"
+                          ? "border-gray-200 text-gray-400"
+                          : buttonState === "outOfStock"
+                            ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                            : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
+                      }`}
+                      whileHover={
+                        canAddToCart
+                          ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }
+                          : {}
+                      }
+                      whileTap={canAddToCart ? { scale: 0.98 } : {}}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ShoppingBagIcon className="w-6 h-6" />
+                      <span>
+                        {buttonState === "loading"
+                          ? "Loading..."
+                          : buttonState === "outOfStock"
+                            ? "Out of Stock"
+                            : "Add to Cart"}
+                      </span>
+                    </motion.button>
+                    <motion.button
+                      disabled={!canAddToCart}
+                      className={`flex-1 px-6 py-4 rounded-full font-medium text-base text-center transition-all ${
+                        buttonState === "loading"
+                          ? "bg-gray-300 text-gray-500"
+                          : buttonState === "outOfStock"
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "btn-buy-now text-[#FFFCDC]"
+                      }`}
+                      whileHover={canAddToCart ? { scale: 1.02 } : {}}
+                      whileTap={canAddToCart ? { scale: 0.98 } : {}}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {buttonState === "loading"
+                        ? "Loading..."
+                        : buttonState === "outOfStock"
+                          ? "Unavailable"
+                          : "Buy Now"}
+                    </motion.button>
+                  </>
+                ) : (
+                  <>
+                    <motion.button
+                      onClick={openWaitlistModal}
+                      className="flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border border-[rgba(0,0,0,0.12)] rounded-full font-medium text-base text-black hover:border-[rgba(0,0,0,0.24)] transition-all"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ShoppingBagIcon className="w-6 h-6" />
+                      <span>Add to Cart</span>
+                    </motion.button>
+                    <motion.button
+                      onClick={openWaitlistModal}
+                      className="flex-1 px-6 py-4 rounded-full font-medium text-base text-center btn-buy-now text-[#FFFCDC] transition-all"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      Buy Now
+                    </motion.button>
+                  </>
+                )}
+              </motion.div>
+
+              {/* Snapmint Banner */}
+              <motion.div variants={heroInfoItemVariants}>
+                <div className="w-full flex items-center justify-center py-3 bg-[#F5F5F5] rounded-lg">
+                  <img
+                    src="/assets/snapmint-logo.png"
+                    alt="Snapmint"
+                    className="h-6 md:h-7 w-auto object-contain"
+                  />
                 </div>
               </motion.div>
 
               {/* Variants */}
               <motion.div
                 variants={heroInfoItemVariants}
-                className="flex flex-col gap-4 md:gap-6"
+                className="flex flex-col gap-3 md:gap-4"
               >
                 <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
                   Variants
@@ -588,111 +764,38 @@ export default function ProductsPageClient({
                 )}
               </motion.div>
 
-              {/* Total/Price */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-2"
-              >
-                <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                  Total
-                </h3>
-                <div className="flex flex-wrap items-baseline gap-2">
-                  {selectedVariant?.compareAtPrice &&
-                    selectedVariant.compareAtPrice > selectedVariant.price && (
-                      <span className="text-lg md:text-xl text-[#6c6a6a] line-through">
-                        ₹{formatPrice(selectedVariant.compareAtPrice)}
-                      </span>
-                    )}
-                  <span className="text-2xl md:text-3xl font-semibold text-black">
-                    ₹{formatPrice(selectedVariant?.price || 0)}
-                  </span>
-                  <span className="text-[#6c6a6a] text-sm md:text-base font-light">
-                    (inclusive of all the taxes)
-                  </span>
-                </div>
-                {selectedVariantOutOfStock && (
-                  <span className="text-red-500 text-sm font-medium">
-                    This variant is currently out of stock
-                  </span>
-                )}
-              </motion.div>
-
-              {/* Quantity */}
+              {/* Feature Icons Row */}
               <motion.div variants={heroInfoItemVariants}>
-                <QuantityDropdown
-                  quantity={quantity}
-                  onQuantityChange={handleQuantityChange}
-                  isOpen={isQuantityOpen}
-                  onToggle={handleQuantityToggle}
-                  options={QUANTITY_OPTIONS}
-                />
-              </motion.div>
-
-              {/* Action Buttons */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="hidden md:flex gap-4"
-              >
-                {userAllowedToBuy ? (
-                  <>
-                    <motion.button
-                      onClick={handleAddToCart}
-                      disabled={isCartLoading || !canAddToCart}
-                      className={`flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border rounded-full font-medium text-base transition-all ${
-                        buttonState === "loading"
-                          ? "border-gray-200 text-gray-400"
-                          : buttonState === "outOfStock"
-                            ? "border-gray-200 text-gray-400 cursor-not-allowed"
-                            : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
-                      }`}
-                      whileHover={
-                        canAddToCart
-                          ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }
-                          : {}
-                      }
-                      whileTap={canAddToCart ? { scale: 0.98 } : {}}
-                      transition={{ duration: 0.2 }}
+                <div className="w-full grid grid-cols-4 gap-2 py-4 px-3 bg-[#F8F8F8] rounded-xl">
+                  {[
+                    {
+                      icon: InstallationIcon,
+                      label: "Free\nInstallation",
+                    },
+                    {
+                      icon: WarrantyIcon,
+                      label: "5 Year\nWarranty",
+                    },
+                    {
+                      icon: HeadphoneIcon,
+                      label: "24x7\nsupport",
+                    },
+                    {
+                      icon: ServiceCommitmentIcon,
+                      label: "48 hrs service\ncommitment",
+                    },
+                  ].map((feature) => (
+                    <div
+                      key={feature.label}
+                      className="flex flex-col items-center gap-1.5 text-center"
                     >
-                      <ShoppingBagIcon className="w-6 h-6" />
-                      <span>
-                        {buttonState === "loading"
-                          ? "Loading..."
-                          : buttonState === "outOfStock"
-                            ? "Out of Stock"
-                            : "Add to Cart"}
+                      <feature.icon className="w-6 h-6 md:w-7 md:h-7 text-[#333]" />
+                      <span className="text-[10px] md:text-xs text-[#333] leading-tight whitespace-pre-line">
+                        {feature.label}
                       </span>
-                    </motion.button>
-                    <motion.button
-                      disabled={!canAddToCart}
-                      className={`flex-1 px-6 py-4 rounded-full font-medium text-base text-center transition-all ${
-                        buttonState === "loading"
-                          ? "bg-gray-300 text-gray-500"
-                          : buttonState === "outOfStock"
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "btn-buy-now text-[#FFFCDC]"
-                      }`}
-                      whileHover={canAddToCart ? { scale: 1.02 } : {}}
-                      whileTap={canAddToCart ? { scale: 0.98 } : {}}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {buttonState === "loading"
-                        ? "Loading..."
-                        : buttonState === "outOfStock"
-                          ? "Unavailable"
-                          : "Buy Now"}
-                    </motion.button>
-                  </>
-                ) : (
-                  <motion.button
-                    onClick={openWaitlistModal}
-                    className="flex-1 px-6 py-4 rounded-full font-medium text-base text-center btn-buy-now text-[#FFFCDC] transition-all"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    Join the Waitlist
-                  </motion.button>
-                )}
+                    </div>
+                  ))}
+                </div>
               </motion.div>
 
               {/* Divider */}
@@ -846,34 +949,64 @@ export default function ProductsPageClient({
         <ResultSection />
       </motion.div>
 
-      {/* User Experience Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={slideFromLeftVariants}
-      >
-        <UserExperienceSection />
-      </motion.div>
-
-      {/* India Story Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={scaleUpVariants}
-      >
-        <IndiaStorySection />
-      </motion.div>
-
-      {/* After Buy Section */}
+      {/* Customer Videos Section */}
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <AfterBuySection />
+        <CustomerVideosSection />
+      </motion.div>
+
+      {/* Expert Testimonials Section */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={slideFromLeftVariants}
+      >
+        <ExpertTestimonialsSection />
+      </motion.div>
+
+      {/* Inside Optimist Section */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <InsideOptimistSection />
+      </motion.div>
+
+      {/* Team Section */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={scaleUpVariants}
+      >
+        <TeamSection />
+      </motion.div>
+
+      {/* Proof over Promises Section */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <ProofSection />
+      </motion.div>
+
+      {/* As Featured On Section */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <AsFeaturedSection />
       </motion.div>
 
       {/* Warranty Section */}
@@ -886,14 +1019,14 @@ export default function ProductsPageClient({
         <WarrantySection />
       </motion.div>
 
-      {/* Recognition Section */}
+      {/* Reviews Section */}
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.1 }}
-        variants={scaleUpVariants}
+        variants={sectionVariants}
       >
-        <RecognitionSection />
+        <ReviewsSection />
       </motion.div>
 
       {/* Built For Section */}
@@ -958,14 +1091,25 @@ export default function ProductsPageClient({
               </motion.button>
             </>
           ) : (
-            <motion.button
-              onClick={openWaitlistModal}
-              className="flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center btn-buy-now text-[#FFFCDC] transition-all"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Join the Waitlist
-            </motion.button>
+            <>
+              <motion.button
+                onClick={openWaitlistModal}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-full font-medium text-sm bg-white text-black transition-all"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <CartIcon className="w-5 h-5" />
+                <span>Add to Cart</span>
+              </motion.button>
+              <motion.button
+                onClick={openWaitlistModal}
+                className="flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center btn-buy-now text-[#FFFCDC] transition-all"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Buy Now
+              </motion.button>
+            </>
           )}
         </div>
       </motion.div>

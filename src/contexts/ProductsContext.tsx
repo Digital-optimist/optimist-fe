@@ -19,6 +19,7 @@ export interface DisplayVariant {
   id: string;
   variantId: string; // Shopify variant ID for cart operations
   productId: string; // Shopify product ID
+  productTitle: string; // Full Shopify product title
   name: string;
   subtitle: string;
   price: number;
@@ -141,6 +142,7 @@ function productToVariant(product: Product): DisplayVariant {
     id: `${tonnage}ton`.replace(".", ""),
     variantId: variant?.id || "",
     productId: product.id,
+    productTitle: product.title,
     name: `${tonnage} Ton`,
     subtitle: getSubtitleForTonnage(tonnage),
     price: variant ? parseFloat(variant.price.amount) : 0,
@@ -166,6 +168,7 @@ function transformProduct(product: Product): ProductData {
     id: `${tonnage}ton`.replace(".", ""),
     variantId: variant?.id || "",
     productId: product.id,
+    productTitle: product.title,
     name: `${tonnage} Ton`,
     subtitle: getSubtitleForTonnage(tonnage),
     price: variant ? parseFloat(variant.price.amount) : 0,

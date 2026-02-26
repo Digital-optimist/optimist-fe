@@ -177,6 +177,31 @@ export const ASSETS = {
 
   remoteSectionMobile: getAssetUrl("RemoteSectionMobile.png"),
   remoteSectionDesktop: getAssetUrl("RemoteSectionDesktop.png"),
+
+  // Proof Section
+  proofCheckmark: "/assets/proof/checkmark.png",
+  proofCertifiedBadge: "/assets/proof/certified-badge.png",
+  proofSigmaCertificate: "/images/Frame 2085663005.png",
+  proofSaveEnergyBadge: "/assets/proof/save-energy-badge.png",
+  proofBeeLabel: "/assets/proof/bee-label.png",
+
+  // Inside Optimist Section
+  insideOptimistAcUnit: "/assets/inside-optimist/ac-unit.png",
+  insideOptimistHeatExchanger: "/assets/inside-optimist/heat-exchanger.png",
+  insideOptimistCompressor: "/assets/inside-optimist/compressor.png",
+  insideOptimistExpansionValve: "/assets/inside-optimist/expansion-valve.png",
+
+  // Team Section
+  teamLabPhoto: "/assets/team/team-lab-photo.jpg",
+
+  // Featured On Logos
+  featuredAngelone: "/assets/featured/angelone.png",
+  featuredNews18: "/assets/featured/news18.png",
+  featuredPti: "/assets/featured/pti.png",
+  featuredInc42: "/assets/featured/inc42.png",
+  featuredRediff: "/assets/featured/rediff.png",
+  featuredEntrackr: "/assets/featured/entrackr.png",
+  featuredEntrepreneur: "/assets/featured/entrepreneur.png",
 } as const;
 
 export default ASSETS;
