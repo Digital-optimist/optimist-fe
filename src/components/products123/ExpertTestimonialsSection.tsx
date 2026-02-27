@@ -281,7 +281,7 @@ export const ExpertTestimonialsSection = memo(
         {/* Header */}
         <div
           ref={headerRef}
-          className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 mb-10 md:mb-14 lg:mb-16 will-change-[transform,opacity]"
+          className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 mb-10 md:mb-14 lg:mb-16"
         >
           <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-center text-black leading-tight">
             <span className="text-[#3478F6]">Industry Experts </span>

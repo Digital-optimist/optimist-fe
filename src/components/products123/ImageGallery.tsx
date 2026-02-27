@@ -94,25 +94,25 @@ export const ImageGallery = memo(function ImageGallery({
           priority
         />
         
-        {/* Navigation Arrows - Glassmorphism style matching Figma */}
-        <div className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 flex items-center">
+        {/* Navigation Arrows - Desktop only */}
+        <div className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 items-center">
           <button
             onClick={onPrev}
-            className="backdrop-blur-[12px] bg-[rgba(0,0,0,0.24)] border border-[rgba(255,255,255,0.24)] md:border-[rgba(255,255,255,0.24)] border-[rgba(255,255,255,0.12)] rounded-[12px] md:rounded-[12px] rounded-[8px] p-3 md:p-3 p-2 opacity-60 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="backdrop-blur-[12px] bg-[rgba(0,0,0,0.24)] border border-[rgba(255,255,255,0.24)] rounded-[12px] p-3 opacity-60 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50"
             aria-label="Previous image"
             type="button"
           >
-            <ArrowRightIcon className="w-3 h-3 md:w-6 md:h-6 text-white rotate-180" />
+            <ArrowRightIcon className="w-6 h-6 text-white rotate-180" />
           </button>
         </div>
-        <div className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 flex items-center">
+        <div className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 items-center">
           <button
             onClick={onNext}
-            className="backdrop-blur-[12px] bg-[rgba(0,0,0,0.24)] border border-[rgba(255,255,255,0.24)] md:border-[rgba(255,255,255,0.24)] border-[rgba(255,255,255,0.12)] rounded-[12px] md:rounded-[12px] rounded-[8px] p-3 md:p-3 p-2 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="backdrop-blur-[12px] bg-[rgba(0,0,0,0.24)] border border-[rgba(255,255,255,0.24)] rounded-[12px] p-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-white/50"
             aria-label="Next image"
             type="button"
           >
-            <ArrowRightIcon className="w-3 h-3 md:w-6 md:h-6 text-white" />
+            <ArrowRightIcon className="w-6 h-6 text-white" />
           </button>
         </div>
 
@@ -125,7 +125,7 @@ export const ImageGallery = memo(function ImageGallery({
       {/* Thumbnails - horizontal scroll container */}
       <div className="w-full overflow-hidden">
         <div 
-          className="flex gap-1 md:gap-3 overflow-x-auto pb-2 scrollbar-hide"
+          className="flex gap-1 md:gap-3 overflow-x-auto pb-2 scrollbar-hide touch-pan-x"
           role="tablist"
           aria-label="Product image thumbnails"
         >
@@ -138,10 +138,10 @@ export const ImageGallery = memo(function ImageGallery({
                 role="tab"
                 aria-selected={isSelected}
                 aria-label={`View image ${index + 1}`}
-                className={`relative w-11 h-[43px] md:w-[84px] md:h-[84px] flex-shrink-0 rounded-[12px] overflow-hidden transition-all ${
+                className={`relative w-11 h-[43px] md:w-[84px] md:h-[84px] flex-shrink-0 rounded-[12px] overflow-hidden transition-all duration-200 ${
                   isSelected
-                    ? "border-2 border-white"
-                    : "border border-[rgba(255,255,255,0.12)]"
+                    ? "border-2 border-black md:border-white ring-1 ring-black/20 md:ring-0 scale-110 md:scale-100"
+                    : "border border-[rgba(0,0,0,0.08)] md:border-[rgba(255,255,255,0.12)] opacity-60 md:opacity-100"
                 }`}
                 type="button"
               >
@@ -152,9 +152,8 @@ export const ImageGallery = memo(function ImageGallery({
                   sizes="84px"
                   className="object-cover rounded-[12px]"
                 />
-                {/* Faded overlay for non-selected thumbnails */}
                 {!isSelected && (
-                  <div className="absolute inset-0 bg-[rgba(255,255,255,0.32)] rounded-[12px]" />
+                  <div className="absolute inset-0 bg-[rgba(255,255,255,0.4)] md:bg-[rgba(255,255,255,0.32)] rounded-[12px]" />
                 )}
               </button>
             );

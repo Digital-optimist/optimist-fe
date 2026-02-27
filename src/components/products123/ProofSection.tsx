@@ -554,7 +554,7 @@ export const ProofSection = memo(function ProofSection() {
         {/* Desktop: Horizontal scroll with cards matching Figma proportions */}
         <motion.div
           ref={scrollContainerRef}
-          className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:overflow-y-hidden lg:pb-4 lg:scrollbar-hide"
+          className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:overflow-y-hidden lg:pb-4 lg:scrollbar-hide touch-pan-x"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           onMouseEnter={handleInteractionStart}
@@ -581,7 +581,7 @@ export const ProofSection = memo(function ProofSection() {
         {/* Mobile: Narrow cards, horizontal scroll */}
         <motion.div
           ref={mobileScrollContainerRef}
-          className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory px-4"
+          className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory px-4 touch-pan-x"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           onTouchStart={handleInteractionStart}

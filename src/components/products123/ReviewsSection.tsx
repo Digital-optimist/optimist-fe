@@ -257,25 +257,29 @@ const AutoScrollReviewsGrid = memo(function AutoScrollReviewsGrid({
   reviews: ShopifyReview[];
   isInView: boolean;
 }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
+  const offsetRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
-  const scrollSpeed = 0.5; // px per frame
+  const scrollSpeed = 0.5;
 
   const startScrolling = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+    const track = trackRef.current;
+    const container = containerRef.current;
+    if (!track || !container) return;
 
     const step = () => {
-      if (!scrollRef.current) return;
-      scrollRef.current.scrollTop += scrollSpeed;
+      if (!trackRef.current || !containerRef.current) return;
 
-      if (
-        scrollRef.current.scrollTop >=
-        scrollRef.current.scrollHeight - scrollRef.current.clientHeight
-      ) {
-        scrollRef.current.scrollTop = 0;
+      offsetRef.current += scrollSpeed;
+
+      const maxOffset = trackRef.current.scrollHeight / 2;
+      if (offsetRef.current >= maxOffset) {
+        offsetRef.current = 0;
       }
+
+      trackRef.current.style.transform = `translateY(${-offsetRef.current}px)`;
 
       animationRef.current = requestAnimationFrame(step);
     };
@@ -322,11 +326,14 @@ const AutoScrollReviewsGrid = memo(function AutoScrollReviewsGrid({
       <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
 
       <div
-        ref={scrollRef}
+        ref={containerRef}
         className="overflow-hidden max-h-[440px] md:max-h-[520px]"
-        style={{ scrollBehavior: "auto" }}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+        <div
+          ref={trackRef}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6"
+          style={{ willChange: "transform" }}
+        >
           {doubledReviews.map((review, index) => (
             <ReviewCard key={`${review.id}-${index}`} review={review} />
           ))}

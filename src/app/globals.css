@@ -54,9 +54,13 @@
 
 /* Base Styles */
 html {
-  scroll-behavior: smooth;
-  /* Enable momentum scrolling on iOS */
   -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -65,18 +69,29 @@ body {
   font-family: var(--font-abc-solar), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Enable momentum scrolling on iOS */
   -webkit-overflow-scrolling: touch;
-  /* Allow vertical scrolling on touch devices */
-  touch-action: pan-y;
-  /* Prevent iOS text size adjustment on orientation change */
+  touch-action: manipulation;
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 /* iOS Safari viewport fix - use dynamic viewport height */
 @supports (min-height: 100dvh) {
   .min-h-screen {
     min-height: 100dvh;
+  }
+}
+
+/* Promote fixed elements to GPU layer for smoother compositing on iOS */
+.fixed {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Prevent iOS overscroll bounce on horizontal-scroll containers from blocking vertical scroll */
+@supports (-webkit-touch-callout: none) {
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
 

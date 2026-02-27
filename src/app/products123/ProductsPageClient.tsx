@@ -46,50 +46,49 @@ const pageVariants = {
   exit: { opacity: 0 },
 };
 
-// Section animation variants
+// Section animation variants — lightweight (opacity-only on mobile, small y on desktop)
 const sectionVariants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.7,
+      duration: 0.5,
       ease: easeOutExpo,
     },
   },
 };
 
 const slideFromLeftVariants = {
-  hidden: { opacity: 0, x: -60 },
+  hidden: { opacity: 0, x: -20 },
   visible: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.7,
+      duration: 0.5,
       ease: easeOutExpo,
     },
   },
 };
 
 const slideFromRightVariants = {
-  hidden: { opacity: 0, x: 60 },
+  hidden: { opacity: 0, x: 20 },
   visible: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.7,
+      duration: 0.5,
       ease: easeOutExpo,
     },
   },
 };
 
 const scaleUpVariants = {
-  hidden: { opacity: 0, scale: 0.95 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    scale: 1,
     transition: {
-      duration: 0.6,
+      duration: 0.5,
       ease: easeOutExpo,
     },
   },
@@ -97,12 +96,11 @@ const scaleUpVariants = {
 
 // Hero section variants
 const heroGalleryVariants = {
-  hidden: { opacity: 0, x: -40 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    x: 0,
     transition: {
-      duration: 0.8,
+      duration: 0.6,
       ease: easeOutExpo,
     },
   },
@@ -120,12 +118,12 @@ const heroInfoContainerVariants = {
 };
 
 const heroInfoItemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.4,
       ease: easeOutExpo,
     },
   },
@@ -476,7 +474,7 @@ export default function ProductsPageClient({
   return (
     <motion.div
       ref={containerRef}
-      className="min-h-screen bg-white md:pb-0 overflow-x-hidden"
+      className="min-h-screen bg-white md:pb-0 overflow-x-clip"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -488,7 +486,7 @@ export default function ProductsPageClient({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Left Column - Image Gallery */}
             <motion.div
-              className="hidden lg:block w-full will-change-[transform,opacity]"
+              className="hidden lg:block w-full"
               initial="hidden"
               animate="visible"
               variants={heroGalleryVariants}
@@ -529,7 +527,7 @@ export default function ProductsPageClient({
                 variants={heroInfoItemVariants}
                 className="flex flex-col gap-1.5"
               >
-                <h1 className="text-[28px] md:text-[40px] font-semibold text-black leading-tight">
+                <h1 className="text-[20px] md:text-[40px] font-semibold text-black leading-tight">
                   {selectedVariant?.productTitle ||
                     `Optimist ${selectedVariant?.name || ""} 5 Star Inverter Split AC`}
                 </h1>
@@ -569,7 +567,11 @@ export default function ProductsPageClient({
               </motion.div>
 
               {/* Mobile Image Gallery */}
-              <motion.div ref={mobileGalleryRef} variants={heroInfoItemVariants} className="lg:hidden">
+              <motion.div
+                ref={mobileGalleryRef}
+                variants={heroInfoItemVariants}
+                className="lg:hidden"
+              >
                 <ImageGallery
                   images={displayImages}
                   selectedIndex={selectedImageIndex}
@@ -746,7 +748,7 @@ export default function ProductsPageClient({
                   >
                     <div
                       ref={variantsScrollRef}
-                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
+                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 touch-pan-x"
                     >
                       {variants.map((variant) => (
                         <VariantCard
@@ -1115,7 +1117,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <ComparisonSection />
@@ -1125,7 +1127,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={slideFromRightVariants}
       >
         <ResultSection />
@@ -1141,7 +1143,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <InsideOptimistSection />
@@ -1151,7 +1153,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={scaleUpVariants}
       >
         <TeamSection />
@@ -1161,7 +1163,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <ProofSection />
@@ -1171,7 +1173,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <AsFeaturedSection />
@@ -1181,7 +1183,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={slideFromRightVariants}
       >
         <WarrantySection />
@@ -1191,7 +1193,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <ReviewsSection />
@@ -1201,7 +1203,7 @@ export default function ProductsPageClient({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <BuiltForSection />
@@ -1209,13 +1211,13 @@ export default function ProductsPageClient({
 
       {/* Mobile Fixed Footer - appears when price reaches mid-screen */}
       <motion.div
-        initial={{ opacity: 0, y: 100 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={
-          showMobileFooter ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }
+          showMobileFooter ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
         }
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         style={{ pointerEvents: showMobileFooter ? "auto" : "none" }}
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.15] shadow-[0_-4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none"
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/85 backdrop-blur-md border-t border-white/[0.12] shadow-[0_-4px_20px_rgba(0,0,0,0.3)] [transform:translateZ(0)]"
       >
         <div className="px-4 py-4">
           {userAllowedToBuy ? (

@@ -251,7 +251,7 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
             </div>
 
             {/* Row 2: Compressor + Valve + Text Cards */}
-            <div className="flex gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:snap-none">
+            <div className="flex gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:snap-none touch-pan-x lg:touch-auto">
               <CompressorCard />
               <ExpansionValveCard />
               <TextOnlyCards />

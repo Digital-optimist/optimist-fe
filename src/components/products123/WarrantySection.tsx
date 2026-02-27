@@ -151,7 +151,7 @@ export const WarrantySection = memo(function WarrantySection() {
     <section ref={sectionRef} className="w-full py-12 md:py-20 lg:py-24 bg-white" aria-labelledby="warranty-heading">
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10">
         {/* Header */}
-        <div ref={headerRef} className="mb-6 md:mb-11 will-change-[transform,opacity]">
+        <div ref={headerRef} className="mb-6 md:mb-11">
           <div className="flex items-start justify-between">
             <div>
               {/* Subtitle */}
@@ -179,7 +179,7 @@ export const WarrantySection = memo(function WarrantySection() {
         </div>
 
         {/* Content Card */}
-        <div ref={contentRef} className="border border-[rgba(0,0,0,0.12)] rounded-2xl md:rounded-3xl overflow-hidden md:h-[545px] will-change-[transform,opacity]">
+        <div ref={contentRef} className="border border-[rgba(0,0,0,0.12)] rounded-2xl md:rounded-3xl overflow-hidden md:h-[545px]">
           <div className="flex flex-col md:flex-row items-center md:items-center md:justify-between p-4 md:pl-5 md:pr-0 md:py-10 gap-[18px] md:gap-4">
             {/* Warranty Card Image - using Figma's exact positioning/cropping */}
             <div className="relative w-[200px] md:w-[326px] h-[285px] md:h-[465px] shrink-0 overflow-hidden">
