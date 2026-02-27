@@ -232,8 +232,8 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
           className="flex flex-col items-center gap-[54px]"
         >
           {/* Section Title */}
-          <h2 className="font-display font-bold text-[28px] lg:text-[40px] text-black text-center leading-normal">
-            Inside Optimist
+          <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight">
+            <span className="text-[#3478F6]">Inside Optimist</span>
             <br />
             Engineered for Extremes
           </h2>

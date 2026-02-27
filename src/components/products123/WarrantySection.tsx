@@ -162,7 +162,7 @@ export const WarrantySection = memo(function WarrantySection() {
               {/* Title */}
               <h2 
                 id="warranty-heading"
-                className="font-display font-semibold text-2xl md:text-[40px] text-black leading-tight"
+                className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black leading-tight"
               >
                 Ownership without worry.
               </h2>

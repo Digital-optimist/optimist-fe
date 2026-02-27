@@ -415,8 +415,12 @@ const ScrollDots = memo(function ScrollDots({
 export const ProofSection = memo(function ProofSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const mobileScrollContainerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [mobileActiveCardIndex, setMobileActiveCardIndex] = useState(0);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const isUserInteractingRef = useRef(false);
 
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
@@ -429,6 +433,17 @@ export const ProofSection = memo(function ProofSection() {
     setActiveCardIndex(Math.min(Math.max(index, 0), PROOF_CARDS.length - 1));
   }, []);
 
+  const handleMobileScroll = useCallback(() => {
+    const container = mobileScrollContainerRef.current;
+    if (!container) return;
+
+    const scrollLeft = container.scrollLeft;
+    const cardWidth = container.firstElementChild?.clientWidth || 0;
+    const gap = 16;
+    const index = Math.round(scrollLeft / (cardWidth + gap));
+    setMobileActiveCardIndex(Math.min(Math.max(index, 0), PROOF_CARDS.length - 1));
+  }, []);
+
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -436,6 +451,14 @@ export const ProofSection = memo(function ProofSection() {
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
+
+  useEffect(() => {
+    const container = mobileScrollContainerRef.current;
+    if (!container) return;
+
+    container.addEventListener("scroll", handleMobileScroll);
+    return () => container.removeEventListener("scroll", handleMobileScroll);
+  }, [handleMobileScroll]);
 
   const scrollToCard = useCallback((index: number) => {
     const container = scrollContainerRef.current;
@@ -449,6 +472,61 @@ export const ProofSection = memo(function ProofSection() {
     });
   }, []);
 
+  const scrollToMobileCard = useCallback((index: number) => {
+    const container = mobileScrollContainerRef.current;
+    if (!container) return;
+
+    const cardWidth = container.firstElementChild?.clientWidth || 0;
+    const gap = 16;
+    container.scrollTo({
+      left: index * (cardWidth + gap),
+      behavior: "smooth",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const startAutoPlay = () => {
+      autoPlayRef.current = setInterval(() => {
+        if (isUserInteractingRef.current) return;
+
+        const isMobile = window.innerWidth < 1024;
+        if (isMobile) {
+          setMobileActiveCardIndex((prev) => {
+            const nextIndex = (prev + 1) % PROOF_CARDS.length;
+            scrollToMobileCard(nextIndex);
+            return nextIndex;
+          });
+        } else {
+          setActiveCardIndex((prev) => {
+            const nextIndex = (prev + 1) % PROOF_CARDS.length;
+            scrollToCard(nextIndex);
+            return nextIndex;
+          });
+        }
+      }, 3000);
+    };
+
+    startAutoPlay();
+
+    return () => {
+      if (autoPlayRef.current) {
+        clearInterval(autoPlayRef.current);
+      }
+    };
+  }, [isInView, scrollToCard, scrollToMobileCard]);
+
+  const handleInteractionStart = useCallback(() => {
+    isUserInteractingRef.current = true;
+  }, []);
+
+  const handleInteractionEnd = useCallback(() => {
+    setTimeout(() => {
+      isUserInteractingRef.current = false;
+    }, 3000);
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -459,7 +537,7 @@ export const ProofSection = memo(function ProofSection() {
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
         {/* Section Header */}
         <motion.h2
-          className="font-display font-semibold text-2xl sm:text-3xl md:text-4xl lg:text-[40px] text-black text-center mb-8 md:mb-12"
+          className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight mb-8 md:mb-12"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={headerVariants}
@@ -473,6 +551,10 @@ export const ProofSection = memo(function ProofSection() {
           className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:overflow-y-hidden lg:pb-4 lg:scrollbar-hide"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
+          onMouseEnter={handleInteractionStart}
+          onMouseLeave={handleInteractionEnd}
+          onTouchStart={handleInteractionStart}
+          onTouchEnd={handleInteractionEnd}
         >
           {PROOF_CARDS.map((card, index) => (
             <motion.div key={card.id} custom={index} variants={cardVariants}>
@@ -492,9 +574,12 @@ export const ProofSection = memo(function ProofSection() {
 
         {/* Mobile: Narrow cards, horizontal scroll */}
         <motion.div
+          ref={mobileScrollContainerRef}
           className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory px-4"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
+          onTouchStart={handleInteractionStart}
+          onTouchEnd={handleInteractionEnd}
         >
           {PROOF_CARDS.map((card, index) => (
             <motion.div
@@ -507,6 +592,15 @@ export const ProofSection = memo(function ProofSection() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Mobile Scroll Dots */}
+        <div className="lg:hidden">
+          <ScrollDots
+            total={PROOF_CARDS.length}
+            activeIndex={mobileActiveCardIndex}
+            onDotClick={scrollToMobileCard}
+          />
+        </div>
       </div>
     </section>
   );

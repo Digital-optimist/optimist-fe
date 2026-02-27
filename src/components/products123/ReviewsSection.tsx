@@ -379,7 +379,7 @@ export const ReviewsSection = memo(function ReviewsSection() {
           <div className="flex items-center justify-between mb-8 md:mb-12">
             <h2
               id="reviews-heading"
-              className="font-display text-2xl md:text-[32px] lg:text-[36px] font-semibold text-black"
+              className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight"
             >
               Our Reviews
             </h2>

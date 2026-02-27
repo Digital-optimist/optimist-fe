@@ -247,7 +247,7 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
       {/* Header */}
       <h2
         ref={headerRef}
-        className="font-display font-bold text-[28px] sm:text-[32px] lg:text-[40px] text-black text-center mb-8 md:mb-12 lg:mb-14 px-4 will-change-[transform,opacity]"
+        className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight mb-8 md:mb-12 lg:mb-14 px-4 will-change-[transform,opacity]"
       >
         Hear it from our customers
       </h2>

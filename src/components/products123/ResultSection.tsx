@@ -146,7 +146,7 @@ export const ResultSection = memo(function ResultSection() {
         <h2
           ref={titleRef}
           id="result-heading"
-          className="font-display text-2xl xs:text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] xl:text-[44px] font-semibold text-black text-center mb-5 xs:mb-6 sm:mb-7 md:mb-8 lg:mb-10 will-change-[transform,opacity]"
+          className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight mb-5 md:mb-8 lg:mb-10 will-change-[transform,opacity]"
         >
           The Result.
         </h2>

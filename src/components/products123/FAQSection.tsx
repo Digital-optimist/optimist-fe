@@ -152,7 +152,7 @@ export function FAQSection() {
         {/* Left Column */}
         <div className="lg:w-[360px] xl:w-[420px] shrink-0 flex flex-col gap-6 md:gap-8">
           <div className="flex flex-col gap-4">
-            <h2 className="font-display text-2xl md:text-4xl font-semibold text-black">
+            <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight">
               FAQs
             </h2>
             <p className="text-sm md:text-base text-black/60 leading-relaxed">
