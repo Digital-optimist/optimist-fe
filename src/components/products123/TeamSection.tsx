@@ -450,10 +450,10 @@ export const TeamSection = memo(function TeamSection() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-2.5 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? "bg-[#AEFFD8] w-6"
-                    : "bg-gray-300 w-2 hover:bg-gray-400"
+                    ? "bg-black w-8"
+                    : "w-2.5 bg-[#BFBFBF] hover:bg-[#999999]"
                 }`}
                 aria-label={`Go to ${TEAM_MEMBERS[index].name}`}
               />

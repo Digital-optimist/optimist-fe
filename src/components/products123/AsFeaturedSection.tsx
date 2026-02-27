@@ -122,7 +122,7 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-8 md:py-12 lg:py-16 bg-white overflow-hidden"
+      className="w-full py-8 md:py-12 lg:py-16 bg-[#00000005] overflow-hidden"
       aria-label="As featured on"
     >
       <div className="w-full max-w-[1440px] mx-auto">

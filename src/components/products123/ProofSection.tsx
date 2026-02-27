@@ -37,13 +37,13 @@ const DESKTOP_LAYOUT = {
   corrosion: {
     evidence: { left: 24, w: 382, h: 609 },
     textLeft: 439,
-    badge: { left: 1020, top: 353, w: 128, h: 128 },
+    badge: { left: 974, top: 319, w: 162, h: 162 },
     showButton: true,
   },
   energy: {
     evidence: { left: 96, w: 299, h: 512 },
     textLeft: 489,
-    badge: { left: 935, top: 319, w: 212, h: 158 },
+    badge: { left: 974, top: 319, w: 162, h: 162 },
     showButton: false,
   },
   turbo: {
@@ -310,37 +310,39 @@ const MobileProofCard = memo(function MobileProofCard({
   card: ProofCard;
 }) {
   return (
-    <div className="bg-[#FFFDEA] border border-black/[0.12] rounded-[24px] overflow-hidden relative flex flex-col w-[300px] sm:w-[322px] h-[700px] sm:h-[737px] shrink-0 snap-start">
+    <div className="bg-[#FFFDEA] border border-black/[0.12] rounded-[24px] overflow-hidden relative w-[322px] h-[720px] shrink-0 snap-start">
       {/* Title + Subtitle */}
-      <div className="px-4 pt-5 shrink-0">
-        <h3 className="font-bold text-base leading-tight mb-2">
+      <div className="px-4 pt-6">
+        <h3 className="font-bold text-base leading-tight">
           <span className="text-[#3478F6]">{card.titleBlue} </span>
           <span className="text-black">{card.titleBlack}</span>
         </h3>
-        <p className="text-sm text-black leading-normal">{card.subtitle}</p>
+        <p className="text-sm text-black leading-normal mt-3">
+          {card.subtitle}
+        </p>
       </div>
 
       {/* Evidence Image */}
-      <div className="flex-1 min-h-0 px-4 mt-2">
+      <div className="mt-6 flex justify-center">
         {card.evidenceType === "certificate" ? (
-          <div className="relative w-full h-full rounded-[15px] overflow-hidden bg-[#303437] border border-white/[0.12]">
+          <div className="relative w-[242px] h-[386px] rounded-[12px] overflow-hidden bg-[#303437] border border-white/[0.12]">
             <Image
               src={card.evidenceImage}
               alt={card.evidenceAlt}
               fill
               className="object-cover"
-              sizes="300px"
+              sizes="242px"
             />
           </div>
         ) : (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <div className="relative w-[65%] h-[90%]">
+          <div className="relative w-[242px] h-[386px] flex items-center justify-center">
+            <div className="relative w-full h-full">
               <Image
                 src={card.evidenceImage}
                 alt={card.evidenceAlt}
                 fill
                 className="object-contain drop-shadow-lg"
-                sizes="220px"
+                sizes="242px"
               />
             </div>
           </div>
@@ -348,30 +350,32 @@ const MobileProofCard = memo(function MobileProofCard({
       </div>
 
       {/* Bullets */}
-      <div className="px-4 mt-3 flex flex-col gap-2.5 shrink-0">
+      <div className="px-4 mt-6 flex flex-col gap-3">
         {card.bullets.map((bullet, i) => (
           <ProofBullet key={i} bullet={bullet} size="sm" />
         ))}
       </div>
 
-      {/* Download Button + Badge */}
-      <div className="relative px-4 pt-3 pb-5 shrink-0">
+      {/* Badge */}
+      <div className="absolute bottom-[8px] right-[8px] w-[99px] h-[99px]">
+        <Image
+          src={card.badgeImage}
+          alt={card.badgeAlt}
+          fill
+          className="object-contain"
+          sizes="99px"
+        />
+      </div>
+
+      {/* Download Button */}
+      <div className="absolute bottom-[34px] left-5">
         <a
           href="/assets/21014952 Octolife climate solutions pvt ltd.pdf"
           download="Octolife_Climate_Solutions_Report.pdf"
-          className="inline-flex items-center justify-center px-6 py-3 border border-[#3478F6] rounded-full text-[#3478F6] text-sm font-medium hover:bg-[#3478F6]/5 transition-colors"
+          className="inline-flex items-center justify-center px-6 py-4 border border-[#3478F6] rounded-[36px] text-[#3478F6] text-sm font-medium hover:bg-[#3478F6]/5 transition-colors"
         >
           download report
         </a>
-        <div className="absolute bottom-3 right-4 w-[80px] h-[80px] sm:w-[99px] sm:h-[99px]">
-          <Image
-            src={card.badgeImage}
-            alt={card.badgeAlt}
-            fill
-            className="object-contain"
-            sizes="99px"
-          />
-        </div>
       </div>
     </div>
   );
@@ -396,10 +400,10 @@ const ScrollDots = memo(function ScrollDots({
         <button
           key={index}
           onClick={() => onDotClick(index)}
-          className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+          className={`h-2.5 rounded-full transition-all duration-300 ${
             index === activeIndex
-              ? "bg-[#3478F6] w-8"
-              : "bg-black/20 hover:bg-black/40"
+              ? "bg-black w-8"
+              : "w-2.5 bg-[#BFBFBF] hover:bg-[#999999]"
           }`}
           aria-label={`Go to slide ${index + 1}`}
         />
@@ -441,7 +445,9 @@ export const ProofSection = memo(function ProofSection() {
     const cardWidth = container.firstElementChild?.clientWidth || 0;
     const gap = 16;
     const index = Math.round(scrollLeft / (cardWidth + gap));
-    setMobileActiveCardIndex(Math.min(Math.max(index, 0), PROOF_CARDS.length - 1));
+    setMobileActiveCardIndex(
+      Math.min(Math.max(index, 0), PROOF_CARDS.length - 1),
+    );
   }, []);
 
   useEffect(() => {

@@ -95,19 +95,6 @@ const scaleUpVariants = {
   },
 };
 
-const mobileFooterVariants = {
-  hidden: { opacity: 0, y: 100 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: easeOutExpo,
-      delay: 0.8,
-    },
-  },
-};
-
 // Hero section variants
 const heroGalleryVariants = {
   hidden: { opacity: 0, x: -40 },
@@ -237,6 +224,8 @@ export default function ProductsPageClient({
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const variantsScrollRef = useRef<HTMLDivElement>(null);
+  const priceRef = useRef<HTMLDivElement>(null);
+  const [showMobileFooter, setShowMobileFooter] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -448,6 +437,25 @@ export default function ProductsPageClient({
     };
   }, [updateVariantsScrollState]);
 
+  // Show mobile footer when price tag reaches mid-screen
+  useEffect(() => {
+    const el = priceRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShowMobileFooter(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -50% 0px" },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const handleAddToCart = useCallback(async () => {
     if (!selectedVariant || !selectedVariant.variantId) {
       showToast("Please select a variant", "error");
@@ -482,7 +490,7 @@ export default function ProductsPageClient({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Left Column - Image Gallery */}
             <motion.div
-              className="w-full will-change-[transform,opacity]"
+              className="hidden lg:block w-full will-change-[transform,opacity]"
               initial="hidden"
               animate="visible"
               variants={heroGalleryVariants}
@@ -562,8 +570,23 @@ export default function ProductsPageClient({
                 </div>
               </motion.div>
 
+              {/* Mobile Image Gallery */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="lg:hidden -mx-4"
+              >
+                <ImageGallery
+                  images={displayImages}
+                  selectedIndex={selectedImageIndex}
+                  onSelectImage={handleSelectImage}
+                  onPrev={handlePrevImage}
+                  onNext={handleNextImage}
+                />
+              </motion.div>
+
               {/* Total/Price */}
               <motion.div
+                ref={priceRef}
                 variants={heroInfoItemVariants}
                 className="flex flex-col gap-1.5"
               >
@@ -1089,16 +1112,21 @@ export default function ProductsPageClient({
         <BuiltForSection />
       </motion.div>
 
-      {/* Mobile Fixed Footer */}
+      {/* Mobile Fixed Footer - appears when price reaches mid-screen */}
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={mobileFooterVariants}
+        initial={{ opacity: 0, y: 100 }}
+        animate={
+          showMobileFooter
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 100 }
+        }
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        style={{ pointerEvents: showMobileFooter ? "auto" : "none" }}
         className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/50 backdrop-blur-3xl backdrop-saturate-200 border-t border-white/[0.15] shadow-[0_-4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15),inset_0_-1px_1px_rgba(255,255,255,0.08)] before:absolute before:inset-x-0 before:top-0 before:h-[50%] before:bg-gradient-to-b before:from-white/[0.12] before:to-transparent before:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[50%] after:bg-gradient-to-t after:from-white/[0.06] after:to-transparent after:pointer-events-none"
       >
-        <div className="px-4 py-4 flex items-center gap-3">
+        <div className="px-4 py-4">
           {userAllowedToBuy ? (
-            <>
+            <div className="flex items-center gap-3">
               <motion.button
                 onClick={handleAddToCart}
                 disabled={isCartLoading || !canAddToCart}
@@ -1139,27 +1167,16 @@ export default function ProductsPageClient({
                     ? "Unavailable"
                     : "Buy Now"}
               </motion.button>
-            </>
+            </div>
           ) : (
-            <>
-              <motion.button
-                onClick={openWaitlistModal}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 rounded-full font-medium text-sm bg-white text-black transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <CartIcon className="w-5 h-5" />
-                <span>Add to Cart</span>
-              </motion.button>
-              <motion.button
-                onClick={openWaitlistModal}
-                className="flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center btn-buy-now text-[#FFFCDC] transition-all"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Buy Now
-              </motion.button>
-            </>
+            <motion.button
+              onClick={openWaitlistModal}
+              className="w-full px-4 py-3.5 rounded-full font-medium text-base text-center btn-buy-now text-[#FFFCDC] transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Join the Waitlist
+            </motion.button>
           )}
         </div>
       </motion.div>
