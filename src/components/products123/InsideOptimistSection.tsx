@@ -58,7 +58,7 @@ const HeroCard = memo(function HeroCard() {
 
       {/* Text content - positioned from top to match Figma */}
       <div className="absolute left-4 lg:left-3 top-[221px] lg:top-[308px] right-4 lg:right-3 flex flex-col gap-3">
-        <h3 className="font-display font-bold text-xl lg:text-[28px] text-[#AEFFD8] leading-normal">
+        <h3 className="font-display font-semibold lg:font-bold text-xl lg:text-[28px] text-[#AEFFD8] leading-normal tracking-wide lg:tracking-normal">
           Optimist Air Conditioner
         </h3>
         <p className="text-sm lg:text-base text-white/60 leading-normal">
@@ -89,7 +89,7 @@ const HeatExchangerCard = memo(function HeatExchangerCard() {
 
       {/* Text - bottom-left */}
       <div className="absolute left-4 lg:left-5 bottom-7 lg:bottom-8 w-[310px] lg:w-auto lg:right-5 flex flex-col gap-3">
-        <h3 className="font-display font-bold text-xl lg:text-[28px] text-[#3478F6] leading-normal">
+        <h3 className="font-display font-semibold lg:font-bold text-xl lg:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal">
           Microchannel Heat Exchanger
         </h3>
         <p className="text-sm lg:text-base text-black/60 leading-normal">
@@ -121,7 +121,7 @@ const CompressorCard = memo(function CompressorCard() {
 
       {/* Text - vertically centered, offset upward */}
       <div className="absolute left-4 lg:left-5 top-[calc(50%-131.5px)] lg:top-[calc(50%-114.5px)] -translate-y-1/2 flex flex-col gap-3">
-        <h3 className="font-display font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal w-[252px] lg:w-[300px]">
+        <h3 className="font-display font-semibold lg:font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal w-[252px] lg:w-[300px]">
           Dual-Rotary Inverter Compressor
         </h3>
         <p className="text-[14px] lg:text-[16px] text-black/60 leading-normal w-[252px] lg:w-[256px]">
@@ -153,7 +153,7 @@ const ExpansionValveCard = memo(function ExpansionValveCard() {
 
       {/* Text - vertically centered, offset upward */}
       <div className="absolute left-4 lg:left-5 top-[calc(50%-143.5px)] lg:top-[calc(50%-131.5px)] -translate-y-1/2 flex flex-col gap-3">
-        <h3 className="font-display font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal w-[252px] lg:w-[355px]">
+        <h3 className="font-display font-semibold lg:font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal w-[252px] lg:w-[355px]">
           Electronic Expansion Valve
         </h3>
         <div className="text-[14px] lg:text-[16px] text-black/60 leading-normal w-[252px] lg:w-[279px]">
@@ -182,7 +182,7 @@ const TextOnlyCards = memo(function TextOnlyCards() {
         className="flex-1 relative rounded-[20px] overflow-hidden shadow-[0px_4px_30px_0px_rgba(0,0,0,0.12)] bg-white"
       >
         <div className="absolute left-5 top-1/2 -translate-y-1/2 w-[244px] lg:w-[316px] flex flex-col gap-3">
-          <h3 className="font-display font-bold text-xl lg:text-[28px] text-black leading-normal">
+          <h3 className="font-display font-semibold lg:font-bold text-xl lg:text-[28px] text-black leading-normal tracking-wide lg:tracking-normal">
             Real-Time Monitoring &amp; Diagnostics
           </h3>
           <p className="text-sm lg:text-base text-black/60 leading-normal">
@@ -197,7 +197,7 @@ const TextOnlyCards = memo(function TextOnlyCards() {
         className="flex-1 relative rounded-[20px] overflow-hidden shadow-[0px_4px_30px_0px_rgba(0,0,0,0.12)] bg-white"
       >
         <div className="absolute left-5 top-1/2 -translate-y-1/2 w-[244px] lg:w-[316px] flex flex-col gap-3">
-          <h3 className="font-display font-bold text-xl lg:text-[28px] text-black leading-normal">
+          <h3 className="font-display font-semibold lg:font-bold text-xl lg:text-[28px] text-black leading-normal tracking-wide lg:tracking-normal">
             Gas Level Indicator
           </h3>
           <div className="text-sm lg:text-base text-black/60 leading-normal">
@@ -232,7 +232,7 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
           className="flex flex-col items-center gap-[54px]"
         >
           {/* Section Title */}
-          <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight">
+          <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight tracking-wide md:tracking-normal">
             <span className="text-[#3478F6]">Inside Optimist</span>
             <br />
             Engineered for Extremes

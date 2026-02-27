@@ -426,13 +426,17 @@ export const TeamSection = memo(function TeamSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-8 md:py-12 lg:py-16 bg-white overflow-hidden"
+      className="w-full bg-white overflow-hidden"
       aria-label="Meet the Team"
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
         {/* Heading */}
-        <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight mb-8 md:mb-12 lg:mb-16">
-          The Minds Behind India's Real AC
+        <h2 className="font-display text-[28px] md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12 lg:mb-16">
+          The Minds Behind
+          <br className="md:hidden" />
+          <span className="text-[#4B7BF5] md:text-black">
+            India&apos;s Real AC
+          </span>
         </h2>
 
         {/* Desktop Card */}

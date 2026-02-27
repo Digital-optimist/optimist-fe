@@ -310,10 +310,10 @@ const MobileProofCard = memo(function MobileProofCard({
   card: ProofCard;
 }) {
   return (
-    <div className="bg-[#FFFDEA] border border-black/[0.12] rounded-[24px] overflow-hidden relative w-[322px] h-[720px] shrink-0 snap-start">
+    <div className="bg-[#FFFDEA] border border-black/[0.12] rounded-[24px] overflow-hidden relative w-[322px] h-[610px] shrink-0 snap-start">
       {/* Title + Subtitle */}
       <div className="px-4 pt-6">
-        <h3 className="font-bold text-base leading-tight">
+        <h3 className="font-semibold text-base leading-tight tracking-wide">
           <span className="text-[#3478F6]">{card.titleBlue} </span>
           <span className="text-black">{card.titleBlack}</span>
         </h3>
@@ -325,7 +325,7 @@ const MobileProofCard = memo(function MobileProofCard({
       {/* Evidence Image */}
       <div className="mt-6 flex justify-center">
         {card.evidenceType === "certificate" ? (
-          <div className="relative w-[242px] h-[386px] rounded-[12px] overflow-hidden bg-[#303437] border border-white/[0.12]">
+          <div className="relative w-[193px] h-[306px] rounded-[12px] overflow-hidden bg-[#303437] border border-white/[0.12]">
             <Image
               src={card.evidenceImage}
               alt={card.evidenceAlt}
@@ -335,7 +335,7 @@ const MobileProofCard = memo(function MobileProofCard({
             />
           </div>
         ) : (
-          <div className="relative w-[242px] h-[386px] flex items-center justify-center">
+          <div className="relative w-[170px] h-[250px] flex items-center justify-center">
             <div className="relative w-full h-full">
               <Image
                 src={card.evidenceImage}
@@ -372,7 +372,7 @@ const MobileProofCard = memo(function MobileProofCard({
         <a
           href="/assets/21014952 Octolife climate solutions pvt ltd.pdf"
           download="Octolife_Climate_Solutions_Report.pdf"
-          className="inline-flex items-center justify-center px-6 py-4 border border-[#3478F6] rounded-[36px] text-[#3478F6] text-sm font-medium hover:bg-[#3478F6]/5 transition-colors"
+          className="inline-flex items-center justify-center px-4 py-2 border border-[#3478F6] rounded-[36px] text-[#3478F6] text-sm font-medium hover:bg-[#3478F6]/5 transition-colors"
         >
           download report
         </a>
@@ -543,7 +543,7 @@ export const ProofSection = memo(function ProofSection() {
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
         {/* Section Header */}
         <motion.h2
-          className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight mb-8 md:mb-12"
+          className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={headerVariants}

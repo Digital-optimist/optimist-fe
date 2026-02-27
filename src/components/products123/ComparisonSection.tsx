@@ -181,12 +181,12 @@ export const ComparisonSection = memo(function ComparisonSection() {
           {/* Titles Row */}
           <div ref={titlesRef} className="flex">
             <div className="w-1/2 px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
-              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-bold text-white text-right mb-4 md:mb-6 lg:mb-10">
+              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-semibold md:font-bold text-white text-right tracking-wide md:tracking-normal mb-4 md:mb-6 lg:mb-10">
                 Optimist AC
               </h3>
             </div>
             <div className="w-1/2 px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
-              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-bold text-white/60 text-left mb-4 md:mb-6 lg:mb-10">
+              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-semibold md:font-bold text-white/60 text-left tracking-wide md:tracking-normal mb-4 md:mb-6 lg:mb-10">
                 Market AC
               </h3>
             </div>

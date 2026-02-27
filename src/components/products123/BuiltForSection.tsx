@@ -103,7 +103,7 @@ export function BuiltForSection() {
           <p className="text-[#3478F6] text-sm md:text-base mb-2">
             India’s Real AC{" "}
           </p>
-          <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight">
+          <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight tracking-wide md:tracking-normal">
             Your Optimist
           </h2>
         </motion.div>
@@ -291,11 +291,11 @@ export function BuiltForSection() {
         >
           {/* Outcome */}
           <div className="font-display text-left">
-            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-bold leading-[1.15]">
+            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-semibold md:font-bold leading-[1.15] tracking-wide md:tracking-normal">
               <span className="text-black">Nothing </span>
               <span className="text-[#3478F6]">more.</span>
             </p>
-            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-bold leading-[1.15] mt-1">
+            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-semibold md:font-bold leading-[1.15] tracking-wide md:tracking-normal mt-1">
               <span className="text-black">Nothing </span>
               <span className="text-[#3478F6]">less.</span>
             </p>

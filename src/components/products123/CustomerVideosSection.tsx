@@ -239,7 +239,7 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-10 md:py-14 lg:py-16 bg-white overflow-hidden"
+      className="w-full pb-10 md:pb-14 lg:pb-16 bg-white overflow-hidden"
       aria-label="Customer video testimonials"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -247,7 +247,7 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
       {/* Header */}
       <h2
         ref={headerRef}
-        className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight mb-8 md:mb-12 lg:mb-14 px-4"
+        className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12 lg:mb-14 px-4"
       >
         Hear it from our customers
       </h2>

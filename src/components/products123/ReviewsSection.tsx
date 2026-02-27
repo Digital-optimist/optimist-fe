@@ -372,7 +372,7 @@ export const ReviewsSection = memo(function ReviewsSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-white py-8 md:py-12 lg:py-16"
+      className="w-full bg-white pb-8 md:pb-12 lg:pb-16"
       aria-labelledby="reviews-heading"
     >
       <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
@@ -386,7 +386,7 @@ export const ReviewsSection = memo(function ReviewsSection() {
           <div className="flex items-center justify-between mb-8 md:mb-12">
             <h2
               id="reviews-heading"
-              className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight"
+              className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight tracking-wide md:tracking-normal"
             >
               Our Reviews
             </h2>

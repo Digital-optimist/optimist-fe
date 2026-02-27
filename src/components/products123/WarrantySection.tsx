@@ -162,7 +162,7 @@ export const WarrantySection = memo(function WarrantySection() {
               {/* Title */}
               <h2 
                 id="warranty-heading"
-                className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black leading-tight"
+                className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black leading-tight tracking-wide md:tracking-normal"
               >
                 Ownership without worry.
               </h2>
@@ -203,7 +203,7 @@ export const WarrantySection = memo(function WarrantySection() {
 
               {/* Gradient Tagline */}
               <p 
-                className="font-display font-semibold text-xl md:text-[40px] leading-tight bg-gradient-to-r from-[#3478F6] to-[#1E4690] bg-clip-text"
+                className="font-display font-semibold text-xl md:text-[40px] leading-tight tracking-wide md:tracking-normal bg-gradient-to-r from-[#3478F6] to-[#1E4690] bg-clip-text"
                 style={{ WebkitTextFillColor: "transparent" }}
               >
                 Optimist is built to stay reliable over years of use.

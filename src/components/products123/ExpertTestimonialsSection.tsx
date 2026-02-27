@@ -131,7 +131,7 @@ const MobileCard = memo(function MobileCard({
         />
       </div>
       <div className="flex flex-col justify-between w-[195px] sm:w-[210px] py-3 text-xs leading-[1.5]">
-        <p className="text-black line-clamp-5">
+        <p className="text-black line-clamp-4">
           &ldquo;{testimonial.quote}&rdquo;
         </p>
         <div className="flex flex-col mt-2">
@@ -283,7 +283,7 @@ export const ExpertTestimonialsSection = memo(
           ref={headerRef}
           className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 mb-10 md:mb-14 lg:mb-16"
         >
-          <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-center text-black leading-tight">
+          <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-center text-black leading-tight tracking-wide md:tracking-normal">
             <span className="text-[#3478F6]">Industry Experts </span>
             Agree too
           </h2>
@@ -302,11 +302,11 @@ export const ExpertTestimonialsSection = memo(
         </div>
 
         {/* Mobile Two-Row Marquee (<lg) */}
-        <div className="lg:hidden flex flex-col gap-3 relative">
+        <div className="lg:hidden flex flex-col gap-6 relative">
           {/* Row 1 */}
           <div
             ref={mobileTrack1Ref}
-            className="flex gap-3 items-stretch will-change-transform"
+            className="flex gap-6 items-stretch will-change-transform"
           >
             {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
               <MobileCard key={`mt1-${t.id}-${i}`} testimonial={t} />
@@ -315,7 +315,7 @@ export const ExpertTestimonialsSection = memo(
           {/* Row 2 (different order for visual variety) */}
           <div
             ref={mobileTrack2Ref}
-            className="flex gap-3 items-stretch will-change-transform"
+            className="flex gap-6 items-stretch will-change-transform"
           >
             {[...row2Items, ...row2Items].map((t, i) => (
               <MobileCard key={`mt2-${t.id}-${i}`} testimonial={t} />
