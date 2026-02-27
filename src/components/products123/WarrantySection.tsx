@@ -2,6 +2,7 @@
 
 import { memo, useRef, useLayoutEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { ASSETS } from "@/lib/assets";
@@ -27,24 +28,24 @@ const WARRANTY_FEATURES: WarrantyFeature[] = [
   {
     id: 1,
     text: {
-      bold: "Comprehensive 5-year warranty",
-      regular: " on all critical components.",
+      bold: "5-year comprehensive warranty",
+      regular: " covering outdoor unit and critical indoor components.",
       position: "start",
     },
   },
   {
     id: 2,
     text: {
-      regular: "Built for continuous operation, ",
-      bold: "warranted like it.",
-      position: "end",
+      bold: "10-year compressor protection",
+      regular: " for long-term cooling reliability.",
+      position: "start",
     },
   },
   {
     id: 3,
     text: {
-      bold: "Proactive support",
-      regular: " focused on prevention, not just repair.",
+      bold: "Preventive care included",
+      regular: " with scheduled service and proactive system monitoring.",
       position: "start",
     },
   },
@@ -151,18 +152,30 @@ export const WarrantySection = memo(function WarrantySection() {
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10">
         {/* Header */}
         <div ref={headerRef} className="mb-6 md:mb-11 will-change-[transform,opacity]">
-          {/* Subtitle */}
-          <p className="text-[#3478F6] text-base md:text-xl font-normal mb-2 md:mb-2.5">
-            Warranty and T&C
-          </p>
-          
-          {/* Title */}
-          <h2 
-            id="warranty-heading"
-            className="font-display font-semibold text-2xl md:text-[40px] text-black leading-tight"
-          >
-            Five years of certainty.
-          </h2>
+          <div className="flex items-start justify-between">
+            <div>
+              {/* Subtitle */}
+              <p className="text-[#3478F6] text-base md:text-xl font-normal mb-2 md:mb-2.5">
+                Warranty and T&C
+              </p>
+              
+              {/* Title */}
+              <h2 
+                id="warranty-heading"
+                className="font-display font-semibold text-2xl md:text-[40px] text-black leading-tight"
+              >
+                Ownership without worry.
+              </h2>
+            </div>
+
+            {/* Learn more CTA - Desktop */}
+            <Link
+              href="/warranty"
+              className="hidden md:inline-flex items-center justify-center px-8 py-3 bg-[#3478F6] text-white text-base font-medium rounded-full hover:bg-[#2a60c8] transition-colors shrink-0"
+            >
+              Learn more
+            </Link>
+          </div>
         </div>
 
         {/* Content Card */}
@@ -193,10 +206,20 @@ export const WarrantySection = memo(function WarrantySection() {
                 className="font-display font-semibold text-xl md:text-[40px] leading-tight bg-gradient-to-r from-[#3478F6] to-[#1E4690] bg-clip-text"
                 style={{ WebkitTextFillColor: "transparent" }}
               >
-                Quality isn&apos;t claimed. It&apos;s covered for five years.
+                Optimist is built to stay reliable over years of use.
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Learn more CTA - Mobile */}
+        <div className="flex md:hidden justify-center mt-6">
+          <Link
+            href="/warranty"
+            className="inline-flex items-center justify-center px-10 py-3.5 bg-[#3478F6] text-white text-base font-medium rounded-full hover:bg-[#2a60c8] transition-colors"
+          >
+            Learn more
+          </Link>
         </div>
       </div>
     </section>

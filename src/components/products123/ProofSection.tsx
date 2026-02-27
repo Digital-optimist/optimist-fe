@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useRef } from "react";
+import { memo, useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
@@ -231,12 +231,13 @@ const DesktopProofCard = memo(function DesktopProofCard({
             </p>
 
             {layout.showButton && (
-              <button
-                type="button"
+              <a
+                href="/assets/21014952 Octolife climate solutions pvt ltd.pdf"
+                download="Octolife_Climate_Solutions_Report.pdf"
                 className="self-start mt-4 xl:mt-6 inline-flex items-center justify-center px-6 py-3 border border-[#3478F6] rounded-full text-[#3478F6] text-sm font-medium hover:bg-[#3478F6]/5 transition-colors"
               >
                 download report
-              </button>
+              </a>
             )}
 
             <div className="mt-auto flex flex-col gap-3 pr-[120px] xl:pr-[150px] 2xl:pr-[190px]">
@@ -355,12 +356,13 @@ const MobileProofCard = memo(function MobileProofCard({
 
       {/* Download Button + Badge */}
       <div className="relative px-4 pt-3 pb-5 shrink-0">
-        <button
-          type="button"
+        <a
+          href="/assets/21014952 Octolife climate solutions pvt ltd.pdf"
+          download="Octolife_Climate_Solutions_Report.pdf"
           className="inline-flex items-center justify-center px-6 py-3 border border-[#3478F6] rounded-full text-[#3478F6] text-sm font-medium hover:bg-[#3478F6]/5 transition-colors"
         >
           download report
-        </button>
+        </a>
         <div className="absolute bottom-3 right-4 w-[80px] h-[80px] sm:w-[99px] sm:h-[99px]">
           <Image
             src={card.badgeImage}
@@ -376,12 +378,76 @@ const MobileProofCard = memo(function MobileProofCard({
 });
 
 // =============================================================================
+// Scroll Dots Component
+// =============================================================================
+
+const ScrollDots = memo(function ScrollDots({
+  total,
+  activeIndex,
+  onDotClick,
+}: {
+  total: number;
+  activeIndex: number;
+  onDotClick: (index: number) => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-2 mt-6">
+      {Array.from({ length: total }).map((_, index) => (
+        <button
+          key={index}
+          onClick={() => onDotClick(index)}
+          className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+            index === activeIndex
+              ? "bg-[#3478F6] w-8"
+              : "bg-black/20 hover:bg-black/40"
+          }`}
+          aria-label={`Go to slide ${index + 1}`}
+        />
+      ))}
+    </div>
+  );
+});
+
+// =============================================================================
 // Main Component
 // =============================================================================
 
 export const ProofSection = memo(function ProofSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const scrollLeft = container.scrollLeft;
+    const cardWidth = container.firstElementChild?.clientWidth || 0;
+    const gap = 24;
+    const index = Math.round(scrollLeft / (cardWidth + gap));
+    setActiveCardIndex(Math.min(Math.max(index, 0), PROOF_CARDS.length - 1));
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  const scrollToCard = useCallback((index: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const cardWidth = container.firstElementChild?.clientWidth || 0;
+    const gap = 24;
+    container.scrollTo({
+      left: index * (cardWidth + gap),
+      behavior: "smooth",
+    });
+  }, []);
 
   return (
     <section
@@ -403,7 +469,8 @@ export const ProofSection = memo(function ProofSection() {
 
         {/* Desktop: Horizontal scroll with cards matching Figma proportions */}
         <motion.div
-          className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:overflow-y-hidden lg:pb-8 lg:scrollbar-hide"
+          ref={scrollContainerRef}
+          className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:overflow-y-hidden lg:pb-4 lg:scrollbar-hide"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
@@ -414,9 +481,18 @@ export const ProofSection = memo(function ProofSection() {
           ))}
         </motion.div>
 
+        {/* Desktop Scroll Dots */}
+        <div className="hidden lg:block">
+          <ScrollDots
+            total={PROOF_CARDS.length}
+            activeIndex={activeCardIndex}
+            onDotClick={scrollToCard}
+          />
+        </div>
+
         {/* Mobile: Narrow cards, horizontal scroll */}
         <motion.div
-          className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory -mx-4 px-4"
+          className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory px-4"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >

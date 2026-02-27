@@ -323,7 +323,7 @@ const AutoScrollReviewsGrid = memo(function AutoScrollReviewsGrid({
 
       <div
         ref={scrollRef}
-        className="overflow-hidden max-h-[400px] md:max-h-[520px]"
+        className="overflow-hidden max-h-[440px] md:max-h-[520px]"
         style={{ scrollBehavior: "auto" }}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">

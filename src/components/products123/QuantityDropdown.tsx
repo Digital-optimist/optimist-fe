@@ -1,38 +1,13 @@
 "use client";
 
-import { memo, useCallback, useEffect, useRef, type KeyboardEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  type KeyboardEvent,
+} from "react";
 import { ChevronDown } from "lucide-react";
-
-// =============================================================================
-// Animation Variants
-// =============================================================================
-
-const easeCurve = [0, 0, 0.2, 1] as const;
-
-const dropdownVariants = {
-  hidden: {
-    opacity: 0,
-    y: 8,
-    scale: 0.96,
-    transition: { duration: 0.15, ease: "easeIn" as const },
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.2, ease: easeCurve },
-  },
-};
-
-const optionVariants = {
-  hidden: { opacity: 0, x: -8 },
-  visible: (i: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.15, ease: "easeOut" as const, delay: i * 0.03 },
-  }),
-};
 
 // =============================================================================
 // Types
@@ -66,6 +41,7 @@ export const QuantityDropdown = memo(function QuantityDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listboxRef = useRef<HTMLDivElement>(null);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     if (!isOpen) return;
 
@@ -82,6 +58,7 @@ export const QuantityDropdown = memo(function QuantityDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onToggle]);
 
+  // Focus first option when dropdown opens
   useEffect(() => {
     if (isOpen && listboxRef.current) {
       const selectedOption = listboxRef.current.querySelector(
@@ -143,7 +120,7 @@ export const QuantityDropdown = memo(function QuantityDropdown({
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
-      <motion.button
+      <button
         onClick={onToggle}
         onKeyDown={handleKeyDown}
         aria-haspopup="listbox"
@@ -151,61 +128,42 @@ export const QuantityDropdown = memo(function QuantityDropdown({
         aria-label={`Quantity: ${quantity}. Click to change.`}
         className="w-full h-11 flex items-center justify-between px-3 py-2.5 bg-[rgba(0,0,0,0.04)] rounded-[8px] hover:bg-[rgba(0,0,0,0.06)] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         type="button"
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.15 }}
       >
         <span className="text-gray-900 font-normal text-sm md:text-base">
           Quantity: {quantity}
         </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.25, ease: [0, 0, 0.2, 1] }}
-        >
-          <ChevronDown
-            className="w-5 h-5 text-gray-500"
-            aria-hidden="true"
-          />
-        </motion.div>
-      </motion.button>
+        <ChevronDown
+          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        />
+      </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            ref={listboxRef}
-            role="listbox"
-            aria-label="Select quantity"
-            className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-xl shadow-lg z-[100] max-h-48 overflow-y-auto scrollbar-hide origin-bottom"
-            variants={dropdownVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            {options.map((qty, index) => (
-              <motion.button
-                key={qty}
-                onClick={() => handleOptionClick(qty)}
-                onKeyDown={(e) => handleOptionKeyDown(e, qty, index)}
-                role="option"
-                aria-selected={quantity === qty}
-                className={`w-full px-4 py-2.5 text-left hover:bg-gray-100 transition-colors text-sm md:text-base focus:outline-none focus:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
-                  quantity === qty
-                    ? "bg-blue-50 text-blue-600 font-medium"
-                    : "text-gray-900"
-                }`}
-                type="button"
-                custom={index}
-                variants={optionVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{ x: 4, backgroundColor: "rgba(0,0,0,0.04)" }}
-                transition={{ duration: 0.15 }}
-              >
-                {qty}
-              </motion.button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div
+          ref={listboxRef}
+          role="listbox"
+          aria-label="Select quantity"
+          className="absolute bottom-full left-0 right-0 mb-1 bg-white border border-gray-200 rounded-xl shadow-lg z-[100] max-h-48 overflow-y-auto scrollbar-hide"
+        >
+          {options.map((qty, index) => (
+            <button
+              key={qty}
+              onClick={() => handleOptionClick(qty)}
+              onKeyDown={(e) => handleOptionKeyDown(e, qty, index)}
+              role="option"
+              aria-selected={quantity === qty}
+              className={`w-full px-4 py-2.5 text-left hover:bg-gray-100 transition-colors text-sm md:text-base focus:outline-none focus:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
+                quantity === qty
+                  ? "bg-blue-50 text-blue-600 font-medium"
+                  : "text-gray-900"
+              }`}
+              type="button"
+            >
+              {qty}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 });

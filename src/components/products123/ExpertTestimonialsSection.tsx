@@ -135,9 +135,7 @@ const MobileCard = memo(function MobileCard({
           &ldquo;{testimonial.quote}&rdquo;
         </p>
         <div className="flex flex-col mt-2">
-          <span className="font-semibold text-black">
-            {testimonial.name}
-          </span>
+          <span className="font-semibold text-black">{testimonial.name}</span>
           {testimonial.company && (
             <span className="text-black/56">{testimonial.company}</span>
           )}
@@ -215,6 +213,23 @@ export const ExpertTestimonialsSection = memo(
             duration,
             ease: "none",
             repeat: -1,
+            paused: false,
+          });
+          tweensRef.current.push(tween);
+        };
+
+        const setupLeftwardMarquee = (
+          track: HTMLDivElement,
+          duration: number,
+        ) => {
+          const totalWidth = track.scrollWidth / 2;
+          gsap.set(track, { x: 0 });
+          const tween = gsap.to(track, {
+            x: -totalWidth,
+            duration,
+            ease: "none",
+            repeat: -1,
+            paused: false,
           });
           tweensRef.current.push(tween);
         };
@@ -226,8 +241,21 @@ export const ExpertTestimonialsSection = memo(
           setupRightwardMarquee(mobileTrack1Ref.current, 45);
         }
         if (mobileTrack2Ref.current) {
-          setupRightwardMarquee(mobileTrack2Ref.current, 60);
+          setupLeftwardMarquee(mobileTrack2Ref.current, 60);
         }
+
+        // Control animation based on viewport visibility
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            onEnter: () => tweensRef.current.forEach((t) => t.play()),
+            onLeave: () => tweensRef.current.forEach((t) => t.pause()),
+            onEnterBack: () => tweensRef.current.forEach((t) => t.play()),
+            onLeaveBack: () => tweensRef.current.forEach((t) => t.pause()),
+          },
+        });
       },
       { scope: sectionRef },
     );

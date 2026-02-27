@@ -152,10 +152,10 @@ export function FAQSection() {
         {/* Left Column */}
         <div className="lg:w-[360px] xl:w-[420px] shrink-0 flex flex-col gap-6 md:gap-8">
           <div className="flex flex-col gap-4">
-            <h2 className="font-display text-3xl md:text-4xl font-semibold text-black">
+            <h2 className="font-display text-2xl md:text-4xl font-semibold text-black">
               FAQs
             </h2>
-            <p className="text-base text-black/60 leading-relaxed">
+            <p className="text-sm md:text-base text-black/60 leading-relaxed">
               Got questions? We&apos;ve gathered the most common ones here
               &mdash; along with simple, helpful answers to guide you
               through.
@@ -163,7 +163,7 @@ export function FAQSection() {
           </div>
           <Link
             href="/contact-us"
-            className="inline-flex items-center justify-center w-fit px-6 py-3 h-12 border border-black/[0.12] rounded-full text-base font-medium text-black hover:bg-black/5 transition-colors"
+            className="hidden lg:inline-flex items-center justify-center w-fit px-6 py-3 h-12 border border-black/[0.12] rounded-full text-base font-medium text-black hover:bg-black/5 transition-colors"
           >
             Contact us
           </Link>
@@ -172,7 +172,7 @@ export function FAQSection() {
         {/* Right Column */}
         <div className="flex-1 min-w-0 flex flex-col gap-8">
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
             {FAQ_CATEGORIES.map((category) => (
               <button
                 key={category}
@@ -206,7 +206,7 @@ export function FAQSection() {
                   onClick={() => toggleItem(faq.id)}
                   className="flex w-full items-start justify-between gap-6 text-left cursor-pointer"
                 >
-                  <span className="font-semibold text-lg md:text-xl leading-7 text-black">
+                  <span className="font-semibold text-base md:text-xl leading-6 md:leading-7 text-black">
                     {faq.question}
                   </span>
                   <span className="mt-0.5 shrink-0">
@@ -229,7 +229,7 @@ export function FAQSection() {
                       }}
                       className="overflow-hidden"
                     >
-                      <p className="text-base text-black/60 leading-relaxed mt-2 pr-12">
+                      <p className="text-sm md:text-base text-black/60 leading-relaxed mt-2 pr-12">
                         {faq.answer}
                       </p>
                     </motion.div>
@@ -239,6 +239,14 @@ export function FAQSection() {
             ))}
           </div>
         </div>
+
+        {/* Mobile Contact Us Button */}
+        <Link
+          href="/contact-us"
+          className="lg:hidden inline-flex items-center justify-center w-fit px-6 py-3 h-12 border border-black/[0.12] rounded-full text-base font-medium text-black hover:bg-black/5 transition-colors"
+        >
+          Contact us
+        </Link>
       </div>
     </div>
   );

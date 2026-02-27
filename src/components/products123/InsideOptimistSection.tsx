@@ -42,13 +42,13 @@ const HeroCard = memo(function HeroCard() {
       variants={cardVariants}
       className="relative w-full lg:w-[49%] h-[298px] lg:h-[405px] rounded-[20px] overflow-hidden shadow-[0px_4px_30px_0px_rgba(0,0,0,0.12)] bg-[#121212]"
     >
-      {/* Mobile: centered image wider than card, Desktop: full-width image clipped at top */}
-      <div className="absolute left-1/2 -translate-x-1/2 lg:left-0 lg:translate-x-0 top-0 lg:top-[-11px] w-[374px] h-[198px] lg:w-full lg:h-[346px]">
+      {/* Mobile: centered image wider than card, Desktop: full width image */}
+      <div className="absolute left-1/2 -translate-x-1/2 lg:left-0 lg:translate-x-0 top-0 w-[374px] h-[198px] lg:w-full lg:h-[310px] overflow-hidden">
         <Image
           src={ASSETS.insideOptimistAcUnit}
           alt="Optimist Air Conditioner"
           fill
-          className="object-cover"
+          className="object-cover object-[center_30%] lg:object-[center_25%]"
           sizes="(min-width: 1024px) 655px, 374px"
         />
       </div>
@@ -232,7 +232,7 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
           className="flex flex-col items-center gap-[54px]"
         >
           {/* Section Title */}
-          <h2 className="font-display font-bold text-[32px] lg:text-[40px] text-black text-center leading-normal">
+          <h2 className="font-display font-bold text-[28px] lg:text-[40px] text-black text-center leading-normal">
             Inside Optimist
             <br />
             Engineered for Extremes
@@ -251,7 +251,7 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
             </div>
 
             {/* Row 2: Compressor + Valve + Text Cards */}
-            <div className="flex gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:snap-none">
+            <div className="flex gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:snap-none">
               <CompressorCard />
               <ExpansionValveCard />
               <TextOnlyCards />

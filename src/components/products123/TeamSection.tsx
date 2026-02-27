@@ -1,8 +1,8 @@
 "use client";
 
-import { memo, useRef } from "react";
+import { memo, useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
@@ -79,6 +79,26 @@ const sectionVariants = {
     y: 0,
     transition: { duration: 0.6, ease: [0, 0, 0.2, 1] as const },
   },
+};
+
+const contentVariants = {
+  enter: {
+    opacity: 0,
+    y: 20,
+  },
+  center: {
+    opacity: 1,
+    y: 0,
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+  },
+};
+
+const contentTransition = {
+  duration: 0.4,
+  ease: [0.4, 0, 0.2, 1] as const,
 };
 
 // =============================================================================
@@ -280,33 +300,31 @@ const DesktopTeamCard = memo(function DesktopTeamCard() {
 });
 
 // =============================================================================
-// Mobile Card (<lg)
-// Individual card per team member with photo, gradient, connector, info card
+// Mobile Card with Animated Content
 // =============================================================================
 
-const MobileTeamCard = memo(function MobileTeamCard({
-  member,
-  index,
+const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
+  currentIndex,
 }: {
-  member: TeamMember;
-  index: number;
+  currentIndex: number;
 }) {
-  const connector = MOBILE_CONNECTOR_CONFIG[index];
+  const member = TEAM_MEMBERS[currentIndex];
+  const connector = MOBILE_CONNECTOR_CONFIG[currentIndex];
 
   return (
-    <div className="relative w-[300px] sm:w-[341px] h-[460px] sm:h-[490px] rounded-[32px] overflow-hidden shrink-0 snap-start bg-black">
-      {/* Background Photo */}
+    <div className="relative w-[360px] sm:w-[400px] h-[460px] sm:h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto">
+      {/* Background Photo - Static */}
       <div className="absolute inset-0">
         <Image
           src={ASSETS.teamLabPhoto}
-          alt={`${member.name} - ${member.title}`}
+          alt="Optimist team at Nalanda I Lab, Delhi"
           fill
           className="object-cover object-[center_25%]"
           sizes="341px"
         />
       </div>
 
-      {/* Dark Gradient Overlay */}
+      {/* Dark Gradient Overlay - Static */}
       <div
         className="absolute inset-x-0 bottom-0"
         style={{
@@ -316,30 +334,67 @@ const MobileTeamCard = memo(function MobileTeamCard({
         }}
       />
 
-      {/* Connector Line */}
-      <div
-        className="absolute z-10"
-        style={{
-          left: connector.left,
-          top: connector.top,
-          width: connector.width,
-          height: connector.height,
-          transform: connector.transform,
-        }}
-      >
-        {connector.type === "curved" ? (
-          <CurvedConnector id={`mobile-${member.id}`} />
-        ) : (
-          <StraightConnector id={`mobile-${member.id}`} />
-        )}
-      </div>
+      {/* Connector Line - Animated */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`connector-${currentIndex}`}
+          className="absolute z-10"
+          style={{
+            left: connector.left,
+            top: connector.top,
+            width: connector.width,
+            height: connector.height,
+            transform: connector.transform,
+          }}
+          variants={contentVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={contentTransition}
+        >
+          {connector.type === "curved" ? (
+            <CurvedConnector id={`mobile-${member.id}`} />
+          ) : (
+            <StraightConnector id={`mobile-${member.id}`} />
+          )}
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Info Card */}
+      {/* Info Card - Animated */}
       <div
         className="absolute z-10 left-[4.1%] right-[4.1%]"
         style={{ top: "66.1%" }}
       >
-        <TeamInfoCard member={member} variant="mobile" />
+        <div className="backdrop-blur-[16px] bg-white/[0.01] flex flex-col items-start rounded-2xl p-3 border border-white/[0.12] h-[148px] justify-between text-sm">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`desc-${currentIndex}`}
+              className="text-white/80 leading-relaxed"
+              variants={contentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={contentTransition}
+            >
+              {member.description}
+            </motion.p>
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`name-${currentIndex}`}
+              className="flex flex-col items-start text-[#AEFFD8]"
+              variants={contentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={contentTransition}
+            >
+              <span>{member.name}</span>
+              <span className="font-bold">{member.title}</span>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
@@ -353,6 +408,17 @@ export const TeamSection = memo(function TeamSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-rotate every 3 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % TEAM_MEMBERS.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -360,6 +426,11 @@ export const TeamSection = memo(function TeamSection() {
       aria-label="Meet the Team"
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
+        {/* Heading */}
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#000000] text-center mb-8 md:mb-12 lg:mb-16">
+          The Minds Behind India's Real AC
+        </h2>
+
         {/* Desktop Card */}
         <motion.div
           initial="hidden"
@@ -369,17 +440,26 @@ export const TeamSection = memo(function TeamSection() {
           <DesktopTeamCard />
         </motion.div>
 
-        {/* Mobile Cards - Horizontal Scroll */}
-        <motion.div
-          className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory -mx-4 px-4"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={sectionVariants}
-        >
-          {TEAM_MEMBERS.map((member, index) => (
-            <MobileTeamCard key={member.id} member={member} index={index} />
-          ))}
-        </motion.div>
+        {/* Mobile Card - Single Card with Auto-rotation */}
+        <div className="lg:hidden relative">
+          <MobileTeamCardWithAnimation currentIndex={currentIndex} />
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center gap-2 mt-6">
+            {TEAM_MEMBERS.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? "bg-[#AEFFD8] w-6"
+                    : "bg-gray-300 w-2 hover:bg-gray-400"
+                }`}
+                aria-label={`Go to ${TEAM_MEMBERS[index].name}`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

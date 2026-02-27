@@ -578,8 +578,7 @@ export default function ProductsPageClient({
                     selectedVariant.compareAtPrice > selectedVariant.price && (
                       <>
                         <span className="text-base md:text-lg text-[#6c6a6a] line-through">
-                          Rs{" "}
-                          {formatPrice(selectedVariant.compareAtPrice)}
+                          Rs {formatPrice(selectedVariant.compareAtPrice)}
                         </span>
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs md:text-sm font-medium bg-[#E8F5E9] text-[#2E7D32]">
                           {Math.round(
@@ -864,7 +863,7 @@ export default function ProductsPageClient({
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                      Warranty Return
+                      Warranty & Return
                     </h3>
                     <svg
                       className="w-5 h-5 text-black transition-transform group-open:rotate-180"
@@ -880,11 +879,49 @@ export default function ProductsPageClient({
                       />
                     </svg>
                   </summary>
-                  <div className="pt-2 pb-4">
-                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed italic">
-                      No information available at this time. Warranty details
-                      will be updated soon.
-                    </p>
+                  <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-black mb-2">Comprehensive Warranty Protection</h4>
+                    </div>
+                    
+                    <div>
+                      <h5 className="font-medium text-black mb-1">Outdoor Unit</h5>
+                      <p>5-Year comprehensive warranty on all outdoor unit parts</p>
+                    </div>
+                    
+                    <div>
+                      <h5 className="font-medium text-black mb-1">10-Year warranty on compressor</h5>
+                    </div>
+                    
+                    <div>
+                      <h5 className="font-medium text-black mb-1">Indoor Unit</h5>
+                      <p>5-Year warranty on critical functional components (PCB, blower motor, sensors, control electronics)</p>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <p className="flex items-start gap-2">
+                        <span className="text-green-600 mt-0.5">✓</span>
+                        <span>No labour charges on covered repairs</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <span className="text-green-600 mt-0.5">✓</span>
+                        <span>Covered parts repaired or replaced at ₹0 (T&Cs apply)</span>
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h5 className="font-medium text-black mb-2">Important Warranty Conditions</h5>
+                      <ul className="space-y-1 list-disc list-inside">
+                        <li>Valid for normal residential use only</li>
+                        <li>Installation & servicing must be done by <span className="font-medium text-black">Optimist-authorised technicians</span></li>
+                        <li>Warranty activation via <span className="font-medium text-black">Optimist App is mandatory</span></li>
+                        <li>Two preventive services required every year (pre-season & post-season)</li>
+                        <li>Year-1 preventive services free | From Year-2 chargeable</li>
+                        <li>Physical damage, misuse, tampering, cosmetic parts & commercial use excluded</li>
+                        <li>Warranty void if serviced by unauthorised personnel</li>
+                        <li>For full terms, visit <span className="font-medium text-black">optimist.in/warranty</span></li>
+                      </ul>
+                    </div>
                   </div>
                 </details>
               </motion.div>
@@ -916,11 +953,38 @@ export default function ProductsPageClient({
                       />
                     </svg>
                   </summary>
-                  <div className="pt-2 pb-4">
-                    <p className="text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed italic">
-                      No additional information available at this time. Product
-                      specifications will be updated soon.
-                    </p>
+                  <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-black mb-2">Intelligent Features</h4>
+                      <ul className="space-y-1 list-disc list-inside">
+                        <li>Turbo+ Capacity Boost</li>
+                        <li>First-ever Built-in Gas Level Indicator</li>
+                        <li>Auto Clean Function</li>
+                        <li>Eco / Energy Saver Mode</li>
+                        <li>Sleep Mode</li>
+                        <li>Smart Scheduling & Timer</li>
+                        <li>Wi-Fi Enabled with Optimist App</li>
+                        <li>Real-time Energy Monitoring</li>
+                        <li>Voice Control (Alexa / Google)</li>
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-black mb-2">Technical Specifications</h4>
+                      <ul className="space-y-1">
+                        <li><span className="font-medium text-black">Capacity:</span> 1.5 Ton</li>
+                        <li><span className="font-medium text-black">Energy Rating:</span> 5 Star</li>
+                        <li><span className="font-medium text-black">ISEER:</span> 6.05</li>
+                        <li><span className="font-medium text-black">Refrigerant:</span> R-32</li>
+                        <li><span className="font-medium text-black">Annual Energy Consumption:</span> 620.2 kWh</li>
+                        <li><span className="font-medium text-black">Cooling Capacity:</span> 4.85 kW</li>
+                        <li><span className="font-medium text-black">Power Input:</span> 1070 W</li>
+                        <li><span className="font-medium text-black">Voltage:</span> 230V</li>
+                        <li><span className="font-medium text-black">Noise Level:</span> 32–46 dB</li>
+                        <li><span className="font-medium text-black">System Type:</span> Split Inverter AC</li>
+                        <li><span className="font-medium text-black">Country of Origin:</span> India</li>
+                      </ul>
+                    </div>
                   </div>
                 </details>
               </motion.div>
@@ -950,24 +1014,10 @@ export default function ProductsPageClient({
       </motion.div>
 
       {/* Customer Videos Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={sectionVariants}
-      >
-        <CustomerVideosSection />
-      </motion.div>
+      <CustomerVideosSection />
 
       {/* Expert Testimonials Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={slideFromLeftVariants}
-      >
-        <ExpertTestimonialsSection />
-      </motion.div>
+      <ExpertTestimonialsSection />
 
       {/* Inside Optimist Section */}
       <motion.div

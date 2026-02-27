@@ -105,11 +105,7 @@ const StarRating = memo(function StarRating({ rating }: { rating: number }) {
 // Video Card Component
 // =============================================================================
 
-const VideoCard = memo(function VideoCard({
-  video,
-}: {
-  video: CustomerVideo;
-}) {
+const VideoCard = memo(function VideoCard({ video }: { video: CustomerVideo }) {
   return (
     <div className="shrink-0 w-[200px] sm:w-[230px] md:w-[264px] flex flex-col gap-4">
       {/* Thumbnail */}
@@ -211,6 +207,20 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
         duration: 50,
         ease: "none",
         repeat: -1,
+        paused: false,
+      });
+
+      // Start animation when in viewport
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          onEnter: () => tweenRef.current?.play(),
+          onLeave: () => tweenRef.current?.pause(),
+          onEnterBack: () => tweenRef.current?.play(),
+          onLeaveBack: () => tweenRef.current?.pause(),
+        },
       });
     },
     { scope: sectionRef },
@@ -249,10 +259,7 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
           className="flex gap-[10px] items-start will-change-transform"
         >
           {duplicatedVideos.map((video, index) => (
-            <VideoCard
-              key={`${video.id}-${index}`}
-              video={video}
-            />
+            <VideoCard key={`${video.id}-${index}`} video={video} />
           ))}
         </div>
       </div>
