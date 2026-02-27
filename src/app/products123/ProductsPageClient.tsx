@@ -225,6 +225,7 @@ export default function ProductsPageClient({
   const heroRef = useRef<HTMLDivElement>(null);
   const variantsScrollRef = useRef<HTMLDivElement>(null);
   const priceRef = useRef<HTMLDivElement>(null);
+  const mobileGalleryRef = useRef<HTMLDivElement>(null);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -437,19 +438,16 @@ export default function ProductsPageClient({
     };
   }, [updateVariantsScrollState]);
 
-  // Show mobile footer when price tag reaches mid-screen
+  // Show mobile footer when mobile image gallery scrolls out of viewport
   useEffect(() => {
-    const el = priceRef.current;
+    const el = mobileGalleryRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowMobileFooter(true);
-          observer.disconnect();
-        }
+        setShowMobileFooter(!entry.isIntersecting);
       },
-      { rootMargin: "0px 0px -50% 0px" },
+      { threshold: 0 },
     );
 
     observer.observe(el);
@@ -478,7 +476,7 @@ export default function ProductsPageClient({
   return (
     <motion.div
       ref={containerRef}
-      className="min-h-screen bg-white pb-24 md:pb-0 overflow-x-hidden"
+      className="min-h-screen bg-white md:pb-0 overflow-x-hidden"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -571,10 +569,7 @@ export default function ProductsPageClient({
               </motion.div>
 
               {/* Mobile Image Gallery */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="lg:hidden -mx-4"
-              >
+              <motion.div ref={mobileGalleryRef} variants={heroInfoItemVariants} className="lg:hidden">
                 <ImageGallery
                   images={displayImages}
                   selectedIndex={selectedImageIndex}
@@ -904,23 +899,36 @@ export default function ProductsPageClient({
                   </summary>
                   <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
                     <div>
-                      <h4 className="font-semibold text-black mb-2">Comprehensive Warranty Protection</h4>
+                      <h4 className="font-semibold text-black mb-2">
+                        Comprehensive Warranty Protection
+                      </h4>
                     </div>
-                    
+
                     <div>
-                      <h5 className="font-medium text-black mb-1">Outdoor Unit</h5>
-                      <p>5-Year comprehensive warranty on all outdoor unit parts</p>
+                      <h5 className="font-medium text-black mb-1">
+                        Outdoor Unit
+                      </h5>
+                      <p>
+                        5-Year comprehensive warranty on all outdoor unit parts
+                      </p>
                     </div>
-                    
+
                     <div>
-                      <h5 className="font-medium text-black mb-1">10-Year warranty on compressor</h5>
+                      <h5 className="font-medium text-black mb-1">
+                        10-Year warranty on compressor
+                      </h5>
                     </div>
-                    
+
                     <div>
-                      <h5 className="font-medium text-black mb-1">Indoor Unit</h5>
-                      <p>5-Year warranty on critical functional components (PCB, blower motor, sensors, control electronics)</p>
+                      <h5 className="font-medium text-black mb-1">
+                        Indoor Unit
+                      </h5>
+                      <p>
+                        5-Year warranty on critical functional components (PCB,
+                        blower motor, sensors, control electronics)
+                      </p>
                     </div>
-                    
+
                     <div className="space-y-1">
                       <p className="flex items-start gap-2">
                         <span className="text-green-600 mt-0.5">✓</span>
@@ -928,21 +936,51 @@ export default function ProductsPageClient({
                       </p>
                       <p className="flex items-start gap-2">
                         <span className="text-green-600 mt-0.5">✓</span>
-                        <span>Covered parts repaired or replaced at ₹0 (T&Cs apply)</span>
+                        <span>
+                          Covered parts repaired or replaced at ₹0 (T&Cs apply)
+                        </span>
                       </p>
                     </div>
-                    
+
                     <div>
-                      <h5 className="font-medium text-black mb-2">Important Warranty Conditions</h5>
+                      <h5 className="font-medium text-black mb-2">
+                        Important Warranty Conditions
+                      </h5>
                       <ul className="space-y-1 list-disc list-inside">
                         <li>Valid for normal residential use only</li>
-                        <li>Installation & servicing must be done by <span className="font-medium text-black">Optimist-authorised technicians</span></li>
-                        <li>Warranty activation via <span className="font-medium text-black">Optimist App is mandatory</span></li>
-                        <li>Two preventive services required every year (pre-season & post-season)</li>
-                        <li>Year-1 preventive services free | From Year-2 chargeable</li>
-                        <li>Physical damage, misuse, tampering, cosmetic parts & commercial use excluded</li>
-                        <li>Warranty void if serviced by unauthorised personnel</li>
-                        <li>For full terms, visit <span className="font-medium text-black">optimist.in/warranty</span></li>
+                        <li>
+                          Installation & servicing must be done by{" "}
+                          <span className="font-medium text-black">
+                            Optimist-authorised technicians
+                          </span>
+                        </li>
+                        <li>
+                          Warranty activation via{" "}
+                          <span className="font-medium text-black">
+                            Optimist App is mandatory
+                          </span>
+                        </li>
+                        <li>
+                          Two preventive services required every year
+                          (pre-season & post-season)
+                        </li>
+                        <li>
+                          Year-1 preventive services free | From Year-2
+                          chargeable
+                        </li>
+                        <li>
+                          Physical damage, misuse, tampering, cosmetic parts &
+                          commercial use excluded
+                        </li>
+                        <li>
+                          Warranty void if serviced by unauthorised personnel
+                        </li>
+                        <li>
+                          For full terms, visit{" "}
+                          <span className="font-medium text-black">
+                            optimist.in/warranty
+                          </span>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -978,7 +1016,9 @@ export default function ProductsPageClient({
                   </summary>
                   <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
                     <div>
-                      <h4 className="font-semibold text-black mb-2">Intelligent Features</h4>
+                      <h4 className="font-semibold text-black mb-2">
+                        Intelligent Features
+                      </h4>
                       <ul className="space-y-1 list-disc list-inside">
                         <li>Turbo+ Capacity Boost</li>
                         <li>First-ever Built-in Gas Level Indicator</li>
@@ -991,21 +1031,76 @@ export default function ProductsPageClient({
                         <li>Voice Control (Alexa / Google)</li>
                       </ul>
                     </div>
-                    
+
                     <div>
-                      <h4 className="font-semibold text-black mb-2">Technical Specifications</h4>
+                      <h4 className="font-semibold text-black mb-2">
+                        Technical Specifications
+                      </h4>
                       <ul className="space-y-1">
-                        <li><span className="font-medium text-black">Capacity:</span> 1.5 Ton</li>
-                        <li><span className="font-medium text-black">Energy Rating:</span> 5 Star</li>
-                        <li><span className="font-medium text-black">ISEER:</span> 6.05</li>
-                        <li><span className="font-medium text-black">Refrigerant:</span> R-32</li>
-                        <li><span className="font-medium text-black">Annual Energy Consumption:</span> 620.2 kWh</li>
-                        <li><span className="font-medium text-black">Cooling Capacity:</span> 4.85 kW</li>
-                        <li><span className="font-medium text-black">Power Input:</span> 1070 W</li>
-                        <li><span className="font-medium text-black">Voltage:</span> 230V</li>
-                        <li><span className="font-medium text-black">Noise Level:</span> 32–46 dB</li>
-                        <li><span className="font-medium text-black">System Type:</span> Split Inverter AC</li>
-                        <li><span className="font-medium text-black">Country of Origin:</span> India</li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Capacity:
+                          </span>{" "}
+                          1.5 Ton
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Energy Rating:
+                          </span>{" "}
+                          5 Star
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">ISEER:</span>{" "}
+                          6.05
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Refrigerant:
+                          </span>{" "}
+                          R-32
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Annual Energy Consumption:
+                          </span>{" "}
+                          620.2 kWh
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Cooling Capacity:
+                          </span>{" "}
+                          4.85 kW
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Power Input:
+                          </span>{" "}
+                          1070 W
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Voltage:
+                          </span>{" "}
+                          230V
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Noise Level:
+                          </span>{" "}
+                          32–46 dB
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            System Type:
+                          </span>{" "}
+                          Split Inverter AC
+                        </li>
+                        <li>
+                          <span className="font-medium text-black">
+                            Country of Origin:
+                          </span>{" "}
+                          India
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -1116,9 +1211,7 @@ export default function ProductsPageClient({
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         animate={
-          showMobileFooter
-            ? { opacity: 1, y: 0 }
-            : { opacity: 0, y: 100 }
+          showMobileFooter ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }
         }
         transition={{ duration: 0.5, ease: "easeOut" }}
         style={{ pointerEvents: showMobileFooter ? "auto" : "none" }}

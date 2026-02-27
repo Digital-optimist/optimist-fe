@@ -129,7 +129,7 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
         {/* Header */}
         <p
           ref={headerRef}
-          className="font-display font-semibold text-xl sm:text-2xl md:text-[32px] lg:text-[36px] text-black text-center mb-6 md:mb-10 will-change-[transform,opacity]"
+          className="font-display font-semibold text-xl sm:text-2xl md:text-[32px] lg:text-[36px] text-black text-center mb-6 md:mb-10 px-4 md:px-6 lg:px-12 will-change-[transform,opacity]"
         >
           As featured on
         </p>

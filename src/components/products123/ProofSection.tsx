@@ -400,10 +400,10 @@ const ScrollDots = memo(function ScrollDots({
         <button
           key={index}
           onClick={() => onDotClick(index)}
-          className={`h-2.5 rounded-full transition-all duration-300 ${
+          className={`h-2 rounded-full transition-all duration-300 ${
             index === activeIndex
-              ? "bg-black w-8"
-              : "w-2.5 bg-[#BFBFBF] hover:bg-[#999999]"
+              ? "bg-black w-6"
+              : "w-2 bg-[#BFBFBF] hover:bg-[#999999]"
           }`}
           aria-label={`Go to slide ${index + 1}`}
         />

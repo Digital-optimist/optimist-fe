@@ -213,12 +213,15 @@ export const WarrantySection = memo(function WarrantySection() {
         </div>
 
         {/* Learn more CTA - Mobile */}
-        <div className="flex md:hidden justify-center mt-6">
+        <div className="flex md:hidden mt-6">
           <Link
             href="/warranty"
-            className="inline-flex items-center justify-center px-10 py-3.5 bg-[#3478F6] text-white text-base font-medium rounded-full hover:bg-[#2a60c8] transition-colors"
+            className="inline-flex items-center justify-center gap-2 w-full py-4 border border-[rgba(0,0,0,0.12)] text-[#3478F6] text-base font-medium rounded-full transition-colors"
           >
             Learn more
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M4.5 11.5L11.5 4.5M11.5 4.5H5.5M11.5 4.5V10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </Link>
         </div>
       </div>

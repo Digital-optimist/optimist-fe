@@ -44,7 +44,7 @@ const TEAM_MEMBERS: TeamMember[] = [
 const MOBILE_CONNECTOR_CONFIG = [
   {
     type: "curved" as const,
-    left: "24%",
+    left: "12%",
     top: "32.2%",
     width: "27%",
     height: "32.7%",
@@ -344,7 +344,6 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
             top: connector.top,
             width: connector.width,
             height: connector.height,
-            transform: connector.transform,
           }}
           variants={contentVariants}
           initial="enter"
@@ -352,11 +351,16 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
           exit="exit"
           transition={contentTransition}
         >
-          {connector.type === "curved" ? (
-            <CurvedConnector id={`mobile-${member.id}`} />
-          ) : (
-            <StraightConnector id={`mobile-${member.id}`} />
-          )}
+          <div
+            className="w-full h-full"
+            style={{ transform: connector.transform }}
+          >
+            {connector.type === "curved" ? (
+              <CurvedConnector id={`mobile-${member.id}`} />
+            ) : (
+              <StraightConnector id={`mobile-${member.id}`} />
+            )}
+          </div>
         </motion.div>
       </AnimatePresence>
 
@@ -450,10 +454,10 @@ export const TeamSection = memo(function TeamSection() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
+                className={`h-2 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? "bg-black w-8"
-                    : "w-2.5 bg-[#BFBFBF] hover:bg-[#999999]"
+                    ? "bg-black w-6"
+                    : "w-2 bg-[#BFBFBF] hover:bg-[#999999]"
                 }`}
                 aria-label={`Go to ${TEAM_MEMBERS[index].name}`}
               />

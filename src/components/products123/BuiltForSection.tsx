@@ -283,26 +283,28 @@ export function BuiltForSection() {
 
         {/* Bottom Section - Outcome and CTA */}
         <motion.div
-          className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8"
+          className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={sectionVariants}
           transition={{ delay: 0.4 }}
         >
           {/* Outcome */}
-          <div className="font-display text-center md:text-left">
-            <p className="text-2xl md:text-3xl lg:text-4xl xl:text-[80px] font-semibold leading-tight">
-              <span className="text-black">Nothing more,</span>
+          <div className="font-display text-left">
+            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-bold leading-[1.15]">
+              <span className="text-black">Nothing </span>
+              <span className="text-[#3478F6]">more.</span>
             </p>
-            <p className="text-2xl md:text-3xl lg:text-4xl xl:text-[80px] font-semibold leading-tight mt-1">
-              <span className="text-[#3478F6]">nothing less.</span>
+            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-bold leading-[1.15] mt-1">
+              <span className="text-black">Nothing </span>
+              <span className="text-[#3478F6]">less.</span>
             </p>
           </div>
 
-          {/* Join the Waitlist Button */}
+          {/* Join the Waitlist Button - hidden on mobile */}
           <button
             onClick={openModal}
-            className="btn-buy-now flex items-center justify-center gap-2.5 px-8 md:px-12 py-4 h-14 md:h-16 rounded-full text-[#FFFCDC] font-semibold text-base md:text-xl whitespace-nowrap"
+            className="hidden md:flex btn-buy-now items-center justify-center gap-2.5 px-8 md:px-12 py-4 h-14 md:h-16 rounded-full text-[#FFFCDC] font-semibold text-base md:text-xl whitespace-nowrap"
           >
             <span>Join the Waitlist</span>
             <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6" />
