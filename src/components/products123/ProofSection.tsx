@@ -1,6 +1,13 @@
 "use client";
 
-import { memo, useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
+import {
+  memo,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useGSAP } from "@gsap/react";
@@ -360,7 +367,7 @@ const MobileProofCard = memo(function MobileProofCard({
       </div>
 
       {/* Badge */}
-      <div className="absolute bottom-[8px] right-[8px] w-[99px] h-[99px]">
+      <div className="absolute bottom-[8px] right-[8px] w-[90px] h-[90px]">
         <Image
           src={card.badgeImage}
           alt={card.badgeAlt}
@@ -481,36 +488,33 @@ const DesktopProofScroll = memo(function DesktopProofScroll() {
     { scope: pinRef },
   );
 
-  const handleDotClick = useCallback(
-    (index: number) => {
-      const track = trackRef.current;
-      const pin = pinRef.current;
-      if (!track || !pin) return;
+  const handleDotClick = useCallback((index: number) => {
+    const track = trackRef.current;
+    const pin = pinRef.current;
+    if (!track || !pin) return;
 
-      const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
-      if (cardEls.length === 0) return;
+    const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
+    if (cardEls.length === 0) return;
 
-      const totalScroll = track.scrollWidth - pin.clientWidth;
-      const gap = 24;
-      const targetX = index * (cardEls[0].offsetWidth + gap);
-      const progress = Math.min(targetX / totalScroll, 1);
+    const totalScroll = track.scrollWidth - pin.clientWidth;
+    const gap = 24;
+    const targetX = index * (cardEls[0].offsetWidth + gap);
+    const progress = Math.min(targetX / totalScroll, 1);
 
-      const triggers = ScrollTrigger.getAll().filter(
-        (t) => t.vars.trigger === pin,
-      );
-      if (triggers.length > 0) {
-        const trigger = triggers[0];
-        const scrollTarget =
-          trigger.start + progress * (trigger.end - trigger.start);
-        gsap.to(window, {
-          scrollTo: scrollTarget,
-          duration: 0.6,
-          ease: "power2.inOut",
-        });
-      }
-    },
-    [],
-  );
+    const triggers = ScrollTrigger.getAll().filter(
+      (t) => t.vars.trigger === pin,
+    );
+    if (triggers.length > 0) {
+      const trigger = triggers[0];
+      const scrollTarget =
+        trigger.start + progress * (trigger.end - trigger.start);
+      gsap.to(window, {
+        scrollTo: scrollTarget,
+        duration: 0.6,
+        ease: "power2.inOut",
+      });
+    }
+  }, []);
 
   return (
     <div className="hidden lg:block">

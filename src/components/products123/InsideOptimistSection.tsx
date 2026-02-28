@@ -58,7 +58,7 @@ const HeroCard = memo(function HeroCard() {
       <div className="absolute inset-x-0 bottom-[100px] lg:bottom-[70px] h-[66px] lg:h-[145px] bg-gradient-to-b from-[rgba(18,18,18,0)] to-[#121212]" />
 
       {/* Text content - positioned from top to match Figma */}
-      <div className="absolute left-4 lg:left-3 top-[221px] lg:top-[308px] right-4 lg:right-3 flex flex-col gap-3">
+      <div className="absolute left-4 lg:left-3 top-[211px] lg:top-[308px] right-4 lg:right-3 flex flex-col gap-2 md:gap-3">
         <h3 className="font-display font-semibold lg:font-bold text-xl lg:text-[28px] text-[#AEFFD8] leading-normal tracking-wide lg:tracking-normal">
           Optimist Air Conditioner
         </h3>

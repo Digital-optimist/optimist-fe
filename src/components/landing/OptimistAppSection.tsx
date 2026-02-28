@@ -41,7 +41,7 @@ interface FeatureCardData {
 const FEATURES: FeatureCardData[] = [
   {
     id: "energy-meter",
-    title: "Live Energy tracking",
+    title: "Live Energy\ntracking",
     description: "Control your Bills\nSave even more!",
     icon: ASSETS.thermometer,
     handImage: ASSETS.liveEnergyMeter,
@@ -52,8 +52,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "bills",
-    title: "Projected Monthly Bills",
-    description: "No surprises. Just real numbers.",
+    title: "Projected\nMonthly Bills",
+    description: "No surprises.\nJust real numbers.",
     icon: ASSETS.scroll,
     handImage: ASSETS.projectedMonthlyBills,
     desktopLeft: 30,
@@ -63,8 +63,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "filter",
-    title: "Filter Health",
-    description: "Clean when needed. No more guessing.",
+    title: "Filter health\ntrack",
+    description: "Always clean air\nNo cooling drops",
     icon: ASSETS.filter,
     handImage: ASSETS.filterTracking,
     desktopLeft: 120,
@@ -74,8 +74,8 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "gas-level",
-    title: "Gas Level Indicator",
-    description: "Know before it's an issue.",
+    title: "First Ever Gas-level\nIndicator",
+    description: "Eliminate cooling drop shocks\nNo wasteful gas-filling",
     icon: ASSETS.gastank,
     handImage: ASSETS.gasLevelIndicator,
     desktopLeft: 906,
@@ -85,19 +85,19 @@ const FEATURES: FeatureCardData[] = [
   },
   {
     id: "service",
-    title: "Intelligence Service Assistance",
-    description: "Diagnose remotely. Service seamlessly",
+    title: "Intelligent\nDiagnostics",
+    description: "Automated and Remote\nSeamless hassle-free servicing",
     icon: ASSETS.headset,
     handImage: ASSETS.serviceAssistance,
-    desktopLeft: 1016,
+    desktopLeft: 976,
     desktopTop: 360,
     handOffsetX: 0,
     handOffsetY: 0,
   },
   {
     id: "scheduling",
-    title: "Scheduling",
-    description: "Start or stop automatically, on your time.",
+    title: "Control anywhere",
+    description: "Walk into pre-cooled rooms\nSchedule your cooling",
     icon: ASSETS.calendar,
     handImage: ASSETS.scheduling,
     desktopLeft: 906,
@@ -131,14 +131,14 @@ function DesktopFeatureCard({
     feature.desktopLeft !== undefined ? feature.desktopLeft * scale : undefined;
   const scaledTop = feature.desktopTop * scale;
 
-  // Scale card size for smaller screens (Figma base: 314x142)
-  const cardWidth = Math.max(240, 314 * scale);
-  const cardHeight = Math.max(110, 142 * scale);
-  // Figma: icon box 106x116
-  const iconWidth = Math.max(70, 106 * scale);
-  const iconHeight = Math.max(80, 116 * scale);
-  // Figma: image 64x64
-  const imageSize = Math.max(44, 64 * scale);
+  // Scale card size for smaller screens (base: 360x160)
+  const cardWidth = Math.max(260, 360 * scale);
+  const cardHeight = Math.max(120, 160 * scale);
+  // Icon box 116x130
+  const iconWidth = Math.max(76, 116 * scale);
+  const iconHeight = Math.max(88, 130 * scale);
+  // Image 68x68
+  const imageSize = Math.max(48, 68 * scale);
 
   return (
     <div
@@ -158,12 +158,12 @@ function DesktopFeatureCard({
       onMouseEnter={() => onHover(feature.id)}
       onMouseLeave={onLeave}
     >
-      {/* Icon Container - Figma: left:12px, top:13px, 106x116, rounded:13.117px */}
+      {/* Icon Container */}
       <div
         className="absolute overflow-hidden transition-colors duration-300"
         style={{
-          left: `${Math.max(8, 12 * scale)}px`,
-          top: `${Math.max(9, 13 * scale)}px`,
+          left: `${Math.max(10, 14 * scale)}px`,
+          top: `${Math.max(10, 15 * scale)}px`,
           width: `${iconWidth}px`,
           height: `${iconHeight}px`,
           borderRadius: `${Math.max(9, 13.117 * scale)}px`,
@@ -199,18 +199,18 @@ function DesktopFeatureCard({
         />
       </div>
 
-      {/* Text Content - Figma: left:134px, top:20px, width:141px, gap:14px */}
+      {/* Text Content */}
       <div
         className="absolute flex flex-col"
         style={{
-          left: `${Math.max(90, 134 * scale)}px`,
+          left: `${Math.max(96, 144 * scale)}px`,
+          right: `${Math.max(8, 12 * scale)}px`,
           top: `${Math.max(14, 20 * scale)}px`,
-          width: `${Math.max(100, 141 * scale)}px`,
-          gap: `${Math.max(10, 14 * scale)}px`,
+          gap: `${Math.max(8, 12 * scale)}px`,
         }}
       >
         <p
-          className="font-display font-bold leading-none transition-colors duration-300"
+          className="font-display font-bold leading-tight transition-colors duration-300 whitespace-pre-line"
           style={{
             fontSize: `${Math.max(13, 16 * scale)}px`,
             color: isHovered ? "#3478f6" : "#000000",
@@ -219,9 +219,9 @@ function DesktopFeatureCard({
           {feature.title}
         </p>
         <p
-          className="font-display leading-normal transition-colors duration-300"
+          className="font-display leading-snug transition-colors duration-300 whitespace-pre-line"
           style={{
-            fontSize: `${Math.max(11, 14 * scale)}px`,
+            fontSize: `${Math.max(11, 13 * scale)}px`,
             color: isHovered ? "rgba(52, 120, 246, 0.6)" : "rgba(0, 0, 0, 0.6)",
           }}
         >
@@ -294,16 +294,16 @@ function MobileFeatureCard({
           />
         </div>
 
-        {/* Text Content - horizontal layout like desktop */}
-        <div className="flex flex-col justify-center gap-[10px] sm:gap-[12px] md:gap-[14px] flex-1 min-w-0 pr-1">
+        {/* Text Content */}
+        <div className="flex flex-col justify-center gap-[8px] sm:gap-[10px] md:gap-[12px] flex-1 min-w-0 pr-1">
           <p
-            className="font-display text-[12px] xs:text-[13px] sm:text-[14px] md:text-[15px] font-bold leading-none transition-colors duration-300"
+            className="font-display text-[12px] xs:text-[13px] sm:text-[14px] md:text-[15px] font-bold leading-tight transition-colors duration-300 whitespace-pre-line"
             style={{ color: isActive ? "#3478f6" : "#000000" }}
           >
             {feature.title}
           </p>
           <p
-            className="font-display text-[10px] xs:text-[11px] sm:text-[12px] md:text-[13px] leading-normal transition-colors duration-300"
+            className="font-display text-[10px] xs:text-[11px] sm:text-[12px] md:text-[13px] leading-snug transition-colors duration-300 whitespace-pre-line"
             style={{
               color: isActive
                 ? "rgba(52, 120, 246, 0.6)"
