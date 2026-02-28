@@ -748,7 +748,7 @@ export default function ProductsPageClient({
                   >
                     <div
                       ref={variantsScrollRef}
-                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 touch-pan-x"
+                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 touch-auto"
                     >
                       {variants.map((variant) => (
                         <VariantCard

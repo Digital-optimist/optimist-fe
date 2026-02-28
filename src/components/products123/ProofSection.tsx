@@ -563,7 +563,7 @@ const MobileProofCarousel = memo(function MobileProofCarousel() {
   );
 
   return (
-    <div className="lg:hidden">
+    <div className="lg:hidden" style={{ touchAction: "pan-y pinch-zoom" }}>
       <div ref={emblaRef} className="overflow-hidden -mx-4 px-4">
         <div className="flex gap-4">
           {PROOF_CARDS.map((card) => (

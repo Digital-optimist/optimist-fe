@@ -243,7 +243,7 @@ const MobileCarouselRow = memo(function MobileCarouselRow() {
   );
 
   return (
-    <div className="lg:hidden">
+    <div className="lg:hidden" style={{ touchAction: "pan-y pinch-zoom" }}>
       <div ref={emblaRef} className="overflow-hidden -mx-4 px-4">
         <div className="flex gap-6 py-6 -my-2">
           <div className="shrink-0">
