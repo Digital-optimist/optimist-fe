@@ -1,8 +1,9 @@
 "use client";
 
-import { memo, useRef } from "react";
+import { memo, useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
 import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
@@ -214,6 +215,66 @@ const TextOnlyCards = memo(function TextOnlyCards() {
 // Main Component
 // =============================================================================
 
+const MobileCarouselRow = memo(function MobileCarouselRow() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true,
+  });
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setActiveIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  const scrollTo = useCallback(
+    (index: number) => emblaApi?.scrollTo(index),
+    [emblaApi],
+  );
+
+  return (
+    <div className="lg:hidden">
+      <div ref={emblaRef} className="overflow-hidden -mx-4 px-4">
+        <div className="flex gap-6 py-6 -my-2">
+          <div className="shrink-0">
+            <CompressorCard />
+          </div>
+          <div className="shrink-0">
+            <ExpansionValveCard />
+          </div>
+          <div className="shrink-0">
+            <TextOnlyCards />
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-center gap-1.5 mt-2">
+        {[0, 1, 2].map((index) => (
+          <button
+            key={index}
+            onClick={() => scrollTo(index)}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              index === activeIndex
+                ? "bg-black w-4"
+                : "w-1.5 bg-[#BFBFBF] hover:bg-[#999999]"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+});
+
 export const InsideOptimistSection = memo(function InsideOptimistSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
@@ -250,8 +311,11 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
               <HeatExchangerCard />
             </div>
 
-            {/* Row 2: Compressor + Valve + Text Cards */}
-            <div className="flex gap-6 overflow-x-auto lg:overflow-visible px-4 py-6 -my-2 lg:my-0 lg:p-0 scrollbar-hide snap-x snap-mandatory lg:snap-none touch-pan-x lg:touch-auto">
+            {/* Row 2 Mobile: Embla Carousel — doesn't block vertical scroll */}
+            <MobileCarouselRow />
+
+            {/* Row 2 Desktop: Standard flex layout */}
+            <div className="hidden lg:flex gap-6">
               <CompressorCard />
               <ExpansionValveCard />
               <TextOnlyCards />

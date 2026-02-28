@@ -1,8 +1,11 @@
 "use client";
 
-import { memo, useRef, useState, useEffect, useCallback } from "react";
+import { memo, useRef, useState, useEffect, useCallback, useLayoutEffect } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import useEmblaCarousel from "embla-carousel-react";
 import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
@@ -413,125 +416,179 @@ const ScrollDots = memo(function ScrollDots({
 });
 
 // =============================================================================
+// Desktop: GSAP ScrollTrigger pin + scrub horizontal scroll
+// Vertical scroll drives horizontal translation — no scroll trapping.
+// =============================================================================
+
+const DesktopProofScroll = memo(function DesktopProofScroll() {
+  const pinRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
+  useLayoutEffect(() => {
+    if (trackRef.current) {
+      gsap.set(trackRef.current, { opacity: 0, y: 30 });
+    }
+  }, []);
+
+  useGSAP(
+    () => {
+      const pin = pinRef.current;
+      const track = trackRef.current;
+      if (!pin || !track) return;
+
+      // Fade track in on first arrival
+      gsap.to(track, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: pin,
+          start: "top 80%",
+          toggleActions: "play none none none",
+          once: true,
+        },
+      });
+
+      const totalScroll = track.scrollWidth - pin.clientWidth;
+      if (totalScroll <= 0) return;
+
+      const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
+      const gap = 24;
+
+      ScrollTrigger.create({
+        trigger: pin,
+        start: "top top",
+        end: () => `+=${totalScroll}`,
+        pin: true,
+        anticipatePin: 1,
+        scrub: 1,
+        onUpdate: (self) => {
+          const x = self.progress * totalScroll;
+          gsap.set(track, { x: -x, force3D: true });
+
+          if (cardEls.length > 0) {
+            const firstCardWidth = cardEls[0].offsetWidth;
+            const idx = Math.round(x / (firstCardWidth + gap));
+            setActiveCardIndex(
+              Math.min(Math.max(idx, 0), PROOF_CARDS.length - 1),
+            );
+          }
+        },
+      });
+    },
+    { scope: pinRef },
+  );
+
+  const handleDotClick = useCallback(
+    (index: number) => {
+      const track = trackRef.current;
+      const pin = pinRef.current;
+      if (!track || !pin) return;
+
+      const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
+      if (cardEls.length === 0) return;
+
+      const totalScroll = track.scrollWidth - pin.clientWidth;
+      const gap = 24;
+      const targetX = index * (cardEls[0].offsetWidth + gap);
+      const progress = Math.min(targetX / totalScroll, 1);
+
+      const triggers = ScrollTrigger.getAll().filter(
+        (t) => t.vars.trigger === pin,
+      );
+      if (triggers.length > 0) {
+        const trigger = triggers[0];
+        const scrollTarget =
+          trigger.start + progress * (trigger.end - trigger.start);
+        gsap.to(window, {
+          scrollTo: scrollTarget,
+          duration: 0.6,
+          ease: "power2.inOut",
+        });
+      }
+    },
+    [],
+  );
+
+  return (
+    <div className="hidden lg:block">
+      <div ref={pinRef} className="overflow-hidden">
+        <div ref={trackRef} className="flex gap-6 will-change-transform">
+          {PROOF_CARDS.map((card) => (
+            <div key={card.id} data-proof-card>
+              <DesktopProofCard card={card} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <ScrollDots
+        total={PROOF_CARDS.length}
+        activeIndex={activeCardIndex}
+        onDotClick={handleDotClick}
+      />
+    </div>
+  );
+});
+
+// =============================================================================
+// Mobile: Embla Carousel — doesn't block vertical scroll
+// =============================================================================
+
+const MobileProofCarousel = memo(function MobileProofCarousel() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+  });
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setActiveIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  const scrollTo = useCallback(
+    (index: number) => emblaApi?.scrollTo(index),
+    [emblaApi],
+  );
+
+  return (
+    <div className="lg:hidden">
+      <div ref={emblaRef} className="overflow-hidden -mx-4 px-4">
+        <div className="flex gap-4">
+          {PROOF_CARDS.map((card) => (
+            <div key={card.id} className="shrink-0">
+              <MobileProofCard card={card} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <ScrollDots
+        total={PROOF_CARDS.length}
+        activeIndex={activeIndex}
+        onDotClick={scrollTo}
+      />
+    </div>
+  );
+});
+
+// =============================================================================
 // Main Component
 // =============================================================================
 
 export const ProofSection = memo(function ProofSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const mobileScrollContainerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-  const [activeCardIndex, setActiveCardIndex] = useState(0);
-  const [mobileActiveCardIndex, setMobileActiveCardIndex] = useState(0);
-  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
-  const isUserInteractingRef = useRef(false);
-
-  const handleScroll = useCallback(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const scrollLeft = container.scrollLeft;
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 24;
-    const index = Math.round(scrollLeft / (cardWidth + gap));
-    setActiveCardIndex(Math.min(Math.max(index, 0), PROOF_CARDS.length - 1));
-  }, []);
-
-  const handleMobileScroll = useCallback(() => {
-    const container = mobileScrollContainerRef.current;
-    if (!container) return;
-
-    const scrollLeft = container.scrollLeft;
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 16;
-    const index = Math.round(scrollLeft / (cardWidth + gap));
-    setMobileActiveCardIndex(
-      Math.min(Math.max(index, 0), PROOF_CARDS.length - 1),
-    );
-  }, []);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
-
-  useEffect(() => {
-    const container = mobileScrollContainerRef.current;
-    if (!container) return;
-
-    container.addEventListener("scroll", handleMobileScroll);
-    return () => container.removeEventListener("scroll", handleMobileScroll);
-  }, [handleMobileScroll]);
-
-  const scrollToCard = useCallback((index: number) => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 24;
-    container.scrollTo({
-      left: index * (cardWidth + gap),
-      behavior: "smooth",
-    });
-  }, []);
-
-  const scrollToMobileCard = useCallback((index: number) => {
-    const container = mobileScrollContainerRef.current;
-    if (!container) return;
-
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 16;
-    container.scrollTo({
-      left: index * (cardWidth + gap),
-      behavior: "smooth",
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!isInView) return;
-
-    const startAutoPlay = () => {
-      autoPlayRef.current = setInterval(() => {
-        if (isUserInteractingRef.current) return;
-
-        const isMobile = window.innerWidth < 1024;
-        if (isMobile) {
-          setMobileActiveCardIndex((prev) => {
-            const nextIndex = (prev + 1) % PROOF_CARDS.length;
-            scrollToMobileCard(nextIndex);
-            return nextIndex;
-          });
-        } else {
-          setActiveCardIndex((prev) => {
-            const nextIndex = (prev + 1) % PROOF_CARDS.length;
-            scrollToCard(nextIndex);
-            return nextIndex;
-          });
-        }
-      }, 3000);
-    };
-
-    startAutoPlay();
-
-    return () => {
-      if (autoPlayRef.current) {
-        clearInterval(autoPlayRef.current);
-      }
-    };
-  }, [isInView, scrollToCard, scrollToMobileCard]);
-
-  const handleInteractionStart = useCallback(() => {
-    isUserInteractingRef.current = true;
-  }, []);
-
-  const handleInteractionEnd = useCallback(() => {
-    setTimeout(() => {
-      isUserInteractingRef.current = false;
-    }, 3000);
-  }, []);
 
   return (
     <section
@@ -551,62 +608,11 @@ export const ProofSection = memo(function ProofSection() {
           Proof over Promises.
         </motion.h2>
 
-        {/* Desktop: Horizontal scroll with cards matching Figma proportions */}
-        <motion.div
-          ref={scrollContainerRef}
-          className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:overflow-y-hidden lg:pb-4 lg:scrollbar-hide touch-pan-x"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          onMouseEnter={handleInteractionStart}
-          onMouseLeave={handleInteractionEnd}
-          onTouchStart={handleInteractionStart}
-          onTouchEnd={handleInteractionEnd}
-        >
-          {PROOF_CARDS.map((card, index) => (
-            <motion.div key={card.id} custom={index} variants={cardVariants}>
-              <DesktopProofCard card={card} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Desktop: GSAP pin + scrub — vertical scroll drives horizontal movement */}
+        <DesktopProofScroll />
 
-        {/* Desktop Scroll Dots */}
-        <div className="hidden lg:block">
-          <ScrollDots
-            total={PROOF_CARDS.length}
-            activeIndex={activeCardIndex}
-            onDotClick={scrollToCard}
-          />
-        </div>
-
-        {/* Mobile: Narrow cards, horizontal scroll */}
-        <motion.div
-          ref={mobileScrollContainerRef}
-          className="lg:hidden flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory px-4 touch-pan-x"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          onTouchStart={handleInteractionStart}
-          onTouchEnd={handleInteractionEnd}
-        >
-          {PROOF_CARDS.map((card, index) => (
-            <motion.div
-              key={card.id}
-              custom={index}
-              variants={cardVariants}
-              className="shrink-0"
-            >
-              <MobileProofCard card={card} />
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Mobile Scroll Dots */}
-        <div className="lg:hidden">
-          <ScrollDots
-            total={PROOF_CARDS.length}
-            activeIndex={mobileActiveCardIndex}
-            onDotClick={scrollToMobileCard}
-          />
-        </div>
+        {/* Mobile: Embla Carousel — clean swipe, never blocks vertical scroll */}
+        <MobileProofCarousel />
       </div>
     </section>
   );

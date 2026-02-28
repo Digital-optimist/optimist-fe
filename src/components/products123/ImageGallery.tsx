@@ -144,7 +144,7 @@ export const ImageGallery = memo(function ImageGallery({
       {/* Thumbnails - horizontal scroll container */}
       <div className="w-full overflow-hidden">
         <div
-          className="flex gap-1 md:gap-3 overflow-x-auto pl-2 py-2 scrollbar-hide touch-pan-x"
+          className="flex gap-1 md:gap-3 overflow-x-auto pl-2 py-2 scrollbar-hide touch-manipulation"
           role="tablist"
           aria-label="Product image thumbnails"
         >
