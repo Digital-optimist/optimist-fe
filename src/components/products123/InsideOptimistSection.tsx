@@ -109,7 +109,7 @@ const CompressorCard = memo(function CompressorCard() {
       className="relative w-[284px] lg:w-[34.8%] h-[405px] rounded-[20px] overflow-clip shadow-[0px_4px_30px_0px_rgba(0,0,0,0.12)] bg-white shrink-0 snap-start"
     >
       {/* Image - centered on mobile, right-aligned on desktop */}
-      <div className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-auto lg:right-0 top-[140px] lg:top-[107px] w-[221px] h-[239px] lg:w-[60%] lg:h-[305px]">
+      <div className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-auto lg:right-0 top-[140px] lg:top-[107px] w-[251px] h-[279px] lg:w-[60%] lg:h-[305px]">
         <Image
           src={ASSETS.insideOptimistCompressor}
           alt="Dual-Rotary Inverter Compressor"
@@ -221,7 +221,7 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-8 md:py-12 lg:py-16 bg-white overflow-hidden"
+      className="w-full py-12 md:py-12 lg:py-16 bg-white overflow-hidden"
       aria-label="Inside Optimist - Engineered for Extremes"
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
@@ -251,7 +251,7 @@ export const InsideOptimistSection = memo(function InsideOptimistSection() {
             </div>
 
             {/* Row 2: Compressor + Valve + Text Cards */}
-            <div className="flex gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 px-4 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory lg:snap-none touch-pan-x lg:touch-auto">
+            <div className="flex gap-6 overflow-x-auto lg:overflow-visible px-4 py-6 -my-2 lg:my-0 lg:p-0 scrollbar-hide snap-x snap-mandatory lg:snap-none touch-pan-x lg:touch-auto">
               <CompressorCard />
               <ExpansionValveCard />
               <TextOnlyCards />

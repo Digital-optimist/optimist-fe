@@ -44,26 +44,26 @@ const TEAM_MEMBERS: TeamMember[] = [
 const MOBILE_CONNECTOR_CONFIG = [
   {
     type: "curved" as const,
-    left: "12%",
-    top: "32.2%",
-    width: "27%",
-    height: "32.7%",
+    left: "15%",
+    top: "40%",
+    width: "20%",
+    height: "24%",
     transform: "scaleX(-1)",
   },
   {
     type: "straight" as const,
-    left: "39.3%",
-    top: "26.3%",
-    width: "21.5%",
-    height: "38.6%",
+    left: "41%",
+    top: "36%",
+    width: "16%",
+    height: "20%",
     transform: "rotate(-11.13deg)",
   },
   {
     type: "curved" as const,
-    left: "47.8%",
-    top: "32%",
-    width: "27%",
-    height: "32.7%",
+    left: "52%",
+    top: "40%",
+    width: "20%",
+    height: "24%",
     transform: "none",
   },
 ];
@@ -115,12 +115,33 @@ function CurvedConnector({ id }: { id: string }) {
       aria-hidden="true"
       className="w-full h-full"
     >
-      <circle cx="5" cy="124.978" r="5" fill="white" />
-      <circle cx="5" cy="124.978" r="4.5" stroke="white" strokeOpacity="0.51" />
-      <path
+      <motion.circle
+        cx="5"
+        cy="124.978"
+        r="5"
+        fill="white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.3, ease: "easeOut" }}
+      />
+      <motion.circle
+        cx="5"
+        cy="124.978"
+        r="4.5"
+        stroke="white"
+        strokeOpacity="0.51"
+        fill="none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.3, ease: "easeOut" }}
+      />
+      <motion.path
         d="M152 0.977926L24.8446 28.1469C17.5026 29.7156 12.0591 35.9147 11.4523 43.3978L5 122.978"
         stroke={`url(#${gradientId})`}
         strokeWidth="2"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       />
       <defs>
         <linearGradient
@@ -149,12 +170,33 @@ function StraightConnector({ id }: { id: string }) {
       aria-hidden="true"
       className="w-full h-full"
     >
-      <circle cx="5" cy="183.21" r="5" fill="white" />
-      <circle cx="5" cy="183.21" r="4.5" stroke="white" strokeOpacity="0.51" />
-      <path
+      <motion.circle
+        cx="5"
+        cy="183.21"
+        r="5"
+        fill="white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.3, ease: "easeOut" }}
+      />
+      <motion.circle
+        cx="5"
+        cy="183.21"
+        r="4.5"
+        stroke="white"
+        strokeOpacity="0.51"
+        fill="none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.3, ease: "easeOut" }}
+      />
+      <motion.path
         d="M39.6783 0.19307L22.1917 89.0606L4.99916 181.214"
         stroke={`url(#${gradientId})`}
         strokeWidth="2"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       />
       <defs>
         <linearGradient
@@ -453,15 +495,15 @@ export const TeamSection = memo(function TeamSection() {
           <MobileTeamCardWithAnimation currentIndex={currentIndex} />
 
           {/* Pagination Dots */}
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex justify-center gap-1.5 md:gap-2 mt-4 md:mt-6">
             {TEAM_MEMBERS.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? "bg-black w-6"
-                    : "w-2 bg-[#BFBFBF] hover:bg-[#999999]"
+                    ? "bg-black w-4 md:w-6"
+                    : "w-1.5 md:w-2 bg-[#BFBFBF] hover:bg-[#999999]"
                 }`}
                 aria-label={`Go to ${TEAM_MEMBERS[index].name}`}
               />

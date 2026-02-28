@@ -395,15 +395,15 @@ const ScrollDots = memo(function ScrollDots({
   onDotClick: (index: number) => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-2 mt-6">
+    <div className="flex items-center justify-center gap-1.5 md:gap-2 mt-4 md:mt-6">
       {Array.from({ length: total }).map((_, index) => (
         <button
           key={index}
           onClick={() => onDotClick(index)}
-          className={`h-2 rounded-full transition-all duration-300 ${
+          className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
             index === activeIndex
-              ? "bg-black w-6"
-              : "w-2 bg-[#BFBFBF] hover:bg-[#999999]"
+              ? "bg-black w-4 md:w-6"
+              : "w-1.5 md:w-2 bg-[#BFBFBF] hover:bg-[#999999]"
           }`}
           aria-label={`Go to slide ${index + 1}`}
         />
@@ -536,7 +536,7 @@ export const ProofSection = memo(function ProofSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-8 md:py-12 lg:py-16 bg-white"
+      className="w-full py-11 md:py-12 lg:py-16 bg-white"
       style={{ overflowX: "clip" }}
       aria-label="Proof over Promises"
     >
