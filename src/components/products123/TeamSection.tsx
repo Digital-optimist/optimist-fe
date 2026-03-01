@@ -354,15 +354,25 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
   const connector = MOBILE_CONNECTOR_CONFIG[currentIndex];
 
   return (
-    <div className="relative w-[320px] sm:w-[400px] h-[460px] sm:h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto">
-      {/* Background Photo - Static */}
-      <div className="absolute inset-0">
+    <div className="relative w-[340px] sm:w-[400px] h-[460px] sm:h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto">
+      {/* Background Photo - Mobile */}
+      <div className="absolute inset-0  sm:hidden">
+        <Image
+          src={ASSETS.teamLabPhotoMobile}
+          alt="Optimist team at Nalanda I Lab, Delhi"
+          fill
+          className="object-cover -object-[center_20%]"
+          sizes="20px"
+        />
+      </div>
+      {/* Background Photo - Desktop */}
+      <div className="absolute -top-12 -left-12 -right-12 -bottom-16 hidden sm:block">
         <Image
           src={ASSETS.teamLabPhoto}
           alt="Optimist team at Nalanda I Lab, Delhi"
           fill
-          className="object-cover object-[center_25%]"
-          sizes="341px"
+          className="object-cover object-[center_20%]"
+          sizes="450px"
         />
       </div>
 
@@ -370,7 +380,7 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
       <div
         className="absolute inset-x-0 bottom-0"
         style={{
-          top: "14.3%",
+          top: "34.3%",
           background:
             "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.68) 25.9%, rgb(0,0,0) 48%, rgb(0,0,0) 98.77%)",
         }}

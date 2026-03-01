@@ -193,6 +193,7 @@ export const ASSETS = {
 
   // Team Section
   teamLabPhoto: "/assets/team/team-lab-photo.jpg",
+  teamLabPhotoMobile: "/assets/team mobile.png",
 
   // Featured On Logos
   featuredAngelone: "/assets/featured/angelone.png",
@@ -202,6 +203,20 @@ export const ASSETS = {
   featuredRediff: "/assets/featured/rediff.png",
   featuredEntrackr: "/assets/featured/entrackr.png",
   featuredEntrepreneur: "/assets/featured/entrepreneur.png",
+
+  // Mobile App Section Assets
+  mob1: "/assets/mob1.png",
+  mob2: "/assets/mob2.png",
+  mob3: "/assets/mob3.png",
+  mob4: "/assets/mob4.png",
+  mob5: "/assets/mob5.png",
+  mob6: "/assets/mob6.png",
+  info1: "/assets/Info1.png",
+  info2: "/assets/Info2.png",
+  info3: "/assets/info3.png",
+  info4: "/assets/info4.png",
+  mobileBg: "/assets/bgg.png",
+  circletick: "/assets/circletick.png",
 } as const;
 
 export default ASSETS;

@@ -108,6 +108,65 @@ const FEATURES: FeatureCardData[] = [
 ];
 
 // ============================================
+// MOBILE SLIDE DATA (New Figma Design)
+// ============================================
+interface MobileSlideData {
+  id: string;
+  title: string;
+  bullets: string[];
+  phoneImage: string;
+  infoCard?: string;
+  infoCardPosition?: "left" | "right";
+}
+
+const MOBILE_SLIDES: MobileSlideData[] = [
+  {
+    id: "gas-level",
+    title: "First Ever Gas-level\nIndicator",
+    bullets: ["Eliminate cooling drop shocks", "No wasteful gas-filling"],
+    phoneImage: ASSETS.mob1,
+    infoCard: ASSETS.info1,
+    infoCardPosition: "left",
+  },
+  {
+    id: "diagnostics",
+    title: "Intelligent\nDiagnostics",
+    bullets: ["Automated & Remote", "Seamless hassle-free servicing"],
+    phoneImage: ASSETS.mob2,
+    infoCard: ASSETS.info2,
+    infoCardPosition: "left",
+  },
+  {
+    id: "energy-tracking",
+    title: "Live Energy\nTracking",
+    bullets: ["Control your bills", "Save even more!"],
+    phoneImage: ASSETS.mob3,
+    infoCard: ASSETS.info3,
+    infoCardPosition: "left",
+  },
+  {
+    id: "filter-health",
+    title: "Filter Health\nTrack",
+    bullets: ["Always clean air", "No cooling drops"],
+    phoneImage: ASSETS.mob4,
+    infoCard: ASSETS.info4,
+    infoCardPosition: "left",
+  },
+  {
+    id: "control-anywhere",
+    title: "Control\nAnywhere",
+    bullets: ["Walk into pre-cooled rooms", "Schedule your cooling"],
+    phoneImage: ASSETS.mob5,
+  },
+  {
+    id: "unified-app",
+    title: "Unified App",
+    bullets: ["Need we say more!"],
+    phoneImage: ASSETS.mob6,
+  },
+];
+
+// ============================================
 // DESKTOP FEATURE CARD COMPONENT
 // ============================================
 interface FeatureCardProps {
@@ -319,6 +378,115 @@ function MobileFeatureCard({
 }
 
 // ============================================
+// MOBILE SLIDE CARD COMPONENT (New Figma Design)
+// ============================================
+interface MobileSlideCardProps {
+  slide: MobileSlideData;
+}
+
+function MobileSlideCard({ slide }: MobileSlideCardProps) {
+  const hasInfoCard = !!slide.infoCard;
+
+  return (
+    <div
+      className="flex-shrink-0 w-full min-w-full h-full relative overflow-hidden"
+      style={{ scrollSnapAlign: "start" }}
+    >
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src={ASSETS.mobileBg}
+          alt=""
+          fill
+          className="object-cover"
+          quality={80}
+        />
+      </div>
+
+      {/* Content Container */}
+      <div className="relative z-10 h-full flex flex-col items-center pt-4 px-4">
+        {/* Title */}
+        <h3
+          className="font-display text-[22px] font-bold text-center leading-tight whitespace-pre-line"
+          style={{ color: "#3478f6" }}
+        >
+          {slide.title}
+        </h3>
+
+        {/* Checkmark Bullets */}
+        <div className="flex gap-8 mt-4 justify-center">
+          {slide.bullets.map((bullet, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center gap-1.5 max-w-[120px]"
+            >
+              <Image
+                src={ASSETS.circletick}
+                alt=""
+                width={18}
+                height={18}
+                className="flex-shrink-0"
+              />
+              <span className="font-display text-[13px] text-black text-center leading-tight">
+                {bullet}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Phone and Info Card Container */}
+        <div className="relative flex-1 w-full mt-3">
+          {/* Phone Image - LEFT side if has info card, CENTERED if no info card */}
+          <div
+            className="absolute"
+            style={{
+              left: hasInfoCard ? "15%" : "50%",
+              transform: hasInfoCard ? "none" : "translateX(-50%)",
+              top: "0",
+              width: "160px",
+              height: "340px",
+            }}
+          >
+            <Image
+              src={slide.phoneImage}
+              alt={slide.title}
+              fill
+              className="object-contain"
+              quality={100}
+            />
+          </div>
+
+          {/* Info Card Overlay - positioned on phone, extending to RIGHT */}
+          {slide.infoCard && (
+            <div
+              className="absolute"
+              style={{
+                left: "18%",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "75%",
+              }}
+            >
+              <Image
+                src={slide.infoCard}
+                alt=""
+                width={250}
+                height={250}
+                className="w-full h-auto rounded-[12px]"
+                // style={{
+                //   boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.15)",
+                // }}
+                quality={100}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 export function OptimistAppSection() {
@@ -334,6 +502,9 @@ export function OptimistAppSection() {
   // Default to first item (energy-meter) for mobile
   const [activeFeature, setActiveFeature] = useState<FeatureId>("energy-meter");
   const [containerWidth, setContainerWidth] = useState(1360);
+  // Mobile slide carousel state
+  const [activeMobileSlide, setActiveMobileSlide] = useState(0);
+  const mobileSlideContainerRef = useRef<HTMLDivElement>(null);
 
   // Track container width for responsive scaling
   useEffect(() => {
@@ -464,6 +635,58 @@ export function OptimistAppSection() {
       carousel.removeEventListener("scroll", handleScroll);
       clearTimeout(scrollTimeout);
     };
+  }, []);
+
+  // Scroll-based active slide detection for new mobile carousel (horizontal)
+  useEffect(() => {
+    const container = mobileSlideContainerRef.current;
+    if (!container) return;
+
+    let scrollTimeout: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const scrollLeft = container.scrollLeft;
+        const slideWidth = container.clientWidth;
+        const activeIndex = Math.round(scrollLeft / slideWidth);
+        setActiveMobileSlide(Math.min(activeIndex, MOBILE_SLIDES.length - 1));
+      }, 50);
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, []);
+
+  // Auto-swipe mobile slides every 3 seconds
+  useEffect(() => {
+    const container = mobileSlideContainerRef.current;
+    if (!container) return;
+
+    const autoSwipeInterval = setInterval(() => {
+      const nextIndex = (activeMobileSlide + 1) % MOBILE_SLIDES.length;
+      const slideWidth = container.clientWidth;
+      container.scrollTo({
+        left: slideWidth * nextIndex,
+        behavior: "smooth",
+      });
+    }, 3000);
+
+    return () => clearInterval(autoSwipeInterval);
+  }, [activeMobileSlide]);
+
+  // Handle pagination dot click for mobile slides (horizontal)
+  const handleMobileDotClick = useCallback((index: number) => {
+    const container = mobileSlideContainerRef.current;
+    if (!container) return;
+    const slideWidth = container.clientWidth;
+    container.scrollTo({
+      left: slideWidth * index,
+      behavior: "smooth",
+    });
   }, []);
 
   // Get current hand image based on hover/active state
@@ -685,7 +908,7 @@ export function OptimistAppSection() {
                 className="font-display font-bold text-black leading-none mb-2 lg:mb-[14px]"
                 style={{ fontSize: `${Math.max(28, 40 * scale)}px` }}
               >
-                Real Intelligence in your Hand.
+                Optimist App
               </h2>
               <p
                 className="font-display leading-normal"
@@ -694,7 +917,7 @@ export function OptimistAppSection() {
                   fontSize: `${Math.max(16, 20 * scale)}px`,
                 }}
               >
-                Control. Monitor. Diagnose. Anytime. Anywhere
+                Your full-control panel, right in your hand.
               </p>
             </div>
 
@@ -826,111 +1049,44 @@ export function OptimistAppSection() {
 
         {/* ============ MOBILE LAYOUT (below md) ============ */}
         <div
-          className="md:hidden relative bg-white overflow-hidden"
-          style={{ minHeight: "690px" }}
+          className="md:hidden relative overflow-hidden"
+          style={{ height: "520px" }}
         >
-          {/* Background Ellipses - Mobile */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {/* Outer Ellipse */}
-            <div
-              className="absolute left-1/2 -translate-x-1/2"
-              style={{ top: "200px", width: "150%", maxWidth: "1258px" }}
-            >
-              <Image
-                src={ASSETS.ellipse6512}
-                alt=""
-                width={1258}
-                height={1258}
-                sizes="150vw"
-                className="w-full h-auto"
-                style={{ transform: "scale(1.112)" }}
-                quality={60}
-              />
-            </div>
-            {/* Inner Ellipse */}
-            <div
-              className="absolute left-1/2 -translate-x-1/2"
-              style={{ top: "360px", width: "100%", maxWidth: "753px" }}
-            >
-              <Image
-                src={ASSETS.ellipse6513}
-                alt=""
-                width={753}
-                height={753}
-                sizes="100vw"
-                className="w-full h-auto"
-                style={{ transform: "scale(1.187)" }}
-                quality={60}
-              />
-            </div>
-          </div>
-
-          {/* Header - Mobile */}
+          {/* Horizontal Scroll Container */}
           <div
-            ref={headerRef}
-            className="relative bg-white z-10 text-center pt-[43px] px-4"
-          >
-            <h2 className="font-display text-[28px] xs:text-[30px] sm:text-[32px] font-bold text-black leading-none mb-3">
-              Real Intelligence <br /> in your Hand.
-            </h2>
-            <p
-              className="font-display text-[15px] xs:text-[16px] sm:text-[16px] leading-normal"
-              style={{ color: "rgba(0,0,0,0.42)" }}
-            >
-              Control. Monitor. Diagnose. <br /> Anytime. Anywhere
-            </p>
-          </div>
-
-          {/* Hand/Phone Image Container - Mobile - positioned bottom right */}
-          <div
-            ref={phoneRef}
-            className="absolute z-10 pointer-events-none"
-            style={{
-              right: "-200px",
-              bottom: "50px",
-              width: "700px",
-              height: "580px",
-            }}
-          >
-            <Image
-              key={activeFeature}
-              src={
-                FEATURES.find((f) => f.id === activeFeature)?.handImage ||
-                FEATURES[0].handImage
-              }
-              alt="Optimist App"
-              fill
-              sizes="580px"
-              quality={80}
-              className="object-contain object-right-bottom"
-              priority
-            />
-          </div>
-
-          {/* White Gradient at bottom */}
-          <div className="absolute left-0 right-0 bottom-0 h-[150px] sm:h-[180px] pointer-events-none z-20" />
-
-          {/* Horizontal Scrollable Carousel - positioned at bottom */}
-          <div
-            ref={mobileCarouselRef}
-            className="absolute bottom-0 bg-white pt-3 sm:pt-4 left-0 right-0 z-30 flex gap-2 xs:gap-3 overflow-x-auto pb-4 xs:pb-5 sm:pb-6 px-3 xs:px-4 scrollbar-hide"
+            ref={mobileSlideContainerRef}
+            className="h-full w-full overflow-x-auto overflow-y-hidden scrollbar-hide flex"
             style={{ scrollSnapType: "x mandatory" }}
           >
-            {FEATURES.map((feature) => (
-              <div
-                key={feature.id}
-                className="feature-card mobile-feature-card"
-                data-feature-id={feature.id}
-                style={{ scrollSnapAlign: "center" }}
-              >
-                <MobileFeatureCard
-                  feature={feature}
-                  isActive={activeFeature === feature.id}
-                  onTap={handleMobileCardTap}
-                />
-              </div>
+            {MOBILE_SLIDES.map((slide) => (
+              <MobileSlideCard key={slide.id} slide={slide} />
             ))}
           </div>
+
+          {/* Pagination Dots */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            {MOBILE_SLIDES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleMobileDotClick(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  activeMobileSlide === index
+                    ? "bg-[#3478f6] w-6"
+                    : "bg-black/20"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Bottom Gradient Fade */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[60px] pointer-events-none z-10"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 100%)",
+            }}
+          />
         </div>
       </div>
     </section>
