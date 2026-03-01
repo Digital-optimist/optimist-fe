@@ -442,7 +442,7 @@ function MobileSlideCard({ slide }: MobileSlideCardProps) {
             style={{
               left: hasInfoCard ? "15%" : "50%",
               transform: hasInfoCard ? "none" : "translateX(-50%)",
-              top: "0",
+              bottom: "20px",
               width: "170px",
               height: "380px",
             }}
@@ -451,7 +451,7 @@ function MobileSlideCard({ slide }: MobileSlideCardProps) {
               src={slide.phoneImage}
               alt={slide.title}
               fill
-              className="object-contain"
+              className="object-contain object-bottom"
               quality={100}
             />
           </div>
@@ -462,8 +462,7 @@ function MobileSlideCard({ slide }: MobileSlideCardProps) {
               className="absolute"
               style={{
                 left: "18%",
-                top: "50%",
-                transform: "translateY(-50%)",
+                bottom: slide.id == "energy-tracking" ? "60px" : "125px",
                 width: "75%",
               }}
             >
@@ -473,9 +472,6 @@ function MobileSlideCard({ slide }: MobileSlideCardProps) {
                 width={250}
                 height={250}
                 className="w-full h-auto rounded-[12px]"
-                // style={{
-                //   boxShadow: "0px 2px 12px 0px rgba(0,0,0,0.15)",
-                // }}
                 quality={100}
               />
             </div>
