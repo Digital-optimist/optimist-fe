@@ -443,8 +443,8 @@ function MobileSlideCard({ slide }: MobileSlideCardProps) {
               left: hasInfoCard ? "15%" : "50%",
               transform: hasInfoCard ? "none" : "translateX(-50%)",
               top: "0",
-              width: "160px",
-              height: "340px",
+              width: "170px",
+              height: "380px",
             }}
           >
             <Image
@@ -642,22 +642,16 @@ export function OptimistAppSection() {
     const container = mobileSlideContainerRef.current;
     if (!container) return;
 
-    let scrollTimeout: NodeJS.Timeout;
-
     const handleScroll = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        const scrollLeft = container.scrollLeft;
-        const slideWidth = container.clientWidth;
-        const activeIndex = Math.round(scrollLeft / slideWidth);
-        setActiveMobileSlide(Math.min(activeIndex, MOBILE_SLIDES.length - 1));
-      }, 50);
+      const scrollLeft = container.scrollLeft;
+      const slideWidth = container.clientWidth;
+      const activeIndex = Math.round(scrollLeft / slideWidth);
+      setActiveMobileSlide(Math.min(activeIndex, MOBILE_SLIDES.length - 1));
     };
 
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       container.removeEventListener("scroll", handleScroll);
-      clearTimeout(scrollTimeout);
     };
   }, []);
 
@@ -784,6 +778,21 @@ export function OptimistAppSection() {
       ref={sectionRef}
       className="bg-white py-10 px-3 sm:px-4 md:px-6 lg:px-10"
     >
+      {/* Mobile Title and Subtitle - Outside the card */}
+      <div className="md:hidden text-center pb-4 px-4 max-w-[1360px] mx-auto">
+        <h2 className="font-display text-[28px] font-bold text-black leading-tight">
+          Real intelligence
+          <br />
+          in your hand
+        </h2>
+        <p
+          className="font-display text-[16px] mt-2"
+          style={{ color: "rgba(0,0,0,0.42)" }}
+        >
+          Control. Monitor. Diagnose.
+        </p>
+      </div>
+
       {/* Main Container - responsive max-width */}
       <div
         ref={containerRef}
@@ -1063,22 +1072,6 @@ export function OptimistAppSection() {
             ))}
           </div>
 
-          {/* Pagination Dots */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            {MOBILE_SLIDES.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => handleMobileDotClick(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  activeMobileSlide === index
-                    ? "bg-[#3478f6] w-6"
-                    : "bg-black/20"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-
           {/* Bottom Gradient Fade */}
           <div
             className="absolute bottom-0 left-0 right-0 h-[60px] pointer-events-none z-10"
@@ -1088,6 +1081,22 @@ export function OptimistAppSection() {
             }}
           />
         </div>
+      </div>
+
+      {/* Mobile Pagination Dots - Outside the card container */}
+      <div className="md:hidden flex items-center justify-center gap-1.5 pt-4 max-w-[1360px] mx-auto">
+        {MOBILE_SLIDES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handleMobileDotClick(index)}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              activeMobileSlide === index
+                ? "bg-black w-4"
+                : "w-1.5 bg-[#BFBFBF] hover:bg-[#999999]"
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );

@@ -40,31 +40,31 @@ const TEAM_MEMBERS: TeamMember[] = [
   },
 ];
 
-// Connector positioning per member for mobile cards (% of card dimensions)
+// Connector positioning per member for mobile cards (matching Figma: 341px × 490px card)
 const MOBILE_CONNECTOR_CONFIG = [
   {
     type: "curved" as const,
-    left: "15%",
-    top: "40%",
-    width: "20%",
-    height: "24%",
-    transform: "scaleX(-1)",
+    left: "82px",
+    top: "158px",
+    width: "92px",
+    height: "160px",
+    transform: "rotate(180deg) scaleY(-1)",
   },
   {
     type: "straight" as const,
-    left: "41%",
-    top: "36%",
-    width: "16%",
-    height: "20%",
+    left: "133px",
+    top: "158px",
+    width: "75px",
+    height: "160px",
     transform: "rotate(-11.13deg)",
   },
   {
     type: "curved" as const,
-    left: "52%",
-    top: "40%",
-    width: "20%",
-    height: "24%",
-    transform: "none",
+    left: "167px",
+    top: "158px",
+    width: "92px",
+    height: "160px",
+    transform: "rotate(180deg) scaleY(-1) scaleX(-1)",
   },
 ];
 
@@ -354,15 +354,18 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
   const connector = MOBILE_CONNECTOR_CONFIG[currentIndex];
 
   return (
-    <div className="relative w-[340px] sm:w-[400px] h-[460px] sm:h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto">
+    <div className="relative w-[341px] sm:w-[400px] h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto border">
       {/* Background Photo - Mobile */}
-      <div className="absolute inset-0  sm:hidden">
+      <div
+        className="absolute sm:hidden"
+        style={{ top: 0, left: 0, right: 0, height: "310px" }}
+      >
         <Image
           src={ASSETS.teamLabPhotoMobile}
           alt="Optimist team at Nalanda I Lab, Delhi"
           fill
-          className="object-cover -object-[center_20%]"
-          sizes="20px"
+          className="object-cover object-center"
+          sizes="341px"
         />
       </div>
       {/* Background Photo - Desktop */}
@@ -380,7 +383,7 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
       <div
         className="absolute inset-x-0 bottom-0"
         style={{
-          top: "34.3%",
+          top: "80px",
           background:
             "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.68) 25.9%, rgb(0,0,0) 48%, rgb(0,0,0) 98.77%)",
         }}
@@ -418,10 +421,10 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
 
       {/* Info Card - Animated */}
       <div
-        className="absolute z-10 left-[4.1%] right-[4.1%]"
-        style={{ top: "66.1%" }}
+        className="absolute z-10"
+        style={{ left: "14px", right: "14px", top: "324px" }}
       >
-        <div className="backdrop-blur-[16px] bg-white/[0.01] flex flex-col items-start rounded-2xl p-3 border border-white/[0.12] h-[148px] justify-between text-sm">
+        <div className="backdrop-blur-[16px] bg-white/[0.01] flex flex-col items-start rounded-2xl p-3 border border-white/[0.12] h-[148px] w-[313px] justify-between text-sm">
           <AnimatePresence mode="wait">
             <motion.p
               key={`desc-${currentIndex}`}
