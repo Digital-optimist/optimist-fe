@@ -427,9 +427,14 @@ const ScrollDots = memo(function ScrollDots({
 // Vertical scroll drives horizontal translation — no scroll trapping.
 // =============================================================================
 
-const DesktopProofScroll = memo(function DesktopProofScroll() {
+const DesktopProofScroll = memo(function DesktopProofScroll({
+  isInView,
+}: {
+  isInView: boolean;
+}) {
   const pinRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   useLayoutEffect(() => {
@@ -442,7 +447,8 @@ const DesktopProofScroll = memo(function DesktopProofScroll() {
     () => {
       const pin = pinRef.current;
       const track = trackRef.current;
-      if (!pin || !track) return;
+      const cardsContainer = cardsContainerRef.current;
+      if (!pin || !track || !cardsContainer) return;
 
       // Fade track in on first arrival
       gsap.to(track, {
@@ -458,7 +464,7 @@ const DesktopProofScroll = memo(function DesktopProofScroll() {
         },
       });
 
-      const totalScroll = track.scrollWidth - pin.clientWidth;
+      const totalScroll = track.scrollWidth - cardsContainer.clientWidth;
       if (totalScroll <= 0) return;
 
       const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
@@ -466,7 +472,7 @@ const DesktopProofScroll = memo(function DesktopProofScroll() {
 
       ScrollTrigger.create({
         trigger: pin,
-        start: "top top",
+        start: "top 40px",
         end: () => `+=${totalScroll}`,
         pin: true,
         anticipatePin: 1,
@@ -491,12 +497,13 @@ const DesktopProofScroll = memo(function DesktopProofScroll() {
   const handleDotClick = useCallback((index: number) => {
     const track = trackRef.current;
     const pin = pinRef.current;
-    if (!track || !pin) return;
+    const cardsContainer = cardsContainerRef.current;
+    if (!track || !pin || !cardsContainer) return;
 
     const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
     if (cardEls.length === 0) return;
 
-    const totalScroll = track.scrollWidth - pin.clientWidth;
+    const totalScroll = track.scrollWidth - cardsContainer.clientWidth;
     const gap = 24;
     const targetX = index * (cardEls[0].offsetWidth + gap);
     const progress = Math.min(targetX / totalScroll, 1);
@@ -518,20 +525,32 @@ const DesktopProofScroll = memo(function DesktopProofScroll() {
 
   return (
     <div className="hidden lg:block">
-      <div ref={pinRef} className="overflow-hidden">
-        <div ref={trackRef} className="flex gap-6 will-change-transform">
-          {PROOF_CARDS.map((card) => (
-            <div key={card.id} data-proof-card>
-              <DesktopProofCard card={card} />
-            </div>
-          ))}
+      <div ref={pinRef} className="bg-white pb-4">
+        {/* Section Header - inside pinned container */}
+        <motion.h2
+          className="font-display font-semibold text-[40px] text-black text-center leading-tight tracking-normal mb-12"
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={headerVariants}
+        >
+          Proof over Promises.
+        </motion.h2>
+
+        <div ref={cardsContainerRef} className="overflow-hidden">
+          <div ref={trackRef} className="flex gap-6 will-change-transform">
+            {PROOF_CARDS.map((card) => (
+              <div key={card.id} data-proof-card>
+                <DesktopProofCard card={card} />
+              </div>
+            ))}
+          </div>
         </div>
+        <ScrollDots
+          total={PROOF_CARDS.length}
+          activeIndex={activeCardIndex}
+          onDotClick={handleDotClick}
+        />
       </div>
-      <ScrollDots
-        total={PROOF_CARDS.length}
-        activeIndex={activeCardIndex}
-        onDotClick={handleDotClick}
-      />
     </div>
   );
 });
@@ -602,9 +621,9 @@ export const ProofSection = memo(function ProofSection() {
       aria-label="Proof over Promises"
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header - Mobile only (desktop header is inside pinned container) */}
         <motion.h2
-          className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12"
+          className="lg:hidden font-display font-semibold text-2xl md:text-4xl text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={headerVariants}
@@ -613,7 +632,7 @@ export const ProofSection = memo(function ProofSection() {
         </motion.h2>
 
         {/* Desktop: GSAP pin + scrub — vertical scroll drives horizontal movement */}
-        <DesktopProofScroll />
+        <DesktopProofScroll isInView={isInView} />
 
         {/* Mobile: Embla Carousel — clean swipe, never blocks vertical scroll */}
         <MobileProofCarousel />
