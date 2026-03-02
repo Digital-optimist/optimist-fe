@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
+import type { HeroBadge } from "@/lib/shopify";
 
 // Smooth scroll to element using GSAP
 const scrollToSection = (elementId: string) => {
@@ -46,7 +47,17 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
   );
 }
 
-export function HeroSection() {
+interface HeroSectionProps {
+  headingLine1?: string;
+  headingLine2?: string;
+  badges?: HeroBadge[];
+}
+
+export function HeroSection({
+  headingLine1,
+  headingLine2,
+  badges,
+}: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -261,9 +272,11 @@ export function HeroSection() {
                 className="hero-headline hero-headline-size"
                 style={{ perspective: "1000px" }}
               >
-                <span className="block">India&apos;s Real AC.</span>
+                <span className="block">
+                  {headingLine1 ?? "India\u2019s Real AC."}
+                </span>
                 <span className="block text-[#7EEFC4]">
-                  Cools More. Uses Less.
+                  {headingLine2 ?? "Cools More. Uses Less."}
                 </span>
               </h1>
 
@@ -271,42 +284,61 @@ export function HeroSection() {
                 ref={badgesRef}
                 className="flex items-center justify-center gap-4 mt-6"
               >
-                {/* Cooling Badge */}
-                <div className="flex items-center gap-2 py-3">
-                  <Image
-                    src={ASSETS.thermometerBadge}
-                    alt="Proven Cooling at 50°C"
-                    width={36}
-                    height={36}
-                    className="w-9 h-9 flex-shrink-0"
-                    priority
-                  />
-                  <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
-                    Proven Cooling
-                    <br />
-                    at 50°C
-                  </span>
-                </div>
-
-                {/* Vertical Divider */}
-                <div className="h-10 w-px bg-white/20" />
-
-                {/* ISEER Badge */}
-                <div className="flex items-center gap-2 py-3">
-                  <Image
-                    src={ASSETS.iseer5StarBadge}
-                    alt="India's #1 Energy Efficient AC"
-                    width={44}
-                    height={36}
-                    className="w-10 h-9 object-contain flex-shrink-0"
-                    priority
-                  />
-                  <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
-                    India&apos;s #1 Energy
-                    <br />
-                    Efficient AC
-                  </span>
-                </div>
+                {badges && badges.length > 0 ? (
+                  badges.map((badge, i) => (
+                    <div key={i} className="contents">
+                      {i > 0 && <div className="h-10 w-px bg-white/20" />}
+                      <div className="flex items-center gap-2 py-3">
+                        <Image
+                          src={badge.imageUrl}
+                          alt={badge.text}
+                          width={40}
+                          height={36}
+                          className="w-10 h-9 object-contain flex-shrink-0"
+                          priority
+                          unoptimized
+                        />
+                        <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
+                          {badge.text}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2 py-3">
+                      <Image
+                        src={ASSETS.thermometerBadge}
+                        alt="Proven Cooling at 50°C"
+                        width={36}
+                        height={36}
+                        className="w-9 h-9 flex-shrink-0"
+                        priority
+                      />
+                      <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
+                        Proven Cooling
+                        <br />
+                        at 50°C
+                      </span>
+                    </div>
+                    <div className="h-10 w-px bg-white/20" />
+                    <div className="flex items-center gap-2 py-3">
+                      <Image
+                        src={ASSETS.iseer5StarBadge}
+                        alt="India's #1 Energy Efficient AC"
+                        width={44}
+                        height={36}
+                        className="w-10 h-9 object-contain flex-shrink-0"
+                        priority
+                      />
+                      <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
+                        India&apos;s #1 Energy
+                        <br />
+                        Efficient AC
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -405,46 +437,67 @@ export function HeroSection() {
                     className="hero-headline hero-headline-size"
                     style={{ perspective: "1000px" }}
                   >
-                    <span className="block">India&apos;s Real AC.</span>
+                    <span className="block">
+                      {headingLine1 ?? "India\u2019s Real AC."}
+                    </span>
                     <span className="block text-[#7EEFC4]">
-                      Cools More. Uses Less.
+                      {headingLine2 ?? "Cools More. Uses Less."}
                     </span>
                   </h1>
 
                   {/* Badges Row */}
                   <div ref={badgesRef} className="flex items-center gap-6 mt-6">
-                    {/* Cooling Badge */}
-                    <div className="flex items-center gap-1 py-4">
-                      <Image
-                        src={ASSETS.thermometerBadge}
-                        alt="Proven Cooling at 50°C"
-                        width={44}
-                        height={44}
-                        className="w-11 h-11"
-                        priority
-                      />
-                      <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                        Proven Cooling at 50°C
-                      </span>
-                    </div>
-
-                    {/* Vertical Divider */}
-                    <div className="h-11 w-px bg-white/20" />
-
-                    {/* ISEER Badge */}
-                    <div className="flex items-center gap-1 py-3">
-                      <Image
-                        src={ASSETS.iseer5StarBadge}
-                        alt="India's #1 Rated Energy Efficient AC"
-                        width={56}
-                        height={44}
-                        className="w-14 h-11 object-contain"
-                        priority
-                      />
-                      <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
-                        India&apos;s #1 Energy Efficient AC
-                      </span>
-                    </div>
+                    {badges && badges.length > 0 ? (
+                      badges.map((badge, i) => (
+                        <div key={i} className="contents">
+                          {i > 0 && <div className="h-11 w-px bg-white/20" />}
+                          <div className="flex items-center gap-1 py-4">
+                            <Image
+                              src={badge.imageUrl}
+                              alt={badge.text}
+                              width={48}
+                              height={44}
+                              className="w-12 h-11 object-contain"
+                              priority
+                              unoptimized
+                            />
+                            <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
+                              {badge.text}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-1 py-4">
+                          <Image
+                            src={ASSETS.thermometerBadge}
+                            alt="Proven Cooling at 50°C"
+                            width={44}
+                            height={44}
+                            className="w-11 h-11"
+                            priority
+                          />
+                          <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
+                            Proven Cooling at 50°C
+                          </span>
+                        </div>
+                        <div className="h-11 w-px bg-white/20" />
+                        <div className="flex items-center gap-1 py-3">
+                          <Image
+                            src={ASSETS.iseer5StarBadge}
+                            alt="India's #1 Rated Energy Efficient AC"
+                            width={56}
+                            height={44}
+                            className="w-14 h-11 object-contain"
+                            priority
+                          />
+                          <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
+                            India&apos;s #1 Energy Efficient AC
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 

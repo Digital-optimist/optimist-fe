@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { type Metadata } from "next";
-import { getProducts } from "@/lib/shopify";
+import { getProducts, getProductPageContent } from "@/lib/shopify";
 import { ProductDetailSkeleton } from "@/components/products/ProductDetailSkeleton";
 import ProductsPageClient from "./ProductsPageClient";
 
@@ -38,13 +38,19 @@ export const metadata: Metadata = {
 // Data Fetching (Server-side)
 // =============================================================================
 
-async function getProductData() {
+async function getPageData() {
   try {
-    const products = await getProducts(1);
-    return products.length > 0 ? products[0] : null;
+    const [products, pageContent] = await Promise.all([
+      getProducts(1),
+      getProductPageContent(),
+    ]);
+    return {
+      product: products.length > 0 ? products[0] : null,
+      pageContent,
+    };
   } catch (error) {
-    console.error("Failed to fetch product:", error);
-    return null;
+    console.error("Failed to fetch product page data:", error);
+    return { product: null, pageContent: null };
   }
 }
 
@@ -53,11 +59,11 @@ async function getProductData() {
 // =============================================================================
 
 export default async function ProductsPage() {
-  const product = await getProductData();
+  const { product, pageContent } = await getPageData();
 
   return (
     <Suspense fallback={<ProductDetailSkeleton />}>
-      <ProductsPageClient product={product} />
+      <ProductsPageClient product={product} pageContent={pageContent} />
     </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useRef, useLayoutEffect, type ReactNode } from "react";
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import {
@@ -8,6 +9,7 @@ import {
   PiggyBankIcon,
   PersonWalkIcon,
 } from "@/components/icons/ProductIcons";
+import type { ResultSectionItem } from "@/lib/shopify";
 
 // =============================================================================
 // Types
@@ -20,10 +22,10 @@ interface ResultFeature {
 }
 
 // =============================================================================
-// Constants
+// Constants (fallback)
 // =============================================================================
 
-const RESULT_FEATURES: ResultFeature[] = [
+const FALLBACK_FEATURES: ResultFeature[] = [
   {
     icon: <SnowflakeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#3478F6]" />,
     title: "Consistent cooling",
@@ -71,15 +73,46 @@ const FeatureCard = memo(function FeatureCard({ feature }: FeatureCardProps) {
 });
 
 // =============================================================================
+// Props
+// =============================================================================
+
+interface ResultSectionProps {
+  heading?: string;
+  items?: ResultSectionItem[];
+}
+
+// =============================================================================
 // Main Component
 // =============================================================================
 
-export const ResultSection = memo(function ResultSection() {
+export const ResultSection = memo(function ResultSection({
+  heading,
+  items,
+}: ResultSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
-  // Set initial states to prevent flash
+  const features: ResultFeature[] =
+    items && items.length > 0
+      ? items.map((item) => ({
+          icon: item.iconUrl ? (
+            <Image
+              src={item.iconUrl}
+              alt={item.heading}
+              width={24}
+              height={24}
+              className="w-5 h-5 sm:w-6 sm:h-6"
+              unoptimized
+            />
+          ) : (
+            <SnowflakeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#3478F6]" />
+          ),
+          title: item.heading,
+          description: item.subHeading,
+        }))
+      : FALLBACK_FEATURES;
+
   useLayoutEffect(() => {
     if (titleRef.current) {
       gsap.set(titleRef.current, { opacity: 0, y: 40 });
@@ -102,7 +135,6 @@ export const ResultSection = memo(function ResultSection() {
         },
       });
 
-      // Title animation
       tl.to(
         titleRef.current,
         {
@@ -115,7 +147,6 @@ export const ResultSection = memo(function ResultSection() {
         0,
       );
 
-      // Cards stagger animation
       const cards = cardsRef.current?.querySelectorAll(".result-card");
       if (cards) {
         tl.to(
@@ -142,22 +173,19 @@ export const ResultSection = memo(function ResultSection() {
       aria-labelledby="result-heading"
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 xs:px-5 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        {/* Title */}
         <h2
           ref={titleRef}
           id="result-heading"
           className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight tracking-wide md:tracking-normal mb-5 md:mb-8 lg:mb-10"
         >
-          The Result.
+          {heading ?? "The Result."}
         </h2>
 
-        {/* Feature Cards Container */}
-        {/* Mobile: Single column, Tablet: 2 columns, Desktop: 3 columns row */}
         <div
           ref={cardsRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 md:gap-6 lg:gap-[26px] w-full max-w-[400px] sm:max-w-none mx-auto"
         >
-          {RESULT_FEATURES.map((feature, index) => (
+          {features.map((feature, index) => (
             <div
               key={index}
               className="result-card w-full"

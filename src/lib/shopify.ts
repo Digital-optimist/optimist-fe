@@ -1677,6 +1677,394 @@ export function formatArticleDate(dateString: string): string {
 }
 
 // =============================================================================
+// Metaobject Types
+// =============================================================================
+
+export interface RichTextNode {
+  type: string;
+  value?: string;
+  level?: number;
+  listType?: string;
+  children?: RichTextNode[];
+}
+
+export interface VideoSource {
+  url: string;
+  mimeType: string;
+}
+
+export interface CustomerReviewItem {
+  name: string;
+  rating: number;
+  videoSources: VideoSource[];
+  previewImageUrl: string | null;
+}
+
+export interface ExpertTestimonialItem {
+  name: string;
+  profession: string;
+  review: string;
+  imageUrl: string | null;
+}
+
+export interface ResultSectionItem {
+  heading: string;
+  subHeading: string;
+  iconUrl: string | null;
+}
+
+export interface ResultSectionData {
+  sectionHeading: string;
+  items: ResultSectionItem[];
+}
+
+export interface VariantRichText {
+  "1_0_ton": RichTextNode | null;
+  "1_5_ton": RichTextNode | null;
+  "2_0_ton": RichTextNode | null;
+}
+
+export interface ProductPageContent {
+  warrantyReturnInfo: VariantRichText;
+  productMoreInfo: VariantRichText;
+  resultSection: ResultSectionData;
+  customerReviews: CustomerReviewItem[];
+  expertTestimonials: ExpertTestimonialItem[];
+}
+
+export interface HeroBadge {
+  imageUrl: string;
+  text: string;
+}
+
+export interface TestimonialItem {
+  name: string;
+  profession: string;
+  location: string;
+  review: string;
+  imageUrl: string | null;
+}
+
+export interface LandingPageContent {
+  heroHeadingLine1: string;
+  heroHeadingLine2: string;
+  heroBadges: HeroBadge[];
+  testimonials: TestimonialItem[];
+  footerImageUrl: string | null;
+}
+
+// =============================================================================
+// Metaobject GraphQL Queries
+// =============================================================================
+
+const PRODUCT_PAGE_CONTENT_QUERY = `
+  query GetProductPageContent($handle: MetaobjectHandleInput!) {
+    metaobject(handle: $handle) {
+      handle
+      type
+      fields {
+        key
+        value
+        type
+        reference {
+          ... on Metaobject {
+            handle
+            type
+            fields {
+              key
+              value
+              type
+              reference {
+                ... on MediaImage {
+                  image { url altText }
+                }
+              }
+              references(first: 10) {
+                nodes {
+                  ... on Metaobject {
+                    handle
+                    type
+                    fields {
+                      key
+                      value
+                      type
+                      reference {
+                        ... on MediaImage {
+                          image { url altText }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          ... on MediaImage {
+            image { url altText }
+          }
+          ... on Video {
+            sources { url mimeType }
+            previewImage { url }
+          }
+        }
+        references(first: 20) {
+          nodes {
+            ... on Metaobject {
+              handle
+              type
+              fields {
+                key
+                value
+                type
+                reference {
+                  ... on MediaImage {
+                    image { url altText }
+                  }
+                  ... on Video {
+                    sources { url mimeType }
+                    previewImage { url }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const LANDING_PAGE_CONTENT_QUERY = `
+  query GetLandingPageContent($handle: MetaobjectHandleInput!) {
+    metaobject(handle: $handle) {
+      handle
+      type
+      fields {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image { url altText }
+          }
+        }
+        references(first: 20) {
+          nodes {
+            ... on Metaobject {
+              handle
+              type
+              fields {
+                key
+                value
+                type
+                reference {
+                  ... on MediaImage {
+                    image { url altText }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+// =============================================================================
+// Metaobject Helpers
+// =============================================================================
+
+function getFieldValue(
+  fields: Array<{ key: string; value: string | null; type: string; reference?: unknown; references?: unknown }>,
+  key: string,
+): string | null {
+  return fields.find((f) => f.key === key)?.value ?? null;
+}
+
+function getFieldReference(
+  fields: Array<{ key: string; reference?: unknown }>,
+  key: string,
+): unknown {
+  return fields.find((f) => f.key === key)?.reference ?? null;
+}
+
+function getFieldReferences(
+  fields: Array<{ key: string; references?: { nodes: unknown[] } }>,
+  key: string,
+): unknown[] {
+  return fields.find((f) => f.key === key)?.references?.nodes ?? [];
+}
+
+function parseRichText(value: string | null): RichTextNode | null {
+  if (!value) return null;
+  try {
+    return JSON.parse(value) as RichTextNode;
+  } catch {
+    return null;
+  }
+}
+
+function parseVariantRichText(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fields: any[],
+): VariantRichText {
+  return {
+    "1_0_ton": parseRichText(getFieldValue(fields, "1_0_ton")),
+    "1_5_ton": parseRichText(getFieldValue(fields, "1_5_ton")),
+    "2_0_ton": parseRichText(getFieldValue(fields, "2_0_ton")),
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseResultSection(ref: any): ResultSectionData {
+  const fields = ref?.fields ?? [];
+  const heading = getFieldValue(fields, "section_heading") ?? "The Result.";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const itemNodes = getFieldReferences(fields, "section_items") as any[];
+  const items: ResultSectionItem[] = itemNodes.map((node) => {
+    const f = node.fields ?? [];
+    return {
+      heading: getFieldValue(f, "heading") ?? "",
+      subHeading: getFieldValue(f, "sub_heading") ?? "",
+      iconUrl: (getFieldReference(f, "icon") as { image?: { url: string } })?.image?.url ?? null,
+    };
+  });
+  return { sectionHeading: heading, items };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseCustomerReviews(nodes: any[]): CustomerReviewItem[] {
+  return nodes.map((node) => {
+    const fields = node.fields ?? [];
+    const videoRef = getFieldReference(fields, "video") as {
+      sources?: VideoSource[];
+      previewImage?: { url: string };
+    } | null;
+    return {
+      name: getFieldValue(fields, "name") ?? "",
+      rating: parseInt(getFieldValue(fields, "rating_out_of_5") ?? "5", 10),
+      videoSources: videoRef?.sources ?? [],
+      previewImageUrl: videoRef?.previewImage?.url ?? null,
+    };
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseExpertTestimonials(nodes: any[]): ExpertTestimonialItem[] {
+  return nodes.map((node) => {
+    const fields = node.fields ?? [];
+    const imageRef = getFieldReference(fields, "image") as { image?: { url: string } } | null;
+    return {
+      name: getFieldValue(fields, "name") ?? "",
+      profession: getFieldValue(fields, "profession") ?? "",
+      review: getFieldValue(fields, "review") ?? "",
+      imageUrl: imageRef?.image?.url ?? null,
+    };
+  });
+}
+
+// =============================================================================
+// Metaobject Fetch Functions
+// =============================================================================
+
+export async function getProductPageContent(): Promise<ProductPageContent | null> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = await shopifyFetch<any>({
+      query: PRODUCT_PAGE_CONTENT_QUERY,
+      variables: {
+        handle: { handle: "product-page-content", type: "product_page" },
+      },
+    });
+
+    const metaobject = data?.metaobject;
+    if (!metaobject) return null;
+
+    const fields = metaobject.fields ?? [];
+
+    const warrantyRef = getFieldReference(fields, "warranty_return_info") as { fields?: unknown[] } | null;
+    const moreInfoRef = getFieldReference(fields, "product_more_info") as { fields?: unknown[] } | null;
+    const resultRef = getFieldReference(fields, "result_section");
+    const customerNodes = getFieldReferences(fields, "hear_it_from_our_customers_content");
+    const expertNodes = getFieldReferences(fields, "industry_experts_section_content");
+
+    return {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      warrantyReturnInfo: parseVariantRichText((warrantyRef?.fields as any[]) ?? []),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      productMoreInfo: parseVariantRichText((moreInfoRef?.fields as any[]) ?? []),
+      resultSection: parseResultSection(resultRef),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      customerReviews: parseCustomerReviews(customerNodes as any[]),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expertTestimonials: parseExpertTestimonials(expertNodes as any[]),
+    };
+  } catch (error) {
+    console.error("Failed to fetch product page content:", error);
+    return null;
+  }
+}
+
+export async function getLandingPageContent(): Promise<LandingPageContent | null> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = await shopifyFetch<any>({
+      query: LANDING_PAGE_CONTENT_QUERY,
+      variables: {
+        handle: { handle: "landing-page-content", type: "landing_page" },
+      },
+    });
+
+    const metaobject = data?.metaobject;
+    if (!metaobject) return null;
+
+    const fields = metaobject.fields ?? [];
+
+    const heroHeadingLine1 = getFieldValue(fields, "hero_section_heading") ?? "India's Real AC.";
+    const heroHeadingLine2 = getFieldValue(fields, "hero_section_heading_line_2") ?? "Cools More. Uses Less.";
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const badgeNodes = getFieldReferences(fields, "hero_section_icon_and_text") as any[];
+    const heroBadges: HeroBadge[] = badgeNodes.map((node) => {
+      const f = node.fields ?? [];
+      const imageRef = getFieldReference(f, "image") as { image?: { url: string } } | null;
+      return {
+        imageUrl: imageRef?.image?.url ?? "",
+        text: getFieldValue(f, "text") ?? "",
+      };
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const testimonialNodes = getFieldReferences(fields, "testimonials") as any[];
+    const testimonials: TestimonialItem[] = testimonialNodes.map((node) => {
+      const f = node.fields ?? [];
+      const imageRef = getFieldReference(f, "image") as { image?: { url: string } } | null;
+      return {
+        name: getFieldValue(f, "name") ?? "",
+        profession: getFieldValue(f, "date") ?? "",
+        location: getFieldValue(f, "location") ?? "",
+        review: getFieldValue(f, "review") ?? "",
+        imageUrl: imageRef?.image?.url ?? null,
+      };
+    });
+
+    const footerImageRef = getFieldReference(fields, "footer_image") as { image?: { url: string } } | null;
+
+    return {
+      heroHeadingLine1,
+      heroHeadingLine2,
+      heroBadges,
+      testimonials,
+      footerImageUrl: footerImageRef?.image?.url ?? null,
+    };
+  } catch (error) {
+    console.error("Failed to fetch landing page content:", error);
+    return null;
+  }
+}
+
+// =============================================================================
 // Utility Functions
 // =============================================================================
 

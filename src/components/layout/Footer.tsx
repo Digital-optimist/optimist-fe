@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
+import { useLandingContent } from "@/contexts/LandingContentContext";
 import { ASSETS } from "@/lib/assets";
 
 // LinkedIn icon component
@@ -168,6 +169,8 @@ export function Footer() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { submitPhone, isLoading, openModal, showSuccess } = useWaitlist();
+  const landingContent = useLandingContent();
+  const footerImageSrc = landingContent?.footerImageUrl ?? ASSETS.family;
 
   const isContentInView = useInView(contentRef, { once: true, amount: 0.2 });
   const isImageInView = useInView(imageRef, { once: true, amount: 0.3 });
@@ -362,11 +365,12 @@ export function Footer() {
           >
             {/* Family Image */}
             <Image
-              src={ASSETS.family}
+              src={footerImageSrc}
               alt="Happy family enjoying comfort"
               fill
               className="object-cover z-0 brightness-[0.8]"
               sizes="(max-width: 1400px) 100vw, 1400px"
+              unoptimized={!!landingContent?.footerImageUrl}
             />
 
             {/* Blue Gradient Overlay - higher z-index than family image */}

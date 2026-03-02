@@ -1,10 +1,11 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect, useCallback } from "react";
+import { memo, useRef, useLayoutEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { Star, Play } from "lucide-react";
+import type { CustomerReviewItem } from "@/lib/shopify";
 
 // =============================================================================
 // Types
@@ -18,10 +19,10 @@ interface CustomerVideo {
 }
 
 // =============================================================================
-// Constants
+// Constants (fallback)
 // =============================================================================
 
-const CUSTOMER_VIDEOS: CustomerVideo[] = [
+const FALLBACK_VIDEOS: CustomerVideo[] = [
   {
     id: "rahul",
     name: "Rahul Sharma",
@@ -146,14 +147,36 @@ const VideoCard = memo(function VideoCard({ video }: { video: CustomerVideo }) {
 });
 
 // =============================================================================
+// Props
+// =============================================================================
+
+interface CustomerVideosSectionProps {
+  customers?: CustomerReviewItem[];
+}
+
+// =============================================================================
 // Main Component
 // =============================================================================
 
-export const CustomerVideosSection = memo(function CustomerVideosSection() {
+export const CustomerVideosSection = memo(function CustomerVideosSection({
+  customers,
+}: CustomerVideosSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLHeadingElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
+
+  const videos: CustomerVideo[] = useMemo(() => {
+    if (customers && customers.length > 0) {
+      return customers.map((c, i) => ({
+        id: `customer-${i}`,
+        name: c.name,
+        rating: c.rating,
+        thumbnail: c.previewImageUrl ?? FALLBACK_VIDEOS[i % FALLBACK_VIDEOS.length].thumbnail,
+      }));
+    }
+    return FALLBACK_VIDEOS;
+  }, [customers]);
 
   useLayoutEffect(() => {
     if (headerRef.current) {
@@ -210,7 +233,6 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
         paused: false,
       });
 
-      // Start animation when in viewport
       gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -234,7 +256,7 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
     tweenRef.current?.play();
   }, []);
 
-  const duplicatedVideos = [...CUSTOMER_VIDEOS, ...CUSTOMER_VIDEOS];
+  const duplicatedVideos = [...videos, ...videos];
 
   return (
     <section
@@ -244,7 +266,6 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Header */}
       <h2
         ref={headerRef}
         className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12 lg:mb-14 px-4"
@@ -252,7 +273,6 @@ export const CustomerVideosSection = memo(function CustomerVideosSection() {
         Hear it from our customers
       </h2>
 
-      {/* Marquee Track */}
       <div className="relative">
         <div
           ref={trackRef}

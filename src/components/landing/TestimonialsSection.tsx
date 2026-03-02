@@ -12,6 +12,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { Play } from "lucide-react";
 import ASSETS from "@/lib/assets";
+import type { TestimonialItem } from "@/lib/shopify";
 
 // Scroll Arrow Icon Component
 function ScrollArrowIcon({
@@ -41,7 +42,16 @@ function ScrollArrowIcon({
   );
 }
 
-const testimonials = [
+interface TestimonialDisplay {
+  id: number;
+  name: string;
+  profession: string;
+  location: string;
+  quote: string;
+  image: string;
+}
+
+const FALLBACK_TESTIMONIALS: TestimonialDisplay[] = [
   {
     id: 1,
     name: "Anupam",
@@ -71,7 +81,22 @@ const testimonials = [
   },
 ];
 
-export function TestimonialsSection() {
+interface TestimonialsSectionProps {
+  testimonials?: TestimonialItem[];
+}
+
+export function TestimonialsSection({ testimonials: apiTestimonials }: TestimonialsSectionProps) {
+  const testimonials: TestimonialDisplay[] =
+    apiTestimonials && apiTestimonials.length > 0
+      ? apiTestimonials.map((t, i) => ({
+          id: i + 1,
+          name: t.name,
+          profession: t.profession,
+          location: t.location,
+          quote: t.review,
+          image: t.imageUrl ?? FALLBACK_TESTIMONIALS[i % FALLBACK_TESTIMONIALS.length].image,
+        }))
+      : FALLBACK_TESTIMONIALS;
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);

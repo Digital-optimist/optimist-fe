@@ -29,7 +29,12 @@ import { useCart } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
-import { type Product } from "@/lib/shopify";
+import {
+  type Product,
+  type ProductPageContent,
+  type VariantRichText,
+} from "@/lib/shopify";
+import { RichTextContent } from "@/lib/richTextRenderer";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -202,12 +207,24 @@ function formatPrice(price: number): string {
   return new Intl.NumberFormat("en-IN").format(price);
 }
 
+function getVariantRichText(
+  data: VariantRichText | undefined,
+  tonnage: string,
+) {
+  if (!data) return null;
+  if (tonnage === "1" || tonnage === "1.0") return data["1_0_ton"];
+  if (tonnage === "1.5") return data["1_5_ton"];
+  if (tonnage === "2" || tonnage === "2.0") return data["2_0_ton"];
+  return data["1_5_ton"];
+}
+
 // =============================================================================
 // Props
 // =============================================================================
 
 interface ProductsPageClientProps {
   product: Product | null;
+  pageContent: ProductPageContent | null;
 }
 
 // =============================================================================
@@ -218,6 +235,7 @@ const userAllowedToBuy = false;
 
 export default function ProductsPageClient({
   product,
+  pageContent,
 }: ProductsPageClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -633,6 +651,77 @@ export default function ProductsPageClient({
                 />
               </motion.div>
 
+              {/* Snapmint Banner */}
+              <motion.div variants={heroInfoItemVariants}>
+                <div className="w-full flex items-center justify-center py-3 bg-[#F5F5F5] rounded-lg">
+                  <img
+                    src="/assets/snapmint-logo.png"
+                    alt="Snapmint"
+                    className="h-6 md:h-7 w-auto object-contain"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Variants */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="flex flex-col gap-3 md:gap-4"
+              >
+                <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                  Variants
+                </h3>
+                {isProductsLoading ? (
+                  <div className="flex gap-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="w-[180px] h-[94px] rounded-[8px] bg-gray-100 animate-pulse"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    className="relative w-full overflow-hidden"
+                    role="radiogroup"
+                    aria-label="Product variants"
+                  >
+                    <div
+                      ref={variantsScrollRef}
+                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 touch-auto"
+                    >
+                      {variants.map((variant) => (
+                        <VariantCard
+                          key={variant.id}
+                          variant={variant}
+                          isSelected={selectedVariant?.id === variant.id}
+                          onSelect={handleSelectVariant}
+                        />
+                      ))}
+                    </div>
+                    {canScrollLeft && (
+                      <button
+                        type="button"
+                        onClick={() => handleVariantsScroll("left")}
+                        aria-label="Scroll variants left"
+                        className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/85 text-black shadow-sm backdrop-blur"
+                      >
+                        <span className="text-lg leading-none">‹</span>
+                      </button>
+                    )}
+                    {canScrollRight && (
+                      <button
+                        type="button"
+                        onClick={() => handleVariantsScroll("right")}
+                        aria-label="Scroll variants right"
+                        className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/85 text-black shadow-sm backdrop-blur"
+                      >
+                        <span className="text-lg leading-none">›</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+
               {/* Action Buttons - Desktop */}
               <motion.div
                 variants={heroInfoItemVariants}
@@ -709,77 +798,6 @@ export default function ProductsPageClient({
                       Buy Now
                     </motion.button>
                   </>
-                )}
-              </motion.div>
-
-              {/* Snapmint Banner */}
-              <motion.div variants={heroInfoItemVariants}>
-                <div className="w-full flex items-center justify-center py-3 bg-[#F5F5F5] rounded-lg">
-                  <img
-                    src="/assets/snapmint-logo.png"
-                    alt="Snapmint"
-                    className="h-6 md:h-7 w-auto object-contain"
-                  />
-                </div>
-              </motion.div>
-
-              {/* Variants */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-3 md:gap-4"
-              >
-                <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                  Variants
-                </h3>
-                {isProductsLoading ? (
-                  <div className="flex gap-3">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="w-[180px] h-[94px] rounded-[8px] bg-gray-100 animate-pulse"
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div
-                    className="relative w-full overflow-hidden"
-                    role="radiogroup"
-                    aria-label="Product variants"
-                  >
-                    <div
-                      ref={variantsScrollRef}
-                      className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 touch-auto"
-                    >
-                      {variants.map((variant) => (
-                        <VariantCard
-                          key={variant.id}
-                          variant={variant}
-                          isSelected={selectedVariant?.id === variant.id}
-                          onSelect={handleSelectVariant}
-                        />
-                      ))}
-                    </div>
-                    {canScrollLeft && (
-                      <button
-                        type="button"
-                        onClick={() => handleVariantsScroll("left")}
-                        aria-label="Scroll variants left"
-                        className="md:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/85 text-black shadow-sm backdrop-blur"
-                      >
-                        <span className="text-lg leading-none">‹</span>
-                      </button>
-                    )}
-                    {canScrollRight && (
-                      <button
-                        type="button"
-                        onClick={() => handleVariantsScroll("right")}
-                        aria-label="Scroll variants right"
-                        className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/85 text-black shadow-sm backdrop-blur"
-                      >
-                        <span className="text-lg leading-none">›</span>
-                      </button>
-                    )}
-                  </div>
                 )}
               </motion.div>
 
@@ -899,93 +917,12 @@ export default function ProductsPageClient({
                       />
                     </svg>
                   </summary>
-                  <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-black mb-2">
-                        Comprehensive Warranty Protection
-                      </h4>
-                    </div>
-
-                    <div>
-                      <h5 className="font-medium text-black mb-1">
-                        Outdoor Unit
-                      </h5>
-                      <p>
-                        5-Year comprehensive warranty on all outdoor unit parts
-                      </p>
-                    </div>
-
-                    <div>
-                      <h5 className="font-medium text-black mb-1">
-                        10-Year warranty on compressor
-                      </h5>
-                    </div>
-
-                    <div>
-                      <h5 className="font-medium text-black mb-1">
-                        Indoor Unit
-                      </h5>
-                      <p>
-                        5-Year warranty on critical functional components (PCB,
-                        blower motor, sensors, control electronics)
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p className="flex items-start gap-2">
-                        <span className="text-green-600 mt-0.5">✓</span>
-                        <span>No labour charges on covered repairs</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <span className="text-green-600 mt-0.5">✓</span>
-                        <span>
-                          Covered parts repaired or replaced at ₹0 (T&Cs apply)
-                        </span>
-                      </p>
-                    </div>
-
-                    <div>
-                      <h5 className="font-medium text-black mb-2">
-                        Important Warranty Conditions
-                      </h5>
-                      <ul className="space-y-1 list-disc list-inside">
-                        <li>Valid for normal residential use only</li>
-                        <li>
-                          Installation & servicing must be done by{" "}
-                          <span className="font-medium text-black">
-                            Optimist-authorised technicians
-                          </span>
-                        </li>
-                        <li>
-                          Warranty activation via{" "}
-                          <span className="font-medium text-black">
-                            Optimist App is mandatory
-                          </span>
-                        </li>
-                        <li>
-                          Two preventive services required every year
-                          (pre-season & post-season)
-                        </li>
-                        <li>
-                          Year-1 preventive services free | From Year-2
-                          chargeable
-                        </li>
-                        <li>
-                          Physical damage, misuse, tampering, cosmetic parts &
-                          commercial use excluded
-                        </li>
-                        <li>
-                          Warranty void if serviced by unauthorised personnel
-                        </li>
-                        <li>
-                          For full terms, visit{" "}
-                          <span className="font-medium text-black">
-                            optimist.in/warranty
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                  <RichTextContent
+                    node={getVariantRichText(
+                      pageContent?.warrantyReturnInfo,
+                      selectedVariant?.tonnage ?? "1.5",
+                    )}
+                  />
                 </details>
               </motion.div>
 
@@ -1016,96 +953,12 @@ export default function ProductsPageClient({
                       />
                     </svg>
                   </summary>
-                  <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-black mb-2">
-                        Intelligent Features
-                      </h4>
-                      <ul className="space-y-1 list-disc list-inside">
-                        <li>Turbo+ Capacity Boost</li>
-                        <li>First-ever Built-in Gas Level Indicator</li>
-                        <li>Auto Clean Function</li>
-                        <li>Eco / Energy Saver Mode</li>
-                        <li>Sleep Mode</li>
-                        <li>Smart Scheduling & Timer</li>
-                        <li>Wi-Fi Enabled with Optimist App</li>
-                        <li>Real-time Energy Monitoring</li>
-                        <li>Voice Control (Alexa / Google)</li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold text-black mb-2">
-                        Technical Specifications
-                      </h4>
-                      <ul className="space-y-1">
-                        <li>
-                          <span className="font-medium text-black">
-                            Capacity:
-                          </span>{" "}
-                          1.5 Ton
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Energy Rating:
-                          </span>{" "}
-                          5 Star
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">ISEER:</span>{" "}
-                          6.05
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Refrigerant:
-                          </span>{" "}
-                          R-32
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Annual Energy Consumption:
-                          </span>{" "}
-                          620.2 kWh
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Cooling Capacity:
-                          </span>{" "}
-                          4.85 kW
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Power Input:
-                          </span>{" "}
-                          1070 W
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Voltage:
-                          </span>{" "}
-                          230V
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Noise Level:
-                          </span>{" "}
-                          32–46 dB
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            System Type:
-                          </span>{" "}
-                          Split Inverter AC
-                        </li>
-                        <li>
-                          <span className="font-medium text-black">
-                            Country of Origin:
-                          </span>{" "}
-                          India
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                  <RichTextContent
+                    node={getVariantRichText(
+                      pageContent?.productMoreInfo,
+                      selectedVariant?.tonnage ?? "1.5",
+                    )}
+                  />
                 </details>
               </motion.div>
             </motion.div>
@@ -1130,14 +983,17 @@ export default function ProductsPageClient({
         viewport={{ once: true, amount: 0.15 }}
         variants={slideFromRightVariants}
       >
-        <ResultSection />
+        <ResultSection
+          heading={pageContent?.resultSection.sectionHeading}
+          items={pageContent?.resultSection.items}
+        />
       </motion.div>
 
       {/* Customer Videos Section */}
-      <CustomerVideosSection />
+      <CustomerVideosSection customers={pageContent?.customerReviews} />
 
       {/* Expert Testimonials Section */}
-      <ExpertTestimonialsSection />
+      <ExpertTestimonialsSection experts={pageContent?.expertTestimonials} />
 
       {/* Inside Optimist Section */}
       <motion.div

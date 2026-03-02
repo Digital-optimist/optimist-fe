@@ -1,9 +1,10 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect, useCallback } from "react";
+import { memo, useRef, useLayoutEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
+import type { ExpertTestimonialItem } from "@/lib/shopify";
 
 // =============================================================================
 // Types & Data
@@ -17,7 +18,7 @@ interface ExpertTestimonial {
   image: string;
 }
 
-const TESTIMONIALS: ExpertTestimonial[] = [
+const FALLBACK_TESTIMONIALS: ExpertTestimonial[] = [
   {
     id: "veena",
     name: "Veena Srinivasan",
@@ -59,8 +60,6 @@ const TESTIMONIALS: ExpertTestimonial[] = [
     image: "/images/15_Tarun.png",
   },
 ];
-
-const ROW_2_ORDER = [2, 4, 0, 3, 1];
 
 // =============================================================================
 // Desktop Card — 634×218 horizontal card with large photo left + text right
@@ -149,8 +148,31 @@ const MobileCard = memo(function MobileCard({
 // Main Component
 // =============================================================================
 
+interface ExpertTestimonialsSectionProps {
+  experts?: ExpertTestimonialItem[];
+}
+
 export const ExpertTestimonialsSection = memo(
-  function ExpertTestimonialsSection() {
+  function ExpertTestimonialsSection({ experts }: ExpertTestimonialsSectionProps) {
+    const TESTIMONIALS: ExpertTestimonial[] = useMemo(() => {
+      if (experts && experts.length > 0) {
+        return experts.map((e, i) => ({
+          id: `expert-${i}`,
+          name: e.name,
+          company: e.profession,
+          quote: e.review,
+          image: e.imageUrl ?? FALLBACK_TESTIMONIALS[i % FALLBACK_TESTIMONIALS.length].image,
+        }));
+      }
+      return FALLBACK_TESTIMONIALS;
+    }, [experts]);
+
+    const ROW_2_ORDER = useMemo(() => {
+      const len = TESTIMONIALS.length;
+      if (len <= 1) return [0];
+      return Array.from({ length: len }, (_, i) => (i + 2) % len);
+    }, [TESTIMONIALS.length]);
+
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const desktopTrackRef = useRef<HTMLDivElement>(null);
