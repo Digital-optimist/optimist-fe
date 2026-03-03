@@ -2,20 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Package,
-  Calendar,
-  MapPin,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Package, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
 import { AccountLayout } from "@/components/account";
-import { getCustomerOrders, formatPrice, type Order } from "@/lib/shopify";
+import {
+  getCustomerOrders,
+  formatPrice,
+  type Order,
+  type OrderLineItem,
+} from "@/lib/shopify";
 
-// Animation variants
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -31,26 +31,68 @@ const staggerContainer = {
   },
 };
 
+function getStatusDisplay(fulfillmentStatus: string): {
+  label: string;
+  color: string;
+  dotColor: string;
+  isDelivered: boolean;
+} {
+  switch (fulfillmentStatus) {
+    case "FULFILLED":
+      return {
+        label: "Delivered",
+        color: "text-[#16A34A]",
+        dotColor: "bg-[#16A34A]",
+        isDelivered: true,
+      };
+    case "IN_PROGRESS":
+    case "PARTIALLY_FULFILLED":
+      return {
+        label: "In transit",
+        color: "text-[#D97706]",
+        dotColor: "bg-[#D97706]",
+        isDelivered: false,
+      };
+    case "UNFULFILLED":
+    case "PENDING_FULFILLMENT":
+    default:
+      return {
+        label: "To be delivered",
+        color: "text-[#D97706]",
+        dotColor: "bg-[#D97706]",
+        isDelivered: false,
+      };
+  }
+}
+
+function formatDeliveryDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default function OrdersPage() {
   const router = useRouter();
-  const { accessToken, customer, isAuthenticated, isLoading: isAuthLoading } =
-    useAuth();
+  const {
+    accessToken,
+    customer,
+    isAuthenticated,
+    isLoading: isAuthLoading,
+  } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
       router.replace("/login");
     }
   }, [isAuthenticated, isAuthLoading, router]);
 
-  // Fetch orders
   useEffect(() => {
     async function fetchOrders() {
       if (!accessToken) return;
-
       try {
         const data = await getCustomerOrders(accessToken, 50);
         setOrders(data);
@@ -60,7 +102,6 @@ export default function OrdersPage() {
         setIsLoading(false);
       }
     }
-
     if (accessToken) {
       fetchOrders();
     }
@@ -99,26 +140,24 @@ export default function OrdersPage() {
         animate="animate"
         className="w-full"
       >
-        {/* Section Header */}
         <motion.div
           variants={fadeInUp}
           className="pb-6 border-b border-[#E5E5E5]"
         >
           <h1 className="text-[24px] font-semibold text-[#0A0A0A] leading-[1.5]">
-            Past orders
+            Your Past Orders
           </h1>
           <p className="text-[16px] text-[#737373] leading-[1.5]">
-            View and track your order history
+            Here is a list of the purchases you made
           </p>
         </motion.div>
 
-        {/* Orders List */}
         {isLoading ? (
-          <motion.div variants={fadeInUp} className="py-8 space-y-4">
+          <motion.div variants={fadeInUp} className="py-8 space-y-6">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-24 bg-[#F5F5F5] rounded-xl animate-pulse"
+                className="h-48 bg-[#F5F5F5] rounded-xl animate-pulse"
               />
             ))}
           </motion.div>
@@ -133,8 +172,8 @@ export default function OrdersPage() {
             <p className="text-[#737373] mb-6">
               When you place orders, they will appear here
             </p>
-            <a
-              href="/products"
+            <Link
+              href="/products123"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-medium"
               style={{
                 background:
@@ -143,20 +182,12 @@ export default function OrdersPage() {
               }}
             >
               Start Shopping
-            </a>
+            </Link>
           </motion.div>
         ) : (
-          <motion.div variants={fadeInUp} className="divide-y divide-[#E5E5E5]">
+          <motion.div variants={fadeInUp} className="space-y-6 pt-6">
             {orders.map((order, index) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                index={index}
-                isExpanded={expandedOrder === order.id}
-                onToggle={() =>
-                  setExpandedOrder(expandedOrder === order.id ? null : order.id)
-                }
-              />
+              <OrderCard key={order.id} order={order} index={index} />
             ))}
           </motion.div>
         )}
@@ -165,174 +196,186 @@ export default function OrdersPage() {
   );
 }
 
-function OrderCard({
-  order,
-  index,
-  isExpanded,
-  onToggle,
-}: {
-  order: Order;
-  index: number;
-  isExpanded: boolean;
-  onToggle: () => void;
-}) {
-  const statusColors: Record<string, { bg: string; text: string }> = {
-    PAID: { bg: "bg-emerald-100", text: "text-emerald-700" },
-    PENDING: { bg: "bg-amber-100", text: "text-amber-700" },
-    REFUNDED: { bg: "bg-red-100", text: "text-red-700" },
-    FULFILLED: { bg: "bg-[rgba(52,120,246,0.1)]", text: "text-[#3478F6]" },
-    UNFULFILLED: { bg: "bg-[#F5F5F5]", text: "text-[#737373]" },
-  };
-
-  const date = new Date(order.processedAt).toLocaleDateString("en-IN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
+function OrderCard({ order, index }: { order: Order; index: number }) {
+  const { addToCart } = useCart();
+  const [buyingAgain, setBuyingAgain] = useState<string | null>(null);
   const lineItems = order.lineItems.edges.map((e) => e.node);
-  const status = statusColors[order.fulfillmentStatus] || statusColors.UNFULFILLED;
+  const status = getStatusDisplay(order.fulfillmentStatus);
+  const orderDate = formatDeliveryDate(order.processedAt);
+
+  const handleBuyAgain = async (item: OrderLineItem) => {
+    if (!item.variant?.id) return;
+    setBuyingAgain(item.variant.id);
+    try {
+      await addToCart(item.variant.id, 1);
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+    } finally {
+      setBuyingAgain(null);
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="py-4"
+      className="border border-[#E5E5E5] rounded-xl overflow-hidden"
     >
-      {/* Order Header - Clickable */}
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-[#FAFAFA] transition-colors"
-      >
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[#F5F5F5] flex items-center justify-center">
-            <Package className="w-6 h-6 text-[#737373]" />
-          </div>
-          <div className="text-left">
-            <p className="text-[16px] font-semibold text-[#0A0A0A]">
-              {order.name}
-            </p>
-            <div className="flex items-center gap-3 mt-1 text-[14px] text-[#737373]">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                {date}
+      {/* Order Header */}
+      <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] border-b border-[#E5E5E5]">
+        <p className="text-[14px] text-[#737373]">
+          Order ID{" "}
+          <span className="text-[#0A0A0A] font-medium">{order.name}</span>
+        </p>
+        <div className="flex items-center gap-2">
+          {status.isDelivered ? (
+            <>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                className="flex-shrink-0"
+              >
+                <circle cx="9" cy="9" r="9" fill="#16A34A" />
+                <path
+                  d="M5.5 9L8 11.5L12.5 7"
+                  stroke="white"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-[14px] font-medium text-[#16A34A]">
+                Delivered on {orderDate}
               </span>
-              <span>•</span>
-              <span>
-                {lineItems.length} item{lineItems.length !== 1 ? "s" : ""}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-[16px] font-semibold text-[#0A0A0A]">
-              {formatPrice(order.totalPrice.amount, order.totalPrice.currencyCode)}
-            </p>
-            <span
-              className={`inline-block mt-1 px-2 py-0.5 text-[12px] rounded-full ${status.bg} ${status.text}`}
-            >
-              {order.fulfillmentStatus.replace("_", " ")}
-            </span>
-          </div>
-          {isExpanded ? (
-            <ChevronUp className="w-5 h-5 text-[#737373]" />
+            </>
           ) : (
-            <ChevronDown className="w-5 h-5 text-[#737373]" />
+            <>
+              <span
+                className={`w-2.5 h-2.5 rounded-full ${status.dotColor}`}
+              />
+              <span className={`text-[14px] font-medium ${status.color}`}>
+                {status.label}
+              </span>
+            </>
           )}
         </div>
-      </button>
+      </div>
 
-      {/* Order Details - Expandable */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-4 pt-2 space-y-4">
-              {/* Line Items */}
-              <div className="space-y-3 p-4 bg-[#FAFAFA] rounded-xl">
-                {lineItems.map((item, i) => (
-                  <div key={i} className="flex items-center gap-4">
-                    <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-[#E5E5E5] flex-shrink-0">
-                      {item.variant?.image ? (
-                        <Image
-                          src={item.variant.image.url}
-                          alt={item.title}
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#737373]">
-                          <Package className="w-6 h-6" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-medium text-[#0A0A0A] truncate">
-                        {item.title}
-                      </p>
-                      <p className="text-[13px] text-[#737373]">
-                        Qty: {item.quantity}
-                      </p>
-                    </div>
-                    {item.variant?.price && (
-                      <p className="text-[14px] font-medium text-[#0A0A0A]">
-                        {formatPrice(
-                          item.variant.price.amount,
-                          item.variant.price.currencyCode
-                        )}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Shipping Address */}
-              {order.shippingAddress && (
-                <div className="flex items-start gap-3 p-4 bg-[#FAFAFA] rounded-xl">
-                  <MapPin className="w-5 h-5 text-[#737373] mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-[14px] font-medium text-[#0A0A0A] mb-1">
-                      Shipping Address
-                    </p>
-                    <address className="not-italic text-[13px] text-[#737373] space-y-0.5">
-                      <p>
-                        {order.shippingAddress.firstName}{" "}
-                        {order.shippingAddress.lastName}
-                      </p>
-                      {order.shippingAddress.address1 && (
-                        <p>{order.shippingAddress.address1}</p>
-                      )}
-                      {order.shippingAddress.address2 && (
-                        <p>{order.shippingAddress.address2}</p>
-                      )}
-                      <p>
-                        {[
-                          order.shippingAddress.city,
-                          order.shippingAddress.province,
-                          order.shippingAddress.zip,
-                        ]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </p>
-                      {order.shippingAddress.country && (
-                        <p>{order.shippingAddress.country}</p>
-                      )}
-                    </address>
-                  </div>
+      {/* Line Items */}
+      {lineItems.map((item, i) => (
+        <div
+          key={i}
+          className={`px-5 py-5 ${i < lineItems.length - 1 ? "border-b border-[#E5E5E5]" : ""}`}
+        >
+          <div className="flex gap-4 sm:gap-6">
+            {/* Product Image */}
+            <div className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-lg overflow-hidden bg-[#F5F5F5] border border-[#E5E5E5] flex-shrink-0">
+              {item.variant?.image ? (
+                <Image
+                  src={item.variant.image.url}
+                  alt={item.title}
+                  fill
+                  sizes="120px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[#737373]">
+                  <Package className="w-8 h-8" />
                 </div>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Product Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                <div>
+                  <p className="text-[16px] font-semibold text-[#0A0A0A]">
+                    {item.title}
+                    <span className="text-[14px] font-normal text-[#737373] ml-2">
+                      x {item.quantity}
+                    </span>
+                  </p>
+
+                  {/* Variant Pills */}
+                  {item.variant?.selectedOptions &&
+                    item.variant.selectedOptions.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {item.variant.selectedOptions
+                          .filter(
+                            (opt) =>
+                              opt.name !== "Title" ||
+                              opt.value !== "Default Title"
+                          )
+                          .map((opt) => (
+                            <span
+                              key={opt.name}
+                              className="inline-flex items-center px-3 py-1 rounded-full text-[13px] text-[#737373] border border-[#E5E5E5] bg-white"
+                            >
+                              {opt.name}- {opt.value}
+                            </span>
+                          ))}
+                      </div>
+                    )}
+                </div>
+
+                {/* Price */}
+                <div className="text-right flex-shrink-0">
+                  <p className="text-[13px] text-[#737373]">Total amount</p>
+                  <p className="text-[16px] font-bold text-[#0A0A0A]">
+                    {formatPrice(
+                      String(
+                        parseFloat(
+                          item.variant?.price?.amount || "0"
+                        ) * item.quantity
+                      ),
+                      item.variant?.price?.currencyCode || "INR"
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-[#F0F0F0]">
+                <div className="flex items-center gap-4">
+                  {item.variant?.product?.handle && (
+                    <Link
+                      href={`/products123/${item.variant.product.handle}`}
+                      className="text-[14px] text-[#3478F6] hover:underline font-medium"
+                    >
+                      View product
+                    </Link>
+                  )}
+                  {status.isDelivered && (
+                    <button
+                      onClick={() => handleBuyAgain(item)}
+                      disabled={buyingAgain === item.variant?.id}
+                      className="text-[14px] text-[#3478F6] hover:underline font-medium disabled:opacity-50 flex items-center gap-1"
+                    >
+                      {buyingAgain === item.variant?.id ? (
+                        <>
+                          <ShoppingCart className="w-3.5 h-3.5 animate-pulse" />
+                          Adding...
+                        </>
+                      ) : (
+                        "Buy again"
+                      )}
+                    </button>
+                  )}
+                </div>
+                <Link
+                  href={`/account/orders/order?orderNumber=${order.orderNumber}`}
+                  className="inline-flex items-center justify-center px-5 py-2 rounded-full text-[14px] font-medium text-white bg-[#0A0A0A] hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Order details
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
     </motion.div>
   );
 }

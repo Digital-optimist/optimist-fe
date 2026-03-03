@@ -144,6 +144,34 @@ export interface Address {
   phone: string | null;
 }
 
+export interface OrderLineItem {
+  title: string;
+  quantity: number;
+  variant: {
+    id: string;
+    image: ShopifyImage | null;
+    price: {
+      amount: string;
+      currencyCode: string;
+    };
+    selectedOptions: {
+      name: string;
+      value: string;
+    }[];
+    product: {
+      handle: string;
+    } | null;
+  } | null;
+}
+
+export interface OrderFulfillment {
+  trackingCompany: string | null;
+  trackingInfo: {
+    number: string | null;
+    url: string | null;
+  }[];
+}
+
 export interface Order {
   id: string;
   orderNumber: number;
@@ -155,22 +183,26 @@ export interface Order {
     amount: string;
     currencyCode: string;
   };
+  subtotalPrice: {
+    amount: string;
+    currencyCode: string;
+  };
+  totalTax: {
+    amount: string;
+    currencyCode: string;
+  } | null;
+  totalShippingPrice: {
+    amount: string;
+    currencyCode: string;
+  };
+  statusUrl: string;
   lineItems: {
     edges: {
-      node: {
-        title: string;
-        quantity: number;
-        variant: {
-          image: ShopifyImage | null;
-          price: {
-            amount: string;
-            currencyCode: string;
-          };
-        } | null;
-      };
+      node: OrderLineItem;
     }[];
   };
   shippingAddress: Address | null;
+  successfulFulfillments: OrderFulfillment[];
 }
 
 export interface CustomerAccessToken {
@@ -957,12 +989,26 @@ export async function getCustomerOrders(
                 amount
                 currencyCode
               }
+              subtotalPrice {
+                amount
+                currencyCode
+              }
+              totalTax {
+                amount
+                currencyCode
+              }
+              totalShippingPrice {
+                amount
+                currencyCode
+              }
+              statusUrl
               lineItems(first: 20) {
                 edges {
                   node {
                     title
                     quantity
                     variant {
+                      id
                       image {
                         ...ImageFragment
                       }
@@ -970,12 +1016,26 @@ export async function getCustomerOrders(
                         amount
                         currencyCode
                       }
+                      selectedOptions {
+                        name
+                        value
+                      }
+                      product {
+                        handle
+                      }
                     }
                   }
                 }
               }
               shippingAddress {
                 ...AddressFragment
+              }
+              successfulFulfillments(first: 5) {
+                trackingCompany
+                trackingInfo(first: 5) {
+                  number
+                  url
+                }
               }
             }
           }
