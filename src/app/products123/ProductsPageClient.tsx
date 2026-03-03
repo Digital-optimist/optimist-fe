@@ -31,10 +31,10 @@ import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
 import {
   type Product,
-  type ProductPageContent,
   type VariantRichText,
 } from "@/lib/shopify";
 import { RichTextContent } from "@/lib/richTextRenderer";
+import { useProductPageContent } from "@/hooks/useMetaobjectContent";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -224,7 +224,6 @@ function getVariantRichText(
 
 interface ProductsPageClientProps {
   product: Product | null;
-  pageContent: ProductPageContent | null;
 }
 
 // =============================================================================
@@ -235,8 +234,8 @@ const userAllowedToBuy = true;
 
 export default function ProductsPageClient({
   product,
-  pageContent,
 }: ProductsPageClientProps) {
+  const { content: pageContent } = useProductPageContent();
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const variantsScrollRef = useRef<HTMLDivElement>(null);
@@ -486,6 +485,29 @@ export default function ProductsPageClient({
       showToast("Added to cart", "success");
     } catch {
       showToast("Failed to add to cart", "error");
+    }
+  }, [selectedVariant, quantity, addToCart, showToast]);
+
+  const handleBuyNow = useCallback(async () => {
+    if (!selectedVariant || !selectedVariant.variantId) {
+      showToast("Please select a variant", "error");
+      return;
+    }
+
+    if (!selectedVariant.available) {
+      showToast("This variant is out of stock", "error");
+      return;
+    }
+
+    try {
+      const updatedCart = await addToCart(selectedVariant.variantId, quantity);
+      if (updatedCart?.checkoutUrl) {
+        window.location.href = updatedCart.checkoutUrl;
+      } else {
+        showToast("Failed to initiate checkout", "error");
+      }
+    } catch {
+      showToast("Failed to proceed to checkout", "error");
     }
   }, [selectedVariant, quantity, addToCart, showToast]);
 
@@ -757,7 +779,8 @@ export default function ProductsPageClient({
                       </span>
                     </motion.button>
                     <motion.button
-                      disabled={!canAddToCart}
+                      onClick={handleBuyNow}
+                      disabled={isCartLoading || !canAddToCart}
                       className={`flex-1 px-6 py-4 rounded-full font-medium text-base text-center transition-all ${
                         buttonState === "loading"
                           ? "bg-gray-300 text-gray-500"
@@ -1089,7 +1112,8 @@ export default function ProductsPageClient({
                 </span>
               </motion.button>
               <motion.button
-                disabled={!canAddToCart}
+                onClick={handleBuyNow}
+                disabled={isCartLoading || !canAddToCart}
                 className={`flex-1 px-4 py-3.5 rounded-full font-medium text-sm text-center transition-all ${
                   buttonState === "loading"
                     ? "bg-gray-400 text-gray-600"

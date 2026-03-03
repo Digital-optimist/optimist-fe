@@ -29,7 +29,7 @@ interface CartContextType {
   isLoading: boolean;
   isCartOpen: boolean;
   totalQuantity: number;
-  addToCart: (variantId: string, quantity?: number) => Promise<void>;
+  addToCart: (variantId: string, quantity?: number) => Promise<Cart | null>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeFromCart: (lineId: string) => Promise<void>;
   openCart: () => void;
@@ -124,7 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Add to cart
   const addToCart = useCallback(
-    async (variantId: string, quantity: number = 1) => {
+    async (variantId: string, quantity: number = 1): Promise<Cart | null> => {
       setIsLoading(true);
       try {
         const currentCart = await ensureCart();
@@ -133,6 +133,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ]);
         setCart(updatedCart);
         setIsCartOpen(true);
+        return updatedCart;
+      } catch {
+        return null;
       } finally {
         setIsLoading(false);
       }
