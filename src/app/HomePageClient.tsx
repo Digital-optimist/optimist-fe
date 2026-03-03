@@ -12,7 +12,7 @@ import { OptimistAppSection } from "@/components/landing/OptimistAppSection";
 import { ProductPickerSection } from "@/components/landing/ProductPickerSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";
-import type { LandingPageContent } from "@/lib/shopify";
+import { useLandingContent } from "@/hooks/useMetaobjectContent";
 
 const easeOutExpo = "easeOut" as const;
 
@@ -38,11 +38,9 @@ const sectionVariants = {
   }),
 };
 
-interface HomePageClientProps {
-  landingContent: LandingPageContent | null;
-}
+export default function HomePageClient() {
+  const { content: landingContent } = useLandingContent();
 
-export default function HomePageClient({ landingContent }: HomePageClientProps) {
   return (
     <LandingContentProvider content={landingContent}>
     <motion.main

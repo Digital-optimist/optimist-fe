@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, Package } from "lucide-react";
 import { formatPrice, type CartLine } from "@/lib/shopify";
 import { useCart } from "@/contexts/CartContext";
 
@@ -39,9 +39,9 @@ export function CartItem({ item }: CartItemProps) {
   ).toString();
 
   return (
-    <div className="flex gap-4 py-4 border-b border-optimist-border last:border-b-0">
+    <div className="flex gap-4 py-4 border-b border-[#E5E5E5] last:border-b-0">
       {/* Image */}
-      <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-optimist-dark">
+      <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-[#F5F5F5] border border-[#E5E5E5]">
         {image ? (
           <Image
             src={image.url}
@@ -51,8 +51,8 @@ export function CartItem({ item }: CartItemProps) {
             className="object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-optimist-cream-muted text-xs">
-            No image
+          <div className="w-full h-full flex items-center justify-center text-[#737373]">
+            <Package className="w-6 h-6" />
           </div>
         )}
       </div>
@@ -61,37 +61,37 @@ export function CartItem({ item }: CartItemProps) {
       <div className="flex-1 min-w-0">
         <Link
           href="/products"
-          className="text-sm font-medium text-optimist-cream hover:text-optimist-blue-light transition-colors line-clamp-2"
+          className="text-[14px] font-medium text-[#0A0A0A] hover:text-[#3478F6] transition-colors line-clamp-2"
         >
           {product.title}
         </Link>
         {variantTitle && (
-          <p className="text-xs text-optimist-cream-muted mt-1">
+          <p className="text-[12px] text-[#737373] mt-1">
             {variantTitle}
           </p>
         )}
-        <p className="text-sm font-semibold text-optimist-cream mt-2">
+        <p className="text-[14px] font-semibold text-[#0A0A0A] mt-2">
           {formatPrice(totalPrice, merchandise.price.currencyCode)}
         </p>
       </div>
 
       {/* Quantity Controls */}
       <div className="flex flex-col items-end gap-2">
-        <div className="flex items-center border border-optimist-border rounded-lg">
+        <div className="flex items-center border border-[#E5E5E5] rounded-lg">
           <button
             onClick={handleDecrement}
             disabled={isLoading}
-            className="p-2 text-optimist-cream-muted hover:text-optimist-cream transition-colors disabled:opacity-50"
+            className="p-2 text-[#737373] hover:text-[#0A0A0A] transition-colors disabled:opacity-50"
           >
             <Minus className="w-3 h-3" />
           </button>
-          <span className="w-8 text-center text-sm text-optimist-cream">
+          <span className="w-8 text-center text-[13px] text-[#0A0A0A]">
             {quantity}
           </span>
           <button
             onClick={handleIncrement}
             disabled={isLoading}
-            className="p-2 text-optimist-cream-muted hover:text-optimist-cream transition-colors disabled:opacity-50"
+            className="p-2 text-[#737373] hover:text-[#0A0A0A] transition-colors disabled:opacity-50"
           >
             <Plus className="w-3 h-3" />
           </button>
@@ -99,7 +99,7 @@ export function CartItem({ item }: CartItemProps) {
         <button
           onClick={handleRemove}
           disabled={isLoading}
-          className="p-1 text-optimist-cream-muted hover:text-optimist-red transition-colors disabled:opacity-50"
+          className="p-1 text-[#737373] hover:text-red-500 transition-colors disabled:opacity-50"
         >
           <Trash2 className="w-4 h-4" />
         </button>
