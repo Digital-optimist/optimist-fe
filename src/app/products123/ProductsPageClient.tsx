@@ -231,7 +231,7 @@ interface ProductsPageClientProps {
 // Main Component
 // =============================================================================
 
-const userAllowedToBuy = false;
+const userAllowedToBuy = true;
 
 export default function ProductsPageClient({
   product,
@@ -777,27 +777,15 @@ export default function ProductsPageClient({
                     </motion.button>
                   </>
                 ) : (
-                  <>
-                    <motion.button
-                      onClick={openWaitlistModal}
-                      className="flex-1 flex items-center justify-center gap-2.5 px-6 py-4 border border-[rgba(0,0,0,0.12)] rounded-full font-medium text-base text-black hover:border-[rgba(0,0,0,0.24)] transition-all"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ShoppingBagIcon className="w-6 h-6" />
-                      <span>Add to Cart</span>
-                    </motion.button>
-                    <motion.button
-                      onClick={openWaitlistModal}
-                      className="flex-1 px-6 py-4 rounded-full font-medium text-base text-center btn-buy-now text-[#FFFCDC] transition-all"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      Buy Now
-                    </motion.button>
-                  </>
+                  <motion.button
+                    onClick={openWaitlistModal}
+                    className="w-full px-6 py-4 rounded-full font-medium text-base text-center btn-buy-now text-[#FFFCDC] transition-all"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    Join the Waitlist
+                  </motion.button>
                 )}
               </motion.div>
 
