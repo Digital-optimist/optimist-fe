@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
-import { useLandingContent } from "@/contexts/LandingContentContext";
+import { useLandingContent } from "@/hooks/useMetaobjectContent";
 import { ASSETS } from "@/lib/assets";
 
 // LinkedIn icon component
@@ -169,7 +169,7 @@ export function Footer() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { submitPhone, isLoading, openModal, showSuccess } = useWaitlist();
-  const landingContent = useLandingContent();
+  const { content: landingContent } = useLandingContent();
   const footerImageSrc = landingContent?.footerImageUrl ?? ASSETS.family;
 
   const isContentInView = useInView(contentRef, { once: true, amount: 0.2 });

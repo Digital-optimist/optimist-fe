@@ -110,7 +110,7 @@ export function TestimonialsSection({ testimonials: apiTestimonials }: Testimoni
   useEffect(() => {
     setCanScrollLeft(activeIndex > 0);
     setCanScrollRight(activeIndex < testimonials.length - 1);
-  }, [activeIndex]);
+  }, [activeIndex, testimonials.length]);
 
   // Detect which card is most centered on scroll
   const updateScrollState = useCallback(() => {
@@ -161,7 +161,7 @@ export function TestimonialsSection({ testimonials: apiTestimonials }: Testimoni
     });
 
     setActiveIndex(targetIndex);
-  }, []);
+  }, [testimonials.length]);
 
   const scroll = (direction: "left" | "right") => {
     const newIndex = direction === "left" ? activeIndex - 1 : activeIndex + 1;

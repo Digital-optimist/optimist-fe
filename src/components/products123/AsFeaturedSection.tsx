@@ -122,7 +122,7 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full py-8 md:py-12 lg:py-16 bg-[#00000005] overflow-hidden"
+      className="w-full py-8 md:py-12 lg:py-16 bg-[#FAFAFA] overflow-hidden"
       aria-label="As featured on"
     >
       <div className="w-full max-w-[1440px] mx-auto">
@@ -141,7 +141,7 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
             className="absolute left-0 top-0 bottom-0 w-[60px] sm:w-[120px] md:w-[200px] lg:w-[289px] z-10 pointer-events-none"
             style={{
               backgroundImage:
-                "linear-gradient(to right, rgb(255,255,255) 20%, rgba(255,255,255,0) 100%)",
+                "linear-gradient(to right, #FAFAFA 20%, rgba(250,250,250,0) 100%)",
             }}
           />
 
@@ -150,7 +150,7 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
             className="absolute right-0 top-0 bottom-0 w-[60px] sm:w-[120px] md:w-[200px] lg:w-[289px] z-10 pointer-events-none"
             style={{
               backgroundImage:
-                "linear-gradient(to left, rgb(255,255,255) 20%, rgba(255,255,255,0) 100%)",
+                "linear-gradient(to left, #FAFAFA 20%, rgba(250,250,250,0) 100%)",
             }}
           />
 
