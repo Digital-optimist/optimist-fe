@@ -486,12 +486,15 @@ export const TeamSection = memo(function TeamSection() {
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
         {/* Heading */}
-        <h2 className="font-display text-[28px] md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12 lg:mb-16">
+        <h2 className="font-display text-[28px] md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight tracking-wide md:tracking-normal mb-2 md:mb-3">
           The Minds Behind <br className="md:hidden" />
           <span className="text-[#4B7BF5] md:text-black">
             India&apos;s Real AC
           </span>
         </h2>
+        <p className="text-center text-base md:text-lg text-gray-600 mb-8 md:mb-12 lg:mb-16">
+          Built in India. Engineered for India.
+        </p>
 
         {/* Desktop Card */}
         <motion.div

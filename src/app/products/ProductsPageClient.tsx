@@ -29,10 +29,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
-import {
-  type Product,
-  type VariantRichText,
-} from "@/lib/shopify";
+import { type Product, type VariantRichText } from "@/lib/shopify";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { useProductPageContent } from "@/hooks/useMetaobjectContent";
 import { motion } from "framer-motion";
@@ -164,7 +161,7 @@ const FALLBACK_VARIANTS: DisplayVariant[] = [
     productId: "",
     productTitle: "Optimist 1.5 Ton 5 Star Inverter Split AC",
     name: "1.5 Ton",
-    subtitle: "For medium-sized rooms",
+    subtitle: "Ideal for most Indian homes",
     price: 40000,
     compareAtPrice: null,
     available: false,
@@ -179,7 +176,7 @@ const FALLBACK_VARIANTS: DisplayVariant[] = [
     productId: "",
     productTitle: "Optimist 2 Ton 5 Star Inverter Split AC",
     name: "2 Ton",
-    subtitle: "For large rooms",
+    subtitle: "For X-large rooms",
     price: 50000,
     compareAtPrice: null,
     available: false,
@@ -1001,7 +998,7 @@ export default function ProductsPageClient({
       </motion.div>
 
       {/* Customer Videos Section */}
-      <CustomerVideosSection customers={pageContent?.customerReviews} />
+      {/* <CustomerVideosSection customers={pageContent?.customerReviews} /> */}
 
       {/* Expert Testimonials Section */}
       <ExpertTestimonialsSection experts={pageContent?.expertTestimonials} />

@@ -74,7 +74,7 @@ interface ProductsContextType {
 // =============================================================================
 
 const ProductsContext = createContext<ProductsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 // =============================================================================
@@ -88,34 +88,34 @@ const ProductsContext = createContext<ProductsContextType | undefined>(
 function extractTonnageFromProduct(product: Product): string {
   // First try to extract from title
   const title = product.title.toLowerCase();
-  
+
   // Match patterns like "1 ton", "1.5 ton", "2 ton"
   let tonnageMatch = title.match(/(\d+\.?\d*)\s*ton/i);
   if (tonnageMatch) {
     return tonnageMatch[1];
   }
-  
+
   // Try handle: "1-ton-split-ac", "1-5-ton-split-ac"
   const handle = product.handle.toLowerCase();
-  
+
   // Match "1-5-ton" -> "1.5"
   const handleMatch = handle.match(/(\d+)-(\d+)-ton/);
   if (handleMatch) {
     return `${handleMatch[1]}.${handleMatch[2]}`;
   }
-  
+
   // Match "1-ton" -> "1"
   const simpleHandleMatch = handle.match(/(\d+)-ton/);
   if (simpleHandleMatch) {
     return simpleHandleMatch[1];
   }
-  
+
   // Check product tags
   for (const tag of product.tags) {
     const tagMatch = tag.match(/(\d+\.?\d*)\s*ton/i);
     if (tagMatch) return tagMatch[1];
   }
-  
+
   // Default fallback
   return "1.5";
 }
@@ -126,8 +126,8 @@ function extractTonnageFromProduct(product: Product): string {
 function getSubtitleForTonnage(tonnage: string): string {
   const tonnageNum = parseFloat(tonnage);
   if (tonnageNum <= 1) return "For compact rooms";
-  if (tonnageNum <= 1.5) return "For medium-sized rooms";
-  return "For large rooms";
+  if (tonnageNum <= 1.5) return "Ideal for most Indian homes";
+  return "For X-large rooms";
 }
 
 /**
@@ -137,7 +137,7 @@ function getSubtitleForTonnage(tonnage: string): string {
 function productToVariant(product: Product): DisplayVariant {
   const tonnage = extractTonnageFromProduct(product);
   const variant = product.variants.edges[0]?.node;
-  
+
   return {
     id: `${tonnage}ton`.replace(".", ""),
     variantId: variant?.id || "",
@@ -163,7 +163,7 @@ function productToVariant(product: Product): DisplayVariant {
 function transformProduct(product: Product): ProductData {
   const tonnage = extractTonnageFromProduct(product);
   const variant = product.variants.edges[0]?.node;
-  
+
   const displayVariant: DisplayVariant = {
     id: `${tonnage}ton`.replace(".", ""),
     variantId: variant?.id || "",
@@ -218,7 +218,9 @@ export function ProductsProvider({
     }
     return [];
   });
-  const [rawProducts, setRawProducts] = useState<Product[]>(initialProducts || []);
+  const [rawProducts, setRawProducts] = useState<Product[]>(
+    initialProducts || [],
+  );
   const [isLoading, setIsLoading] = useState(!initialProducts);
   const [error, setError] = useState<string | null>(null);
 
@@ -233,9 +235,7 @@ export function ProductsProvider({
       setProducts(transformedProducts);
     } catch (err) {
       console.error("Error fetching products:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch products"
-      );
+      setError(err instanceof Error ? err.message : "Failed to fetch products");
     } finally {
       setIsLoading(false);
     }
@@ -259,7 +259,7 @@ export function ProductsProvider({
 
     // Collect all images from all products
     const allImages = rawProducts.flatMap((p) =>
-      p.images.edges.map(({ node }) => node.url)
+      p.images.edges.map(({ node }) => node.url),
     );
 
     // Check if any variant is available
@@ -286,10 +286,12 @@ export function ProductsProvider({
       // Normalize tonnage: "1.0" -> "1", "1.5" -> "1.5", "2.0" -> "2"
       const normalizedTonnage = tonnage.replace(/\.0$/, "");
       return products.find((p) =>
-        p.variants.some((v) => v.tonnage === normalizedTonnage || v.tonnage === tonnage)
+        p.variants.some(
+          (v) => v.tonnage === normalizedTonnage || v.tonnage === tonnage,
+        ),
       );
     },
-    [products]
+    [products],
   );
 
   // Helper to get variant by tonnage
@@ -299,10 +301,10 @@ export function ProductsProvider({
       // Normalize tonnage: "1.0" -> "1", "1.5" -> "1.5", "2.0" -> "2"
       const normalizedTonnage = tonnage.replace(/\.0$/, "");
       return combinedProduct.allVariants.find(
-        (v) => v.tonnage === normalizedTonnage || v.tonnage === tonnage
+        (v) => v.tonnage === normalizedTonnage || v.tonnage === tonnage,
       );
     },
-    [combinedProduct]
+    [combinedProduct],
   );
 
   // Helper to get price by tonnage
@@ -311,7 +313,7 @@ export function ProductsProvider({
       const variant = getVariantByTonnage(tonnage);
       return variant?.price ?? null;
     },
-    [getVariantByTonnage]
+    [getVariantByTonnage],
   );
 
   return (
