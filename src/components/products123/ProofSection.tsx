@@ -86,40 +86,40 @@ const PROOF_CARDS: ProofCard[] = [
     evidenceAlt: "SIGMA Test Certificate for corrosion resistance",
     evidenceType: "certificate",
   },
-  {
-    id: "energy",
-    titleBlue: "Lowest Electricity Bills.",
-    titleBlack: "Every Day.",
-    subtitle:
-      "Based on Bureau of Energy Efficiency (BEE), Government of India data, Feb 2025",
-    bullets: [
-      { text: "Highest among 5★ inverter ACs in India" },
-      {
-        text: "Lowest Electricity consumption:",
-        highlightText: "523 Units per year",
-      },
-    ],
-    badgeImage: ASSETS.proofSaveEnergyBadge,
-    badgeAlt: "Save Energy badge",
-    evidenceImage: ASSETS.proofBeeLabel,
-    evidenceAlt: "BEE Power Savings Guide energy label",
-    evidenceType: "label",
-  },
-  {
-    id: "turbo",
-    titleBlue: "Turbo+",
-    titleBlack: "Mode",
-    subtitle: "Fastest to Drop From 42°C to 24°C. Lab Verified.",
-    bullets: [
-      { text: "135% Peak Cooling Capacity Activated" },
-      { text: "Accelerated Compressor Ramp-Up" },
-    ],
-    badgeImage: ASSETS.proofCertifiedBadge,
-    badgeAlt: "Certified badge",
-    evidenceImage: ASSETS.proofSigmaCertificate,
-    evidenceAlt: "SIGMA Test Certificate for turbo mode performance",
-    evidenceType: "certificate",
-  },
+  // {
+  //   id: "energy",
+  //   titleBlue: "Lowest Electricity Bills.",
+  //   titleBlack: "Every Day.",
+  //   subtitle:
+  //     "Based on Bureau of Energy Efficiency (BEE), Government of India data, Feb 2025",
+  //   bullets: [
+  //     { text: "Highest among 5★ inverter ACs in India" },
+  //     {
+  //       text: "Lowest Electricity consumption:",
+  //       highlightText: "523 Units per year",
+  //     },
+  //   ],
+  //   badgeImage: ASSETS.proofSaveEnergyBadge,
+  //   badgeAlt: "Save Energy badge",
+  //   evidenceImage: ASSETS.proofBeeLabel,
+  //   evidenceAlt: "BEE Power Savings Guide energy label",
+  //   evidenceType: "label",
+  // },
+  // {
+  //   id: "turbo",
+  //   titleBlue: "Turbo+",
+  //   titleBlack: "Mode",
+  //   subtitle: "Fastest to Drop From 42°C to 24°C. Lab Verified.",
+  //   bullets: [
+  //     { text: "135% Peak Cooling Capacity Activated" },
+  //     { text: "Accelerated Compressor Ramp-Up" },
+  //   ],
+  //   badgeImage: ASSETS.proofCertifiedBadge,
+  //   badgeAlt: "Certified badge",
+  //   evidenceImage: ASSETS.proofSigmaCertificate,
+  //   evidenceAlt: "SIGMA Test Certificate for turbo mode performance",
+  //   evidenceType: "certificate",
+  // },
 ];
 
 // =============================================================================
@@ -465,7 +465,7 @@ const DesktopProofScroll = memo(function DesktopProofScroll({
       });
 
       const totalScroll = track.scrollWidth - cardsContainer.clientWidth;
-      if (totalScroll <= 0) return;
+      if (totalScroll <= 0 || PROOF_CARDS.length <= 1) return;
 
       const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
       const gap = 24;
@@ -537,7 +537,7 @@ const DesktopProofScroll = memo(function DesktopProofScroll({
         </motion.h2>
 
         <div ref={cardsContainerRef} className="overflow-hidden">
-          <div ref={trackRef} className="flex gap-6 will-change-transform">
+          <div ref={trackRef} className={`flex gap-6 will-change-transform ${PROOF_CARDS.length === 1 ? "justify-center" : ""}`}>
             {PROOF_CARDS.map((card) => (
               <div key={card.id} data-proof-card>
                 <DesktopProofCard card={card} />
@@ -545,11 +545,13 @@ const DesktopProofScroll = memo(function DesktopProofScroll({
             ))}
           </div>
         </div>
-        <ScrollDots
-          total={PROOF_CARDS.length}
-          activeIndex={activeCardIndex}
-          onDotClick={handleDotClick}
-        />
+        {PROOF_CARDS.length > 1 && (
+          <ScrollDots
+            total={PROOF_CARDS.length}
+            activeIndex={activeCardIndex}
+            onDotClick={handleDotClick}
+          />
+        )}
       </div>
     </div>
   );
@@ -588,7 +590,7 @@ const MobileProofCarousel = memo(function MobileProofCarousel() {
   return (
     <div className="lg:hidden" style={{ touchAction: "pan-y pinch-zoom" }}>
       <div ref={emblaRef} className="overflow-hidden -mx-4 px-4">
-        <div className="flex gap-4">
+        <div className={`flex gap-4 ${PROOF_CARDS.length === 1 ? "justify-center" : ""}`}>
           {PROOF_CARDS.map((card) => (
             <div key={card.id} className="shrink-0">
               <MobileProofCard card={card} />
@@ -596,11 +598,13 @@ const MobileProofCarousel = memo(function MobileProofCarousel() {
           ))}
         </div>
       </div>
-      <ScrollDots
-        total={PROOF_CARDS.length}
-        activeIndex={activeIndex}
-        onDotClick={scrollTo}
-      />
+      {PROOF_CARDS.length > 1 && (
+        <ScrollDots
+          total={PROOF_CARDS.length}
+          activeIndex={activeIndex}
+          onDotClick={scrollTo}
+        />
+      )}
     </div>
   );
 });
