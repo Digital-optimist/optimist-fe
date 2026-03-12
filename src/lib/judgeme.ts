@@ -250,13 +250,21 @@ export function useJudgeMeRating(productId?: string): {
 } {
   const externalId = productId ? extractNumericId(productId) : undefined;
   const cacheKey = externalId || "__shop__";
-  const cached = ratingCache.get(cacheKey);
-  const [data, setData] = useState(cached || { rating: 0, count: 0 });
-  const [loading, setLoading] = useState(!cached);
+  const [data, setData] = useState<{ rating: number; count: number }>(() => {
+    return ratingCache.get(cacheKey) || { rating: 0, count: 0 };
+  });
+  const [loading, setLoading] = useState(!ratingCache.has(cacheKey));
 
   useEffect(() => {
-    if (ratingCache.has(cacheKey)) return;
+    const cached = ratingCache.get(cacheKey);
+    if (cached) {
+      setData(cached);
+      setLoading(false);
+      return;
+    }
 
+    setData({ rating: 0, count: 0 });
+    setLoading(true);
     let cancelled = false;
 
     if (externalId) {

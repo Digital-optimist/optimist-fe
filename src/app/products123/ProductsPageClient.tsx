@@ -582,9 +582,7 @@ export default function ProductsPageClient({
                     <div className="flex items-center">
                       {[1, 2, 3, 4, 5].map((star) => {
                         const filled = judgeRating >= star;
-                        const half =
-                          !filled &&
-                          judgeRating >= star - 0.5;
+                        const half = !filled && judgeRating >= star - 0.5;
                         return (
                           <svg
                             key={star}
@@ -705,7 +703,7 @@ export default function ProductsPageClient({
                 className="flex flex-col gap-3 md:gap-4"
               >
                 <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                  Variants
+                  Choose your Optimist
                 </h3>
                 {isProductsLoading ? (
                   <div className="flex gap-3">
@@ -1079,7 +1077,6 @@ export default function ProductsPageClient({
         variants={sectionVariants}
       >
         <ReviewsSection
-          productId={activeProductId}
           products={shopProducts.map((p) => ({
             id: p.id,
             label: p.title,
