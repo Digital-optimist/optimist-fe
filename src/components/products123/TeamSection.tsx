@@ -354,7 +354,7 @@ const MobileTeamCardWithAnimation = memo(function MobileTeamCardWithAnimation({
   const connector = MOBILE_CONNECTOR_CONFIG[currentIndex];
 
   return (
-    <div className="relative w-[341px] sm:w-[400px] h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto border">
+    <div className="relative w-[330px] sm:w-[400px] h-[490px] rounded-[32px] overflow-hidden bg-black mx-auto border">
       {/* Background Photo - Mobile */}
       <div
         className="absolute sm:hidden"
