@@ -5,6 +5,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Star, X, Loader2 } from "lucide-react";
 import {
   fetchReviewsSummary,
+  fetchFeaturedReviews,
   createReview,
   type JudgeMeReview,
   type ReviewsSummary,
@@ -603,9 +604,10 @@ export const ReviewsSection = memo(function ReviewsSection({
   useEffect(() => {
     let cancelled = false;
 
-    fetchReviewsSummary(productId)
-      .then((data) => {
-        if (!cancelled) setReviewsData(data);
+    Promise.all([fetchReviewsSummary(), fetchFeaturedReviews()])
+      .then(([summary, featured]) => {
+        if (cancelled) return;
+        setReviewsData({ ...summary, reviews: featured });
       })
       .catch(() => {})
       .finally(() => {
@@ -615,7 +617,7 @@ export const ReviewsSection = memo(function ReviewsSection({
     return () => {
       cancelled = true;
     };
-  }, [productId]);
+  }, []);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 40 },

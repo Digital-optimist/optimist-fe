@@ -190,6 +190,47 @@ export async function fetchReviewsSummary(
   return { averageRating, totalReviews, distribution, reviews };
 }
 
+function parseCarouselReviews(html: string): JudgeMeReview[] {
+  if (!html) return [];
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const items = doc.querySelectorAll(".jdgm-carousel-item[data-review-id]");
+  const reviews: JudgeMeReview[] = [];
+
+  items.forEach((item) => {
+    const id = item.getAttribute("data-review-id") || "";
+
+    const ratingEl = item.querySelector(".jdgm-carousel-item__review-rating");
+    const stars = ratingEl?.querySelectorAll(".jdgm-star.jdgm--on")?.length || 0;
+
+    const titleEl = item.querySelector(".jdgm-carousel-item__review-title");
+    const title = titleEl?.textContent?.trim() || "";
+
+    const bodyEl = item.querySelector(".jdgm-carousel-item__review-body");
+    const body = bodyEl?.textContent?.trim() || "";
+
+    const authorEl = item.querySelector(".jdgm-carousel-item__reviewer-name");
+    const author = authorEl?.textContent?.trim() || "Anonymous";
+
+    const timestampEl = item.querySelector(".jdgm-carousel-item__timestamp");
+    const date =
+      timestampEl?.getAttribute("data-time") ||
+      timestampEl?.textContent?.trim() ||
+      "";
+
+    if (body || title) {
+      reviews.push({ id, rating: stars, title, body, author, date });
+    }
+  });
+
+  return reviews;
+}
+
+export async function fetchFeaturedReviews(): Promise<JudgeMeReview[]> {
+  const data = await widgetFetch("featured_carousel");
+  return parseCarouselReviews(data.featured_carousel || "");
+}
+
 /**
  * Uses form-encoded body to avoid CORS preflight (OPTIONS).
  * Judge.me's POST /reviews supports this and returns proper CORS headers
