@@ -1,8 +1,12 @@
 // Shopify Storefront API Client and GraphQL Operations
 
-const domain = "octolife-3.myshopify.com";
-const storefrontAccessToken = "3b12d6020365806434052cc061a5b5e3";
-const apiVersion = "2025-01";
+const domain =
+  process.env.NEXT_PUBLIC_SHOPIFY_DOMAIN || "octolife-3.myshopify.com";
+const storefrontAccessToken =
+  process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN ||
+  "3b12d6020365806434052cc061a5b5e3";
+const apiVersion =
+  process.env.NEXT_PUBLIC_SHOPIFY_API_VERSION || "2025-01";
 
 // =============================================================================
 // Types
@@ -1447,7 +1451,8 @@ export interface ContactFormSubmissionResult {
 }
 
 const GOOGLE_SHEETS_WEBHOOK_URL =
-  "https://script.google.com/macros/s/AKfycbzv9eGvqterTua50uwFY1UGbgBtLGFmaeX2lIsrBc4K4mfw9m6QX92sY8M2Rr88cPFm/exec";
+  process.env.NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL ||
+  "";
 
 async function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1499,15 +1504,21 @@ export async function submitContactForm(
   };
 
   try {
-    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+    const response = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
       method: "POST",
-      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
 
+    if (!response.ok) {
+      const text = await response.text();
+      return {
+        success: false,
+        error: text || `Request failed (${response.status})`,
+      };
+    }
     return { success: true };
   } catch (error) {
     return {

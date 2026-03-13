@@ -20,13 +20,23 @@ First, install dependencies:
 yarn install
 ```
 
-Then, run the development server:
+Copy environment variables and run the development server:
 
 ```bash
+cp .env.example .env.local
+# Edit .env.local with your Shopify and contact form URLs (see .env.example)
 yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Environment variables
+
+See [.env.example](.env.example) for all supported variables. Key ones:
+
+- **Shopify**: `NEXT_PUBLIC_SHOPIFY_DOMAIN`, `NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN` (required for products, cart, auth).
+- **Contact form**: `NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL` (Google Apps Script web app URL).
+- **Optional**: `NEXT_PUBLIC_S3_BUCKET_URL`, `NEXT_PUBLIC_SNAPMINT_MERCHANT`.
 
 ## Project Structure
 
@@ -44,11 +54,19 @@ src/
 ## Available Scripts
 
 ```bash
-yarn dev      # Start development server
-yarn build    # Build for production
-yarn start    # Start production server
-yarn lint     # Run ESLint
+yarn dev         # Start development server
+yarn build       # Build for production
+yarn start       # Start production server
+yarn lint        # Run ESLint
+yarn test         # Run Vitest unit tests (formatPrice, getCartLines, etc.)
+yarn test:watch   # Run Vitest in watch mode
+yarn test:e2e     # Run Playwright e2e tests (starts dev server if needed)
+yarn test:e2e:ci  # Build static export, then run e2e against built site (set CI=true)
 ```
+
+### E2E testing (Playwright)
+
+Smoke and critical-path tests live in `e2e/`. Run against the dev server with `yarn test:e2e`. For CI (e.g. after static export), run `CI=true yarn build && CI=true yarn test:e2e` so tests run against the built `out/` folder served locally. Install browsers once with `npx playwright install`.
 
 ## Learn More
 

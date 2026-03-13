@@ -26,8 +26,7 @@ export default function SnapmintLoader(): null {
         script.async = true;
         script.defer = true;
 
-        const merchantId =
-          process.env.NEXT_PUBLIC_SNAPMINT_MERCHANT || "7078";
+        const merchantId = "8097";
         script.src = `https://checkout-merchant.snapmint.com/js/v1/${merchantId}`;
 
         script.onload = () => {
@@ -36,8 +35,7 @@ export default function SnapmintLoader(): null {
           }, 800);
         };
 
-        script.onerror = () =>
-          console.error("Snapmint script failed to load");
+        script.onerror = () => console.error("Snapmint script failed to load");
 
         document.body.appendChild(script);
       } else {

@@ -33,6 +33,7 @@ import { useJudgeMeRating } from "@/lib/judgeme";
 import { type Product, type VariantRichText } from "@/lib/shopify";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { useProductPageContent } from "@/hooks/useMetaobjectContent";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -375,7 +376,8 @@ export default function ProductsPageClient({
     if (product?.media?.edges.length) {
       return product.media.edges
         .map(({ node }) => {
-          if (node.mediaContentType === "IMAGE" && node.image) return node.image.url;
+          if (node.mediaContentType === "IMAGE" && node.image)
+            return node.image.url;
           if (node.mediaContentType === "VIDEO" && node.sources?.length) {
             const mp4 = node.sources.find((s) => s.mimeType === "video/mp4");
             return (mp4 || node.sources[0]).url;
@@ -529,6 +531,28 @@ export default function ProductsPageClient({
       showToast("Failed to proceed to checkout", "error");
     }
   }, [selectedVariant, quantity, addToCart, showToast]);
+
+  if (isProductUnavailable) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 pt-24">
+        <div className="max-w-md text-center space-y-4">
+          <h1 className="text-xl md:text-2xl font-semibold text-[#0A0A0A]">
+            Product unavailable
+          </h1>
+          <p className="text-[#737373]">
+            We couldn’t load this product. Please check back later or browse our
+            homepage.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] text-white px-6 py-3 font-medium hover:bg-[#1a1a1a] transition-colors"
+          >
+            Go to homepage
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -706,9 +730,7 @@ export default function ProductsPageClient({
                   className="snapmint_lowest_emi_value"
                   style={{ display: "none" }}
                   data-snapmint-price={selectedVariant?.price || 0}
-                  data-snapmint-merchant_id={
-                    process.env.NEXT_PUBLIC_SNAPMINT_MERCHANT || "7078"
-                  }
+                  data-snapmint-merchant_id={"8097"}
                   data-snapmint-page="products_page"
                 ></span>
               </motion.div>
@@ -1030,7 +1052,7 @@ export default function ProductsPageClient({
       </motion.div>
 
       {/* Customer Videos Section */}
-      {/* <CustomerVideosSection customers={pageContent?.customerReviews} /> */}
+      <CustomerVideosSection customers={pageContent?.customerReviews} />
 
       {/* Expert Testimonials Section */}
       <ExpertTestimonialsSection experts={pageContent?.expertTestimonials} />

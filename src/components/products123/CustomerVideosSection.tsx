@@ -431,7 +431,7 @@ export const CustomerVideosSection = memo(function CustomerVideosSection({
   return (
     <section
       ref={sectionRef}
-      className="w-full pt-4 pb-11 md:pb-14 lg:pb-16 bg-white overflow-hidden"
+      className="w-full pt-4 md:hidden pb-11 md:pb-14 lg:pb-16 bg-white overflow-hidden"
       aria-label="Customer video testimonials"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
