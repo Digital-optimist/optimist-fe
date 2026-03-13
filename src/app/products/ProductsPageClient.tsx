@@ -136,7 +136,7 @@ const heroInfoItemVariants = {
 // Constants
 // =============================================================================
 
-const MAX_DISPLAY_IMAGES = 6;
+const MAX_DISPLAY_IMAGES = 20;
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5] as const;
 
 // Fallback variants when Shopify data is unavailable
@@ -186,15 +186,6 @@ const FALLBACK_VARIANTS: DisplayVariant[] = [
     description: "",
     descriptionHtml: "",
   },
-];
-
-const MOCK_IMAGES = [
-  ASSETS.ac1,
-  ASSETS.ac2,
-  ASSETS.ac3,
-  ASSETS.ac1,
-  ASSETS.ac2,
-  ASSETS.ac3,
 ];
 
 // =============================================================================
@@ -381,17 +372,29 @@ export default function ProductsPageClient({
     if (combinedProduct && combinedProduct.allImages.length > 0) {
       return combinedProduct.allImages;
     }
+    if (product?.media?.edges.length) {
+      return product.media.edges
+        .map(({ node }) => {
+          if (node.mediaContentType === "IMAGE" && node.image) return node.image.url;
+          if (node.mediaContentType === "VIDEO" && node.sources?.length) {
+            const mp4 = node.sources.find((s) => s.mimeType === "video/mp4");
+            return (mp4 || node.sources[0]).url;
+          }
+          return null;
+        })
+        .filter((url): url is string => url !== null);
+    }
     if (product?.images.edges.length) {
       return product.images.edges.map((e) => e.node.url);
     }
-    return MOCK_IMAGES;
+    return [];
   }, [selectedVariant, combinedProduct, product]);
 
   const displayImages = useMemo(() => {
     if (images.length >= MAX_DISPLAY_IMAGES) {
       return images.slice(0, MAX_DISPLAY_IMAGES);
     }
-    return [...images, ...MOCK_IMAGES].slice(0, MAX_DISPLAY_IMAGES);
+    return [...images].slice(0, MAX_DISPLAY_IMAGES);
   }, [images]);
 
   // Memoized handlers

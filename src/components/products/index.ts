@@ -1,4 +1,3 @@
-export { ImageGallery } from "./ImageGallery";
 export { VariantCard } from "./VariantCard";
 export { type DisplayVariant } from "@/contexts/ProductsContext";
 export { QuantityDropdown } from "./QuantityDropdown";
