@@ -29,6 +29,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 import { ASSETS } from "@/lib/assets";
+import { useJudgeMeRating } from "@/lib/judgeme";
 import { type Product, type VariantRichText } from "@/lib/shopify";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { useProductPageContent } from "@/hooks/useMetaobjectContent";
@@ -246,7 +247,11 @@ export default function ProductsPageClient({
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { showToast } = useToast();
-  const { combinedProduct, isLoading: isProductsLoading } = useProducts();
+  const {
+    products: shopProducts,
+    combinedProduct,
+    isLoading: isProductsLoading,
+  } = useProducts();
   const { openModal: openWaitlistModal } = useWaitlist();
 
   // Get variants from combined product (each Shopify product = one variant option)
@@ -300,6 +305,20 @@ export default function ProductsPageClient({
   useEffect(() => {
     setSelectedImageIndex(0);
   }, [selectedVariant?.id]);
+
+  // Re-init Snapmint widget when variant/price changes
+  useEffect(() => {
+    if (selectedVariant?.price) {
+      const tid = setTimeout(() => {
+        window.loadOnPage?.();
+      }, 500);
+      return () => clearTimeout(tid);
+    }
+  }, [selectedVariant?.price]);
+
+  const activeProductId = selectedVariant?.productId || product?.id;
+  const { rating: judgeRating, count: judgeCount } =
+    useJudgeMeRating(activeProductId);
 
   // Computed states for edge cases
   const isOutOfStock = useMemo(() => {
@@ -550,7 +569,7 @@ export default function ProductsPageClient({
                 className="flex items-center gap-2"
               >
                 <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[rgba(52,120,246,0.12)] text-[#3478F6] text-xs md:text-sm font-normal rounded-full shadow-[inset_0px_-2px_4px_0px_#ccdeff]">
-                  #BESTSELLER
+                  #PROVEN
                 </span>
                 {isOutOfStock && (
                   <span className="inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-red-100 text-red-600 text-xs md:text-sm font-medium rounded-full">
@@ -568,39 +587,46 @@ export default function ProductsPageClient({
                   {selectedVariant?.productTitle ||
                     `Optimist ${selectedVariant?.name || ""} 5 Star Inverter Split AC`}
                 </h1>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center">
-                    {[1, 2, 3, 4].map((star) => (
-                      <svg
-                        key={star}
-                        className="w-4 h-4 md:w-5 md:h-5 text-[#F5A623]"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                    <svg
-                      className="w-4 h-4 md:w-5 md:h-5 text-gray-300"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <defs>
-                        <linearGradient id="halfStar">
-                          <stop offset="50%" stopColor="#F5A623" />
-                          <stop offset="50%" stopColor="#D1D5DB" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        fill="url(#halfStar)"
-                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                      />
-                    </svg>
+                {judgeCount > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const filled = judgeRating >= star;
+                        const half = !filled && judgeRating >= star - 0.5;
+                        return (
+                          <svg
+                            key={star}
+                            className="w-4 h-4 md:w-5 md:h-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            {half && (
+                              <defs>
+                                <linearGradient id={`halfStar-${star}`}>
+                                  <stop offset="50%" stopColor="#F5A623" />
+                                  <stop offset="50%" stopColor="#D1D5DB" />
+                                </linearGradient>
+                              </defs>
+                            )}
+                            <path
+                              fill={
+                                filled
+                                  ? "#F5A623"
+                                  : half
+                                    ? `url(#halfStar-${star})`
+                                    : "#D1D5DB"
+                              }
+                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                            />
+                          </svg>
+                        );
+                      })}
+                    </div>
+                    <span className="text-sm md:text-base text-[#6c6a6a]">
+                      ({new Intl.NumberFormat("en-IN").format(judgeCount)})
+                    </span>
                   </div>
-                  <span className="text-sm md:text-base text-[#6c6a6a]">
-                    (2,401)
-                  </span>
-                </div>
+                )}
               </motion.div>
 
               {/* Mobile Image Gallery */}
@@ -670,15 +696,18 @@ export default function ProductsPageClient({
                 />
               </motion.div>
 
-              {/* Snapmint Banner */}
+              {/* Snapmint EMI Widget */}
               <motion.div variants={heroInfoItemVariants}>
-                <div className="w-full flex items-center justify-center py-3 bg-[#F5F5F5] rounded-lg">
-                  <img
-                    src="/assets/snapmint-logo.png"
-                    alt="Snapmint"
-                    className="h-6 md:h-7 w-auto object-contain"
-                  />
-                </div>
+                <div className="snap_emi_txt"></div>
+                <span
+                  className="snapmint_lowest_emi_value"
+                  style={{ display: "none" }}
+                  data-snapmint-price={selectedVariant?.price || 0}
+                  data-snapmint-merchant_id={
+                    process.env.NEXT_PUBLIC_SNAPMINT_MERCHANT || "7078"
+                  }
+                  data-snapmint-page="products_page"
+                ></span>
               </motion.div>
 
               {/* Variants */}
@@ -687,7 +716,7 @@ export default function ProductsPageClient({
                 className="flex flex-col gap-3 md:gap-4"
               >
                 <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                  Variants
+                  Choose your Optimist
                 </h3>
                 {isProductsLoading ? (
                   <div className="flex gap-3">
@@ -1060,7 +1089,12 @@ export default function ProductsPageClient({
         viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
-        <ReviewsSection />
+        <ReviewsSection
+          products={shopProducts.map((p) => ({
+            id: p.id,
+            label: p.title,
+          }))}
+        />
       </motion.div>
 
       {/* Built For Section */}

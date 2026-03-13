@@ -306,6 +306,16 @@ export default function ProductsPageClient({
     setSelectedImageIndex(0);
   }, [selectedVariant?.id]);
 
+  // Re-init Snapmint widget when variant/price changes
+  useEffect(() => {
+    if (selectedVariant?.price) {
+      const tid = setTimeout(() => {
+        window.loadOnPage?.();
+      }, 500);
+      return () => clearTimeout(tid);
+    }
+  }, [selectedVariant?.price]);
+
   const activeProductId = selectedVariant?.productId || product?.id;
   const { rating: judgeRating, count: judgeCount } =
     useJudgeMeRating(activeProductId);
@@ -686,15 +696,18 @@ export default function ProductsPageClient({
                 />
               </motion.div>
 
-              {/* Snapmint Banner */}
+              {/* Snapmint EMI Widget */}
               <motion.div variants={heroInfoItemVariants}>
-                <div className="w-full flex items-center justify-center py-3 bg-[#F5F5F5] rounded-lg">
-                  <img
-                    src="/assets/snapmint-logo.png"
-                    alt="Snapmint"
-                    className="h-6 md:h-7 w-auto object-contain"
-                  />
-                </div>
+                <div className="snap_emi_txt"></div>
+                <span
+                  className="snapmint_lowest_emi_value"
+                  style={{ display: "none" }}
+                  data-snapmint-price={selectedVariant?.price || 0}
+                  data-snapmint-merchant_id={
+                    process.env.NEXT_PUBLIC_SNAPMINT_MERCHANT || "7078"
+                  }
+                  data-snapmint-page="products_page"
+                ></span>
               </motion.div>
 
               {/* Variants */}
