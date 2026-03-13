@@ -6,6 +6,7 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { ViewCanvas } from "@/components/canvas/ViewCanvas";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
+import SnapmintLoader from "@/components/SnapmintLoader";
 
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
@@ -176,6 +177,7 @@ export default function RootLayout({
           />
         </noscript>
         <Providers>
+          <SnapmintLoader />
           <SmoothScroll>
             {/* <ViewCanvas /> */}
             <LayoutContent>{children}</LayoutContent>
