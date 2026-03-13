@@ -65,7 +65,7 @@ function PhoneFormView() {
 
       {/* Headline */}
       <h2
-        className="font-display text-[32px] md:text-[48px] lg:text-[56px] font-bold  leading-tight mb-3"
+        className="font-display text-[28px] md:text-[40px] font-bold  leading-tight mb-3"
         style={{
           background: "linear-gradient(135deg, #3478F6 0%, #69CDEB 100%)",
           WebkitBackgroundClip: "text",
@@ -73,14 +73,20 @@ function PhoneFormView() {
           backgroundClip: "text",
         }}
       >
-        Join our waitlist
+        Be First to Experience Optimist
       </h2>
 
       {/* Subtext */}
-      <p className="text-gray-600 text-base md:text-lg mb-8 max-w-md">
-        by entering your phone number, and be the first to know when Optimist
-        launches!
-      </p>
+      <div className="text-gray-600 text-left text-[14px] md:text-lg mb-8 max-w-md">
+        <p className="mb-3">
+          Join the waitlist for launch updates and exclusive early access
+          benefits, including:
+        </p>
+        <ul className="list-disc list-inside space-y-1">
+          <li>Free Installation</li>
+          <li>₹1500 Early Bird Discount</li>
+        </ul>
+      </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="w-full max-w-md">
@@ -124,7 +130,7 @@ function PhoneFormView() {
               Submitting...
             </span>
           ) : (
-            "Get Updates"
+            "Join the Waitlist"
           )}
         </button>
       </form>
