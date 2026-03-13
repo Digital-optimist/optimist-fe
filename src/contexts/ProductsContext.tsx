@@ -9,7 +9,7 @@ import {
   useMemo,
   type ReactNode,
 } from "react";
-import { getProducts, type Product } from "@/lib/shopify";
+import { getProducts, type Product, type MediaNode } from "@/lib/shopify";
 
 // =============================================================================
 // Types
@@ -82,6 +82,29 @@ const ProductsContext = createContext<ProductsContextType | undefined>(
 // =============================================================================
 
 /**
+ * Extract ordered media URLs (images + videos) from Shopify media edges.
+ * Falls back to images field if media is empty.
+ */
+function extractMediaUrls(product: Product): string[] {
+  const mediaEdges = product.media?.edges;
+  if (mediaEdges && mediaEdges.length > 0) {
+    return mediaEdges
+      .map(({ node }: { node: MediaNode }) => {
+        if (node.mediaContentType === "IMAGE" && node.image) {
+          return node.image.url;
+        }
+        if (node.mediaContentType === "VIDEO" && node.sources?.length) {
+          const mp4 = node.sources.find((s) => s.mimeType === "video/mp4");
+          return (mp4 || node.sources[0]).url;
+        }
+        return null;
+      })
+      .filter((url): url is string => url !== null);
+  }
+  return product.images.edges.map(({ node }) => node.url);
+}
+
+/**
  * Extract tonnage from product title or handle
  * Common formats: "1 Ton", "1.5 Ton", "2 Ton", "1-ton", "1-5-ton" etc.
  */
@@ -151,7 +174,7 @@ function productToVariant(product: Product): DisplayVariant {
       : null,
     available: variant?.availableForSale || false,
     tonnage,
-    images: product.images.edges.map(({ node }) => node.url),
+    images: extractMediaUrls(product),
     description: product.description,
     descriptionHtml: product.descriptionHtml,
   };
@@ -163,6 +186,7 @@ function productToVariant(product: Product): DisplayVariant {
 function transformProduct(product: Product): ProductData {
   const tonnage = extractTonnageFromProduct(product);
   const variant = product.variants.edges[0]?.node;
+  const mediaUrls = extractMediaUrls(product);
 
   const displayVariant: DisplayVariant = {
     id: `${tonnage}ton`.replace(".", ""),
@@ -177,7 +201,7 @@ function transformProduct(product: Product): ProductData {
       : null,
     available: variant?.availableForSale || false,
     tonnage,
-    images: product.images.edges.map(({ node }) => node.url),
+    images: mediaUrls,
     description: product.description,
     descriptionHtml: product.descriptionHtml,
   };
@@ -188,7 +212,7 @@ function transformProduct(product: Product): ProductData {
     title: product.title,
     description: product.description,
     descriptionHtml: product.descriptionHtml,
-    images: product.images.edges.map(({ node }) => node.url),
+    images: mediaUrls,
     variants: [displayVariant],
     priceRange: {
       min: parseFloat(product.priceRange.minVariantPrice.amount),
@@ -257,10 +281,7 @@ export function ProductsProvider({
       .map(productToVariant)
       .sort((a, b) => parseFloat(a.tonnage) - parseFloat(b.tonnage));
 
-    // Collect all images from all products
-    const allImages = rawProducts.flatMap((p) =>
-      p.images.edges.map(({ node }) => node.url),
-    );
+    const allImages = rawProducts.flatMap((p) => extractMediaUrls(p));
 
     // Check if any variant is available
     const isAvailable = allVariants.some((v) => v.available);

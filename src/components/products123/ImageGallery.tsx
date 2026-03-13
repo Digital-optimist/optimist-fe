@@ -4,6 +4,7 @@ import {
   memo,
   useCallback,
   useRef,
+  useEffect,
   type KeyboardEvent,
   type TouchEvent,
 } from "react";
@@ -23,6 +24,16 @@ interface ImageGalleryProps {
 }
 
 // =============================================================================
+// Helpers
+// =============================================================================
+
+const VIDEO_EXTENSIONS = /\.(mp4|webm|mov|ogg|m4v)(\?|$)/i;
+
+function isVideoUrl(url: string): boolean {
+  return VIDEO_EXTENSIONS.test(url);
+}
+
+// =============================================================================
 // Component
 // =============================================================================
 
@@ -35,8 +46,18 @@ export const ImageGallery = memo(function ImageGallery({
 }: ImageGalleryProps) {
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Keyboard navigation handler
+  const currentUrl = images[selectedIndex];
+  const isCurrentVideo = currentUrl ? isVideoUrl(currentUrl) : false;
+
+  useEffect(() => {
+    if (isCurrentVideo && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(() => {});
+    }
+  }, [selectedIndex, isCurrentVideo]);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key === "ArrowLeft") {
@@ -98,20 +119,32 @@ export const ImageGallery = memo(function ImageGallery({
       aria-label="Product image gallery"
       aria-roledescription="carousel"
     >
-      {/* Main Image */}
+      {/* Main Image / Video */}
       <div
         className="relative aspect-square rounded-[24px] md:rounded-[24px] rounded-[16px] overflow-hidden bg-gray-100 mb-4"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <Image
-          src={images[selectedIndex]}
-          alt={`Product image ${selectedIndex + 1} of ${images.length}`}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover"
-          priority
-        />
+        {isCurrentVideo ? (
+          <video
+            ref={videoRef}
+            src={currentUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <Image
+            src={currentUrl ?? ""}
+            alt={`Product image ${selectedIndex + 1} of ${images.length}`}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            priority
+          />
+        )}
 
         {/* Navigation Arrows - Desktop only */}
         <div className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 items-center">
@@ -135,28 +168,29 @@ export const ImageGallery = memo(function ImageGallery({
           </button>
         </div>
 
-        {/* Image counter for screen readers */}
         <div className="sr-only" aria-live="polite">
-          Image {selectedIndex + 1} of {images.length}
+          {isCurrentVideo ? "Video" : "Image"} {selectedIndex + 1} of{" "}
+          {images.length}
         </div>
       </div>
 
-      {/* Thumbnails - horizontal scroll container */}
+      {/* Thumbnails */}
       <div className="w-full overflow-hidden">
         <div
           className="flex gap-1 md:gap-3 overflow-x-auto pl-2 py-2 scrollbar-hide touch-manipulation"
           role="tablist"
           aria-label="Product image thumbnails"
         >
-          {images.map((image, index) => {
+          {images.map((mediaUrl, index) => {
             const isSelected = index === selectedIndex;
+            const isVideo = isVideoUrl(mediaUrl);
             return (
               <button
                 key={index}
                 onClick={() => onSelectImage(index)}
                 role="tab"
                 aria-selected={isSelected}
-                aria-label={`View image ${index + 1}`}
+                aria-label={`View ${isVideo ? "video" : "image"} ${index + 1}`}
                 className={`relative w-11 h-[43px] md:w-[84px] md:h-[84px] flex-shrink-0 rounded-[12px] overflow-hidden transition-all duration-200 ${
                   isSelected
                     ? "border-1 border-white md:border-white ring-1 ring-black/20 md:ring-0 scale-110 md:scale-100"
@@ -164,13 +198,36 @@ export const ImageGallery = memo(function ImageGallery({
                 }`}
                 type="button"
               >
-                <Image
-                  src={image}
-                  alt={`Thumbnail ${index + 1}`}
-                  fill
-                  sizes="84px"
-                  className="object-cover rounded-[12px]"
-                />
+                {isVideo ? (
+                  <>
+                    <video
+                      src={mediaUrl}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 w-full h-full object-cover rounded-[12px]"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-5 h-5 md:w-7 md:h-7 rounded-full bg-black/50 flex items-center justify-center">
+                        <svg
+                          className="w-2.5 h-2.5 md:w-3.5 md:h-3.5 text-white ml-0.5"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Image
+                    src={mediaUrl}
+                    alt={`Thumbnail ${index + 1}`}
+                    fill
+                    sizes="84px"
+                    className="object-cover rounded-[12px]"
+                  />
+                )}
                 {!isSelected && (
                   <div className="absolute inset-0 bg-[rgba(255,255,255,0.4)] md:bg-[rgba(255,255,255,0.32)] rounded-[12px]" />
                 )}

@@ -29,7 +29,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: "Ashish Goel",
     title: "Co-founder & CEO",
     description:
-      "former Urban Ladder Founder & CEO, ex-McKinsey leader, driving trust-led brands and enduring product excellence, 5× Fortune 40 Under 40.",
+      "Former Urban Ladder Founder & CEO, ex-McKinsey leader, driving trust-led brands and enduring product excellence, 5× Fortune 40 Under 40.",
   },
   {
     id: "manjunath",

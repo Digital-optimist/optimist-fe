@@ -75,7 +75,7 @@ export function CTASection() {
 
             {/* Line 2: Nothing you don't. */}
             <p className="font-semibold text-[32px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[64px] text-black leading-[1.2] lg:leading-normal">
-              Nothing you <span className="text-[#3478F6]">don&apos;t.</span>
+              Designed for <span className="text-[#3478F6]">Tomorrow.</span>
             </p>
           </div>
 

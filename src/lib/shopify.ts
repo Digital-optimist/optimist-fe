@@ -34,6 +34,20 @@ export interface ProductVariant {
   image: ShopifyImage | null;
 }
 
+export interface VideoSource {
+  url: string;
+  mimeType: string;
+  format: string;
+  width: number;
+  height: number;
+}
+
+export interface MediaNode {
+  mediaContentType: "IMAGE" | "VIDEO" | "EXTERNAL_VIDEO" | "MODEL_3D";
+  image?: ShopifyImage;
+  sources?: VideoSource[];
+}
+
 export interface Product {
   id: string;
   handle: string;
@@ -43,6 +57,9 @@ export interface Product {
   featuredImage: ShopifyImage | null;
   images: {
     edges: { node: ShopifyImage }[];
+  };
+  media: {
+    edges: { node: MediaNode }[];
   };
   options: {
     id: string;
@@ -293,10 +310,34 @@ const PRODUCT_FRAGMENT = `
     featuredImage {
       ...ImageFragment
     }
-    images(first: 10) {
+    images(first: 20) {
       edges {
         node {
           ...ImageFragment
+        }
+      }
+    }
+    media(first: 20) {
+      edges {
+        node {
+          mediaContentType
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+          ... on Video {
+            sources {
+              url
+              mimeType
+              format
+              width
+              height
+            }
+          }
         }
       }
     }
