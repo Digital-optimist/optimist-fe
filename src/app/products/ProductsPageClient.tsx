@@ -299,14 +299,14 @@ export default function ProductsPageClient({
   }, [selectedVariant?.id]);
 
   // Re-init Snapmint widget when variant/price changes
-  useEffect(() => {
-    if (selectedVariant?.price) {
-      const tid = setTimeout(() => {
-        window.loadOnPage?.();
-      }, 500);
-      return () => clearTimeout(tid);
-    }
-  }, [selectedVariant?.price]);
+  // useEffect(() => {
+  //   if (selectedVariant?.price) {
+  //     const tid = setTimeout(() => {
+  //       window.loadOnPage?.();
+  //     }, 500);
+  //     return () => clearTimeout(tid);
+  //   }
+  // }, [selectedVariant?.price]);
 
   const activeProductId = selectedVariant?.productId || product?.id;
   const { rating: judgeRating, count: judgeCount } =
@@ -724,7 +724,7 @@ export default function ProductsPageClient({
               </motion.div>
 
               {/* Snapmint EMI Widget */}
-              <motion.div variants={heroInfoItemVariants}>
+              {/* <motion.div variants={heroInfoItemVariants}>
                 <div className="snap_emi_txt"></div>
                 <span
                   className="snapmint_lowest_emi_value"
@@ -733,7 +733,7 @@ export default function ProductsPageClient({
                   data-snapmint-merchant_id={"8097"}
                   data-snapmint-page="products_page"
                 ></span>
-              </motion.div>
+              </motion.div> */}
 
               {/* Variants */}
               <motion.div
