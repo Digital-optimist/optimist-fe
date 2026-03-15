@@ -14,7 +14,12 @@ const SNAPMINT_SCRIPT_ID = "snapmint-script";
 export default function SnapmintLoader(): null {
   const pathname = usePathname();
 
+  const isProductsRoute =
+    pathname.startsWith("/products") && !pathname.startsWith("/products123");
+
   useEffect(() => {
+    if (isProductsRoute) return;
+
     let timeoutId: NodeJS.Timeout;
 
     const loadSnapmint = () => {
@@ -48,7 +53,7 @@ export default function SnapmintLoader(): null {
     timeoutId = setTimeout(loadSnapmint, 400);
 
     return () => clearTimeout(timeoutId);
-  }, [pathname]);
+  }, [pathname, isProductsRoute]);
 
   return null;
 }
