@@ -173,7 +173,7 @@ export default function OrdersPage() {
               When you place orders, they will appear here
             </p>
             <Link
-              href="/products123"
+              href="/products"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-medium"
               style={{
                 background:
@@ -253,9 +253,7 @@ function OrderCard({ order, index }: { order: Order; index: number }) {
             </>
           ) : (
             <>
-              <span
-                className={`w-2.5 h-2.5 rounded-full ${status.dotColor}`}
-              />
+              <span className={`w-2.5 h-2.5 rounded-full ${status.dotColor}`} />
               <span className={`text-[14px] font-medium ${status.color}`}>
                 {status.label}
               </span>
@@ -307,7 +305,7 @@ function OrderCard({ order, index }: { order: Order; index: number }) {
                           .filter(
                             (opt) =>
                               opt.name !== "Title" ||
-                              opt.value !== "Default Title"
+                              opt.value !== "Default Title",
                           )
                           .map((opt) => (
                             <span
@@ -327,11 +325,10 @@ function OrderCard({ order, index }: { order: Order; index: number }) {
                   <p className="text-[16px] font-bold text-[#0A0A0A]">
                     {formatPrice(
                       String(
-                        parseFloat(
-                          item.variant?.price?.amount || "0"
-                        ) * item.quantity
+                        parseFloat(item.variant?.price?.amount || "0") *
+                          item.quantity,
                       ),
-                      item.variant?.price?.currencyCode || "INR"
+                      item.variant?.price?.currencyCode || "INR",
                     )}
                   </p>
                 </div>
@@ -342,7 +339,7 @@ function OrderCard({ order, index }: { order: Order; index: number }) {
                 <div className="flex items-center gap-4">
                   {item.variant?.product?.handle && (
                     <Link
-                      href={`/products123/${item.variant.product.handle}`}
+                      href={`/products/${item.variant.product.handle}`}
                       className="text-[14px] text-[#3478F6] hover:underline font-medium"
                     >
                       View product

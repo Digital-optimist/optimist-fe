@@ -139,8 +139,8 @@ function extractTonnageFromProduct(product: Product): string {
     if (tagMatch) return tagMatch[1];
   }
 
-  // Default fallback
-  return "1.5";
+  // For non-AC products (e.g. Inner Circle Club), use handle to avoid collisions
+  return product.handle || "unknown";
 }
 
 /**
@@ -157,17 +157,22 @@ function getSubtitleForTonnage(tonnage: string): string {
  * Transform Shopify Product to DisplayVariant
  * Each product becomes a selectable variant option (1 Ton, 1.5 Ton, 2 Ton)
  */
+function hasTonnageInTitle(product: Product): boolean {
+  return /\d+\.?\d*\s*ton/i.test(product.title) || /\d+-ton/i.test(product.handle);
+}
+
 function productToVariant(product: Product): DisplayVariant {
   const tonnage = extractTonnageFromProduct(product);
   const variant = product.variants.edges[0]?.node;
+  const isTonnageProduct = hasTonnageInTitle(product);
 
   return {
-    id: `${tonnage}ton`.replace(".", ""),
+    id: isTonnageProduct ? `${tonnage}ton`.replace(".", "") : product.handle,
     variantId: variant?.id || "",
     productId: product.id,
     productTitle: product.title,
-    name: `${tonnage} Ton`,
-    subtitle: getSubtitleForTonnage(tonnage),
+    name: isTonnageProduct ? `${tonnage} Ton` : product.title,
+    subtitle: isTonnageProduct ? getSubtitleForTonnage(tonnage) : "",
     price: variant ? parseFloat(variant.price.amount) : 0,
     compareAtPrice: variant?.compareAtPrice
       ? parseFloat(variant.compareAtPrice.amount)
@@ -188,13 +193,15 @@ function transformProduct(product: Product): ProductData {
   const variant = product.variants.edges[0]?.node;
   const mediaUrls = extractMediaUrls(product);
 
+  const isTonnageProduct = hasTonnageInTitle(product);
+
   const displayVariant: DisplayVariant = {
-    id: `${tonnage}ton`.replace(".", ""),
+    id: isTonnageProduct ? `${tonnage}ton`.replace(".", "") : product.handle,
     variantId: variant?.id || "",
     productId: product.id,
     productTitle: product.title,
-    name: `${tonnage} Ton`,
-    subtitle: getSubtitleForTonnage(tonnage),
+    name: isTonnageProduct ? `${tonnage} Ton` : product.title,
+    subtitle: isTonnageProduct ? getSubtitleForTonnage(tonnage) : "",
     price: variant ? parseFloat(variant.price.amount) : 0,
     compareAtPrice: variant?.compareAtPrice
       ? parseFloat(variant.compareAtPrice.amount)

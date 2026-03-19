@@ -8,11 +8,7 @@ import { motion } from "framer-motion";
 import { Package, ChevronRight, ExternalLink } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { AccountLayout } from "@/components/account";
-import {
-  getCustomerOrders,
-  formatPrice,
-  type Order,
-} from "@/lib/shopify";
+import { getCustomerOrders, formatPrice, type Order } from "@/lib/shopify";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -90,9 +86,7 @@ function OrderDetailContent() {
       if (!accessToken || !orderNumber) return;
       try {
         const orders = await getCustomerOrders(accessToken, 50);
-        const found = orders.find(
-          (o) => String(o.orderNumber) === orderNumber
-        );
+        const found = orders.find((o) => String(o.orderNumber) === orderNumber);
         setOrder(found || null);
       } catch (error) {
         console.error("Failed to fetch order:", error);
@@ -248,7 +242,7 @@ function OrderDetailContent() {
                             .filter(
                               (opt) =>
                                 opt.name !== "Title" ||
-                                opt.value !== "Default Title"
+                                opt.value !== "Default Title",
                             )
                             .map((opt) => (
                               <span
@@ -263,7 +257,7 @@ function OrderDetailContent() {
 
                     <div className="flex flex-wrap items-center gap-4 mt-4 pt-3 border-t border-[#F0F0F0]">
                       <Link
-                        href="/products123"
+                        href="/products"
                         className="text-[14px] text-[#3478F6] hover:underline font-medium"
                       >
                         View product
@@ -468,7 +462,7 @@ function OrderDetailContent() {
                   <span className="font-medium text-[#0A0A0A]">
                     {formatPrice(
                       order.subtotalPrice.amount,
-                      order.subtotalPrice.currencyCode
+                      order.subtotalPrice.currencyCode,
                     )}
                   </span>
                 </div>
@@ -479,7 +473,7 @@ function OrderDetailContent() {
                     <span className="font-medium text-[#0A0A0A]">
                       {formatPrice(
                         order.totalTax.amount,
-                        order.totalTax.currencyCode
+                        order.totalTax.currencyCode,
                       )}
                     </span>
                   </div>
@@ -493,7 +487,7 @@ function OrderDetailContent() {
                     ) : (
                       formatPrice(
                         order.totalShippingPrice.amount,
-                        order.totalShippingPrice.currencyCode
+                        order.totalShippingPrice.currencyCode,
                       )
                     )}
                   </span>
@@ -506,7 +500,7 @@ function OrderDetailContent() {
                   <span className="font-bold text-[#0A0A0A]">
                     {formatPrice(
                       order.totalPrice.amount,
-                      order.totalPrice.currencyCode
+                      order.totalPrice.currencyCode,
                     )}
                   </span>
                 </div>

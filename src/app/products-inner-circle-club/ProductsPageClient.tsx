@@ -140,49 +140,19 @@ const heroInfoItemVariants = {
 const MAX_DISPLAY_IMAGES = 20;
 const QUANTITY_OPTIONS = [1, 2, 3, 4, 5] as const;
 
-// Fallback variants when Shopify data is unavailable
+// Fallback variant for Inner Circle Club page
 const FALLBACK_VARIANTS: DisplayVariant[] = [
   {
-    id: "1ton",
+    id: "inner-circle-club",
     variantId: "",
     productId: "",
-    productTitle: "Optimist 1 Ton 5 Star Inverter Split AC",
-    name: "1 Ton",
-    subtitle: "For compact rooms",
-    price: 30000,
+    productTitle: "Inner Circle Club",
+    name: "Inner Circle Club",
+    subtitle: "",
+    price: 0,
     compareAtPrice: null,
     available: false,
-    tonnage: "1",
-    images: [],
-    description: "",
-    descriptionHtml: "",
-  },
-  {
-    id: "15ton",
-    variantId: "",
-    productId: "",
-    productTitle: "Optimist 1.5 Ton 5 Star Inverter Split AC",
-    name: "1.5 Ton",
-    subtitle: "Ideal for most Indian homes",
-    price: 40000,
-    compareAtPrice: null,
-    available: false,
-    tonnage: "1.5",
-    images: [],
-    description: "",
-    descriptionHtml: "",
-  },
-  {
-    id: "2ton",
-    variantId: "",
-    productId: "",
-    productTitle: "Optimist 2 Ton 5 Star Inverter Split AC",
-    name: "2 Ton",
-    subtitle: "For X-large rooms",
-    price: 50000,
-    compareAtPrice: null,
-    available: false,
-    tonnage: "2",
+    tonnage: "",
     images: [],
     description: "",
     descriptionHtml: "",
@@ -246,10 +216,14 @@ export default function ProductsPageClient({
   } = useProducts();
   const { openModal: openWaitlistModal } = useWaitlist();
 
-  // Get variants from combined product (each Shopify product = one variant option)
+  // Get variants from combined product — only show Inner Circle Club on this page
+  // TEMPORARY: When the site goes live, all products will be listed together
   const variants = useMemo((): DisplayVariant[] => {
     if (combinedProduct && combinedProduct.allVariants.length > 0) {
-      return combinedProduct.allVariants;
+      const innerCircleVariants = combinedProduct.allVariants.filter(
+        (v) => v.productTitle.toLowerCase().includes("inner circle"),
+      );
+      return innerCircleVariants.length > 0 ? innerCircleVariants : FALLBACK_VARIANTS;
     }
     return FALLBACK_VARIANTS;
   }, [combinedProduct]);
@@ -276,15 +250,9 @@ export default function ProductsPageClient({
       !selectedVariant || (hasShopifyData && !initializedWithShopify);
 
     if (shouldUpdate) {
-      // Prefer 1.5 ton as default, then first available, then middle one
-      const preferredVariant = variants.find(
-        (v) => v.tonnage === "1.5" && v.available,
-      );
+      // Pick first available variant (Inner Circle Club page has a single variant)
       const availableVariant = variants.find((v) => v.available);
-      const defaultVariant =
-        preferredVariant ||
-        availableVariant ||
-        variants[Math.floor(variants.length / 2)];
+      const defaultVariant = availableVariant || variants[0];
       setSelectedVariant(defaultVariant);
 
       if (hasShopifyData) {

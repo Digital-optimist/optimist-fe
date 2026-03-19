@@ -247,9 +247,13 @@ export default function ProductsPageClient({
   const { openModal: openWaitlistModal } = useWaitlist();
 
   // Get variants from combined product (each Shopify product = one variant option)
+  // TEMPORARY: Exclude Inner Circle Club — only show AC variants on this page
   const variants = useMemo((): DisplayVariant[] => {
     if (combinedProduct && combinedProduct.allVariants.length > 0) {
-      return combinedProduct.allVariants;
+      const acVariants = combinedProduct.allVariants.filter(
+        (v) => !v.productTitle.toLowerCase().includes("inner circle"),
+      );
+      return acVariants.length > 0 ? acVariants : FALLBACK_VARIANTS;
     }
     return FALLBACK_VARIANTS;
   }, [combinedProduct]);
