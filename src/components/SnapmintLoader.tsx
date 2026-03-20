@@ -15,8 +15,7 @@ export default function SnapmintLoader(): null {
   const pathname = usePathname();
 
   const isProductsRoute =
-    pathname.startsWith("/products") &&
-    !pathname.startsWith("/products-inner-circle-club");
+    pathname.startsWith("/products") && !pathname.startsWith("/inner-circle");
 
   useEffect(() => {
     if (isProductsRoute) return;
