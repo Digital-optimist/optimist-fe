@@ -93,16 +93,21 @@ const TC_ITEMS = [
 
 function TopBar({ step }: { step: 1 | 2 }) {
   return (
-    <div className="sticky top-0 z-[100] flex items-center justify-between px-5 md:px-10 py-4 bg-white/92 backdrop-blur-xl border-b border-[rgba(26,79,219,0.12)]">
-      <div className="text-[15px] font-bold text-[#0d0f1a] tracking-[0.01em]">
+    <div className="sticky top-0 z-[100] flex items-center justify-between px-4 sm:px-5 md:px-10 py-3 sm:py-4 bg-white/92 backdrop-blur-xl border-b border-[rgba(26,79,219,0.12)]">
+      <div className="text-[13px] sm:text-[15px] font-bold text-[#0d0f1a] tracking-[0.01em]">
         Optimist <span className="text-optimist-blue-primary">·</span> Inner
         Circle
       </div>
-      <div className="flex items-center gap-[7px] text-[10px] tracking-[0.15em] uppercase text-[#8890a8]">
-        <span className="w-1.5 h-1.5 rounded-full bg-optimist-blue-primary" />
-        {step === 1
-          ? "Step 1 of 2 — Review & Accept"
-          : "Step 2 of 2 — Complete Payment"}
+      <div className="flex items-center gap-[7px] text-[8px] sm:text-[10px] tracking-[0.15em] uppercase text-[#8890a8]">
+        <span className="w-1.5 h-1.5 rounded-full bg-optimist-blue-primary flex-shrink-0" />
+        <span className="hidden xs:inline">
+          {step === 1
+            ? "Step 1 of 2 — Review & Accept"
+            : "Step 2 of 2 — Complete Payment"}
+        </span>
+        <span className="xs:hidden">
+          {step === 1 ? "Step 1 of 2" : "Step 2 of 2"}
+        </span>
       </div>
     </div>
   );
@@ -118,16 +123,16 @@ function InfoSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="py-11 border-b border-[rgba(26,79,219,0.12)] last:border-b-0">
-      <div className="mb-5">
+    <div className="py-7 sm:py-9 md:py-11 border-b border-[rgba(26,79,219,0.12)] last:border-b-0">
+      <div className="mb-4 sm:mb-5">
         <div className="text-[10px] font-semibold text-optimist-blue-primary tracking-[0.2em] uppercase mb-2">
           {eyebrow}
         </div>
-        <div className="text-[22px] font-bold text-[#0d0f1a] tracking-[-0.02em] leading-[1.2]">
+        <div className="text-[18px] sm:text-[20px] md:text-[22px] font-bold text-[#0d0f1a] tracking-[-0.02em] leading-[1.2]">
           {title}
         </div>
       </div>
-      <div className="text-[14.5px] text-[#3d4259] leading-[1.7]">
+      <div className="text-[13.5px] sm:text-[14.5px] text-[#3d4259] leading-[1.7]">
         {children}
       </div>
     </div>
@@ -216,17 +221,17 @@ export default function InnerCircleClubClient() {
       {/* Content Sections */}
       <div
         ref={sectionsRef}
-        className="max-w-[760px] mx-auto px-8 pt-20 pb-20"
+        className="max-w-[760px] mx-auto px-4 sm:px-6 md:px-8 pt-10 sm:pt-14 md:pt-20 pb-10 sm:pb-14 md:pb-20"
       >
-        <div className="mb-14">
+        <div className="mb-8 sm:mb-10 md:mb-14">
           <div className="text-[10px] tracking-[0.26em] uppercase text-optimist-blue-primary font-semibold mb-3">
             Before you join
           </div>
-          <h2 className="font-display text-[clamp(26px,4vw,38px)] font-bold leading-[1.15] tracking-[-0.02em] text-[#0d0f1a] mb-2.5">
+          <h2 className="font-display text-[clamp(24px,4vw,38px)] font-bold leading-[1.15] tracking-[-0.02em] text-[#0d0f1a] mb-2.5">
             Everything you need to{" "}
             <span className="text-optimist-blue-primary">know</span>
           </h2>
-          <p className="text-[14.5px] text-[#3d4259] max-w-[480px]">
+          <p className="text-[13.5px] sm:text-[14.5px] text-[#3d4259] max-w-[480px]">
             Read through the sections below, then tick the box to accept and
             proceed to payment.
           </p>
@@ -293,7 +298,7 @@ export default function InnerCircleClubClient() {
             {PACKAGE_ITEMS.map((item) => (
               <li
                 key={item.title}
-                className="flex items-start gap-3.5 px-4 py-3 bg-[#f8f9fd] border border-[rgba(26,79,219,0.12)] rounded-md text-[13.5px] text-[#3d4259] leading-[1.55] hover:border-[rgba(26,79,219,0.3)] hover:bg-[#eef1fb] transition-colors"
+                className="flex items-start gap-3 sm:gap-3.5 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#f8f9fd] border border-[rgba(26,79,219,0.12)] rounded-md text-[12.5px] sm:text-[13.5px] text-[#3d4259] leading-[1.55] hover:border-[rgba(26,79,219,0.3)] hover:bg-[#eef1fb] transition-colors"
               >
                 <Check className="w-3 h-3 text-optimist-blue-primary flex-shrink-0 mt-[3px] stroke-[3]" />
                 <span>
@@ -332,7 +337,7 @@ export default function InnerCircleClubClient() {
               </li>
             ))}
           </ul>
-          <div className="mt-6 p-4 bg-[rgba(37,99,235,0.05)] border border-[rgba(37,99,235,0.15)] rounded-md text-[12.5px] text-[#8890a8] leading-[1.55]">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-[rgba(37,99,235,0.05)] border border-[rgba(37,99,235,0.15)] rounded-md text-[11.5px] sm:text-[12.5px] text-[#8890a8] leading-[1.55]">
             Effective 27th March 2025. Issued by Octolife Climate Solutions Pvt.
             Ltd. The complete Terms & Conditions document is available on
             request. By ticking the box below, you confirm that you have read,
@@ -344,12 +349,12 @@ export default function InnerCircleClubClient() {
       </div>
 
       {/* Spacer for fixed bar */}
-      <div className="h-20" />
+      <div className="h-32 sm:h-20" />
 
       {/* Fixed Accept Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-[200] bg-white/97 backdrop-blur-2xl border-t border-[rgba(26,79,219,0.12)] px-5 md:px-10 py-[1.1rem] flex items-center justify-between gap-6 flex-wrap shadow-[0_-4px_24px_rgba(37,99,235,0.07)]">
+      <div className="fixed bottom-0 left-0 right-0 z-[200] bg-white/97 backdrop-blur-2xl border-t border-[rgba(26,79,219,0.12)] px-4 sm:px-5 md:px-10 py-3 sm:py-[1.1rem] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6 shadow-[0_-4px_24px_rgba(37,99,235,0.07)]">
         <label className="flex items-center gap-3 cursor-pointer select-none">
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <input
               type="checkbox"
               checked={tcAccepted}
@@ -360,7 +365,7 @@ export default function InnerCircleClubClient() {
               {tcAccepted && <Check className="w-3 h-3 text-white stroke-[3]" />}
             </div>
           </div>
-          <span className="text-[13px] text-[#8890a8] leading-[1.35]">
+          <span className="text-[12px] sm:text-[13px] text-[#8890a8] leading-[1.35]">
             I have read and agree to the{" "}
             <strong className="text-[#0d0f1a] font-medium">
               Optimist Inner Circle Terms & Conditions
@@ -370,7 +375,7 @@ export default function InnerCircleClubClient() {
         <button
           onClick={handleProceed}
           disabled={!tcAccepted}
-          className="inline-flex items-center gap-[9px] bg-optimist-blue-primary text-white text-[12px] font-bold tracking-[0.06em] uppercase px-7 py-[11px] rounded-md border-none cursor-pointer whitespace-nowrap transition-all duration-200 disabled:opacity-25 disabled:pointer-events-none hover:enabled:bg-optimist-blue-deep hover:enabled:-translate-y-px"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-[9px] bg-optimist-blue-primary text-white text-[12px] font-bold tracking-[0.06em] uppercase px-7 py-3 sm:py-[11px] rounded-md border-none cursor-pointer whitespace-nowrap transition-all duration-200 disabled:opacity-25 disabled:pointer-events-none hover:enabled:bg-optimist-blue-deep hover:enabled:-translate-y-px"
         >
           Join the Membership →
         </button>
@@ -388,13 +393,13 @@ export default function InnerCircleClubClient() {
 
       <button
         onClick={handleBack}
-        className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase text-[#8890a8] cursor-pointer border-none bg-transparent px-5 md:px-10 pt-5 hover:text-optimist-blue-primary transition-colors"
+        className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase text-[#8890a8] cursor-pointer border-none bg-transparent px-4 sm:px-5 md:px-10 pt-4 sm:pt-5 hover:text-optimist-blue-primary transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" /> Back
       </button>
 
       {/* Pay Hero */}
-      <div className="relative px-8 pt-14 pb-10 text-center overflow-hidden">
+      <div className="relative px-4 sm:px-8 pt-8 sm:pt-14 pb-6 sm:pb-10 text-center overflow-hidden">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -403,11 +408,11 @@ export default function InnerCircleClubClient() {
           }}
         />
         <div className="relative max-w-[480px] mx-auto">
-          <h2 className="font-display text-[clamp(30px,5.5vw,52px)] font-bold text-[#0d0f1a] leading-[1.08] tracking-[-0.03em] mb-3.5">
+          <h2 className="font-display text-[clamp(26px,5.5vw,52px)] font-bold text-[#0d0f1a] leading-[1.08] tracking-[-0.03em] mb-2.5 sm:mb-3.5">
             Complete your{" "}
             <span className="text-optimist-blue-primary">enrolment</span>
           </h2>
-          <p className="text-[15px] text-[#3d4259] max-w-[360px] mx-auto">
+          <p className="text-[14px] sm:text-[15px] text-[#3d4259] max-w-[360px] mx-auto">
             Pay the one-time service fee to secure your place in the Inner
             Circle.
           </p>
@@ -415,23 +420,23 @@ export default function InnerCircleClubClient() {
       </div>
 
       {/* Payment Card */}
-      <div className="max-w-[480px] mx-auto px-8 pb-20">
+      <div className="max-w-[480px] mx-auto px-4 sm:px-6 md:px-8 pb-12 sm:pb-20">
         <div className="bg-white rounded-xl overflow-hidden border border-[rgba(26,79,219,0.12)] shadow-[0_8px_40px_rgba(37,99,235,0.1),0_2px_8px_rgba(0,0,0,0.05)]">
           {/* Card Header */}
-          <div className="bg-[#f4f6fb] px-8 pt-[1.6rem] pb-[1.35rem] border-b border-[rgba(26,79,219,0.12)] flex items-center justify-between">
-            <div className="text-[17px] font-bold text-[#0d0f1a]">
+          <div className="bg-[#f4f6fb] px-4 sm:px-6 md:px-8 pt-4 sm:pt-[1.6rem] pb-3.5 sm:pb-[1.35rem] border-b border-[rgba(26,79,219,0.12)] flex items-center justify-between gap-3">
+            <div className="text-[15px] sm:text-[17px] font-bold text-[#0d0f1a]">
               Optimist{" "}
               <span className="text-optimist-blue-primary">·</span> Inner
               Circle
             </div>
-            <div className="flex items-center gap-[5px] text-[10px] tracking-[0.14em] uppercase text-[#8890a8]">
+            <div className="flex items-center gap-[5px] text-[9px] sm:text-[10px] tracking-[0.14em] uppercase text-[#8890a8] flex-shrink-0">
               <Lock className="w-3 h-3 text-optimist-blue-primary" />
               Secure Checkout
             </div>
           </div>
 
           {/* Order Details */}
-          <div className="px-8 py-6 border-b border-[rgba(26,79,219,0.12)]">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 border-b border-[rgba(26,79,219,0.12)]">
             {[
               { label: "Programme", value: "Inner Circle Testing Programme" },
               { label: "Unit", value: "Optimist AC (pre-launch)" },
@@ -439,52 +444,52 @@ export default function InnerCircleClubClient() {
             ].map((row) => (
               <div
                 key={row.label}
-                className="flex justify-between items-baseline mb-2 last:mb-0"
+                className="flex justify-between items-baseline gap-2 mb-2 last:mb-0"
               >
-                <span className="text-[13px] text-[#8890a8]">
+                <span className="text-[12px] sm:text-[13px] text-[#8890a8] flex-shrink-0">
                   {row.label}
                 </span>
-                <span className="text-[13px] text-[#3d4259] font-medium">
+                <span className="text-[12px] sm:text-[13px] text-[#3d4259] font-medium text-right">
                   {row.value}
                 </span>
               </div>
             ))}
 
-            <hr className="border-none h-px bg-[rgba(26,79,219,0.12)] my-3.5" />
+            <hr className="border-none h-px bg-[rgba(26,79,219,0.12)] my-3 sm:my-3.5" />
 
             <div className="flex justify-between items-baseline mb-2">
-              <span className="text-[13px] text-[#8890a8]">Service Fee</span>
-              <span className="text-[13px] text-[#3d4259] font-medium">
+              <span className="text-[12px] sm:text-[13px] text-[#8890a8]">Service Fee</span>
+              <span className="text-[12px] sm:text-[13px] text-[#3d4259] font-medium">
                 ₹25,000
               </span>
             </div>
             <div className="flex justify-between items-baseline mb-2">
-              <span className="text-[13px] text-[#8890a8]">GST (18%)</span>
-              <span className="text-[13px] text-[#3d4259] font-medium">
+              <span className="text-[12px] sm:text-[13px] text-[#8890a8]">GST (18%)</span>
+              <span className="text-[12px] sm:text-[13px] text-[#3d4259] font-medium">
                 ₹4,500
               </span>
             </div>
 
             <div className="flex justify-between items-baseline mt-2">
-              <span className="text-sm text-[#0d0f1a] font-semibold">
+              <span className="text-[13px] sm:text-sm text-[#0d0f1a] font-semibold">
                 Total Payable
               </span>
-              <span className="text-[28px] font-bold text-[#0d0f1a] tracking-[-0.02em]">
+              <span className="text-[22px] sm:text-[28px] font-bold text-[#0d0f1a] tracking-[-0.02em]">
                 ₹29,500
               </span>
             </div>
           </div>
 
           {/* Includes */}
-          <div className="px-8 py-5 border-b border-[rgba(26,79,219,0.12)] bg-[#f8f9fd]">
-            <div className="text-[10px] tracking-[0.18em] uppercase text-[#8890a8] mb-3">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-5 border-b border-[rgba(26,79,219,0.12)] bg-[#f8f9fd]">
+            <div className="text-[10px] tracking-[0.18em] uppercase text-[#8890a8] mb-2.5 sm:mb-3">
               Included in your programme
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[5px]">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-[5px]">
               {INCLUDED_ITEMS.map((item) => (
                 <div
                   key={item}
-                  className="flex items-center gap-1.5 text-[12px] text-[#3d4259]"
+                  className="flex items-center gap-1.5 text-[11px] sm:text-[12px] text-[#3d4259]"
                 >
                   <Check className="w-3 h-3 text-optimist-blue-primary flex-shrink-0 stroke-[3]" />
                   {item}
@@ -494,8 +499,8 @@ export default function InnerCircleClubClient() {
           </div>
 
           {/* Pay Action */}
-          <div className="px-8 py-[1.6rem]">
-            <div className="mb-4 px-4 py-3 bg-[rgba(37,99,235,0.05)] border border-[rgba(37,99,235,0.15)] rounded-md flex items-center gap-2 text-[12px] text-[#8890a8] leading-[1.4]">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-[1.6rem]">
+            <div className="mb-3 sm:mb-4 px-3 sm:px-4 py-2.5 sm:py-3 bg-[rgba(37,99,235,0.05)] border border-[rgba(37,99,235,0.15)] rounded-md flex items-center gap-2 text-[11px] sm:text-[12px] text-[#8890a8] leading-[1.4]">
               <Check className="w-3.5 h-3.5 text-optimist-blue-primary flex-shrink-0" />
               Terms & Conditions accepted — effective 27th March 2025
             </div>
@@ -503,25 +508,25 @@ export default function InnerCircleClubClient() {
             <button
               onClick={handlePay}
               disabled={isPaymentLoading || !innerCircleVariant?.variantId}
-              className="w-full py-[1.05rem] bg-optimist-blue-primary text-white text-[13px] font-bold tracking-[0.06em] uppercase border-none rounded-lg cursor-pointer flex items-center justify-center gap-2.5 shadow-[0_6px_24px_rgba(37,99,235,0.3)] transition-all duration-200 hover:enabled:bg-optimist-blue-deep hover:enabled:-translate-y-px hover:enabled:shadow-[0_10px_36px_rgba(37,99,235,0.4)] active:enabled:translate-y-0 disabled:opacity-65 disabled:cursor-wait"
+              className="w-full py-3.5 sm:py-[1.05rem] bg-optimist-blue-primary text-white text-[12px] sm:text-[13px] font-bold tracking-[0.06em] uppercase border-none rounded-lg cursor-pointer flex items-center justify-center gap-2.5 shadow-[0_6px_24px_rgba(37,99,235,0.3)] transition-all duration-200 hover:enabled:bg-optimist-blue-deep hover:enabled:-translate-y-px hover:enabled:shadow-[0_10px_36px_rgba(37,99,235,0.4)] active:enabled:translate-y-0 disabled:opacity-65 disabled:cursor-wait"
             >
-              <CreditCard className="w-[17px] h-[17px]" />
+              <CreditCard className="w-4 h-4 sm:w-[17px] sm:h-[17px]" />
               {isPaymentLoading
                 ? "Opening payment gateway…"
                 : "Pay ₹29,500 Now"}
             </button>
 
-            <div className="mt-3.5 flex items-center justify-center gap-4 flex-wrap">
-              <span className="flex items-center gap-[5px] text-[11px] text-[#8890a8]">
+            <div className="mt-3 sm:mt-3.5 flex items-center justify-center gap-2.5 sm:gap-4 flex-wrap">
+              <span className="flex items-center gap-[5px] text-[10px] sm:text-[11px] text-[#8890a8]">
                 <Lock className="w-[11px] h-[11px]" />
                 256-bit SSL
               </span>
               <span className="text-[rgba(26,79,219,0.12)]">·</span>
-              <span className="text-[11px] text-[#8890a8]">
+              <span className="text-[10px] sm:text-[11px] text-[#8890a8]">
                 Powered by Razorpay
               </span>
               <span className="text-[rgba(26,79,219,0.12)]">·</span>
-              <span className="text-[11px] text-[#8890a8]">
+              <span className="text-[10px] sm:text-[11px] text-[#8890a8]">
                 One-time payment
               </span>
             </div>
