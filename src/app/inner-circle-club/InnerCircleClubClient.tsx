@@ -170,7 +170,7 @@ export default function InnerCircleClubClient() {
   const [tcAccepted, setTcAccepted] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const sectionsRef = useRef<HTMLDivElement>(null);
-  const tcEndRef = useRef<HTMLDivElement>(null);
+  const tcBoxRef = useRef<HTMLDivElement>(null);
 
   const { cart, addToCart } = useCart();
   const { combinedProduct } = useProducts();
@@ -209,18 +209,17 @@ export default function InnerCircleClubClient() {
   }, []);
 
   useEffect(() => {
-    const sentinel = tcEndRef.current;
-    if (!sentinel) return;
+    const box = tcBoxRef.current;
+    if (!box) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setTcAccepted(true);
-      },
-      { threshold: 0.5 },
-    );
+    const onScroll = () => {
+      if (box.scrollTop + box.clientHeight >= box.scrollHeight - 20) {
+        setTcAccepted(true);
+      }
+    };
 
-    observer.observe(sentinel);
-    return () => observer.disconnect();
+    box.addEventListener("scroll", onScroll);
+    return () => box.removeEventListener("scroll", onScroll);
   }, []);
 
   // =========================================================================
@@ -303,11 +302,6 @@ export default function InnerCircleClubClient() {
               </li>
             ))}
           </ul>
-          <p>
-            As an OIC member, you will be a co-creator — you are a co-creator.
-            Your feedback will directly shape the product that millions of
-            people eventually use.
-          </p>
         </InfoSection>
 
         {/* Section 3 */}
@@ -338,11 +332,15 @@ export default function InnerCircleClubClient() {
               Full Terms &amp; Conditions
             </div>
             <p className="mt-2 text-[13px] sm:text-[14px] text-[#8890a8]">
-              Effective Date: 27th March 2025
+              Effective Date: 27th March 2026
             </p>
           </div>
 
-          <div className="bg-[#f8f9fd] border border-[rgba(26,79,219,0.12)] rounded-xl px-5 sm:px-7 md:px-8 py-2 sm:py-3">
+          <div
+            ref={tcBoxRef}
+            className="bg-[#f8f9fd] border border-[rgba(26,79,219,0.12)] rounded-xl px-5 sm:px-7 md:px-8 py-2 sm:py-3 max-h-[500px] overflow-y-scroll [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(26,79,219,0.18)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-[rgba(26,79,219,0.32)]"
+            style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(26,79,219,0.18) transparent" }}
+          >
             {TC_SECTIONS.map((section) => (
               <div
                 key={section.num}
@@ -371,7 +369,6 @@ export default function InnerCircleClubClient() {
           deployment — not a product purchase — and that the fee is for services
           and programme participation only.
         </div>
-        <div ref={tcEndRef} className="h-px" />
       </div>
 
       {/* Fixed Accept Bar */}
