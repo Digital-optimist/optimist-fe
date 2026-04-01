@@ -465,6 +465,8 @@ export default function InnerCircleClubClient() {
         </div>
       )}
 
+      <div className="h-[100px] sm:h-[30px] md:h-0" />
+
       {/* Fixed Accept Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-[200] bg-white/97 backdrop-blur-2xl border-t border-[rgba(26,79,219,0.12)] px-4 sm:px-5 md:px-10 py-3 sm:py-[1.1rem] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6 shadow-[0_-4px_24px_rgba(37,99,235,0.07)]">
         <label className="flex items-center gap-3 select-none cursor-pointer">
