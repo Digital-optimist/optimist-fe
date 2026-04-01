@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { removeFromCart as removeFromCartAPI } from "@/lib/shopify";
@@ -17,6 +17,45 @@ const PACKAGE_ITEMS = [
   "Priority support for the duration of the programme",
   "Up to 5 years of programme coverage",
   "First consideration for upgrade, buyout, or ownership when the product launches commercially",
+] as const;
+
+const TC_SUMMARY = [
+  {
+    bold: "You're part of something early.",
+    text: "This is a closed beta programme — you get access to Optimist's AC before it's publicly available, in exchange for real-world feedback.",
+  },
+  {
+    bold: "The unit stays ours, for now.",
+    text: "We're lending you the unit to test and live with. Ownership remains with Optimist during the programme, but we're exploring transition options (like ownership or upgrades) once we launch commercially.",
+  },
+  {
+    bold: "₹25,000 covers your full service experience",
+    text: "— installation, maintenance, support, and ongoing servicing for up to 5 years. You're not paying for the unit itself.",
+  },
+  {
+    bold: "Use it freely at home.",
+    text: "The unit is yours to use without interruption under normal conditions. Just don't relocate, resell, or modify it without checking with us first.",
+  },
+  {
+    bold: "We may occasionally need access.",
+    text: "For servicing, upgrades, or safety — we'll need reasonable access to the unit. We'll always keep it minimal and respectful of your time.",
+  },
+  {
+    bold: "Your feedback shapes the product.",
+    text: "We'll periodically check in for usage data and inputs. The more you share, the better the product gets — for you and everyone after you.",
+  },
+  {
+    bold: "It's a testing product.",
+    text: "Performance may vary. We'll fix issues as they arise, but this isn't a finished commercial product yet.",
+  },
+  {
+    bold: "Our liability is limited",
+    text: "to the service fee paid, in the unlikely event something goes wrong on our end.",
+  },
+  {
+    bold: "These terms are governed by Indian law,",
+    text: "with jurisdiction in Gurgaon.",
+  },
 ] as const;
 
 const TC_SECTIONS = [
@@ -167,10 +206,11 @@ function InfoSection({
 // =============================================================================
 
 export default function InnerCircleClubClient() {
+  const [tcRead, setTcRead] = useState(false);
   const [tcAccepted, setTcAccepted] = useState(false);
+  const [showTcModal, setShowTcModal] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const sectionsRef = useRef<HTMLDivElement>(null);
-  const tcBoxRef = useRef<HTMLDivElement>(null);
 
   const { cart, addToCart } = useCart();
   const { combinedProduct } = useProducts();
@@ -209,18 +249,15 @@ export default function InnerCircleClubClient() {
   }, []);
 
   useEffect(() => {
-    const box = tcBoxRef.current;
-    if (!box) return;
-
-    const onScroll = () => {
-      if (box.scrollTop + box.clientHeight >= box.scrollHeight - 20) {
-        setTcAccepted(true);
-      }
+    if (showTcModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
     };
-
-    box.addEventListener("scroll", onScroll);
-    return () => box.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [showTcModal]);
 
   // =========================================================================
   // Render
@@ -265,7 +302,7 @@ export default function InnerCircleClubClient() {
         {/* Section 1 */}
         <InfoSection
           eyebrow="01 / About the Programme"
-          title="This is the Inner Circle?"
+          title="What is the Inner Circle?"
         >
           <p className="mb-3">
             The Optimist Inner Circle is an invite-only, closed beta programme
@@ -322,63 +359,150 @@ export default function InnerCircleClubClient() {
           </ul>
         </InfoSection>
 
-        {/* Section 4 — Full T&C from document */}
+        {/* Section 4 — T&C Summary */}
         <div className="py-7 sm:py-9 md:py-11 border-b border-[rgba(26,79,219,0.12)]">
           <div className="mb-4 sm:mb-5">
             <div className="text-[10px] font-semibold text-optimist-blue-primary tracking-[0.2em] uppercase mb-2">
               04 / Terms &amp; Conditions
             </div>
             <div className="text-[18px] sm:text-[20px] md:text-[22px] font-bold text-[#0d0f1a] tracking-[-0.02em] leading-[1.2]">
-              Full Terms &amp; Conditions
+              Key Terms at a Glance
             </div>
-            <p className="mt-2 text-[13px] sm:text-[14px] text-[#8890a8]">
-              Effective Date: 27th March 2026
-            </p>
           </div>
 
-          <div
-            ref={tcBoxRef}
-            className="bg-[#f8f9fd] border border-[rgba(26,79,219,0.12)] rounded-xl px-5 sm:px-7 md:px-8 py-2 sm:py-3 max-h-[500px] overflow-y-scroll [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(26,79,219,0.18)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-[rgba(26,79,219,0.32)]"
-            style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(26,79,219,0.18) transparent" }}
-          >
-            {TC_SECTIONS.map((section) => (
-              <div
-                key={section.num}
-                className="py-4 sm:py-5 border-b border-[rgba(26,79,219,0.12)] last:border-b-0"
-              >
-                <div className="flex items-baseline gap-3 mb-2">
-                  <span className="text-[11px] font-bold text-optimist-blue-primary tabular-nums flex-shrink-0">
-                    {String(section.num).padStart(2, "0")}.
-                  </span>
-                  <h3 className="text-[13.5px] sm:text-[14.5px] font-semibold text-[#0d0f1a] leading-snug">
-                    {section.title}
-                  </h3>
-                </div>
-                <div
-                  className="pl-[30px] text-[12.5px] sm:text-[13px] text-[#3d4259] leading-[1.75] [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mt-1 [&_ul]:space-y-1 [&_li]:text-justify [&_p]:mb-2 [&_p]:text-justify [&_p:last-child]:mb-0"
-                  dangerouslySetInnerHTML={{ __html: section.content }}
-                />
-              </div>
-            ))}
+          <div className="bg-[#f8f8f5] rounded-xl px-5 sm:px-7 md:px-8 py-5 sm:py-6">
+            <ul className="list-disc pl-4 space-y-4 text-[13px] sm:text-[14px] text-[#3d4259] leading-[1.7]">
+              {TC_SUMMARY.map((item) => (
+                <li key={item.bold}>
+                  <strong className="text-[#0d0f1a] font-bold">
+                    {item.bold}
+                  </strong>{" "}
+                  {item.text}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-[rgba(37,99,235,0.04)] border border-[rgba(37,99,235,0.12)] rounded-lg text-[11.5px] sm:text-[12.5px] text-[#8890a8] leading-[1.6]">
-          By scrolling to the end, you confirm you have read and agree to these
-          Terms &amp; Conditions, and acknowledge that this is a testing
-          deployment — not a product purchase — and that the fee is for services
-          and programme participation only.
+        {/* T&C Checkbox */}
+        <div className="mt-6 sm:mt-8 flex items-start gap-3">
+          <div className="relative flex-shrink-0 mt-[2px]">
+            <input
+              type="checkbox"
+              checked={tcRead}
+              onChange={(e) => {
+                setTcRead(e.target.checked);
+                if (!e.target.checked) setTcAccepted(false);
+              }}
+              className="sr-only peer"
+              id="tc-read-checkbox"
+            />
+            <label
+              htmlFor="tc-read-checkbox"
+              className="w-5 h-5 rounded border-[1.5px] border-[rgba(37,99,235,0.3)] peer-checked:bg-optimist-blue-primary peer-checked:border-optimist-blue-primary transition-colors flex items-center justify-center cursor-pointer"
+            >
+              {tcRead && (
+                <Check className="w-3 h-3 text-white stroke-[3]" />
+              )}
+            </label>
+          </div>
+          <label
+            htmlFor="tc-read-checkbox"
+            className="text-[12.5px] sm:text-[13.5px] text-[#3d4259] leading-[1.6] cursor-pointer select-none"
+          >
+            By clicking &apos;I Agree&apos;, you confirm you have read and
+            understood the above.{" "}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowTcModal(true);
+              }}
+              className="text-optimist-blue-primary font-semibold underline underline-offset-2 bg-transparent border-none cursor-pointer p-0 text-inherit"
+            >
+              Click here
+            </button>{" "}
+            for the complete terms and conditions.
+          </label>
         </div>
       </div>
 
+      {/* T&C Modal */}
+      {showTcModal && (
+        <div
+          className="fixed inset-0 z-[300] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={() => setShowTcModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl w-full max-w-[720px] max-h-[85vh] flex flex-col shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 sm:px-7 py-4 sm:py-5 border-b border-[rgba(26,79,219,0.12)]">
+              <div>
+                <h2 className="text-[16px] sm:text-[18px] font-bold text-[#0d0f1a] tracking-[-0.02em]">
+                  Full Terms &amp; Conditions
+                </h2>
+                <p className="text-[12px] sm:text-[13px] text-[#8890a8] mt-0.5">
+                  Effective Date: 27th March 2026
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowTcModal(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#f0f1f5] transition-colors bg-transparent border-none cursor-pointer"
+              >
+                <X className="w-4 h-4 text-[#3d4259]" />
+              </button>
+            </div>
+            <div
+              className="flex-1 overflow-y-auto px-5 sm:px-7 py-2 [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(26,79,219,0.18)] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-[rgba(26,79,219,0.32)]"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "rgba(26,79,219,0.18) transparent",
+              }}
+            >
+              {TC_SECTIONS.map((section) => (
+                <div
+                  key={section.num}
+                  className="py-4 sm:py-5 border-b border-[rgba(26,79,219,0.12)] last:border-b-0"
+                >
+                  <div className="flex items-baseline gap-3 mb-2">
+                    <span className="text-[11px] font-bold text-optimist-blue-primary tabular-nums flex-shrink-0">
+                      {String(section.num).padStart(2, "0")}.
+                    </span>
+                    <h3 className="text-[13.5px] sm:text-[14.5px] font-semibold text-[#0d0f1a] leading-snug">
+                      {section.title}
+                    </h3>
+                  </div>
+                  <div
+                    className="pl-[30px] text-[12.5px] sm:text-[13px] text-[#3d4259] leading-[1.75] [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mt-1 [&_ul]:space-y-1 [&_li]:text-justify [&_p]:mb-2 [&_p]:text-justify [&_p:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: section.content }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="px-5 sm:px-7 py-4 border-t border-[rgba(26,79,219,0.12)]">
+              <button
+                type="button"
+                onClick={() => setShowTcModal(false)}
+                className="w-full py-2.5 rounded-lg bg-optimist-blue-primary text-white text-[13px] font-semibold border-none cursor-pointer hover:bg-optimist-blue-deep transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Fixed Accept Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-[200] bg-white/97 backdrop-blur-2xl border-t border-[rgba(26,79,219,0.12)] px-4 sm:px-5 md:px-10 py-3 sm:py-[1.1rem] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6 shadow-[0_-4px_24px_rgba(37,99,235,0.07)]">
-        <label className="flex items-center gap-3 cursor-pointer select-none">
+        <label className={`flex items-center gap-3 select-none ${tcRead ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}>
           <div className="relative flex-shrink-0">
             <input
               type="checkbox"
               checked={tcAccepted}
-              onChange={() => {}}
+              disabled={!tcRead}
+              onChange={(e) => setTcAccepted(e.target.checked)}
               className="sr-only peer"
             />
             <div className="w-5 h-5 rounded border-[1.5px] border-[rgba(37,99,235,0.3)] peer-checked:bg-optimist-blue-primary peer-checked:border-optimist-blue-primary transition-colors flex items-center justify-center">
@@ -390,7 +514,7 @@ export default function InnerCircleClubClient() {
           <span className="text-[12px] sm:text-[13px] text-[#8890a8] leading-[1.35]">
             I have read and agree to the{" "}
             <strong className="text-[#0d0f1a] font-medium">
-              Optimist Inner Circle Terms & Conditions
+              Optimist Inner Circle Terms &amp; Conditions
             </strong>
           </span>
         </label>
