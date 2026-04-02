@@ -3,6 +3,7 @@ import { type Metadata } from "next";
 import { getProducts } from "@/lib/shopify";
 import { ProductDetailSkeleton } from "@/components/products/ProductDetailSkeleton";
 import ProductsPageClient from "./ProductsPageClient";
+import InnerCircleClubClient from "../inner-circle-club/InnerCircleClubClient";
 
 // =============================================================================
 // Metadata for SEO
@@ -54,6 +55,8 @@ async function getProduct() {
 
 export default async function ProductsPage() {
   const product = await getProduct();
+
+  return <InnerCircleClubClient />;
 
   return (
     <Suspense fallback={<ProductDetailSkeleton />}>

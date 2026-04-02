@@ -10,6 +10,7 @@ const AUTH_ROUTES = [
   "/sign-up",
   "/forgot-password",
   "/reset-password",
+  "/inner-circle",
   "/inner-circle-club",
 ];
 

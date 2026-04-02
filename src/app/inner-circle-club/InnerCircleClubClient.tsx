@@ -2,59 +2,47 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
+import { gsap } from "@/lib/gsap";
+import { useGSAP } from "@gsap/react";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { removeFromCart as removeFromCartAPI } from "@/lib/shopify";
+import { ASSETS } from "@/lib/assets";
 
 // =============================================================================
 // Constants
 // =============================================================================
 
 const PACKAGE_ITEMS = [
-  "Optimist AC test unit, fully installed",
-  "All maintenance and servicing",
+  "Optimist AC test unit installed at your home (there may be site specific incidentals)",
+  "All maintenance and servicing for 5 years",
   "Real-time monitoring and diagnostics",
-  "Priority support for the duration of the programme",
-  "Up to 5 years of programme coverage",
-  "First consideration for upgrade, buyout, or ownership when the product launches commercially",
 ] as const;
 
 const TC_SUMMARY = [
   {
-    bold: "You're part of something early.",
-    text: "This is a closed beta programme — you get access to Optimist's AC before it's publicly available, in exchange for real-world feedback.",
+    text: "The ₹28,000 OIC membership fees covers your full service experience — delivery, installation (other than site specific incidentals), service and support for 5 years.",
   },
   {
-    bold: "The unit stays ours, for now.",
-    text: "We're lending you the unit to test and live with. Ownership remains with Optimist during the programme, but we're exploring transition options (like ownership or upgrades) once we launch commercially.",
+    text: "You can opt out of the program no-questions-asked within 30 days, and get a full refund of your membership fees.",
   },
   {
-    bold: "₹28,000 covers your full service experience",
-    text: "— installation, maintenance, support, and ongoing servicing for up to 5 years. You're not paying for the unit itself.",
+    text: "The ownership of the test AC stays ours. At the end of 5 years, you can choose to:",
+    subItems: [
+      "Upgrade to the latest Optimist, at half the price",
+      "Continue your OIC membership at Rs. 2800/year till the life of the test AC",
+    ],
   },
   {
-    bold: "Use it freely at home.",
-    text: "The unit is yours to use without interruption under normal conditions. Just don't relocate, resell, or modify it without checking with us first.",
+    text: "The test AC is yours to use without interruption. Just don't relocate or modify without telling us!",
   },
   {
-    bold: "We may occasionally need access.",
-    text: "For servicing, upgrades, or safety — we'll need reasonable access to the unit. We'll always keep it minimal and respectful of your time.",
+    text: "We may need minimal access to the unit for servicing, upgrades, or safety.",
   },
   {
-    bold: "Your feedback shapes the product.",
-    text: "We'll periodically check in for usage data and inputs. The more you share, the better the product gets — for you and everyone after you.",
-  },
-  {
-    bold: "It's a testing product.",
-    text: "Performance may vary. We'll fix issues as they arise, but this isn't a finished commercial product yet.",
-  },
-  {
-    bold: "Our liability is limited",
-    text: "to the service fee paid, in the unlikely event something goes wrong on our end.",
-  },
-  {
-    bold: "These terms are governed by Indian law,",
-    text: "with jurisdiction in Gurgaon.",
+    text: "You get a test product that may have minor variance. We'll fix issues as they arise, but this isn't a finished commercial product yet.",
   },
 ] as const;
 
@@ -202,6 +190,289 @@ function InfoSection({
 }
 
 // =============================================================================
+// Hero
+// =============================================================================
+
+const LEAF_VIDEO_SRC =
+  "/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4";
+const LEAF_VIDEO_STYLE: React.CSSProperties = {
+  top: "50%",
+  left: "50%",
+  width: "150%",
+  height: "150%",
+  objectFit: "cover",
+  objectPosition: "center",
+  transform: "translate(-50%, -50%) rotate(180deg)",
+  opacity: 0.18,
+  mixBlendMode: "multiply",
+};
+
+function InnerCircleHero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const subheadRef = useRef<HTMLParagraphElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const gradientRef = useRef<HTMLDivElement>(null);
+  const parallaxContainerRef = useRef<HTMLDivElement>(null);
+  const parallaxContentRef = useRef<HTMLDivElement>(null);
+  const leafVideoRef = useRef<HTMLVideoElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (leafVideoRef.current) leafVideoRef.current.playbackRate = 0.3;
+  }, []);
+
+  // Mouse parallax (desktop only)
+  useEffect(() => {
+    if (isMobile) return;
+    const container = parallaxContainerRef.current;
+    const content = parallaxContentRef.current;
+    if (!container || !content) return;
+
+    const maxMove = 15;
+    const smoothness = 0.1;
+    let currentX = 0;
+    let currentY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let animationId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const normalizedX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      const normalizedY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      targetX = -normalizedX * maxMove;
+      targetY = -normalizedY * maxMove;
+    };
+
+    const handleMouseLeave = () => {
+      targetX = 0;
+      targetY = 0;
+    };
+
+    const animate = () => {
+      currentX += (targetX - currentX) * smoothness;
+      currentY += (targetY - currentY) * smoothness;
+      gsap.set(content, { x: currentX, y: currentY, force3D: true });
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [isMobile]);
+
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.fromTo(
+        headlineRef.current?.querySelectorAll("span") || [],
+        { opacity: 0, y: 60, rotateX: -15 },
+        { opacity: 1, y: 0, rotateX: 0, stagger: 0.15, duration: 1 },
+      )
+        .fromTo(
+          subheadRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          "-=0.5",
+        )
+        .fromTo(
+          imageRef.current,
+          { opacity: 0, y: 80, scale: 0.95 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" },
+          "-=0.8",
+        );
+    },
+    { scope: sectionRef },
+  );
+
+  const sectionStyle = isMounted
+    ? {
+        height: isMobile ? "55svh" : "52vh",
+        minHeight: isMobile ? "300px" : "400px",
+      }
+    : { height: "52vh", minHeight: "400px" };
+
+  return (
+    <section
+      ref={sectionRef}
+      className="hero-section relative flex flex-col bg-black"
+      style={{ ...sectionStyle, overflow: "visible", zIndex: 10 }}
+    >
+      {/* MOBILE */}
+      {isMounted && isMobile && (
+        <>
+          <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
+            <Image
+              src={ASSETS.heroMobileBg}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-center pointer-events-none"
+              priority
+            />
+            <video
+              src={LEAF_VIDEO_SRC}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute pointer-events-none"
+              style={LEAF_VIDEO_STYLE}
+            />
+          </div>
+          <div
+            ref={contentRef}
+            className="relative z-10 flex flex-col items-center h-full px-5 sm:px-6 overflow-visible"
+            style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
+          >
+            <div className="flex flex-col items-center text-center">
+              <h1
+                ref={headlineRef}
+                className="hero-headline hero-headline-size"
+                style={{ perspective: "1000px" }}
+              >
+                <span className="block">The Optimist</span>
+                <span className="block text-[#7EEFC4]">Inner Circle</span>
+              </h1>
+              <p
+                ref={subheadRef}
+                className="text-optimist-cream/80 text-[15px] sm:text-[17px] mt-5 max-w-[360px] leading-[1.5]"
+              >
+                Invite-only testing program for early believers
+              </p>
+            </div>
+            <div className="flex-1" />
+            <div
+              className="flex justify-center w-full pointer-events-none overflow-visible"
+              style={{ zIndex: 30 }}
+            >
+              <motion.div
+                className="relative flex items-end justify-center"
+                initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+                style={{ width: "100vw", flexShrink: 0 }}
+              >
+                <Image
+                  src={ASSETS.acHeroMobile}
+                  alt="Optimist AC"
+                  width={1050}
+                  height={700}
+                  className="object-contain w-full h-auto"
+                  priority
+                />
+              </motion.div>
+            </div>
+            <div className="pb-12" />
+          </div>
+        </>
+      )}
+
+      {/* DESKTOP */}
+      {(!isMounted || !isMobile) && (
+        <div
+          ref={parallaxContainerRef}
+          className="relative w-full h-full flex flex-col"
+          style={{ overflow: "visible" }}
+        >
+          <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
+            <Image
+              src={ASSETS.heroDesktopBg}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover object-center pointer-events-none"
+              priority
+            />
+            <video
+              ref={leafVideoRef}
+              src={LEAF_VIDEO_SRC}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute pointer-events-none"
+              style={LEAF_VIDEO_STYLE}
+            />
+          </div>
+          <div
+            ref={parallaxContentRef}
+            className="relative z-10 w-full h-full will-change-transform"
+          >
+            <div
+              ref={contentRef}
+              className="flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
+              style={{ paddingTop: "8vh" }}
+            >
+              <div className="flex flex-col gap-4">
+                <h1
+                  ref={headlineRef}
+                  className="hero-headline hero-headline-size"
+                  style={{ perspective: "1000px" }}
+                >
+                  <span className="block">The Optimist</span>
+                  <span className="block text-[#7EEFC4]">Inner Circle</span>
+                </h1>
+                <p
+                  ref={subheadRef}
+                  className="text-optimist-cream/70 text-[18px] lg:text-[20px] mt-2 max-w-[500px] leading-[1.5]"
+                >
+                  Invite-only testing program for early believers
+                </p>
+              </div>
+            </div>
+            <div
+              className="absolute left-0 right-0 flex justify-center pointer-events-none"
+              style={{ bottom: 0, transform: "translateY(65%)", zIndex: 30 }}
+            >
+              <div ref={imageRef}>
+                <motion.div
+                  className="relative flex items-end justify-center"
+                  initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+                  style={{
+                    width: "clamp(680px, 60vw, 1000px)",
+                    maxWidth: "1050px",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Image
+                    src={ASSETS.acHeroDesktop}
+                    alt="Optimist AC"
+                    width={1050}
+                    height={700}
+                    className="object-contain w-full h-auto"
+                    priority
+                  />
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+// =============================================================================
 // Main Component
 // =============================================================================
 
@@ -243,10 +514,6 @@ export default function InnerCircleClubClient() {
     }
   }, [tcAccepted, innerCircleVariant, addToCart, cart]);
 
-  const scrollToSections = useCallback(() => {
-    sectionsRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
   useEffect(() => {
     if (showTcModal) {
       document.body.style.overflow = "hidden";
@@ -266,23 +533,13 @@ export default function InnerCircleClubClient() {
     <div className="min-h-screen bg-white">
       <TopBar />
 
-      {/* Hero Banner */}
-      <button
-        type="button"
-        onClick={scrollToSections}
-        className="w-full cursor-pointer border-none p-0 bg-transparent block"
-      >
-        <img
-          src="/images/inner-circle-banner.jpg"
-          alt="The Optimist Inner Circle — A first-of-its-kind testing programme for Optimist air-conditioning systems, built for early believers. Learn more."
-          className="w-full block h-auto md:max-w-[75%] lg:max-w-[80%] md:mx-auto"
-        />
-      </button>
+      {/* Hero */}
+      <InnerCircleHero />
 
       {/* Content Sections */}
       <div
         ref={sectionsRef}
-        className="max-w-[760px] mx-auto px-4 sm:px-6 md:px-8 pt-10 sm:pt-14 md:pt-10 pb-10 sm:pb-14 md:pb-20"
+        className="max-w-[760px] mx-auto px-4 sm:px-6 md:px-8 pt-10 sm:pt-14 md:pt-30 pb-10 sm:pb-14 md:pb-20"
       >
         {/* <div className="mb-8 sm:mb-10 md:mb-14">
           <div className="text-[10px] tracking-[0.26em] uppercase text-optimist-blue-primary font-semibold mb-3">
@@ -298,54 +555,42 @@ export default function InnerCircleClubClient() {
           </p>
         </div> */}
 
-        {/* Section 1 */}
+        {/* Section 1 — About the Program */}
         <InfoSection
-          eyebrow="01 / About the Programme"
-          title="What is the Inner Circle?"
+          eyebrow="01 / About the Program"
+          title="What is the Optimist Inner Circle?"
         >
           <p className="mb-3">
-            The Optimist Inner Circle is an invite-only, closed beta programme
-            that gives a select group of people early access to Optimist's
-            air-conditioning system.
+            The Optimist Inner Circle is an invite-only program that gives a
+            select group of people early access to an Optimist AC.
           </p>
           <p className="mb-3">
-            Think of it as being part of the founding group. You get a fully
-            installed, working Optimist AC test unit in your home. In return,
-            you help us make it better by sharing your real-world experience.
+            Think of it as being part of the product creation journey. You get
+            an Optimist AC test unit installed in your home. In return, you help
+            us make it better by sharing your lived experience.
+          </p>
+          <p>
+            To learn more about Optimist, go here:{" "}
+            <a
+              href="https://www.optimist.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-optimist-blue-primary font-semibold underline underline-offset-2"
+            >
+              www.optimist.in
+            </a>
           </p>
         </InfoSection>
 
-        {/* Section 2 */}
-        <InfoSection eyebrow="02 / Our Intent" title="Why are we doing this?">
-          <p className="mb-3">
-            Great products are not built in a lab — they are built with real
-            people, in real homes, over real time.
-          </p>
-          <p className="mb-3">Your feedback will give us the opportunity to:</p>
-          <ul className="list-none p-0 my-2 mb-3 space-y-[5px]">
-            {[
-              "Evaluate performance across diverse real-world conditions",
-              "Collect usage data and diagnostics",
-              "Understand genuine day-to-day experiences",
-              "Identify and fix issues",
-            ].map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-sm text-[#3d4259] leading-[1.6]"
-              >
-                <span className="w-[5px] h-[5px] rounded-full bg-optimist-blue-primary flex-shrink-0 mt-[9px]" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </InfoSection>
-
-        {/* Section 3 */}
-        <InfoSection eyebrow="03 / Your Package" title="What do you get?">
+        {/* Section 2 — Your Package */}
+        <InfoSection
+          eyebrow="02 / Your Package"
+          title="What you get and what you have to do?"
+        >
           <p className="mb-3">
             Here is everything included in your Inner Circle membership:
           </p>
-          <ul className="list-none p-0 mt-3 flex flex-col gap-[5px]">
+          <ul className="list-none p-0 mt-3 mb-5 flex flex-col gap-[5px]">
             {PACKAGE_ITEMS.map((item) => (
               <li
                 key={item}
@@ -353,6 +598,41 @@ export default function InnerCircleClubClient() {
               >
                 <Check className="w-3 h-3 text-optimist-blue-primary flex-shrink-0 mt-[3px] stroke-[3]" />
                 <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mb-3">
+            You pay <strong className="text-[#0d0f1a]">Rs. 28,000</strong> for
+            the membership.
+          </p>
+          <p>
+            You give us feedback! And if you like what you experience, spread
+            the word 🙂
+          </p>
+        </InfoSection>
+
+        {/* Section 3 — Our Intent */}
+        <InfoSection eyebrow="03 / Our Intent" title="Why are we doing this?">
+          <p className="mb-3">
+            Great products are not built in a lab — they are built with real
+            people, in real homes.
+          </p>
+          <p className="mb-3">
+            We are committed to building the best AC&apos;s, designed just right
+            for India.
+          </p>
+          <p className="mb-3">Your feedback and usage data will help us:</p>
+          <ul className="list-none p-0 my-2 mb-3 space-y-[5px]">
+            {[
+              "Understand performance across diverse real-world conditions",
+              "Improve the Optimist to be the best for India",
+            ].map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 text-sm text-[#3d4259] leading-[1.6]"
+              >
+                <span className="w-[5px] h-[5px] rounded-full bg-optimist-blue-primary flex-shrink-0 mt-[9px]" />
+                {item}
               </li>
             ))}
           </ul>
@@ -372,11 +652,15 @@ export default function InnerCircleClubClient() {
           <div className="bg-[#f8f9fd] border border-[rgba(26,79,219,0.12)] rounded-xl px-5 sm:px-7 md:px-8 py-5 sm:py-6">
             <ul className="list-disc pl-4 space-y-4 text-[13px] sm:text-[14px] text-[#3d4259] leading-[1.7]">
               {TC_SUMMARY.map((item) => (
-                <li key={item.bold}>
-                  <strong className="text-[#0d0f1a] font-bold">
-                    {item.bold}
-                  </strong>{" "}
+                <li key={item.text.slice(0, 40)}>
                   {item.text}
+                  {"subItems" in item && item.subItems && (
+                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                      {item.subItems.map((sub) => (
+                        <li key={sub}>{sub}</li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
