@@ -1,23 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check, X } from "lucide-react";
-import { gsap } from "@/lib/gsap";
-import { useGSAP } from "@gsap/react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { useCart, getCartLines } from "@/contexts/CartContext";
+import { getCartLines, useCart } from "@/contexts/CartContext";
 import { useProducts } from "@/contexts/ProductsContext";
-import { removeFromCart as removeFromCartAPI } from "@/lib/shopify";
 import { ASSETS } from "@/lib/assets";
+import { gsap } from "@/lib/gsap";
+import { removeFromCart as removeFromCartAPI } from "@/lib/shopify";
+import { useGSAP } from "@gsap/react";
+import { motion } from "framer-motion";
+import { Check, X } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // =============================================================================
 // Constants
 // =============================================================================
 
 const PACKAGE_ITEMS = [
-  "Optimist AC test unit installed at your home (there may be site specific incidentals)",
-  "All maintenance and servicing for 5 years",
+  "Optimist test AC unit installed at your home (there may be site specific incidentals)",
+  "All maintenance and servicing for 8 years",
   "Real-time monitoring and diagnostics",
 ] as const;
 
@@ -29,11 +29,7 @@ const TC_SUMMARY = [
     text: "You can opt out of the program no-questions-asked within 30 days, and get a full refund of your membership fees.",
   },
   {
-    text: "The ownership of the test AC stays ours. At the end of 5 years, you can choose to:",
-    subItems: [
-      "Upgrade to the latest Optimist, at half the price",
-      "Continue your OIC membership at Rs. 2800/year till the life of the test AC",
-    ],
+    text: "The unit is deployed as part of the programme and is not being sold.",
   },
   {
     text: "The test AC is yours to use without interruption. Just don't relocate or modify without telling us!",
@@ -80,7 +76,7 @@ const TC_SECTIONS = [
   {
     num: 7,
     title: "Services and Consideration",
-    content: `<ul><li>A fee of \u20B925,000 (Rupees Twenty-Five Thousand only) (\u201cService Fee\u201d) is charged in connection with participation in the Programme.</li><li>The Service Fee is charged solely towards services associated with the Programme, including installation and setup, maintenance and servicing, testing support infrastructure, logistics and onboarding, monitoring, diagnostics and performance evaluation, as well as customer support and field operations.</li><li>The Service Fee represents consideration for services only and is not linked to, or reflective of, the value of the Unit. It shall not be construed as consideration for the sale or transfer of the Unit.</li><li>The Participant acknowledges that the Unit is deployed as part of the Programme without any sale consideration, and that the Service Fee relates exclusively to services and participation in the Programme.</li></ul>`,
+    content: `<ul><li>A fee of \u20B928,000 (Rupees Twenty-Eight Thousand only) (\u201cService Fee\u201d) is charged in connection with participation in the Programme.</li><li>The Service Fee is charged solely towards services associated with the Programme, including installation and setup, maintenance and servicing, testing support infrastructure, logistics and onboarding, monitoring, diagnostics and performance evaluation, as well as customer support and field operations.</li><li>The Service Fee represents consideration for services only and is not linked to, or reflective of, the value of the Unit. It shall not be construed as consideration for the sale or transfer of the Unit.</li><li>The Participant acknowledges that the Unit is deployed as part of the Programme without any sale consideration, and that the Service Fee relates exclusively to services and participation in the Programme.</li></ul>`,
   },
   {
     num: 8,
@@ -382,7 +378,7 @@ function InnerCircleHero() {
               >
                 <Image
                   src={ASSETS.acHeroMobile}
-                  alt="Optimist AC"
+                  alt="Optimist test AC"
                   width={1050}
                   height={700}
                   className="object-contain w-full h-auto"
@@ -466,7 +462,7 @@ function InnerCircleHero() {
                 >
                   <Image
                     src={ASSETS.acHeroDesktop}
-                    alt="Optimist AC"
+                    alt="Optimist test AC"
                     width={1050}
                     height={700}
                     className="object-contain w-full h-auto"
@@ -572,11 +568,11 @@ export default function InnerCircleClubClient() {
         >
           <p className="mb-3">
             The Optimist Inner Circle is an invite-only program that gives a
-            select group of people early access to an Optimist AC.
+            select group of people early access to an Optimist test AC.
           </p>
           <p className="mb-3">
             Think of it as being part of the product creation journey. You get
-            an Optimist AC test unit installed in your home. In return, you help
+            an Optimist test AC unit installed in your home. In return, you help
             us make it better by sharing your lived experience.
           </p>
           <p>
@@ -664,13 +660,13 @@ export default function InnerCircleClubClient() {
               {TC_SUMMARY.map((item) => (
                 <li key={item.text.slice(0, 40)}>
                   {item.text}
-                  {"subItems" in item && item.subItems && (
+                  {/* {"subItems" in item && item.subItems && (
                     <ul className="list-disc pl-5 mt-2 space-y-1">
                       {item.subItems.map((sub) => (
                         <li key={sub}>{sub}</li>
                       ))}
                     </ul>
-                  )}
+                  )} */}
                 </li>
               ))}
             </ul>
