@@ -16,29 +16,29 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // =============================================================================
 
 const PACKAGE_ITEMS = [
-  "Optimist test AC unit installed at your home (there may be site specific incidentals)",
+  "Optimist 1.5 Ton test AC installed at your home (there may be site specific incidentals)",
   "All maintenance and servicing for 8 years",
   "Real-time monitoring and diagnostics",
 ] as const;
 
 const TC_SUMMARY = [
   {
-    text: "The ₹28,000 OIC membership fees covers your full service experience — delivery, installation (other than site specific incidentals), service and support for up to 8 years.",
+    text: "The ₹28,000 OIC membership fees covers your full service experience — delivery, installation (other than site specific incidentals), service and support for 8 years.",
   },
   {
-    text: "You can opt out of the program no-questions-asked within 30 days, and get a full refund of your membership fee, subject to return of the unit in reasonable condition.",
+    text: "You can opt out of the program no-questions-asked within 30 days, and get a full refund of your membership fees.",
   },
   {
-    text: "The unit is deployed as part of the programme and is not being sold.",
+    text: "The ownership of the test AC stays ours. The test AC is deployed as part of the program and is not being sold.",
   },
   {
-    text: "The test AC is intended to remain installed and available for use during the program, subject to servicing, safety, and operational requirements.",
+    text: "The test AC is yours to use without interruption. Just don\u2019t relocate or modify without telling us!",
   },
   {
-    text: "We may need minimal access to the unit for servicing, upgrades, or safety.",
+    text: "We may need minimal access to the test AC for servicing, upgrades, or safety.",
   },
   {
-    text: "You get a test product that may have minor variance. We'll fix issues as they arise, but this isn't a finished commercial product yet.",
+    text: "The test AC you get may have minor variance. We\u2019ll fix issues as they arise, but this isn\u2019t a finished commercial product yet.",
   },
 ] as const;
 
@@ -568,12 +568,12 @@ export default function InnerCircleClubClient() {
         >
           <p className="mb-3">
             The Optimist Inner Circle is an invite-only program that gives a
-            select group of people early access to an Optimist AC as part of a controlled deployment and evaluation program.
+            select group of people early access to an Optimist AC.
           </p>
           <p className="mb-3">
             Think of it as being part of the product creation journey. You get
-            an Optimist test AC unit installed in your home. In return, you help
-            us make it better by sharing your lived experience.
+            an Optimist 1.5 Ton test AC installed in your home. In return, you
+            help us make it better by sharing your lived experience.
           </p>
           <p>
             To learn more about Optimist, go here:{" "}
@@ -608,7 +608,9 @@ export default function InnerCircleClubClient() {
             ))}
           </ul>
           <p className="mb-3">
-            A membership fee of <strong className="text-[#0d0f1a]">₹28,000</strong> is payable towards participation in the program and associated services.
+            You pay{" "}
+            <strong className="text-[#0d0f1a]">Rs. 28,000</strong> for the
+            membership.
           </p>
           <p>
             You give us feedback! And if you like what you experience, spread
