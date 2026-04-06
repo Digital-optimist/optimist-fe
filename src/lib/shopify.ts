@@ -1506,21 +1506,18 @@ export async function submitContactForm(
   };
 
   try {
-    const response = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+    // GAS doesn't handle CORS preflight (OPTIONS). Using text/plain avoids
+    // the preflight, and no-cors handles GAS's 302 redirect to a different origin.
+    // The tradeoff: we get an opaque response, so we assume success if no network error.
+    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
       method: "POST",
+      mode: "no-cors",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "text/plain",
       },
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      return {
-        success: false,
-        error: text || `Request failed (${response.status})`,
-      };
-    }
     return { success: true };
   } catch (error) {
     return {
