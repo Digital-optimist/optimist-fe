@@ -7,9 +7,15 @@ import { gsap } from "@/lib/gsap";
 import { removeFromCart as removeFromCartAPI } from "@/lib/shopify";
 import { useGSAP } from "@gsap/react";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, MapPin, Truck, AlertCircle, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  usePincodeCheck,
+  getDeliveryMessage,
+  isValidPincode,
+  getSavedPincode,
+} from "@/hooks/usePincodeCheck";
 
 // =============================================================================
 // Constants
@@ -485,11 +491,21 @@ function InnerCircleHero() {
 export default function InnerCircleClubClient() {
   const [tcAccepted, setTcAccepted] = useState(false);
   const [showTcModal, setShowTcModal] = useState(false);
+  const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [pincodeInput, setPincodeInput] = useState("");
   const sectionsRef = useRef<HTMLDivElement>(null);
+  const pincodeInputRef = useRef<HTMLInputElement>(null);
 
   const { cart, addToCart } = useCart();
   const { combinedProduct } = useProducts();
+  const {
+    checkPincode,
+    result: pincodeResult,
+    isLoading: isPincodeLoading,
+    isChecked: isPincodeChecked,
+    reset: resetPincode,
+  } = usePincodeCheck();
 
   const innerCircleVariant = useMemo(() => {
     if (!combinedProduct) return null;
@@ -520,8 +536,43 @@ export default function InnerCircleClubClient() {
     }
   }, [tcAccepted, innerCircleVariant, addToCart, cart]);
 
+  const handleJoinGated = useCallback(async () => {
+    if (!tcAccepted || !innerCircleVariant?.variantId) return;
+
+    const saved = getSavedPincode();
+    setPincodeInput(saved ?? "");
+    resetPincode();
+
+    setShowPincodeModal(true);
+
+    // If a pincode was previously saved, auto-check it so result shows immediately
+    if (saved) {
+      await checkPincode(saved);
+    }
+  }, [tcAccepted, innerCircleVariant, checkPincode, resetPincode]);
+
+  const handlePincodeCheck = useCallback(async () => {
+    if (!pincodeInput.trim() || isPincodeLoading) return;
+    await checkPincode(pincodeInput.trim());
+  }, [pincodeInput, isPincodeLoading, checkPincode]);
+
+  const handlePincodeInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+      setPincodeInput(val);
+      if (isPincodeChecked) resetPincode();
+    },
+    [isPincodeChecked, resetPincode],
+  );
+
   useEffect(() => {
-    if (showTcModal) {
+    if (showPincodeModal) {
+      setTimeout(() => pincodeInputRef.current?.focus(), 100);
+    }
+  }, [showPincodeModal]);
+
+  useEffect(() => {
+    if (showTcModal || showPincodeModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -529,7 +580,7 @@ export default function InnerCircleClubClient() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showTcModal]);
+  }, [showTcModal, showPincodeModal]);
 
   // =========================================================================
   // Render
@@ -754,6 +805,149 @@ export default function InnerCircleClubClient() {
         </div>
       )}
 
+      {/* Pincode Check Modal */}
+      {showPincodeModal && (
+        <div
+          className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm sm:p-4"
+          onClick={() => {
+            setShowPincodeModal(false);
+            resetPincode();
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 40, scale: 0.97 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-[440px] shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="relative px-6 pt-6 pb-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPincodeModal(false);
+                  resetPincode();
+                }}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#f0f1f5] transition-colors bg-transparent border-none cursor-pointer"
+              >
+                <X className="w-4 h-4 text-[#3d4259]" />
+              </button>
+
+              <div className="w-10 h-10 rounded-xl bg-[#2563eb]/10 flex items-center justify-center mb-4">
+                <MapPin className="w-5 h-5 text-optimist-blue-primary" />
+              </div>
+              <h2 className="text-[18px] sm:text-[20px] font-bold text-[#0d0f1a] tracking-[-0.02em] leading-tight">
+                Confirm Your Delivery Area
+              </h2>
+              <p className="text-[13px] sm:text-[14px] text-[#6b7280] mt-1.5 mb-5 leading-relaxed">
+                Enter your pincode to check if we can deliver to your location.
+              </p>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 pb-5">
+              <label className="block text-[11px] font-semibold text-[#555] uppercase tracking-[0.08em] mb-2">
+                Pincode
+              </label>
+              <div className="flex gap-2.5">
+                <input
+                  ref={pincodeInputRef}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  placeholder="e.g. 560001"
+                  value={pincodeInput}
+                  onChange={handlePincodeInputChange}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handlePincodeCheck();
+                  }}
+                  className={`flex-1 h-[46px] px-4 text-[15px] font-medium text-[#0d0f1a] rounded-xl border outline-none transition-all placeholder:text-[#b0b4be] placeholder:font-normal ${
+                    isPincodeChecked && !pincodeResult?.serviceable
+                      ? "border-red-300 bg-red-50/50"
+                      : isPincodeChecked && pincodeResult?.serviceable
+                        ? "border-emerald-300 bg-emerald-50/50"
+                        : "border-[#ddd] bg-[#f8f9fb] focus:bg-white focus:border-optimist-blue-primary focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={handlePincodeCheck}
+                  disabled={
+                    isPincodeLoading ||
+                    pincodeInput.length < 6 ||
+                    !isValidPincode(pincodeInput)
+                  }
+                  className="h-[46px] min-w-[80px] px-5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap disabled:opacity-30 disabled:cursor-not-allowed bg-optimist-blue-primary text-white hover:enabled:bg-optimist-blue-deep active:enabled:scale-[0.97]"
+                >
+                  {isPincodeLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin mx-auto" />
+                  ) : (
+                    "Check"
+                  )}
+                </button>
+              </div>
+
+              {/* Result */}
+              {isPincodeChecked && !isPincodeLoading && pincodeResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                >
+                  <div
+                    className={`flex items-center gap-2.5 mt-3.5 px-3.5 py-3 rounded-xl text-[13px] leading-snug font-medium ${
+                      pincodeResult.serviceable
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                        : "bg-red-50 text-red-600 border border-red-200/60"
+                    }`}
+                  >
+                    {pincodeResult.serviceable ? (
+                      <Truck className="w-4 h-4 flex-shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    )}
+                    <span>{getDeliveryMessage(pincodeResult)}</span>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 pb-6 pt-1">
+              {isPincodeChecked && pincodeResult?.serviceable ? (
+                <motion.button
+                  type="button"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: 0.1 }}
+                  onClick={() => {
+                    setShowPincodeModal(false);
+                    handleJoin();
+                  }}
+                  disabled={isPaymentLoading}
+                  className="w-full py-3.5 rounded-xl bg-optimist-blue-primary text-white text-[13px] font-bold tracking-[0.04em] uppercase border-none cursor-pointer hover:bg-optimist-blue-deep transition-all disabled:opacity-50 shadow-[0_2px_12px_rgba(37,99,235,0.25)]"
+                >
+                  {isPaymentLoading
+                    ? "Opening checkout…"
+                    : "Proceed to Payment →"}
+                </motion.button>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full py-3.5 rounded-xl bg-[#f0f1f5] text-[#b0b4be] text-[13px] font-bold tracking-[0.04em] uppercase border-none cursor-not-allowed"
+                >
+                  Enter pincode to continue
+                </button>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       <div className="h-[100px] sm:h-[30px] md:h-0" />
 
       {/* Fixed Accept Bar */}
@@ -780,7 +974,7 @@ export default function InnerCircleClubClient() {
           </span>
         </label>
         <button
-          onClick={handleJoin}
+          onClick={handleJoinGated}
           disabled={
             !tcAccepted || isPaymentLoading || !innerCircleVariant?.variantId
           }

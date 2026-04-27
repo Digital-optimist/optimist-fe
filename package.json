@@ -5,7 +5,8 @@
   "packageManager": "yarn@4.5.1",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "prebuild": "node scripts/generate-pincodes.mjs",
+    "build": "yarn prebuild && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",

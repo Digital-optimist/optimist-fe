@@ -33,6 +33,7 @@ import { useJudgeMeRating } from "@/lib/judgeme";
 import { type Product, type VariantRichText } from "@/lib/shopify";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { useProductPageContent } from "@/hooks/useMetaobjectContent";
+import PincodeChecker from "@/components/ui/PincodeChecker";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -797,6 +798,11 @@ export default function ProductsPageClient({
                     )}
                   </div>
                 )}
+              </motion.div>
+
+              {/* Pincode Delivery Check */}
+              <motion.div variants={heroInfoItemVariants}>
+                <PincodeChecker />
               </motion.div>
 
               {/* Action Buttons - Desktop */}
