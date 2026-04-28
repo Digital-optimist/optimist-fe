@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useToast } from "@/components/ui/Toast";
 import { ASSETS } from "@/lib/assets";
+import { useJudgeMeRating } from "@/lib/judgeme";
 
 function ACModel() {
   const { scene, animations } = useGLTF("/Product Card Animation 01.glb");
@@ -103,56 +104,28 @@ function ACModelCanvas() {
   );
 }
 
-const capacityTabs = [
-  // { id: "1", label: "1 TON", tonnage: "1" },
-  { id: "1.5", label: "1.5 TON", tonnage: "1.5" },
-  // { id: "2", label: "2 TON", tonnage: "2" },
+// Fallback tab shown while Shopify data is loading
+const FALLBACK_TABS = [
+  { id: "fallback-1.5", label: "1.5 TON" },
 ];
 
-// Fallback prices when Shopify data is unavailable (matching Shopify prices)
-const FALLBACK_PRICES: Record<string, number> = {
-  "1": 30000,
-  "1.5": 40000,
-  "2": 50000,
+// Static copy keyed by variant ID — used for headline/tagline/features
+const VARIANT_COPY: Record<string, {
+  headline: string;
+  tagline: string;
+  features: string[];
+  savings: string;
+}> = {};
+
+const DEFAULT_COPY = {
+  headline: "Designed for medium rooms.",
+  tagline: "Perfect balance of power.",
+  features: ["Engineered to cool", "Built to save", "Easy to maintain"],
+  savings: "For long term savings",
 };
 
-const productDetails = {
-  "1": {
-    id: "u10x",
-    rating: "4.8",
-    headline: "Designed for compact rooms.",
-    tagline: "Runs lighter. Costs less.",
-    features: ["Engineered to cool", "Built to save", "Easy to maintain"],
-    savings: "For long term savings",
-  },
-  "1.5": {
-    id: "u15x",
-    rating: "4.9",
-    headline: "Designed for medium rooms.",
-    tagline: "Perfect balance of power.",
-    features: ["Engineered to cool", "Built to save", "Easy to maintain"],
-    savings: "For long term savings",
-  },
-  "2": {
-    id: "u20x",
-    rating: "4.7",
-    headline: "Designed for large rooms.",
-    tagline: "Maximum cooling power.",
-    features: ["Engineered to cool", "Built to save", "Easy to maintain"],
-    savings: "For long term savings",
-  },
-};
-
-// Helper to format price
 function formatPrice(price: number): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-    .format(price)
-    .replace("₹", "Rs ");
+  return new Intl.NumberFormat("en-IN").format(price);
 }
 
 function ACVideo() {
@@ -207,29 +180,62 @@ function ACVideo() {
 }
 
 export function ProductPickerSection() {
-  const [activeTab, setActiveTab] = useState("1.5");
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { showToast } = useToast();
-  const { getPriceByTonnage, isLoading: isPriceLoading } = useProducts();
+  const { combinedProduct, isLoading: isPriceLoading } = useProducts();
 
-  // Get active tab's tonnage
-  const activeTonnage = useMemo(() => {
-    const tab = capacityTabs.find((t) => t.id === activeTab);
-    return tab?.tonnage || "1.5";
-  }, [activeTab]);
-
-  // Get price from Shopify or fallback
-  const activePrice = useMemo(() => {
-    const shopifyPrice = getPriceByTonnage(activeTonnage);
-    return (
-      shopifyPrice ??
-      FALLBACK_PRICES[activeTab as keyof typeof FALLBACK_PRICES] ??
-      0
+  // Get AC-only variants (same filter as products page — excludes Inner Circle)
+  const acVariants = useMemo(() => {
+    if (!combinedProduct) return [];
+    return combinedProduct.allVariants.filter(
+      (v) => !v.productTitle.toLowerCase().includes("inner circle"),
     );
-  }, [activeTonnage, getPriceByTonnage, activeTab]);
+  }, [combinedProduct]);
+
+  // Build tabs dynamically from real Shopify variants
+  const capacityTabs = useMemo(() => {
+    if (acVariants.length > 0) {
+      return acVariants.map((v) => ({
+        id: v.id,
+        label: v.name.toUpperCase(),
+      }));
+    }
+    return FALLBACK_TABS;
+  }, [acVariants]);
+
+  // Track selected tab by variant ID; default to first variant
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (capacityTabs.length > 0 && !capacityTabs.find((t) => t.id === activeTab)) {
+      setActiveTab(capacityTabs[0].id);
+    }
+  }, [capacityTabs, activeTab]);
+
+  // Select variant directly by ID — no tonnage string matching
+  const activeVariant = useMemo(() => {
+    return acVariants.find((v) => v.id === activeTab) ?? acVariants[0] ?? undefined;
+  }, [acVariants, activeTab]);
+
+  const activePrice = activeVariant?.price ?? 0;
+  const activeCompareAtPrice = activeVariant?.compareAtPrice ?? null;
+
+  const discountPercent = useMemo(() => {
+    if (activeCompareAtPrice && activeCompareAtPrice > activePrice) {
+      return Math.round(
+        ((activeCompareAtPrice - activePrice) / activeCompareAtPrice) * 100,
+      );
+    }
+    return 0;
+  }, [activePrice, activeCompareAtPrice]);
+
+  // Real rating from Judge.me — use productId same as inner-circle/products page
+  const activeProductId = activeVariant?.productId;
+  const { rating: judgeRating, count: judgeCount } =
+    useJudgeMeRating(activeProductId);
 
   const handleShare = async () => {
     try {
@@ -292,8 +298,7 @@ export function ProductPickerSection() {
     { scope: sectionRef },
   );
 
-  const activeProduct =
-    productDetails[activeTab as keyof typeof productDetails];
+  const activeProduct = (activeTab && VARIANT_COPY[activeTab]) ? VARIANT_COPY[activeTab] : DEFAULT_COPY;
 
   return (
     <section
@@ -380,18 +385,51 @@ export function ProductPickerSection() {
                 {/* Top Group: Rating, Headline, Features - 24px spacing */}
                 <div className="flex flex-col gap-6">
                   {/* Rating Badge */}
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm w-fit">
-                    <Image
-                      src={ASSETS.goldenStar}
-                      alt="Rating"
-                      width={20}
-                      height={20}
-                      className="w-5 h-5"
-                    />
-                    <span className="text-sm font-semibold text-gray-900">
-                      {activeProduct.rating}
-                    </span>
-                  </div>
+                  {judgeCount > 0 && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm w-fit">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const filled = judgeRating >= star;
+                          const half = !filled && judgeRating >= star - 0.5;
+                          return (
+                            <svg
+                              key={star}
+                              className="w-4 h-4"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              {half && (
+                                <defs>
+                                  <linearGradient
+                                    id={`picker-halfStar-${star}`}
+                                  >
+                                    <stop offset="50%" stopColor="#F5A623" />
+                                    <stop offset="50%" stopColor="#D1D5DB" />
+                                  </linearGradient>
+                                </defs>
+                              )}
+                              <path
+                                fill={
+                                  filled
+                                    ? "#F5A623"
+                                    : half
+                                      ? `url(#picker-halfStar-${star})`
+                                      : "#D1D5DB"
+                                }
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                              />
+                            </svg>
+                          );
+                        })}
+                      </div>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {judgeRating.toFixed(1)}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        ({new Intl.NumberFormat("en-IN").format(judgeCount)})
+                      </span>
+                    </div>
+                  )}
 
                   {/* Headline */}
                   <div>
@@ -432,13 +470,26 @@ export function ProductPickerSection() {
 
                 {/* Bottom: Price and CTA */}
                 <div className="flex flex-row items-center gap-6 md:gap-8 mt-8 lg:mt-0">
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
                     {isPriceLoading ? (
                       <div className="h-6 w-28 bg-gray-200 animate-pulse rounded" />
                     ) : (
-                      <span className="text-lg md:text-[20px] md:leading-[20px] font-[400] text-gray-900">
-                        {formatPrice(activePrice)}
-                      </span>
+                      <div className="flex flex-wrap items-baseline gap-2">
+                        <span className="text-lg md:text-[20px] md:leading-[20px] font-semibold text-gray-900">
+                          Rs {formatPrice(activePrice)}.00
+                        </span>
+                        {activeCompareAtPrice &&
+                          activeCompareAtPrice > activePrice && (
+                            <>
+                              <span className="text-sm md:text-base text-gray-400 line-through">
+                                Rs {formatPrice(activeCompareAtPrice)}
+                              </span>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#E8F5E9] text-[#2E7D32]">
+                                {discountPercent}% off
+                              </span>
+                            </>
+                          )}
+                      </div>
                     )}
                     <span className="text-xs md:text-sm text-gray-500">
                       {activeProduct.savings}

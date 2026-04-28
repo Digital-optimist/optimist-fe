@@ -97,10 +97,6 @@ const abcSolar = localFont({
   display: "swap",
 });
 
-// S3 bucket URL for assets (from environment variable)
-const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL || "";
-const faviconUrl = `${S3_BUCKET_URL}/${encodeURIComponent("Favicon_Optimist_32px X 32px.png")}`;
-
 export const metadata: Metadata = {
   title: {
     default: "Optimist | Premium Air Conditioners",
@@ -118,9 +114,9 @@ export const metadata: Metadata = {
     "ISEER",
   ],
   icons: {
-    icon: faviconUrl,
-    shortcut: faviconUrl,
-    apple: faviconUrl,
+    icon: "/icons/Favicon_Optimist_32px X 32px.png",
+    shortcut: "/icons/Favicon_Optimist_32px X 32px.png",
+    apple: "/icons/Favicon_Optimist_32px X 32px.png",
   },
 };
 

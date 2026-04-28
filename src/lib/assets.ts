@@ -1,7 +1,3 @@
-/**
- * S3 Assets Configuration
- * All static assets are stored in the S3 bucket configured via environment variable
- */
 import favicon from "../../public/icons/Favicon_Optimist_32px X 32px.png";
 
 const S3_BUCKET_URL = "https://optimist-fe-assets.s3.amazonaws.com";
