@@ -114,9 +114,12 @@ export const metadata: Metadata = {
     "ISEER",
   ],
   icons: {
-    icon: "/icons/Favicon_Optimist_32px X 32px.png",
-    shortcut: "/icons/Favicon_Optimist_32px X 32px.png",
-    apple: "/icons/Favicon_Optimist_32px X 32px.png",
+    icon: [
+      { url: "/icons/favicon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icons/favicon.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/icons/favicon.png",
+    apple: "/icons/apple-touch-icon.png",
   },
 };
 
