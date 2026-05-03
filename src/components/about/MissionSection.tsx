@@ -141,7 +141,7 @@ export function MissionSection() {
                     ))}
                   </div>
                   <p className="font-bold text-5xl sm:text-6xl md:text-[64px] lg:text-[72px] xl:text-[80px] leading-none">
-                    6.02
+                    6.05
                   </p>
                 </div>
               </div>

@@ -19,7 +19,7 @@ const COMPARISON_DATA = [
   },
   {
     category: "Turbo cooling",
-    optimist: "Turbo+ delivers real 2 Ton cooling in a 1.5 Ton AC",
+    optimist: "Turbo+ delivers real 2 Ton cooling in a 1.4 Ton AC",
     market: "Turbo mostly increases fan speed",
   },
   {

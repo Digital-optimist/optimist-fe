@@ -15,7 +15,7 @@ export default function SaleAssistButton() {
         style={{
           position: "fixed",
           right: "5px",
-          top: "30%",
+          top: "40%",
           background: "#fff",
           borderRadius: "12px",
           boxShadow: "0 2px 8px rgba(0,0,0,.15)",
@@ -56,10 +56,24 @@ export default function SaleAssistButton() {
             }}
           />
         </div>
-        <span style={{ fontSize: "12px", fontWeight: 600, color: "#333", lineHeight: 1.2 }}>
+        <span
+          style={{
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#333",
+            lineHeight: 1.2,
+          }}
+        >
           Live
         </span>
-        <span style={{ color: "green", fontSize: "12px", fontWeight: 700, lineHeight: 1.2 }}>
+        <span
+          style={{
+            color: "green",
+            fontSize: "12px",
+            fontWeight: 700,
+            lineHeight: 1.2,
+          }}
+        >
           Demo
         </span>
       </div>

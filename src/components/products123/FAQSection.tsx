@@ -80,7 +80,7 @@ const FAQ_DATA: FAQItem[] = [
     id: "cooling-capacity",
     question: "What cooling capacity does the Optimist AC offer?",
     answer:
-      "The Optimist AC is available in 1 Ton and 1.5 Ton variants, designed to cool rooms efficiently even at extreme outdoor temperatures of up to 50°C. Our inverter compressor technology ensures consistent cooling while keeping energy consumption low.",
+      "The Optimist AC is available in 1 Ton and 1.4 Ton variants, designed to cool rooms efficiently even at extreme outdoor temperatures of up to 50°C. Our inverter compressor technology ensures consistent cooling while keeping energy consumption low.",
     category: "Product & Performance",
   },
   {
@@ -133,9 +133,7 @@ const FAQ_DATA: FAQItem[] = [
 
 export function FAQSection() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
-  const [openItemId, setOpenItemId] = useState<string | null>(
-    FAQ_DATA[0].id
-  );
+  const [openItemId, setOpenItemId] = useState<string | null>(FAQ_DATA[0].id);
 
   const filteredFAQs =
     activeCategory === "All"
@@ -157,8 +155,7 @@ export function FAQSection() {
             </h2>
             <p className="text-sm md:text-base text-black/60 leading-relaxed">
               Got questions? We&apos;ve gathered the most common ones here
-              &mdash; along with simple, helpful answers to guide you
-              through.
+              &mdash; along with simple, helpful answers to guide you through.
             </p>
           </div>
           <Link
@@ -197,9 +194,7 @@ export function FAQSection() {
               <div
                 key={faq.id}
                 className={
-                  index > 0
-                    ? "border-t border-[#EAECF0] pt-6 mt-6"
-                    : ""
+                  index > 0 ? "border-t border-[#EAECF0] pt-6 mt-6" : ""
                 }
               >
                 <button

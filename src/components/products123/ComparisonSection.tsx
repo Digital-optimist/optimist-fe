@@ -19,7 +19,7 @@ const COMPARISON_DATA = [
   },
   {
     category: "Turbo cooling",
-    optimist: "Turbo+ delivers real 2 Ton cooling in a 1.5 Ton AC",
+    optimist: "Turbo+ delivers real 2 Ton cooling in a 1.4 Ton AC",
     market: "Turbo mostly increases fan speed",
   },
   {
@@ -195,10 +195,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
           {/* Comparison Rows - Each row contains both benefit and drawback */}
           <div ref={rowsRef} className="flex flex-col gap-3 md:gap-6">
             {COMPARISON_DATA.map((item, index) => (
-              <div
-                key={index}
-                className="comparison-row flex items-stretch"
-              >
+              <div key={index} className="comparison-row flex items-stretch">
                 {/* Left - Benefit */}
                 <div className="w-1/2 flex justify-end items-stretch px-2 sm:px-4 md:px-4 lg:px-6 xl:px-8">
                   <div className="flex items-center justify-end gap-1.5 sm:gap-2 md:gap-2.5 bg-white/[0.12] rounded-lg md:rounded-xl px-2 sm:px-3 md:px-3 py-1 sm:py-1.5 md:py-2 w-full md:w-fit md:max-w-[320px]">
