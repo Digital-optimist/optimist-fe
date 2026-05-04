@@ -17,7 +17,7 @@ export default function SnapmintLoader(): null {
   const isProductsRoute = pathname?.startsWith("/products");
 
   useEffect(() => {
-    if (!isProductsRoute || true) return;
+    if (!isProductsRoute) return;
 
     let timeoutId: NodeJS.Timeout;
 

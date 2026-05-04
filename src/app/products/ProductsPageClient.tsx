@@ -1145,6 +1145,7 @@ export default function ProductsPageClient({
             id: p.id,
             label: p.title,
           }))}
+          productId={selectedVariant?.productId || product?.id}
         />
       </motion.div>
 

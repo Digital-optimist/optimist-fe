@@ -410,8 +410,7 @@ const WriteReviewModal = memo(function WriteReviewModal({
     [name, email, rating, title, body, onClose, productId, selectedProductId],
   );
 
-  const isValid =
-    rating > 0 && name.trim() && email.trim() && body.trim();
+  const isValid = rating > 0 && name.trim() && email.trim() && body.trim();
 
   return (
     <AnimatePresence>
@@ -594,10 +593,10 @@ export const ReviewsSection = memo(function ReviewsSection({
   productId?: string;
   products?: ProductOption[];
 }) {
+  console.log({ productId });
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
-  const [reviewsData, setReviewsData] =
-    useState<ReviewsSummary>(EMPTY_SUMMARY);
+  const [reviewsData, setReviewsData] = useState<ReviewsSummary>(EMPTY_SUMMARY);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -661,10 +660,7 @@ export const ReviewsSection = memo(function ReviewsSection({
             {/* Content: Summary + Reviews Grid */}
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2
-                  size={32}
-                  className="animate-spin text-black/30"
-                />
+                <Loader2 size={32} className="animate-spin text-black/30" />
               </div>
             ) : reviewsData.reviews.length > 0 ? (
               <div className="flex flex-col lg:flex-row items-start gap-6 md:gap-8">
