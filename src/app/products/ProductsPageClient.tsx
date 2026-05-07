@@ -605,7 +605,7 @@ export default function ProductsPageClient({
                 className="flex items-center gap-2"
               >
                 <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[rgba(52,120,246,0.12)] text-[#3478F6] text-xs md:text-sm font-normal rounded-full shadow-[inset_0px_-2px_4px_0px_#ccdeff]">
-                  #PROVEN
+                  India’s Real AC
                 </span>
                 {isOutOfStock && (
                   <span className="inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-red-100 text-red-600 text-xs md:text-sm font-medium rounded-full">
@@ -934,7 +934,7 @@ export default function ProductsPageClient({
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                      Description
+                      Intelligent Features
                     </h3>
                     <svg
                       className="w-5 h-5 text-black transition-transform group-open:rotate-180"
@@ -984,48 +984,12 @@ export default function ProductsPageClient({
                 className="h-px bg-gray-200 w-full"
               />
 
-              {/* Warranty Return Accordion */}
-              <motion.div variants={heroInfoItemVariants}>
-                <details className="group">
-                  <summary className="flex items-center justify-between cursor-pointer py-2">
-                    <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                      Warranty & Return
-                    </h3>
-                    <svg
-                      className="w-5 h-5 text-black transition-transform group-open:rotate-180"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </summary>
-                  <RichTextContent
-                    node={getVariantRichText(
-                      pageContent?.warrantyReturnInfo,
-                      selectedVariant?.tonnage ?? "1.5",
-                    )}
-                  />
-                </details>
-              </motion.div>
-
-              {/* Divider */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="h-px bg-gray-200 w-full"
-              />
-
               {/* More Info Accordion */}
               <motion.div variants={heroInfoItemVariants}>
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
-                      More Info
+                      Product Specs
                     </h3>
                     <svg
                       className="w-5 h-5 text-black transition-transform group-open:rotate-180"
@@ -1049,6 +1013,42 @@ export default function ProductsPageClient({
                   />
                 </details>
               </motion.div>
+
+              {/* Divider */}
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="h-px bg-gray-200 w-full"
+              />
+
+              {/* Warranty Return Accordion */}
+              <motion.div variants={heroInfoItemVariants}>
+                <details className="group">
+                  <summary className="flex items-center justify-between cursor-pointer py-2">
+                    <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
+                      Warranty
+                    </h3>
+                    <svg
+                      className="w-5 h-5 text-black transition-transform group-open:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </summary>
+                  <RichTextContent
+                    node={getVariantRichText(
+                      pageContent?.warrantyReturnInfo,
+                      selectedVariant?.tonnage ?? "1.5",
+                    )}
+                  />
+                </details>
+              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -1065,7 +1065,7 @@ export default function ProductsPageClient({
       </motion.div>
 
       {/* Result Section */}
-      <motion.div
+      {/* <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.15 }}
@@ -1075,7 +1075,7 @@ export default function ProductsPageClient({
           heading={pageContent?.resultSection.sectionHeading}
           items={pageContent?.resultSection.items}
         />
-      </motion.div>
+      </motion.div> */}
 
       {/* Customer Videos Section */}
       <CustomerVideosSection customers={pageContent?.customerReviews} />
@@ -1150,14 +1150,14 @@ export default function ProductsPageClient({
       </motion.div>
 
       {/* Built For Section */}
-      <motion.div
+      {/* <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <BuiltForSection />
-      </motion.div>
+      </motion.div> */}
 
       {/* Mobile Fixed Footer - appears when mobile image gallery scrolls out of viewport */}
       <motion.div

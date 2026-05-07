@@ -77,14 +77,14 @@ const HeatExchangerCard = memo(function HeatExchangerCard() {
       variants={cardVariants}
       className="relative w-full lg:flex-1 h-[298px] lg:h-[405px] rounded-[20px] overflow-hidden shadow-[0px_4px_30px_0px_rgba(0,0,0,0.12)] bg-white"
     >
-      {/* Mobile: centered image, Desktop: image pushed right */}
-      <div className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-auto lg:right-0 top-2 lg:top-[17px] w-[283px] h-[183px] lg:w-[78%] lg:h-[343px]">
+      {/* Image: horizontally centered, anchored to top */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-4 lg:top-6 w-[283px] h-[153px] lg:w-[78%] lg:h-[303px]">
         <Image
           src={ASSETS.insideOptimistHeatExchanger}
           alt="Microchannel Heat Exchanger"
           fill
-          className="object-cover"
-          sizes="(min-width: 1024px) 514px, 283px"
+          className="object-contain"
+          sizes="(min-width: 1024px) 540px, 283px"
         />
       </div>
 
@@ -121,12 +121,15 @@ const CompressorCard = memo(function CompressorCard() {
       </div>
 
       {/* Text - vertically centered, offset upward */}
-      <div className="absolute left-4 lg:left-5 top-[calc(50%-131.5px)] lg:top-[calc(50%-114.5px)] -translate-y-1/2 flex flex-col gap-3">
+      <div className="absolute left-4 lg:left-5 top-[calc(50%-111.5px)] lg:top-[calc(50%-94.5px)] -translate-y-1/2 flex flex-col gap-3">
         <h3 className="font-display font-semibold lg:font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal w-[252px] lg:w-[300px]">
           Dual-Rotary Inverter Compressor
         </h3>
         <p className="text-[14px] lg:text-[16px] text-black/60 leading-normal w-[252px] lg:w-[256px]">
-          <span>Balanced compression for stable cooling and </span>
+          <span>
+            Higher displacement with balanced compression for faster, stable
+            cooling and{" "}
+          </span>
           <span className="font-bold text-black">lower electricity bills.</span>
         </p>
       </div>
@@ -153,7 +156,7 @@ const ExpansionValveCard = memo(function ExpansionValveCard() {
       </div>
 
       {/* Text - vertically centered, offset upward */}
-      <div className="absolute left-4 lg:left-5 top-[calc(50%-143.5px)] lg:top-[calc(50%-131.5px)] -translate-y-1/2 flex flex-col gap-3">
+      <div className="absolute left-4 lg:left-5 top-[calc(50%-123.5px)] lg:top-[calc(50%-121.5px)] -translate-y-1/2 flex flex-col gap-3">
         <h3 className="font-display font-semibold lg:font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal w-[252px] lg:w-[355px]">
           Electronic Expansion Valve
         </h3>

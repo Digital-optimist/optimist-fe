@@ -700,7 +700,27 @@ function ContactForm({ onSuccess }: ContactFormProps) {
               </svg>
             </div>
             <span className="text-gray-600 text-sm leading-relaxed">
-              Your information stays private. Always.
+              I have read and agree to the{" "}
+              <a
+                href="/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 font-medium hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Privacy Policy
+              </a>{" "}
+              and{" "}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 font-medium hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Terms of Service
+              </a>
+              .
             </span>
           </label>
           {errors.consent && (
@@ -825,6 +845,9 @@ export default function ContactPage() {
                       >
                         81 4748 7070
                       </a>
+                    </p>
+                    <p className="text-gray-500 text-base">
+                      Business Hours: 10:00 am to 6:00 pm
                     </p>
                   </div>
                   <div>
@@ -957,13 +980,13 @@ export default function ContactPage() {
           </div>
 
           {/* Footer Micro Line */}
-          <div className="mt-16 pt-8 border-t border-gray-100 text-center">
+          {/* <div className="mt-16 pt-8 border-t border-gray-100 text-center">
             <p className="text-gray-400 text-sm">
               <span className="font-semibold text-gray-500">Optimist</span>
               <span className="mx-2">·</span>
               Engineered for real heat. Built for real life.
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -153,7 +153,9 @@ interface ExpertTestimonialsSectionProps {
 }
 
 export const ExpertTestimonialsSection = memo(
-  function ExpertTestimonialsSection({ experts }: ExpertTestimonialsSectionProps) {
+  function ExpertTestimonialsSection({
+    experts,
+  }: ExpertTestimonialsSectionProps) {
     const TESTIMONIALS: ExpertTestimonial[] = useMemo(() => {
       if (experts && experts.length > 0) {
         return experts.map((e, i) => ({
@@ -161,7 +163,9 @@ export const ExpertTestimonialsSection = memo(
           name: e.name,
           company: e.profession,
           quote: e.review,
-          image: e.imageUrl ?? FALLBACK_TESTIMONIALS[i % FALLBACK_TESTIMONIALS.length].image,
+          image:
+            e.imageUrl ??
+            FALLBACK_TESTIMONIALS[i % FALLBACK_TESTIMONIALS.length].image,
         }));
       }
       return FALLBACK_TESTIMONIALS;
@@ -306,8 +310,8 @@ export const ExpertTestimonialsSection = memo(
           className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 mb-10 md:mb-14 lg:mb-16"
         >
           <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-center text-black leading-tight tracking-wide md:tracking-normal">
-            <span className="text-[#3478F6]">Industry Experts </span>
-            Agree too
+            <span className="text-[#3478F6]">Reviewed by </span>
+            Industry Experts
           </h2>
         </div>
 

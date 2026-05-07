@@ -86,14 +86,19 @@ export default function AccountLayout({
         }}
       >
         {/* Banner Text */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="absolute left-[16px] sm:left-[24px] lg:left-[80px] top-1/2 -translate-y-1/2 font-display font-bold text-[24px] sm:text-[32px] lg:text-[48px] text-white leading-[1.15] max-w-[180px] sm:max-w-[260px] lg:max-w-[450px]"
+          className="absolute left-[16px] sm:left-[24px] lg:left-[80px] top-1/2 -translate-y-1/2 flex flex-col gap-1 sm:gap-2 max-w-[180px] sm:max-w-[260px] lg:max-w-[450px]"
         >
-          The weather&apos;s in good hands.
-        </motion.p>
+          <p className="font-display text-[20px] sm:text-[24px] lg:text-[32px] text-white leading-none">
+            Hello,
+          </p>
+          <p className="font-display font-bold text-[28px] sm:text-[36px] lg:text-[48px] text-white leading-[1.15]">
+            {customerName}
+          </p>
+        </motion.div>
 
         {/* Decorative Star Image */}
         <motion.div
@@ -205,11 +210,7 @@ export default function AccountLayout({
           transition={{ duration: 0.5, delay: 0.2 }}
           className="hidden lg:block w-[260px] xl:w-[300px] min-h-[calc(100vh-230px)] border-r border-[#E5E5E5] pr-6 xl:pr-8 py-10 flex-shrink-0"
         >
-          <AccountSidebar
-            activeTab={activeTab}
-            customerName={customerName}
-            onTabClick={() => {}}
-          />
+          <AccountSidebar activeTab={activeTab} onTabClick={() => {}} />
         </motion.aside>
 
         {/* Sidebar - Mobile */}
@@ -236,7 +237,6 @@ export default function AccountLayout({
               </div>
               <AccountSidebar
                 activeTab={activeTab}
-                customerName={customerName}
                 onTabClick={() => setIsMobileMenuOpen(false)}
               />
             </motion.aside>

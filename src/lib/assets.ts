@@ -183,7 +183,7 @@ export const ASSETS = {
 
   // Inside Optimist Section
   insideOptimistAcUnit: "/assets/inside-optimist/ac-unit.png",
-  insideOptimistHeatExchanger: "/assets/inside-optimist/heat-exchanger.png",
+  insideOptimistHeatExchanger: "/assets/inside-optimist/heat-exchanger.jpeg",
   insideOptimistCompressor: "/assets/inside-optimist/compressor.png",
   insideOptimistExpansionValve: "/assets/inside-optimist/expansion-valve.png",
 

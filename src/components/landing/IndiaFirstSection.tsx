@@ -137,7 +137,7 @@ export function IndiaFirstSection() {
                 >
                   Buy Now
                 </button>
-                <button
+                {/* <button
                   onClick={() => {
                     document
                       .getElementById("benefits")
@@ -146,7 +146,7 @@ export function IndiaFirstSection() {
                   className="btn-why-optimist w-[160px] hero-btn-mobile md:hero-btn-desktop inline-flex items-center justify-center text-white"
                 >
                   Why Optimist ?
-                </button>
+                </button> */}
               </div>
             </div>
 

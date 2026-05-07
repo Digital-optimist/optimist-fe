@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 
 interface AccountSidebarProps {
   activeTab: "profile" | "addresses" | "orders";
-  customerName: string;
   onTabClick?: () => void;
 }
 
@@ -56,7 +55,6 @@ const tabVariants = {
 
 export default function AccountSidebar({
   activeTab,
-  customerName,
   onTabClick,
 }: AccountSidebarProps) {
   const { logout } = useAuth();
@@ -74,30 +72,6 @@ export default function AccountSidebar({
       animate="animate"
       className="flex flex-col gap-8"
     >
-      {/* User Greeting */}
-      <motion.div
-        variants={fadeInUp}
-        transition={{ duration: 0.4 }}
-        className="flex flex-col gap-2"
-      >
-        <motion.p 
-          className="font-display text-[20px] lg:text-[24px] text-black leading-none"
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          Hello,
-        </motion.p>
-        <motion.p 
-          className="font-display font-bold text-[28px] lg:text-[36px] text-black leading-none"
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          {customerName}
-        </motion.p>
-      </motion.div>
-
       {/* Navigation Tabs */}
       <motion.nav variants={fadeInUp} className="flex flex-col gap-3">
         {tabs.map((tab, index) => {
