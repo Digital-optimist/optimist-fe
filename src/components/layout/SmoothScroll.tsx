@@ -8,6 +8,12 @@ interface SmoothScrollProps {
   children: React.ReactNode;
 }
 
+declare global {
+  interface Window {
+    __lenis?: Lenis | null;
+  }
+}
+
 // Check if device is mobile/touch device
 const isMobileDevice = () => {
   if (typeof window === "undefined") return false;
@@ -79,6 +85,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     });
 
     lenisRef.current = lenis;
+    if (typeof window !== "undefined") {
+      window.__lenis = lenis;
+    }
 
     // Sync Lenis scroll with GSAP's ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
@@ -96,6 +105,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     return () => {
       lenis.destroy();
       gsap.ticker.remove(rafCallback);
+      if (typeof window !== "undefined" && window.__lenis === lenis) {
+        window.__lenis = null;
+      }
     };
   }, [isMobile, isIOS]);
 

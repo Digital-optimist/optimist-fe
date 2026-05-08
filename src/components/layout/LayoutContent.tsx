@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
+import { ScrollResetOnRouteChange } from "@/components/layout/ScrollResetOnRouteChange";
 
 // Routes that should not have Navigation (header)
 const NO_NAV_ROUTES = ["/inner-circle", "/inner-circle-club"];
@@ -30,6 +31,7 @@ export function LayoutContent({ children }: LayoutContentProps) {
 
   return (
     <>
+      <ScrollResetOnRouteChange />
       {!hideNav && <Navigation />}
       <main>{children}</main>
       {!hideFooter && <Footer />}

@@ -91,7 +91,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const associateCartWithCustomer = async () => {
       if (cart && accessToken && isAuthenticated) {
         try {
-          const updatedCart = await updateCartBuyerIdentity(cart.id, accessToken);
+          const updatedCart = await updateCartBuyerIdentity(
+            cart.id,
+            accessToken,
+          );
           setCart(updatedCart);
         } catch (error) {
           console.error("Failed to associate cart with customer:", error);
@@ -140,7 +143,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [ensureCart]
+    [ensureCart],
   );
 
   // Update quantity
@@ -154,14 +157,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
           const updatedCart = await removeFromCartAPI(cart.id, [lineId]);
           setCart(updatedCart);
         } else {
-          const updatedCart = await updateCartLines(cart.id, [{ id: lineId, quantity }]);
+          const updatedCart = await updateCartLines(cart.id, [
+            { id: lineId, quantity },
+          ]);
           setCart(updatedCart);
         }
       } finally {
         setIsLoading(false);
       }
     },
-    [cart]
+    [cart],
   );
 
   // Remove from cart
@@ -177,7 +182,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [cart]
+    [cart],
   );
 
   // Cart drawer controls
