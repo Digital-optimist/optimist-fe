@@ -220,7 +220,7 @@ export function ProductPickerSection() {
     if (acVariants.length > 0) {
       return acVariants.map((v) => ({
         id: v.id,
-        label: `Optimist ${v.name.toUpperCase()} 5 Star Inverter Split Ac`,
+        label: `Optimist ${v.name} 5 Star Inverter Split Ac`,
       }));
     }
     return FALLBACK_TABS;
