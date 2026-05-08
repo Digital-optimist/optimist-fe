@@ -108,10 +108,10 @@ export default function AccountLayout({
           className="absolute right-[16px] sm:right-[40px] lg:right-[80px] top-1/2 -translate-y-1/2 w-[90px] sm:w-[130px] lg:w-[180px] h-[90px] sm:h-[130px] lg:h-[180px]"
         >
           <Image
-            src={ASSETS.clipPathGroup}
+            src={ASSETS.accountDecorativeAsset}
             alt="Decorative"
-            width={180}
-            height={180}
+            width={150}
+            height={120}
             className="object-contain"
           />
         </motion.div>

@@ -171,6 +171,7 @@ export const ASSETS = {
   loginMobileGradient: getAssetUrl("loginMobileGradient.png"),
   desktopMobileGradient: getAssetUrl("DesktopMobileGradient.png"),
   clipPathGroup: getAssetUrl("Clip path group.png"),
+  accountDecorativeAsset: "/assets/accountDecorativeAsset.png",
 
   remoteSectionMobile: getAssetUrl("RemoteSectionMobile.png"),
   remoteSectionDesktop: getAssetUrl("RemoteSectionDesktop.png"),
