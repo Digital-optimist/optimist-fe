@@ -110,7 +110,7 @@ const CompressorCard = memo(function CompressorCard() {
       className="relative w-[284px] lg:w-[34.8%] h-[405px] rounded-[20px] overflow-clip shadow-[0px_4px_30px_0px_rgba(0,0,0,0.12)] bg-white shrink-0 snap-start"
     >
       {/* Image - centered on mobile, right-aligned on desktop */}
-      <div className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-auto lg:right-0 top-[140px] lg:top-[107px] w-[251px] h-[279px] lg:w-[60%] lg:h-[305px]">
+      <div className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-auto lg:right-0 top-[140px] lg:top-[115px] xl:top-[107px] w-[251px] h-[279px] lg:w-[56%] xl:w-[60%] lg:h-[290px] xl:h-[305px]">
         <Image
           src={ASSETS.insideOptimistCompressor}
           alt="Dual-Rotary Inverter Compressor"
@@ -121,11 +121,11 @@ const CompressorCard = memo(function CompressorCard() {
       </div>
 
       {/* Text - vertically centered, offset upward */}
-      <div className="absolute left-4 lg:left-5 top-[calc(50%-111.5px)] lg:top-[calc(50%-94.5px)] -translate-y-1/2 flex flex-col gap-3">
-        <h3 className="font-display font-semibold lg:font-bold text-[20px] lg:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal w-[252px] lg:w-[300px]">
+      <div className="absolute left-4 lg:left-5 top-[calc(50%-111.5px)] lg:top-[calc(50%-94.5px)] -translate-y-1/2 flex flex-col gap-3 lg:right-[43%] xl:right-[40%]">
+        <h3 className="font-display font-semibold lg:font-bold text-[20px] lg:text-[24px] xl:text-[28px] text-[#3478F6] leading-normal tracking-wide lg:tracking-normal w-[252px] lg:w-auto xl:w-[300px]">
           Dual-Rotary Inverter Compressor
         </h3>
-        <p className="text-[14px] lg:text-[16px] text-black/60 leading-normal w-[252px] lg:w-[256px]">
+        <p className="text-[14px] lg:text-[15px] xl:text-[16px] text-black/60 leading-normal w-[252px] lg:w-auto xl:w-[256px]">
           <span>
             Higher displacement with balanced compression for faster, stable
             cooling and{" "}
