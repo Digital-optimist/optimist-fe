@@ -1,17 +1,69 @@
 "use client";
 
 import Script from "next/script";
+import { useCallback, useEffect, useRef } from "react";
+
+const SALEASSIST_WIDGET_ID = "b64c75ac-d186-4979-a841-1572d8d9614b";
 
 export default function SaleAssistButton() {
+  const shouldOpenOnReadyRef = useRef(false);
+  const hasHandledColdStartRef = useRef(false);
+  const followUpMountTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const mountSaleAssistWidget = useCallback(() => {
+    (window as any).saleassist?.mountWidget({
+      id: SALEASSIST_WIDGET_ID,
+    });
+  }, []);
+
+  const openWithColdStartAssist = useCallback(() => {
+    mountSaleAssistWidget();
+
+    // SaleAssist cold start may need a second mount call before it opens.
+    if (!hasHandledColdStartRef.current) {
+      hasHandledColdStartRef.current = true;
+      if (followUpMountTimerRef.current) {
+        clearTimeout(followUpMountTimerRef.current);
+      }
+      followUpMountTimerRef.current = setTimeout(() => {
+        mountSaleAssistWidget();
+      }, 700);
+    }
+  }, [mountSaleAssistWidget]);
+
+  const openWidget = useCallback(() => {
+    if ((window as any).saleassist?.mountWidget) {
+      shouldOpenOnReadyRef.current = false;
+      openWithColdStartAssist();
+      return;
+    }
+
+    // If the script is still loading, remember this click and open immediately on load.
+    shouldOpenOnReadyRef.current = true;
+  }, [openWithColdStartAssist]);
+
+  const handleScriptLoad = useCallback(() => {
+    if (shouldOpenOnReadyRef.current) {
+      shouldOpenOnReadyRef.current = false;
+      openWithColdStartAssist();
+    }
+  }, [openWithColdStartAssist]);
+
+  useEffect(() => {
+    return () => {
+      if (followUpMountTimerRef.current) {
+        clearTimeout(followUpMountTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <>
       <div
         id="sa-live-demo-btn"
-        onClick={() => {
-          (window as any).saleassist?.mountWidget({
-            id: "b64c75ac-d186-4979-a841-1572d8d9614b",
-          });
-        }}
+        onClick={openWidget}
         style={{
           position: "fixed",
           right: "5px",
@@ -80,12 +132,8 @@ export default function SaleAssistButton() {
 
       <Script
         src="https://static.saleassist.ai/widgets/widget.js"
-        strategy="lazyOnload"
-        onLoad={() => {
-          (window as any).saleassist?.mountWidget({
-            id: "240cd0df-b0f1-4d9f-b117-a2ed64e97708",
-          });
-        }}
+        strategy="afterInteractive"
+        onLoad={handleScriptLoad}
       />
     </>
   );

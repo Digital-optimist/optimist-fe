@@ -30,6 +30,7 @@ interface CartContextType {
   isCartOpen: boolean;
   totalQuantity: number;
   addToCart: (variantId: string, quantity?: number) => Promise<Cart | null>;
+  buyNow: (variantId: string, quantity?: number) => Promise<string | null>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeFromCart: (lineId: string) => Promise<void>;
   openCart: () => void;
@@ -146,6 +147,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [ensureCart],
   );
 
+  // Buy Now — creates a temporary cart for direct checkout without touching the main cart
+  const buyNow = useCallback(
+    async (variantId: string, quantity: number = 1): Promise<string | null> => {
+      try {
+        const tempCart = await createCart([
+          { merchandiseId: variantId, quantity },
+        ]);
+        return tempCart.checkoutUrl || null;
+      } catch {
+        return null;
+      }
+    },
+    [],
+  );
+
   // Update quantity
   const updateQuantity = useCallback(
     async (lineId: string, quantity: number) => {
@@ -198,6 +214,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         isCartOpen,
         totalQuantity,
         addToCart,
+        buyNow,
         updateQuantity,
         removeFromCart,
         openCart,

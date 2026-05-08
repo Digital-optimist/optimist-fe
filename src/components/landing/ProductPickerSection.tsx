@@ -203,7 +203,7 @@ export function ProductPickerSection() {
   const cardRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
   const { combinedProduct, isLoading: isPriceLoading } = useProducts();
-  const { addToCart, isLoading: isCartLoading } = useCart();
+  const { buyNow, isLoading: isCartLoading } = useCart();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
@@ -220,7 +220,7 @@ export function ProductPickerSection() {
     if (acVariants.length > 0) {
       return acVariants.map((v) => ({
         id: v.id,
-        label: `Optimist ${v.name} 5 Star Inverter Split Ac`,
+        label: `Optimist ${v.name} 5 Star Inverter Split AC`,
       }));
     }
     return FALLBACK_TABS;
@@ -287,9 +287,9 @@ export function ProductPickerSection() {
     if (!activeVariant || !activeVariant.variantId) return;
     setIsBuyNowLoading(true);
     try {
-      const updatedCart = await addToCart(activeVariant.variantId, 1);
-      if (updatedCart?.checkoutUrl) {
-        redirectWithAnalytics(updatedCart.checkoutUrl);
+      const checkoutUrl = await buyNow(activeVariant.variantId, 1);
+      if (checkoutUrl) {
+        redirectWithAnalytics(checkoutUrl);
       } else {
         showToast("Failed to initiate checkout", "error");
         setIsBuyNowLoading(false);

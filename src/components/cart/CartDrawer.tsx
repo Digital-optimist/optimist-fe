@@ -128,7 +128,7 @@ export function CartDrawer() {
                   <Link
                     href="/products"
                     onClick={closeCart}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-medium bg-[#0A0A0A] hover:bg-[#1a1a1a] transition-colors"
+                    className="btn-buy-now inline-flex items-center gap-2 px-6 py-3 rounded-full text-[#FFFCDC] font-medium"
                   >
                     Browse Products
                     <ArrowRight className="w-4 h-4" />
@@ -165,10 +165,10 @@ export function CartDrawer() {
                     type="button"
                     onClick={handleCheckoutClick}
                     disabled={!checkoutUrl || isLoading}
-                    className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-white font-medium bg-[#0A0A0A] hover:enabled:bg-[#1a1a1a] transition-colors border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className="btn-buy-now flex items-center justify-center gap-2 w-full py-3 rounded-full text-[#FFFCDC] font-medium border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-[#FFFCDC]/30 border-t-[#FFFCDC] rounded-full animate-spin" />
                     ) : (
                       <>
                         Checkout
@@ -179,7 +179,7 @@ export function CartDrawer() {
                   <Link
                     href="/cart"
                     onClick={closeCart}
-                    className="flex items-center justify-center w-full py-3 rounded-full text-[14px] font-medium text-[#0A0A0A] border border-[#E5E5E5] hover:bg-[#F5F5F5] transition-colors"
+                    className="flex items-center justify-center w-full py-3 rounded-full text-[14px] font-medium text-[#0A0A0A] border border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.24)] hover:bg-[#F5F5F5] transition-all"
                   >
                     View Cart
                   </Link>

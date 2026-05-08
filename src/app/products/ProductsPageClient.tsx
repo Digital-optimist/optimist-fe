@@ -237,7 +237,7 @@ export default function ProductsPageClient({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
-  const { addToCart, isLoading: isCartLoading } = useCart();
+  const { addToCart, buyNow, isLoading: isCartLoading } = useCart();
   const { showToast } = useToast();
   const {
     products: shopProducts,
@@ -527,9 +527,9 @@ export default function ProductsPageClient({
     if (!selectedVariant || !selectedVariant.variantId) return;
     setIsBuyNowLoading(true);
     try {
-      const updatedCart = await addToCart(selectedVariant.variantId, quantity);
-      if (updatedCart?.checkoutUrl) {
-        redirectWithAnalytics(updatedCart.checkoutUrl);
+      const checkoutUrl = await buyNow(selectedVariant.variantId, quantity);
+      if (checkoutUrl) {
+        redirectWithAnalytics(checkoutUrl);
       } else {
         showToast("Failed to initiate checkout", "error");
         setIsBuyNowLoading(false);
@@ -538,7 +538,7 @@ export default function ProductsPageClient({
       showToast("Failed to proceed to checkout", "error");
       setIsBuyNowLoading(false);
     }
-  }, [selectedVariant, quantity, addToCart, showToast]);
+  }, [selectedVariant, quantity, buyNow, showToast]);
 
   if (isProductUnavailable) {
     return (
