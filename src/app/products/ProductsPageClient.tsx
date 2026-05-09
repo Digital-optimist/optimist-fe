@@ -24,7 +24,7 @@ import {
   WarrantySection,
 } from "@/components/products123";
 import { useToast } from "@/components/ui/Toast";
-import { useCart } from "@/contexts/CartContext";
+import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
 import { ASSETS } from "@/lib/assets";
 import { useJudgeMeRating } from "@/lib/judgeme";
@@ -33,6 +33,7 @@ import { redirectWithAnalytics } from "@/lib/analytics";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { useProductPageContent } from "@/hooks/useMetaobjectContent";
 import PincodeModal from "@/components/ui/PincodeModal";
+import { BusinessPurchaseSection } from "@/components/products/BusinessPurchaseSection";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -237,7 +238,7 @@ export default function ProductsPageClient({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
-  const { addToCart, buyNow, isLoading: isCartLoading } = useCart();
+  const { addToCart, buyNow, isLoading: isCartLoading, businessDetails } = useCart();
   const { showToast } = useToast();
   const {
     products: shopProducts,
@@ -527,7 +528,12 @@ export default function ProductsPageClient({
     if (!selectedVariant || !selectedVariant.variantId) return;
     setIsBuyNowLoading(true);
     try {
-      const checkoutUrl = await buyNow(selectedVariant.variantId, quantity);
+      const attributes =
+        businessDetails.isBusinessPurchase && businessDetails.verified
+          ? buildBusinessCartAttributes(businessDetails)
+          : undefined;
+
+      const checkoutUrl = await buyNow(selectedVariant.variantId, quantity, attributes);
       if (checkoutUrl) {
         redirectWithAnalytics(checkoutUrl);
       } else {
@@ -538,7 +544,7 @@ export default function ProductsPageClient({
       showToast("Failed to proceed to checkout", "error");
       setIsBuyNowLoading(false);
     }
-  }, [selectedVariant, quantity, buyNow, showToast]);
+  }, [selectedVariant, quantity, buyNow, showToast, businessDetails]);
 
   if (isProductUnavailable) {
     return (
@@ -729,6 +735,11 @@ export default function ProductsPageClient({
                   onToggle={handleQuantityToggle}
                   options={QUANTITY_OPTIONS}
                 />
+              </motion.div>
+
+              {/* Business Purchase (GST) */}
+              <motion.div variants={heroInfoItemVariants}>
+                <BusinessPurchaseSection />
               </motion.div>
 
               {/* Snapmint EMI Widget */}

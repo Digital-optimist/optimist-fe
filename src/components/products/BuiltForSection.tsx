@@ -30,7 +30,6 @@ export function BuiltForSection() {
       // Play desktop video
       if (videoRef.current) {
         videoRef.current.play().catch((e) => {
-          console.log("Desktop video play failed", e);
           setVideoEnded(true);
         });
       }
@@ -38,7 +37,6 @@ export function BuiltForSection() {
       // Play mobile video
       if (mobileVideoRef.current) {
         mobileVideoRef.current.play().catch((e) => {
-          console.log("Mobile video play failed", e);
           setVideoEnded(true);
         });
       }

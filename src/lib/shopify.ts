@@ -224,6 +224,7 @@ export interface Order {
   };
   shippingAddress: Address | null;
   successfulFulfillments: OrderFulfillment[];
+  customAttributes: { key: string; value: string }[];
 }
 
 export interface CustomerAccessToken {
@@ -557,6 +558,7 @@ export async function getProductByHandle(
 
 export async function createCart(
   lines: { merchandiseId: string; quantity: number }[] = [],
+  attributes?: { key: string; value: string }[],
 ): Promise<Cart> {
   const query = `
     ${IMAGE_FRAGMENT}
@@ -574,6 +576,16 @@ export async function createCart(
     }
   `;
 
+  const input: Record<string, unknown> = {
+    lines,
+    buyerIdentity: {
+      countryCode: "IN",
+    },
+  };
+  if (attributes?.length) {
+    input.attributes = attributes;
+  }
+
   const data = await shopifyFetch<{
     cartCreate: {
       cart: Cart;
@@ -581,14 +593,7 @@ export async function createCart(
     };
   }>({
     query,
-    variables: {
-      input: {
-        lines,
-        buyerIdentity: {
-          countryCode: "IN",
-        },
-      },
-    },
+    variables: { input },
   });
 
   if (data.cartCreate.userErrors.length > 0) {
@@ -769,6 +774,43 @@ export async function updateCartBuyerIdentity(
   }
 
   return data.cartBuyerIdentityUpdate.cart;
+}
+
+export async function updateCartAttributes(
+  cartId: string,
+  attributes: { key: string; value: string }[],
+): Promise<Cart> {
+  const query = `
+    ${IMAGE_FRAGMENT}
+    ${CART_FRAGMENT}
+    mutation CartAttributesUpdate($cartId: ID!, $attributes: [AttributeInput!]!) {
+      cartAttributesUpdate(cartId: $cartId, attributes: $attributes) {
+        cart {
+          ...CartFragment
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    cartAttributesUpdate: {
+      cart: Cart;
+      userErrors: { field: string[]; message: string }[];
+    };
+  }>({
+    query,
+    variables: { cartId, attributes },
+  });
+
+  if (data.cartAttributesUpdate.userErrors.length > 0) {
+    throw new Error(data.cartAttributesUpdate.userErrors[0].message);
+  }
+
+  return data.cartAttributesUpdate.cart;
 }
 
 // =============================================================================
@@ -1081,6 +1123,10 @@ export async function getCustomerOrders(
                   number
                   url
                 }
+              }
+              customAttributes {
+                key
+                value
               }
             }
           }

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Package, ShoppingCart } from "lucide-react";
+import { Building2, Package, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { AccountLayout } from "@/components/account";
@@ -15,6 +15,7 @@ import {
   type Order,
   type OrderLineItem,
 } from "@/lib/shopify";
+import { isBusinessOrder } from "@/lib/invoice";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -224,10 +225,18 @@ function OrderCard({ order, index }: { order: Order; index: number }) {
     >
       {/* Order Header */}
       <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] border-b border-[#E5E5E5]">
-        <p className="text-[14px] text-[#737373]">
-          Order ID{" "}
-          <span className="text-[#0A0A0A] font-medium">{order.name}</span>
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-[14px] text-[#737373]">
+            Order ID{" "}
+            <span className="text-[#0A0A0A] font-medium">{order.name}</span>
+          </p>
+          {isBusinessOrder(order.customAttributes) && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-medium bg-blue-50 text-blue-700 border border-blue-200">
+              <Building2 className="w-3 h-3" />
+              Business
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {status.isDelivered ? (
             <>

@@ -75,7 +75,3 @@ for (const row of rows) {
 }
 
 writeFileSync(resolve(OUT_DIR, "pincodes.json"), JSON.stringify(pincodes));
-
-console.log(
-  `[generate-pincodes] delhi-ncr: ${zoneCounts["delhi-ncr"]}, bangalore: ${zoneCounts.bangalore}, hyderabad: ${zoneCounts.hyderabad}, skipped: ${zoneCounts.skipped}, total: ${Object.keys(pincodes).length}`,
-);
