@@ -5,10 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Package, ChevronRight, ExternalLink } from "lucide-react";
+import { Package, ChevronRight, ExternalLink, Building2, FileText, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { AccountLayout } from "@/components/account";
 import { getCustomerOrders, formatPrice, type Order } from "@/lib/shopify";
+import {
+  getInvoiceByOrder,
+  getOrderAttribute,
+  isBusinessOrder,
+  type InvoiceLookupResult,
+} from "@/lib/invoice";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -74,6 +80,8 @@ function OrderDetailContent() {
   } = useAuth();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [invoice, setInvoice] = useState<InvoiceLookupResult | null>(null);
+  const [isInvoiceLoading, setIsInvoiceLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
@@ -98,6 +106,24 @@ function OrderDetailContent() {
       fetchOrder();
     }
   }, [accessToken, orderNumber]);
+
+  // Fetch GST invoice details for business orders
+  useEffect(() => {
+    if (!order) return;
+    if (!isBusinessOrder(order.customAttributes)) return;
+
+    let cancelled = false;
+    setIsInvoiceLoading(true);
+    getInvoiceByOrder(order.id).then((result) => {
+      if (!cancelled) {
+        setInvoice(result);
+        setIsInvoiceLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [order]);
 
   if (isAuthLoading || isLoading) {
     return <LoadingSpinner />;
@@ -446,6 +472,86 @@ function OrderDetailContent() {
                 </div>
               </div>
             </motion.div>
+
+            {/* Business Purchase / GST Invoice */}
+            {isBusinessOrder(order.customAttributes) && (
+              <motion.div
+                variants={fadeInUp}
+                className="border border-[#E5E5E5] rounded-xl p-5"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <Building2 className="w-4 h-4 text-[#0A0A0A]" />
+                  <h3 className="text-[16px] font-semibold text-[#0A0A0A]">
+                    Business Purchase
+                  </h3>
+                </div>
+
+                <div className="space-y-2.5 text-[14px]">
+                  {getOrderAttribute(order.customAttributes, "Company Name") && (
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-[#737373]">Company</span>
+                      <span className="font-medium text-[#0A0A0A] text-right">
+                        {getOrderAttribute(
+                          order.customAttributes,
+                          "Company Name",
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {getOrderAttribute(order.customAttributes, "GSTIN") && (
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-[#737373]">GSTIN</span>
+                      <span className="font-mono text-[13px] tracking-wide text-[#0A0A0A] text-right">
+                        {getOrderAttribute(order.customAttributes, "GSTIN")}
+                      </span>
+                    </div>
+                  )}
+                  {getOrderAttribute(order.customAttributes, "GST State") && (
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-[#737373]">GST State</span>
+                      <span className="font-medium text-[#0A0A0A] text-right">
+                        {getOrderAttribute(order.customAttributes, "GST State")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Invoice action */}
+                <div className="mt-5 pt-4 border-t border-[#E5E5E5]">
+                  {isInvoiceLoading ? (
+                    <div className="flex items-center justify-center gap-2 py-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-[#737373]" />
+                      <span className="text-[13px] text-[#737373]">
+                        Checking invoice status…
+                      </span>
+                    </div>
+                  ) : invoice?.status === "available" && invoice.invoiceUrl ? (
+                    <a
+                      href={invoice.invoiceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-full border border-[#3478F6] text-[14px] font-medium text-[#3478F6] hover:bg-[rgba(52,120,246,0.05)] transition-colors"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Download GST Invoice
+                      {invoice.invoiceNumber && (
+                        <span className="text-[12px] text-[#737373]">
+                          · {invoice.invoiceNumber}
+                        </span>
+                      )}
+                    </a>
+                  ) : invoice?.status === "pending" ? (
+                    <p className="text-[13px] text-[#737373] text-center">
+                      Your GST invoice is being generated and will be available shortly.
+                    </p>
+                  ) : (
+                    <p className="text-[13px] text-[#737373] text-center">
+                      Your GST invoice will be emailed to you once it&apos;s ready.
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
             {/* Payment Summary */}
             <motion.div

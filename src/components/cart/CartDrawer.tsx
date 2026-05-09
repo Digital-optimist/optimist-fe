@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { X, ShoppingBag, ArrowRight } from "lucide-react";
+import { X, ShoppingBag, ArrowRight, Building2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/shopify";
@@ -21,7 +21,7 @@ const panelVariants = {
 };
 
 export function CartDrawer() {
-  const { cart, isCartOpen, closeCart, totalQuantity, isLoading } = useCart();
+  const { cart, isCartOpen, closeCart, totalQuantity, isLoading, businessDetails, saveBusinessDetailsToCart } = useCart();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
 
   const cartLines = getCartLines(cart);
@@ -33,11 +33,13 @@ export function CartDrawer() {
     setShowPincodeModal(true);
   }, [checkoutUrl, isLoading]);
 
-  const handleCheckoutConfirmed = useCallback(() => {
-    if (checkoutUrl) {
-      redirectWithAnalytics(checkoutUrl);
+  const handleCheckoutConfirmed = useCallback(async () => {
+    if (!checkoutUrl) return;
+    if (businessDetails.isBusinessPurchase && businessDetails.verified) {
+      await saveBusinessDetailsToCart();
     }
-  }, [checkoutUrl]);
+    redirectWithAnalytics(checkoutUrl);
+  }, [checkoutUrl, businessDetails, saveBusinessDetailsToCart]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -158,6 +160,18 @@ export function CartDrawer() {
                 <p className="text-[13px] text-[#737373]">
                   Shipping and taxes calculated at checkout
                 </p>
+
+                {/* Business Purchase summary (read-only) */}
+                {businessDetails.isBusinessPurchase && businessDetails.verified && (
+                  <div className="flex items-start gap-2.5 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                    <Building2 className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-[13px] leading-snug">
+                      <p className="font-medium text-blue-800">Business Purchase</p>
+                      <p className="text-blue-700 mt-0.5">{businessDetails.companyName || businessDetails.tradeName}</p>
+                      <p className="text-blue-600 mt-0.5">GSTIN: {businessDetails.gstin}</p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Actions */}
                 <div className="space-y-3">

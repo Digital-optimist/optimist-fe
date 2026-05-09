@@ -593,7 +593,6 @@ export const ReviewsSection = memo(function ReviewsSection({
   productId?: string;
   products?: ProductOption[];
 }) {
-  console.log({ productId });
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
   const [reviewsData, setReviewsData] = useState<ReviewsSummary>(EMPTY_SUMMARY);

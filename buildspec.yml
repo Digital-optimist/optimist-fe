@@ -7,6 +7,8 @@ env:
     NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN: 3b12d6020365806434052cc061a5b5e3
     NEXT_PUBLIC_S3_BUCKET_URL: https://optimist-fe-assets.s3.amazonaws.com
     NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL: https://script.google.com/macros/s/AKfycbz0eUZbOOD2v0qHcxlpTV-GAJaSvVx8S-CR6jyAVFy2jJPt5Dr6oYllPhziEikExwGb/exec
+    NEXT_PUBLIC_GST_VERIFY_API_URL: https://mg1up8l9ee.execute-api.us-east-1.amazonaws.com/gst/verify
+    NEXT_PUBLIC_INVOICE_API_URL: https://mg1up8l9ee.execute-api.us-east-1.amazonaws.com/invoice
 
 phases:
   install:

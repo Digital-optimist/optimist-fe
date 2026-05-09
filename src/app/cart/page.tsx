@@ -7,6 +7,7 @@ import { ShoppingBag, ArrowRight, ArrowLeft, Minus, Plus, Trash2, Package } from
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/shopify";
 import PincodeModal from "@/components/ui/PincodeModal";
+import { BusinessPurchaseSection } from "@/components/products/BusinessPurchaseSection";
 import { useState, useCallback } from "react";
 import { redirectWithAnalytics } from "@/lib/analytics";
 
@@ -25,7 +26,7 @@ const staggerContainer = {
 };
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeFromCart, isLoading, totalQuantity } = useCart();
+  const { cart, updateQuantity, removeFromCart, isLoading, totalQuantity, businessDetails, saveBusinessDetailsToCart } = useCart();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
 
   const cartLines = getCartLines(cart);
@@ -38,11 +39,13 @@ export default function CartPage() {
     setShowPincodeModal(true);
   }, [checkoutUrl, isLoading]);
 
-  const handleCheckoutConfirmed = useCallback(() => {
-    if (checkoutUrl) {
-      redirectWithAnalytics(checkoutUrl);
+  const handleCheckoutConfirmed = useCallback(async () => {
+    if (!checkoutUrl) return;
+    if (businessDetails.isBusinessPurchase && businessDetails.verified) {
+      await saveBusinessDetailsToCart();
     }
-  }, [checkoutUrl]);
+    redirectWithAnalytics(checkoutUrl);
+  }, [checkoutUrl, businessDetails, saveBusinessDetailsToCart]);
 
   return (
     <div className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
@@ -249,6 +252,10 @@ export default function CartPage() {
                         : "—"}
                     </span>
                   </div>
+                </div>
+
+                <div className="border-t border-[#E5E5E5] pt-4">
+                  <BusinessPurchaseSection />
                 </div>
 
                 <button
