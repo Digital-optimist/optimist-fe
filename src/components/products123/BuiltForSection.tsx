@@ -280,14 +280,14 @@ export function BuiltForSection() {
         </motion.div>
 
         {/* Bottom Section - Outcome and CTA */}
-        <motion.div
+        {/* <motion.div
           className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={sectionVariants}
           transition={{ delay: 0.4 }}
         >
-          {/* Outcome */}
+ 
           <div className="font-display text-left">
             <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-semibold md:font-bold leading-[1.15] tracking-wide md:tracking-normal">
               <span className="text-black">Nothing </span>
@@ -306,7 +306,7 @@ export function BuiltForSection() {
             <span>Buy Now</span>
             <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );
