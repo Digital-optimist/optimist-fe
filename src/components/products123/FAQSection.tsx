@@ -67,65 +67,248 @@ function PlusCircleIcon({ className }: { className?: string }) {
 
 const FAQ_CATEGORIES = [
   "All",
-  "Product & Performance",
-  "Technology & Durability",
-  "Intelligence & Monitoring",
-  "Warranty, Installation & Service",
-  "Usage & Reliability",
-  "Trust & Verification",
+  "Product Difference",
+  "Value",
+  "Extreme Heat",
+  "Energy Savings",
+  "Warranty",
 ] as const;
 
 const FAQ_DATA: FAQItem[] = [
   {
-    id: "cooling-capacity",
-    question: "What cooling capacity does the Optimist AC offer?",
-    answer:
-      "The Optimist AC is available in 1 Ton and 1.4 Ton variants, designed to cool rooms efficiently even at extreme outdoor temperatures of up to 50°C. Our inverter compressor technology ensures consistent cooling while keeping energy consumption low.",
-    category: "Product & Performance",
+    id: "different-from-premium-acs",
+    question: "How is Optimist different from other premium ACs?",
+    answer: `Five things that you should know that make Optimist different from other premium ACs:
+
+1. Superior cooling when it matters most
+Most ACs lose performance when outdoor temperatures rise sharply. Optimist is engineered to maintain strong cooling even during peak summer heat, including extreme temperatures of 48-50°C.
+
+2. Faster room pull-down
+Optimist is designed to cool hot rooms significantly faster, helping you get comfortable sooner - especially on the hottest days.
+
+3. Best-in-class efficiency
+With an ISEER rating of 6.05, Optimist is among the most efficient ACs available in India. That means lower electricity bills year after year.
+
+4. Smart ownership experience
+Every Optimist AC includes built-in app connectivity, remote control, energy insights, and real-time diagnostics. Our gas-level indicator can also help identify when a refill is genuinely needed.
+
+5. End-to-end service ownership
+Installation, maintenance, and customer support are managed through trained Optimist teams.
+
+Welcome to Optimist. 🙂`,
+    category: "Product Difference",
   },
   {
-    id: "durability",
-    question: "What makes the Optimist AC more durable than other brands?",
-    answer:
-      "Every Optimist AC is built with 100% copper condenser coils for superior heat exchange and corrosion resistance. The anti-rust cabinet, blue-fin evaporator coating, and tropicalized compressor are designed to withstand India's diverse climate conditions for years.",
-    category: "Technology & Durability",
+    id: "why-pay-more",
+    question: "Why should I pay more for Optimist when cheaper ACs exist?",
+    answer: `That's a fair and important question.
+
+We believe the real comparison is not price alone - it is value that you get as a customer.
+
+1. Real cooling when you need it most
+A lower-priced AC that struggles during extreme summer heat may cost less upfront, but disappoint when cooling matters most. Optimist is built for consistently strong performance in Indian summers.
+
+2. Lower running costs
+Optimist is India's hyper-energy-efficient AC, built for efficiency in India's summers. Over the product's lifetime, the electricity savings can significantly offset the higher purchase price.
+
+3. Smart features included as standard
+App control, energy tracking, diagnostics, and intelligent alerts come built in - not as missing or premium add-ons.
+
+4. Lower maintenance surprises
+Features like the gas-level indicator can help avoid unnecessary servicing and recharge costs.
+
+5. Strong warranty cover
+Every Optimist AC comes with a 5-year truly comprehensive warranty for added peace of mind.
+
+In short: lower total cost, better comfort, and a smarter ownership experience. 🙂`,
+    category: "Value",
   },
   {
-    id: "energy-meter",
-    question: "What does the Live Energy Meter feature do?",
-    answer:
-      "The Live Energy Meter displays real-time electricity consumption on both the AC unit and the Optimist app. It gives you complete transparency into your energy usage, helping you make informed decisions and reduce electricity bills.",
-    category: "Intelligence & Monitoring",
+    id: "cooling-at-50c",
+    question: "How does Optimist cool at 50°C when other ACs struggle?",
+    answer: `Built for India's real summers.
+
+Many ACs are rated under standard test conditions, but lose cooling performance sharply as outdoor temperatures rise.
+
+Optimist is engineered differently. At an extreme outdoor temperature of 50°C, Optimist still delivers 1.35 Tons of cooling capacity - around 96% of rated performance.
+
+That means when the heat wave hits hardest, Optimist keeps cooling when many conventional ACs begin to struggle.
+
+How do we achieve this?
+Through a combination of advanced engineering:
+
+High-performance Microchannel Heat Exchanger (MCHX) technology for superior heat rejection
+A Twin Rotary Compressor designed for demanding conditions
+Intelligent controls tuned for high ambient temperatures
+Full system optimisation for real-world Indian summers
+
+Tested performance
+This performance has been validated in Optimist's in-house psychrometric lab, with third-party NABL testing underway.
+
+India's Real AC - built for real heat.`,
+    category: "Extreme Heat",
   },
   {
-    id: "gas-indicator",
-    question: "How does the Live Gas Level Indicator work?",
-    answer:
-      "The built-in gas level indicator continuously monitors refrigerant levels and alerts you through the Optimist app if there's any drop. This proactive monitoring ensures your AC always performs at peak efficiency without unexpected breakdowns.",
-    category: "Intelligence & Monitoring",
+    id: "electricity-savings",
+    question: "Will Optimist really save 25-35% on my electricity bills?",
+    answer: `Yes - for many households, the savings can be meaningful.
+
+Optimist is engineered to be the most energy-efficient AC available in India, with an ISEER rating of 6.05.
+
+Compared with a good 3-star AC from a leading brand, customers can expect around 25-35% lower electricity consumption.
+
+What does that mean in practice?
+For a household using the AC for around 1800-2,000 hours a year, electricity savings can add up significantly over the life of the product, delivering pay-back in 1-1.5 years.
+
+See your actual savings in the app
+Every Optimist AC includes smart monitoring through the Optimist app, where you can track:
+
+Energy used
+Estimated running cost
+Savings versus a benchmark AC
+Tips to reduce bills further
+
+The result
+You pay once for a better AC - and keep benefiting through a lifetime of goodness.`,
+    category: "Energy Savings",
   },
   {
     id: "warranty",
-    question: "What warranty does Optimist provide?",
-    answer:
-      "We offer a comprehensive 5-year warranty on the compressor and 2 years on all other parts. Our dedicated service network ensures quick issue resolution with genuine spare parts and trained technicians across India.",
-    category: "Warranty, Installation & Service",
-  },
-  {
-    id: "energy-efficiency",
-    question: "How energy-efficient is the Optimist AC?",
-    answer:
-      "The Optimist AC features a 5-star BEE energy rating. Our advanced inverter technology adjusts compressor speed based on real-time cooling demand, reducing electricity consumption by up to 40% compared to conventional fixed-speed ACs.",
-    category: "Usage & Reliability",
-  },
-  {
-    id: "indian-testing",
-    question: "Is the Optimist AC tested for Indian conditions?",
-    answer:
-      "Absolutely. Every unit is rigorously tested to perform in extreme Indian summers, with cooling validated at up to 50°C ambient temperature. We also conduct accelerated life testing to ensure long-term reliability in high humidity and dusty environments.",
-    category: "Trust & Verification",
+    question: "What's covered under the 5-year warranty?",
+    answer: `The Optimist 5-Year Warranty Promise
+
+If a critical part fails, we fix it at ₹0. No labour charges. That's our commitment.
+
+Outdoor Unit
+5 years comprehensive cover
+10 years on compressor
+
+Includes:
+Compressor (10 years)
+Condenser coil / heat exchanger
+Fan and fan motor
+Outdoor PCB and sensors
+Valves and key functional components
+
+If the Outdoor Unit fails due to a covered part, Optimist repairs or replaces it at ₹0.
+
+Indoor Unit
+5 years cover on critical functional parts
+
+Includes:
+Indoor PCB and sensors
+Fan and fan motor
+Display
+Swing motor
+Evaporator coil / heat exchanger
+
+Refrigerant Gas
+Covered for 5 years, including refill charges when required under warranty conditions.
+
+Remote
+Covered for 5 years
+
+What's not covered
+Plastic and cosmetic parts
+Accidental or physical damage
+External wiring or third-party modifications
+Damage caused by poor earthing or abnormal power conditions
+Remote battery
+
+How warranty stays active
+Installation and repairs must be carried out through authorised Optimist technicians.
+
+How to activate
+Your warranty is automatically activated at installation by an authorised Optimist technician.
+You can also view warranty details in the Optimist App.`,
+    category: "Warranty",
   },
 ];
+
+const ANSWER_SECTION_HEADINGS = new Set([
+  "How do we achieve this?",
+  "Tested performance",
+  "What does that mean in practice?",
+  "See your actual savings in the app",
+  "The result",
+  "The Optimist 5-Year Warranty Promise",
+  "Outdoor Unit",
+  "Indoor Unit",
+  "Refrigerant Gas",
+  "Remote",
+  "What's not covered",
+  "How warranty stays active",
+  "How to activate",
+]);
+
+function FAQAnswer({ answer }: { answer: string }) {
+  const blocks = answer
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+
+  return (
+    <div className="mt-4 pr-0 md:pr-12 space-y-4 text-sm md:text-base leading-relaxed text-black/60">
+      {blocks.map((block, blockIndex) => {
+        const lines = block
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+        const numberedHeading = lines[0]?.match(/^(\d+)\.\s+(.+)$/);
+        const isHeading =
+          lines.length === 1 && ANSWER_SECTION_HEADINGS.has(lines[0]);
+
+        if (numberedHeading) {
+          return (
+            <div
+              key={`${block}-${blockIndex}`}
+              className="flex items-start gap-3 rounded-xl border border-[rgba(52,120,246,0.1)] bg-white/45 p-3"
+            >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgba(52,120,246,0.1)] text-xs font-medium text-[#3478F6]">
+                {numberedHeading[1]}
+              </span>
+              <p className="pt-0.5 font-medium text-black/75">
+                {numberedHeading[2]}
+              </p>
+            </div>
+          );
+        }
+
+        if (isHeading) {
+          return (
+            <h3
+              key={`${block}-${blockIndex}`}
+              className="pt-1 text-sm md:text-base font-medium text-black/75"
+            >
+              {lines[0]}
+            </h3>
+          );
+        }
+
+        if (lines.length > 1) {
+          return (
+            <div
+              key={`${block}-${blockIndex}`}
+              className="rounded-xl bg-white/40 p-3"
+            >
+              <p className="font-medium text-black/75">{lines[0]}</p>
+              <ul className="mt-2 space-y-1.5">
+                {lines.slice(1).map((line) => (
+                  <li key={line} className="flex gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#3478F6]/45" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        }
+
+        return <p key={`${block}-${blockIndex}`}>{block}</p>;
+      })}
+    </div>
+  );
+}
 
 // =============================================================================
 // Main Component
@@ -224,9 +407,7 @@ export function FAQSection() {
                       }}
                       className="overflow-hidden"
                     >
-                      <p className="text-sm md:text-base text-black/60 leading-relaxed mt-2 pr-12">
-                        {faq.answer}
-                      </p>
+                      <FAQAnswer answer={faq.answer} />
                     </motion.div>
                   )}
                 </AnimatePresence>
