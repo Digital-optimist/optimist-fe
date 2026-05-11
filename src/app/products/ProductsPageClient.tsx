@@ -238,7 +238,12 @@ export default function ProductsPageClient({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
-  const { addToCart, buyNow, isLoading: isCartLoading, businessDetails } = useCart();
+  const {
+    addToCart,
+    buyNow,
+    isLoading: isCartLoading,
+    businessDetails,
+  } = useCart();
   const { showToast } = useToast();
   const {
     products: shopProducts,
@@ -533,7 +538,11 @@ export default function ProductsPageClient({
           ? buildBusinessCartAttributes(businessDetails)
           : undefined;
 
-      const checkoutUrl = await buyNow(selectedVariant.variantId, quantity, attributes);
+      const checkoutUrl = await buyNow(
+        selectedVariant.variantId,
+        quantity,
+        attributes,
+      );
       if (checkoutUrl) {
         redirectWithAnalytics(checkoutUrl);
       } else {
@@ -727,7 +736,10 @@ export default function ProductsPageClient({
               </motion.div>
 
               {/* Quantity */}
-              <motion.div variants={heroInfoItemVariants}>
+              <motion.div
+                variants={heroInfoItemVariants}
+                className="md:mt-[-20px] mt-[-12px]"
+              >
                 <QuantityDropdown
                   quantity={quantity}
                   onQuantityChange={handleQuantityChange}
@@ -1156,14 +1168,14 @@ export default function ProductsPageClient({
       </motion.div>
 
       {/* Built For Section */}
-      {/* <motion.div
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.15 }}
         variants={sectionVariants}
       >
         <BuiltForSection />
-      </motion.div> */}
+      </motion.div>
 
       {/* Mobile Fixed Footer - appears when mobile image gallery scrolls out of viewport */}
       <motion.div
