@@ -1096,7 +1096,7 @@ export default function ProductsPageClient({
       </motion.div> */}
 
       {/* Customer Videos Section */}
-      <CustomerVideosSection customers={pageContent?.customerReviews} />
+      {/* <CustomerVideosSection customers={pageContent?.customerReviews} /> */}
 
       {/* Expert Testimonials Section */}
       <ExpertTestimonialsSection experts={pageContent?.expertTestimonials} />
