@@ -267,9 +267,14 @@ function FAQAnswer({ answer }: { answer: string }) {
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[rgba(52,120,246,0.1)] text-xs font-medium text-[#3478F6]">
                 {numberedHeading[1]}
               </span>
-              <p className="pt-0.5 font-medium text-black/75">
-                {numberedHeading[2]}
-              </p>
+              <div className="space-y-1">
+                <p className="pt-0.5 font-medium text-black/75">
+                  {numberedHeading[2]}
+                </p>
+                {lines.slice(1).map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
             </div>
           );
         }
