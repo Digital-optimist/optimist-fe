@@ -32,7 +32,7 @@ export default function TermsPage() {
             Terms and Conditions of Purchase
           </h1>
           <p className="text-sm text-gray-500">
-            Last Updated: 1 Jan 2026
+            Last Updated: 12th May 2026
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function TermsPage() {
               1. Introduction and Legal Status of This Agreement
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              The website located at www.optimist.in (the &quot;Website&quot;) and the Optimist mobile application (the &quot;App&quot;) are owned and operated by OctoLife Climate Solutions Private Limited, a company incorporated under the Companies Act, 2013, having its registered office at HD-596, WeWork Prestige Atlanta, 80 feet road, Koramangala I Block, Bangalore, Karnataka - 560034, India (&quot;Optimist&quot;, &quot;Company&quot;, &quot;We&quot;, &quot;Us&quot;, or &quot;Our&quot;).
+              The website located at www.optimist.in (the &quot;Website&quot;) and the Optimist mobile application (the &quot;App&quot;) are owned and operated by OctoLife Climate Solutions Private Limited, a company incorporated under the Companies Act, 2013, having its registered office at [___________], Gurgaon, Haryana, India (&quot;Optimist&quot;, &quot;Company&quot;, &quot;We&quot;, &quot;Us&quot;, or &quot;Our&quot;).
             </p>
             <p className="text-gray-600 mb-4 leading-relaxed">
               These Terms and Conditions (&quot;Agreement&quot; or &quot;Terms&quot;) constitute a legally binding contract between Optimist and any person who accesses the Website or App, places an Order, or uses any Service provided by Optimist (the &quot;Customer&quot;, &quot;You&quot;, or &quot;User&quot;).
@@ -295,7 +295,7 @@ export default function TermsPage() {
               13.3 Acceptance of Order
             </h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Acceptance of Your Order occurs only when Optimist dispatches the Product(s) and issues a dispatch confirmation (&quot;Dispatch Confirmation&quot;). Optimist reserves the absolute right to cancel any Order prior to dispatch without assigning any reason.
+              Acceptance of Your Order occurs only when Optimist dispatches the Product(s) and issues a dispatch confirmation (&quot;Dispatch Confirmation&quot;). Optimist reserves the absolute right to cancel any Order prior to dispatch without assigning any reason, provided that where Optimist cancels an Order prior to dispatch, any payment received from You shall be refunded in full to the original payment method within 7 to 10 business days.
             </p>
           </section>
 
@@ -438,7 +438,7 @@ export default function TermsPage() {
               <li>Incorrect product delivered</li>
             </ul>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist reserves the right to inspect and verify such claims before approving cancellation. If cancellation is approved, refund shall be processed as per Section 22.
+              Optimist reserves the right to inspect and verify such claims before approving cancellation. If cancellation is approved, refund shall be processed as per Section 22. In addition, You may exercise Your right to return the Product within 30 days of installation in accordance with Optimist&apos;s Return &amp; Refund Policy, which is incorporated into this Agreement by reference.
             </p>
 
             <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
@@ -601,7 +601,7 @@ export default function TermsPage() {
               <li>Installation violates building rules or law</li>
             </ul>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              In such cases, delivery shall be deemed complete and no refund shall be issued.
+              Where Optimist refuses installation, the Customer shall be entitled to a refund of the Product price paid. Delivery charges and installation charges, if any, shall not be refunded.
             </p>
           </section>
 
@@ -612,17 +612,17 @@ export default function TermsPage() {
             </h2>
             
             <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              26.1 Mandatory Registration
+              26.1 Warranty Activation
             </h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Warranty becomes valid only upon successful registration of the Product through the Optimist App using the serial number, purchase invoice, and customer details.
+              Warranty activates automatically upon successful installation of the Product by an authorised Optimist service partner. No separate registration is required for warranty to be valid. The Optimist App may be used to verify warranty status, view coverage details, and access service history.
             </p>
 
             <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
               26.2 Warranty Scope
             </h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Warranty covers manufacturing defects under normal domestic use. It does not cover consumables, cosmetic damage, or failures due to improper installation, voltage fluctuations, misuse, or unauthorised repair.
+              Warranty covers manufacturing defects under normal domestic use. It does not cover consumables, cosmetic damage, or failures due to improper installation, voltage fluctuations, misuse, or unauthorised repair. Full details of warranty coverage are set out in the Warranty Policy available at www.optimist.in/warranty.
             </p>
 
             <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
@@ -636,7 +636,6 @@ export default function TermsPage() {
               <li>Non-genuine parts are used</li>
               <li>Repairs are attempted by unauthorised personnel</li>
               <li>Damage is caused by external factors, natural disasters, or pests</li>
-              <li>App-based monitoring is disabled or tampered with</li>
             </ul>
           </section>
 
@@ -1036,7 +1035,7 @@ export default function TermsPage() {
               46. Governing Law and Jurisdiction
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              This Agreement shall be governed by the laws of India. Courts at Bangalore, Karnataka shall have exclusive jurisdiction over any dispute.
+              This Agreement shall be governed by the laws of India. Courts at Gurgaon, Haryana shall have exclusive jurisdiction over any dispute arising out of or in connection with this Agreement.
             </p>
           </section>
 
@@ -1053,15 +1052,32 @@ export default function TermsPage() {
           {/* Section 48 */}
           <section className="mb-10">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              48. Contact Information
+              48. Grievance Officer and Contact Information
             </h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">
+              In accordance with the Consumer Protection (E-Commerce) Rules, 2020, Optimist has designated a Grievance Officer to address customer complaints and concerns.
+            </p>
             <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-              <p className="text-gray-900 mb-2 font-semibold">
-                Optimist Customer Support
+              <p className="text-gray-900 mb-4 font-semibold">
+                Grievance Officer
               </p>
-              <p className="text-gray-700">
-                <span className="text-optimist-blue-primary font-semibold">Email:</span> care@optimist.in
-              </p>
+              <div className="space-y-3 text-gray-700">
+                <p>
+                  <span className="text-optimist-blue-primary font-semibold">Name:</span> [___________]
+                </p>
+                <p>
+                  <span className="text-optimist-blue-primary font-semibold">Organisation:</span> OctoLife Climate Solutions Private Limited
+                </p>
+                <p>
+                  <span className="text-optimist-blue-primary font-semibold">Email:</span> care@optimist.in
+                </p>
+                <p>
+                  <span className="text-optimist-blue-primary font-semibold">Support Hours:</span> Monday to Saturday, 10:00 AM - 6:00 PM IST
+                </p>
+                <p>
+                  <span className="text-optimist-blue-primary font-semibold">Response Timeframe:</span> Acknowledgement within 48 hours; resolution within 30 days
+                </p>
+              </div>
             </div>
           </section>
         </div>

@@ -3,8 +3,108 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
-import { Shield, Check, AlertTriangle, Smartphone } from "lucide-react";
+import { Shield, Check, AlertTriangle, Mail } from "lucide-react";
 import Link from "next/link";
+
+const coverageRows = [
+  {
+    component: "Outdoor Unit (ODU) — All Components",
+    period: "5 Years",
+    covered: "Parts and labour at ₹0",
+  },
+  {
+    component: "Compressor",
+    period: "10 Years",
+    covered: "Parts and labour at ₹0",
+  },
+  {
+    component: "Indoor Unit (IDU) — Critical Parts",
+    period: "5 Years",
+    covered: "Parts and labour at ₹0",
+  },
+  {
+    component: "Refrigerant Gas",
+    period: "5 Years",
+    covered: "Refill and repair at ₹0 in all cases",
+  },
+  {
+    component: "Remote Control",
+    period: "5 Years",
+    covered: "Parts and labour at ₹0; physical damage excluded",
+  },
+];
+
+const oduComponents = [
+  "Compressor (10-year coverage)",
+  "Heat exchanger (condenser coil)",
+  "Fan and fan motor",
+  "Outdoor PCB and sensors",
+  "Valves and functional components",
+];
+
+const iduComponents = [
+  "Indoor PCB and sensors",
+  "Fan and fan motor",
+  "Display",
+  "Swing motor",
+  "Heat exchanger (evaporator coil)",
+];
+
+const exclusions = [
+  "Plastic parts including body panels, louvers, trims, and ODU fan guard",
+  "Cosmetic or aesthetic damage",
+  "Physical or accidental damage",
+  "Remote control battery",
+  "Physical damage to the remote control",
+  "External wiring or third-party modifications",
+  "Damage caused by voltage supply exceeding 290V",
+  "Damage caused by sudden unquantifiable electrical surges including those resulting from lightning strikes, mains faults, or short circuits in the mains supply",
+  "Damage caused by poor earthing at the installation site",
+  "Misuse, tampering, or use beyond intended residential purpose",
+  "Damage caused by pests or environmental factors",
+  "Any repair, modification, or service carried out by unauthorised personnel",
+];
+
+const validityConditions = [
+  "The product must be used for normal domestic residential purposes only",
+  "All repairs, servicing, and maintenance must be carried out exclusively by authorised Optimist technicians",
+  "The product serial number must not be removed, altered, or tampered with",
+  "The product must not have been subjected to unauthorised modification or use of non-genuine parts",
+];
+
+const relocationConditions = [
+  "Relocation must be carried out by an authorised Optimist technician",
+  "Reinstallation at the new location must also be carried out by an authorised Optimist technician",
+  "The warranty remains valid for the remainder of the original warranty period following authorised relocation and reinstallation",
+];
+
+function PolicySection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mb-10">
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function CheckList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-3">
+      {items.map((item) => (
+        <li key={item} className="flex items-start gap-2 text-gray-600">
+          <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0 mt-1" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default function WarrantyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,397 +133,280 @@ export default function WarrantyPage() {
             <Shield className="w-10 h-10 text-white" />
           </div>
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
-            Warranty Protection by Optimist
+            Warranty Policy
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Built for Indian conditions. Backed without excuses.
+            Effective Date: 12th May 2026
           </p>
         </div>
 
-        {/* Intro */}
         <div className="max-w-none">
           <div className="bg-gradient-to-r from-optimist-blue-light/10 to-optimist-blue-primary/5 rounded-2xl p-6 mb-8 border border-optimist-blue-primary/10">
             <p className="text-gray-700 text-lg leading-relaxed mb-4">
-              When you buy an Optimist AC, you&apos;re not just buying cooling.
-              You&apos;re buying peace of mind for the next decade.
+              Optimist, operated by OctoLife Climate Solutions Private Limited,
+              offers a comprehensive warranty on its air conditioners. This
+              Warranty Policy sets out the scope of coverage, conditions of
+              validity, exclusions, and the process for making a warranty claim.
             </p>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              <strong>
-                No labour charges. No AMC pressure. No service arguments.
-              </strong>
-            </p>
-            <p className="text-gray-600 italic">
-              Just honest protection, the way it should be.
+            <p className="text-gray-700 leading-relaxed">
+              This warranty is in addition to, and does not limit, your
+              statutory rights as a consumer under the Consumer Protection Act,
+              2019 and other applicable Indian law.
             </p>
           </div>
 
-          {/* Promise Section */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              The Optimist Warranty Promise
-            </h2>
+          <PolicySection title="1. Warranty Coverage">
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Optimist air conditioners are covered under the following warranty
+              terms from the date of installation by an authorised Optimist
+              technician:
+            </p>
+
+            <div className="overflow-hidden rounded-2xl border border-gray-200 mb-6">
+              <div className="hidden md:grid md:grid-cols-[2fr_1fr_2fr] bg-gray-50 text-sm font-semibold text-gray-900">
+                <div className="p-4 border-r border-gray-200">Component</div>
+                <div className="p-4 border-r border-gray-200">
+                  Coverage Period
+                </div>
+                <div className="p-4">What is Covered</div>
+              </div>
+              {coverageRows.map((row) => (
+                <div
+                  key={row.component}
+                  className="grid md:grid-cols-[2fr_1fr_2fr] border-t border-gray-200 bg-white"
+                >
+                  <div className="p-4 md:border-r md:border-gray-200">
+                    <p className="md:hidden text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
+                      Component
+                    </p>
+                    <p className="font-medium text-gray-900">{row.component}</p>
+                  </div>
+                  <div className="px-4 pb-2 md:p-4 md:border-r md:border-gray-200">
+                    <p className="md:hidden text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
+                      Coverage Period
+                    </p>
+                    <p className="text-optimist-blue-primary font-semibold">
+                      {row.period}
+                    </p>
+                  </div>
+                  <div className="px-4 pb-4 md:p-4">
+                    <p className="md:hidden text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
+                      What is Covered
+                    </p>
+                    <p className="text-gray-600">{row.covered}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              1.1 Components Covered
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                <h4 className="font-semibold text-gray-900 mb-4">
+                  ODU Components Covered
+                </h4>
+                <CheckList items={oduComponents} />
+              </div>
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                <h4 className="font-semibold text-gray-900 mb-4">
+                  IDU Components Covered
+                </h4>
+                <CheckList items={iduComponents} />
+              </div>
+            </div>
+
             <div className="bg-optimist-blue-primary/5 rounded-2xl p-6 border border-optimist-blue-primary/20">
-              <p className="text-xl text-gray-900 font-semibold mb-2">
-                If a critical part fails, we fix it at ₹0.
-              </p>
-              <p className="text-optimist-blue-primary font-medium">
-                That&apos;s our commitment.
+              <p className="text-gray-700 leading-relaxed">
+                All covered repairs and replacements are carried out at{" "}
+                <strong>₹0 to the customer</strong>. No labour charges, gas
+                refill charges, or part replacement charges are payable for
+                faults covered under this warranty.
               </p>
             </div>
-          </section>
+          </PolicySection>
 
-          {/* What's Covered */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              What&apos;s Covered
-            </h2>
-
-            {/* ODU Section */}
-            <div className="bg-gray-50 rounded-2xl p-6 mb-6 border border-gray-200">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-optimist-blue-primary/10 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-optimist-blue-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    Outdoor Unit (ODU)
-                  </h3>
-                  <p className="text-optimist-blue-primary font-semibold text-sm">
-                    5 Years | 10 Years on Compressor
-                  </p>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                Everything that actually makes cooling work.
-              </p>
-              <p className="text-gray-700 font-medium mb-3">
-                Covered components:
-              </p>
-              <ul className="space-y-2 mb-4">
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Compressor (10 years)</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Condenser / heat exchanger (coil)</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Fan motor</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Outdoor PCB & supplied electricals</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Valves and functional components</span>
-                </li>
+          <PolicySection title="2. Warranty Exclusions">
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              The following are excluded from this warranty:
+            </p>
+            <div className="bg-amber-50 rounded-2xl p-6 border border-amber-200">
+              <ul className="space-y-3">
+                {exclusions.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-amber-900">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-1" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
-              <div className="bg-white rounded-xl p-4 border border-gray-200">
-                <p className="text-gray-700 font-medium">
-                  If your ODU fails due to any covered part, we repair or
-                  replace it at{" "}
-                  <span className="text-optimist-blue-primary font-bold">
-                    ₹0
-                  </span>
-                  .
-                </p>
-              </div>
             </div>
+          </PolicySection>
 
-            {/* IDU Section */}
+          <PolicySection title="3. Warranty Activation">
             <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-optimist-blue-primary/10 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-optimist-blue-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    Indoor Unit (IDU)
-                  </h3>
-                  <p className="text-optimist-blue-primary font-semibold text-sm">
-                    Critical Parts Only
-                  </p>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                We cover function, not cosmetics.
+              <p className="text-gray-600 leading-relaxed mb-4">
+                The warranty activates automatically upon successful
+                installation of the product by an authorised Optimist
+                installation partner. No separate registration is required for
+                the warranty to be valid.
               </p>
+              <p className="text-gray-600 leading-relaxed">
+                The warranty period commences from the date of installation.
+                Customers may verify their warranty status, coverage details,
+                and service history through the Optimist mobile application or
+                by contacting Optimist customer support using the product serial
+                number.
+              </p>
+            </div>
+          </PolicySection>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <p className="text-gray-700 font-medium mb-3">
-                    Covered at ₹0 (parts + labour):
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                      <span>Indoor PCB & control board</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                      <span>Blower motor</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                      <span>Sensors & internal wiring</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-600">
-                      <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                      <span>Display & functional electronics</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <p className="text-gray-700 font-medium mb-3">Not covered:</p>
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2 text-gray-500">
-                      <span className="w-4 h-4 flex items-center justify-center text-gray-400">
-                        ✕
-                      </span>
-                      <span>Panels, louvers, trims</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-500">
-                      <span className="w-4 h-4 flex items-center justify-center text-gray-400">
-                        ✕
-                      </span>
-                      <span>Cosmetic damage</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-500">
-                      <span className="w-4 h-4 flex items-center justify-center text-gray-400">
-                        ✕
-                      </span>
-                      <span>Physical or accidental damage</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-500">
-                      <span className="w-4 h-4 flex items-center justify-center text-gray-400">
-                        ✕
-                      </span>
-                      <span>External wiring or third-party modifications</span>
-                    </li>
-                  </ul>
-                </div>
+          <PolicySection title="4. Conditions of Warranty Validity">
+            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                This warranty is valid subject to the following conditions:
+              </p>
+              <CheckList items={validityConditions} />
+              <div className="mt-6 bg-white rounded-xl p-4 border border-gray-200">
+                <p className="text-gray-700 font-medium">
+                  Breach of any of the above conditions will render this
+                  warranty void.
+                </p>
               </div>
             </div>
-          </section>
+          </PolicySection>
 
-          {/* Service & Warranty Conditions */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Service & Warranty Conditions
-            </h2>
-            <p className="text-gray-600 mb-6">Simple, Fair, Transparent</p>
+          <PolicySection title="5. Relocation">
+            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p className="text-gray-600 leading-relaxed mb-4">
+                This warranty is valid pan-India. If the product is relocated
+                from its original installation address, the following conditions
+                apply:
+              </p>
+              <CheckList items={relocationConditions} />
+              <div className="mt-6 bg-white rounded-xl p-4 border border-gray-200">
+                <p className="text-gray-700 leading-relaxed">
+                  If relocation or reinstallation is carried out by an
+                  unauthorised technician, the warranty shall be void in its
+                  entirety from the date of such relocation.
+                </p>
+              </div>
+            </div>
+          </PolicySection>
 
+          <PolicySection title="6. Warranty Transferability">
+            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p className="text-gray-600 leading-relaxed mb-4">
+                This warranty is transferable to a subsequent owner of the
+                product. The warranty transfers automatically and is linked to
+                the product serial number. No notification to Optimist is
+                required for the transfer to be effective.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                The new owner may verify the warranty status through the
+                Optimist mobile application or by contacting Optimist customer
+                support with the product serial number. The warranty shall
+                remain valid for the remainder of the original warranty period
+                from the original installation date, regardless of any change in
+                ownership.
+              </p>
+            </div>
+          </PolicySection>
+
+          <PolicySection title="7. How to Make a Warranty Claim">
             <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200 mb-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Preventive Maintenance (Required)
-              </h3>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                To keep performance and efficiency intact:
-              </p>
-              <div className="bg-white rounded-xl p-4 border border-gray-200 mb-4">
-                <p className="text-gray-700 font-semibold mb-3">
-                  2 wet services every year (Jet Pump)
-                </p>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                    <span>1 pre-season</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                    <span>1 post-season</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                    <span>First service: 6 months after installation</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div className="bg-optimist-blue-primary/5 rounded-xl p-4 border border-optimist-blue-primary/20">
-                  <p className="text-optimist-blue-primary font-bold text-lg">
-                    Year 1
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-optimist-blue-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-5 h-5 text-optimist-blue-primary" />
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <p className="text-gray-700 font-medium mb-1">
+                    Email:{" "}
+                    <a
+                      href="mailto:care@optimist.in"
+                      className="text-optimist-blue-primary hover:underline"
+                    >
+                      care@optimist.in
+                    </a>
                   </p>
-                  <p className="text-gray-700">Free</p>
-                </div>
-                <div className="bg-gray-100 rounded-xl p-4 border border-gray-200">
-                  <p className="text-gray-700 font-bold text-lg">
-                    Year 2 onwards
+                  <p className="text-gray-600">
+                    Support Hours: Monday to Saturday, 10:00 AM - 6:00 PM IST
                   </p>
-                  <p className="text-gray-600">Chargeable</p>
                 </div>
               </div>
-              <div className="flex items-start gap-2 bg-amber-50 rounded-xl p-4 border border-amber-200">
-                <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p className="text-amber-800 text-sm">
-                  <strong>Important:</strong> Warranty remains valid only if
-                  both services are completed every year.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Important Notes */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Important Notes
-            </h2>
-            <ul className="space-y-3 text-gray-600">
-              <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0 mt-1" />
-                <span>Valid for normal residential use only</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0 mt-1" />
-                <span>
-                  Installation & service must be done by authorised Optimist
-                  technicians
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0 mt-1" />
-                <span>Misuse, tampering, or external damage is excluded</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0 mt-1" />
-                <span>
-                  This warranty is in addition to your rights under the Consumer
-                  Protection Act, 2019
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0 mt-1" />
-                <span>
-                  Detailed terms on the Optimist website prevail in case of
-                  conflict
-                </span>
-              </li>
-            </ul>
-          </section>
-
-          {/* How to Activate */}
-          <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              How to Activate Your Warranty
-            </h2>
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200 mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-optimist-blue-primary/10 flex items-center justify-center">
-                  <Smartphone className="w-5 h-5 text-optimist-blue-primary" />
-                </div>
-                <p className="text-gray-700 font-semibold">
-                  Warranty registration happens only through the Optimist App.
-                </p>
-              </div>
-              <p className="text-gray-600 mb-4">This helps us:</p>
-              <ul className="space-y-2 mb-6 text-gray-600">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Verify your product authenticity</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Track service history</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Enable faster, transparent support</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-optimist-blue-primary flex-shrink-0" />
-                  <span>Show you real-time performance data</span>
-                </li>
-              </ul>
-
-              <h4 className="text-lg font-semibold text-gray-900 mb-3">
-                Registration process (2 minutes)
-              </h4>
-              <ol className="space-y-2 text-gray-600">
-                <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-optimist-blue-primary text-white text-sm flex items-center justify-center flex-shrink-0">
-                    1
-                  </span>
-                  <span>Download the Optimist App</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-optimist-blue-primary text-white text-sm flex items-center justify-center flex-shrink-0">
-                    2
-                  </span>
-                  <span>Create your account</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-optimist-blue-primary text-white text-sm flex items-center justify-center flex-shrink-0">
-                    3
-                  </span>
-                  <span>Add your AC using serial number</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-optimist-blue-primary text-white text-sm flex items-center justify-center flex-shrink-0">
-                    4
-                  </span>
-                  <span>Upload invoice & installation details</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-optimist-blue-primary text-white text-sm flex items-center justify-center flex-shrink-0">
-                    5
-                  </span>
-                  <span>Warranty gets activated instantly</span>
-                </li>
-              </ol>
-            </div>
-          </section>
-
-          {/* CTA Section */}
-          <section className="mb-10">
-            <div className="bg-gradient-to-r from-optimist-blue-primary to-optimist-blue-light rounded-2xl p-8 text-center">
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Activate your warranty in 2 minutes
-              </h2>
-              <p className="text-white/90 mb-6">
-                Download the Optimist App to register your AC and unlock full
-                warranty protection.
+              <p className="text-gray-600 leading-relaxed mb-4">
+                Upon receipt of a warranty claim, Optimist will arrange for an
+                authorised service engineer to visit the customer&apos;s premises
+                and inspect the product. If the fault is confirmed to be covered
+                under this warranty, the necessary repair or part replacement
+                will be carried out at ₹0 to the customer. No prior approval or
+                additional documentation is required from the customer for
+                covered repairs.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-                <Link
-                  href="https://apps.apple.com/in/app/optimist-by-octolife/id6757917861"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                  </svg>
-                  Download on App Store
-                </Link>
-
-                <Link
-                  href="https://play.google.com/store/apps/details?id=in.octolife.optimist&hl=en_IN"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
-                  </svg>
-                  Get it on Google Play
-                </Link>
-              </div>
-              <p className="text-white/70 text-sm">
-                (Warranty activation is only available via the Optimist App)
+              <p className="text-gray-600 leading-relaxed">
+                In cases where a spare part required for repair is unavailable
+                or discontinued, Optimist will endeavour on a best-effort basis
+                to replace the product unit with an equivalent or superior
+                model. Optimist does not guarantee unit replacement where spare
+                parts are unavailable.
               </p>
             </div>
-          </section>
+          </PolicySection>
+
+          <PolicySection title="8. Limitation of Liability">
+            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p className="text-gray-600 leading-relaxed mb-4">
+                Optimist&apos;s liability under this warranty is limited to
+                repair or replacement of the faulty part or, where applicable,
+                the product unit. Optimist shall not be liable for any indirect,
+                incidental, or consequential loss or damage arising from a
+                product fault or warranty repair, including but not limited to
+                loss of use, loss of comfort, or damage to property.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                This warranty does not cover any costs associated with
+                third-party services, civil or electrical work, or accessories
+                not supplied by Optimist.
+              </p>
+            </div>
+          </PolicySection>
+
+          <PolicySection title="9. Relationship with Other Policies">
+            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p className="text-gray-600 leading-relaxed">
+                This Warranty Policy is to be read in conjunction with the{" "}
+                <Link
+                  href="/terms"
+                  className="text-optimist-blue-primary hover:underline"
+                >
+                  Terms and Conditions of Purchase
+                </Link>{" "}
+                and the{" "}
+                <Link
+                  href="/return-policy"
+                  className="text-optimist-blue-primary hover:underline"
+                >
+                  Return, Refund and Cancellation Policy
+                </Link>{" "}
+                available at www.optimist.in. In case of any conflict between
+                this Policy and those documents, this Warranty Policy shall
+                prevail in matters specifically relating to warranty coverage and
+                claims.
+              </p>
+            </div>
+          </PolicySection>
+
+          <PolicySection title="10. Governing Law">
+            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+              <p className="text-gray-600 leading-relaxed">
+                This Warranty Policy shall be governed by the laws of India. Any
+                disputes arising out of or in connection with this Policy shall
+                be subject to the exclusive jurisdiction of the courts at
+                Gurgaon, Haryana, in accordance with the Terms and Conditions of
+                Purchase.
+              </p>
+            </div>
+          </PolicySection>
         </div>
       </div>
     </div>

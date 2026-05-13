@@ -148,7 +148,7 @@ export function getDeliveryMessage(result: PincodeResult): string {
   const cityPart = result.city ? ` to ${result.city}` : "";
 
   if (result.zone === "delhi-ncr") {
-    return `Delivery${cityPart} in 2-4 days`;
+    return `Delivery${cityPart} in 1-2 days`;
   }
 
   // Bangalore and Hyderabad both 10-12 days

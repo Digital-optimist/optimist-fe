@@ -18,31 +18,41 @@ export function BuiltForSection() {
 
   const [videoEnded, setVideoEnded] = useState(false);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+  const [fallbackVisible, setFallbackVisible] = useState(false);
   const router = useRouter();
 
   // Use Framer Motion's useInView to detect when section is visible
-  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+  const isInView = useInView(sectionRef, { once: true, amount: 0.05 });
+
+  // Fallback: if useInView never triggers (e.g. tall section on short viewport),
+  // force visibility after mount so the section is never permanently invisible
+  useEffect(() => {
+    const timer = setTimeout(() => setFallbackVisible(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const isVisible = isInView || fallbackVisible;
 
   // Play video when section comes into view
   useEffect(() => {
-    if (isInView && !hasStartedPlaying) {
+    if (isVisible && !hasStartedPlaying) {
       setHasStartedPlaying(true);
 
       // Play desktop video
       if (videoRef.current) {
-        videoRef.current.play().catch((e) => {
+        videoRef.current.play().catch(() => {
           setVideoEnded(true);
         });
       }
 
       // Play mobile video
       if (mobileVideoRef.current) {
-        mobileVideoRef.current.play().catch((e) => {
+        mobileVideoRef.current.play().catch(() => {
           setVideoEnded(true);
         });
       }
     }
-  }, [isInView, hasStartedPlaying]);
+  }, [isVisible, hasStartedPlaying]);
 
   const handleVideoEnded = () => {
     setVideoEnded(true);
@@ -95,7 +105,7 @@ export function BuiltForSection() {
         <motion.div
           className="text-center mb-8 md:mb-11"
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={sectionVariants}
         >
           <p className="text-[#3478F6] text-sm md:text-base mb-2">
@@ -110,7 +120,7 @@ export function BuiltForSection() {
         <motion.div
           className="hidden md:block relative w-full max-w-[1229px] mx-auto mb-12 md:mb-16"
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={imageContainerVariants}
         >
           {/* Container with relative positioning for absolute children */}
@@ -191,7 +201,7 @@ export function BuiltForSection() {
         <motion.div
           className="md:hidden relative w-full mb-8"
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={imageContainerVariants}
         >
           {/* Container with relative positioning */}
@@ -271,7 +281,7 @@ export function BuiltForSection() {
         {/* FAQ Section */}
         <motion.div
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={sectionVariants}
           transition={{ delay: 0.3 }}
           className="mb-12 md:mb-16"
