@@ -6,9 +6,9 @@ import { useCallback, useState } from "react";
 // Types
 // ---------------------------------------------------------------------------
 
-export type Zone = "delhi-ncr" | "bangalore" | "hyderabad";
+type Zone = "delhi-ncr" | "bangalore" | "hyderabad";
 
-export interface PincodeResult {
+interface PincodeResult {
   serviceable: boolean;
   zone: Zone | null;
   city: string | null;
@@ -83,14 +83,6 @@ function savePincode(pin: string): void {
     localStorage.setItem(STORAGE_KEY, pin);
   } catch {
     /* quota or private mode */
-  }
-}
-
-export function clearSavedPincode(): void {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    /* noop */
   }
 }
 

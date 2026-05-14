@@ -58,7 +58,7 @@ function computeCheckDigit(gstin14: string): string {
   return CHECKSUM_CHARS[(36 - remainder) % 36];
 }
 
-export interface GSTINValidationResult {
+interface GSTINValidationResult {
   valid: boolean;
   error?: string;
   state?: string;
@@ -90,11 +90,6 @@ export function validateGSTIN(input: string): GSTINValidationResult {
   }
 
   return { valid: true, state: stateName };
-}
-
-export function getStateFromGSTIN(gstin: string): string | undefined {
-  const code = gstin.substring(0, 2);
-  return STATE_CODES[code];
 }
 
 export function formatGSTINInput(input: string): string {

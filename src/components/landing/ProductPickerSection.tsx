@@ -257,7 +257,6 @@ export function ProductPickerSection() {
     return 0;
   }, [activePrice, activeCompareAtPrice]);
 
-  // Real rating from Judge.me — use productId same as inner-circle/products page
   const activeProductId = activeVariant?.productId;
   const { rating: judgeRating, count: judgeCount } =
     useJudgeMeRating(activeProductId);
