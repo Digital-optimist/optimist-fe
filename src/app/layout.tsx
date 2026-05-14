@@ -3,11 +3,10 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { ViewCanvas } from "@/components/canvas/ViewCanvas";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SnapmintLoader from "@/components/SnapmintLoader";
-import SaleAssistButton from "@/components/SaleAssistButton";
+import SaleAssistLoader from "@/components/SaleAssistLoader";
 
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
@@ -183,13 +182,11 @@ export default function RootLayout({
         <Providers>
           <SnapmintLoader />
           <SmoothScroll>
-            {/* <ViewCanvas /> */}
             <LayoutContent>{children}</LayoutContent>
           </SmoothScroll>
         </Providers>
 
-        {/* SaleAssist Live Demo Button */}
-        <SaleAssistButton />
+        <SaleAssistLoader />
       </body>
     </html>
   );

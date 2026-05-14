@@ -1,28 +1,10 @@
-"use client";
-
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
 import { RotateCcw } from "lucide-react";
+import { FadeInWrapper } from "@/components/ui/FadeInWrapper";
 
 export default function ReturnPolicyPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        contentRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }
-      );
-    },
-    { scope: containerRef }
-  );
-
   return (
-    <div ref={containerRef} className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
-      <div ref={contentRef} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <FadeInWrapper className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-optimist-blue-light to-optimist-blue-primary flex items-center justify-center shadow-lg shadow-optimist-blue-primary/20">
@@ -320,6 +302,6 @@ export default function ReturnPolicyPage() {
           </p>
         </div>
       </div>
-    </div>
+    </FadeInWrapper>
   );
 }

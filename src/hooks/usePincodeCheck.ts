@@ -152,5 +152,5 @@ export function getDeliveryMessage(result: PincodeResult): string {
   }
 
   // Bangalore and Hyderabad both 10-12 days
-  return `Delivery${cityPart} in 6-8 days`;
+  return `Delivery${cityPart} in 4-6 days`;
 }

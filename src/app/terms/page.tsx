@@ -1,28 +1,10 @@
-"use client";
-
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
 import { FileText } from "lucide-react";
+import { FadeInWrapper } from "@/components/ui/FadeInWrapper";
 
 export default function TermsPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        contentRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }
-      );
-    },
-    { scope: containerRef }
-  );
-
   return (
-    <div ref={containerRef} className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
-      <div ref={contentRef} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <FadeInWrapper className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-optimist-blue-light to-optimist-blue-primary flex items-center justify-center shadow-lg shadow-optimist-blue-primary/20">
@@ -605,32 +587,15 @@ export default function TermsPage() {
             </p>
           </section>
 
-          {/* Section 26 */}
+          {/* Sections 26-48 continue with same static content pattern */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              26. Warranty Registration and Validity
-            </h2>
-            
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              26.1 Warranty Activation
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Warranty activates automatically upon successful installation of the Product by an authorised Optimist service partner. No separate registration is required for warranty to be valid. The Optimist App may be used to verify warranty status, view coverage details, and access service history.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              26.2 Warranty Scope
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Warranty covers manufacturing defects under normal domestic use. It does not cover consumables, cosmetic damage, or failures due to improper installation, voltage fluctuations, misuse, or unauthorised repair. Full details of warranty coverage are set out in the Warranty Policy available at www.optimist.in/warranty.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              26.3 Warranty Exclusions
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Warranty shall be void if:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">26. Warranty Registration and Validity</h2>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">26.1 Warranty Activation</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Warranty activates automatically upon successful installation of the Product by an authorised Optimist service partner. No separate registration is required for warranty to be valid. The Optimist App may be used to verify warranty status, view coverage details, and access service history.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">26.2 Warranty Scope</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Warranty covers manufacturing defects under normal domestic use. It does not cover consumables, cosmetic damage, or failures due to improper installation, voltage fluctuations, misuse, or unauthorised repair. Full details of warranty coverage are set out in the Warranty Policy available at www.optimist.in/warranty.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">26.3 Warranty Exclusions</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Warranty shall be void if:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Product is relocated without authorised reinstallation</li>
               <li>Non-genuine parts are used</li>
@@ -639,32 +604,14 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 27 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              27. Extended Warranty and AMC Plans
-            </h2>
-            
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              27.1 Optional Purchase
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Extended warranty and Annual Maintenance Contracts (&quot;AMC&quot;) may be purchased separately and are governed by their own terms. Acceptance of AMC is subject to product condition and serviceability.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              27.2 Coverage
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              AMC may cover labour, parts, gas, preventive maintenance visits, and service response times depending on the selected plan. Coverage is limited to normal residential use.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              27.3 Exclusions
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              AMC does not cover:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">27. Extended Warranty and AMC Plans</h2>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">27.1 Optional Purchase</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Extended warranty and Annual Maintenance Contracts (&quot;AMC&quot;) may be purchased separately and are governed by their own terms. Acceptance of AMC is subject to product condition and serviceability.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">27.2 Coverage</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">AMC may cover labour, parts, gas, preventive maintenance visits, and service response times depending on the selected plan. Coverage is limited to normal residential use.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">27.3 Exclusions</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">AMC does not cover:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Physical damage</li>
               <li>Improper usage</li>
@@ -673,44 +620,19 @@ export default function TermsPage() {
               <li>Structural modifications</li>
               <li>Software or third-party integrations</li>
             </ul>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist reserves the right to charge separately for non-covered services.
-            </p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist reserves the right to charge separately for non-covered services.</p>
           </section>
 
-          {/* Section 28 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              28. Service Requests and Repair Terms
-            </h2>
-            
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              28.1 Service Requests
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Service requests must be raised through the App, Website, or authorised call centre. You must provide accurate information regarding the issue.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              28.2 Inspection and Repair
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Service engineers may inspect the Product to determine fault origin. Optimist reserves the right to repair, replace, or refund at its sole discretion where repair is not commercially viable.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              28.3 Parts Replacement
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Any replaced parts become the property of Optimist. Optimist may use reconditioned parts with equivalent performance.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              28.4 Refusal of Service
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist may refuse service where:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">28. Service Requests and Repair Terms</h2>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">28.1 Service Requests</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Service requests must be raised through the App, Website, or authorised call centre. You must provide accurate information regarding the issue.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">28.2 Inspection and Repair</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Service engineers may inspect the Product to determine fault origin. Optimist reserves the right to repair, replace, or refund at its sole discretion where repair is not commercially viable.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">28.3 Parts Replacement</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Any replaced parts become the property of Optimist. Optimist may use reconditioned parts with equivalent performance.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">28.4 Refusal of Service</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist may refuse service where:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>The Product is tampered with</li>
               <li>Installation is unauthorised</li>
@@ -720,115 +642,51 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 29 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              29. Cleaning Services (If Applicable)
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist may offer paid cleaning services for indoor and outdoor units. Cleaning services include basic washing, filter cleaning, and performance checks, and do not include repairs, gas refilling, or part replacement.
-            </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Cleaning services must be prepaid and may be rescheduled subject to availability. Refunds for unused cleaning services may be processed at Optimist&apos;s discretion.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">29. Cleaning Services (If Applicable)</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist may offer paid cleaning services for indoor and outdoor units. Cleaning services include basic washing, filter cleaning, and performance checks, and do not include repairs, gas refilling, or part replacement.</p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Cleaning services must be prepaid and may be rescheduled subject to availability. Refunds for unused cleaning services may be processed at Optimist&apos;s discretion.</p>
           </section>
 
-          {/* Section 30 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              30. Connected Features and Data Usage
-            </h2>
-            
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              30.1 App Connectivity
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              By pairing the Product with the App, you consent to remote diagnostics, performance monitoring, energy tracking, firmware updates, and service alerts.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              30.2 Data Collection
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist may collect anonymised usage data for product improvement, warranty validation, and service optimisation.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              30.3 Service Access
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You authorise Optimist to access device data remotely to diagnose issues during service requests.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">30. Connected Features and Data Usage</h2>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">30.1 App Connectivity</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">By pairing the Product with the App, you consent to remote diagnostics, performance monitoring, energy tracking, firmware updates, and service alerts.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">30.2 Data Collection</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist may collect anonymised usage data for product improvement, warranty validation, and service optimisation.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">30.3 Service Access</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">You authorise Optimist to access device data remotely to diagnose issues during service requests.</p>
           </section>
 
-          {/* Section 31 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              31. Product End-of-Life and Discontinuation
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist may discontinue models or parts at its discretion. Where spare parts are no longer available, Optimist may offer replacement, upgrade, or refund at depreciated value in accordance with applicable policy.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">31. Product End-of-Life and Discontinuation</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist may discontinue models or parts at its discretion. Where spare parts are no longer available, Optimist may offer replacement, upgrade, or refund at depreciated value in accordance with applicable policy.</p>
           </section>
 
-          {/* Section 32 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              32. Limitation of Liability for Service
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist shall not be liable for:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">32. Limitation of Liability for Service</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist shall not be liable for:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Loss of comfort due to downtime</li>
               <li>Indirect or consequential losses</li>
               <li>Property damage caused by pre-existing conditions</li>
               <li>Delays in service due to factors beyond control</li>
             </ul>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist&apos;s liability shall be limited to repair, replacement, or refund at its discretion.
-            </p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist&apos;s liability shall be limited to repair, replacement, or refund at its discretion.</p>
           </section>
 
-          {/* Section 33 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              33. Intellectual Property Rights
-            </h2>
-            
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              33.1 Ownership
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              All intellectual property rights in and to the Website, App, Products, Services, software, firmware, product designs, industrial designs, technical documentation, algorithms, data models, trademarks, trade names, logos, domain names, content, text, graphics, images, videos, and all related materials (&quot;Optimist IP&quot;) are owned exclusively by Optimist or its licensors.
-            </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Nothing in this Agreement grants You any right, title, or interest in Optimist IP except the limited right to use the Website and App in accordance with these Terms.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              33.2 Copyright and Database Rights
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              All content on the Website and App is protected under Indian and international copyright and database laws. Compilation of content, product listings, pricing, and data structures constitutes proprietary databases owned by Optimist.
-            </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You may not reproduce, modify, distribute, scrape, harvest, or create derivative works from any part of the Website, App, or Service without prior written permission.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              33.3 Limited License to Customer
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist grants You a limited, non-exclusive, non-transferable, revocable license to access and use the Website and App for personal, non-commercial purposes only, subject to these Terms.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              33.4 Restrictions
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You shall not:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">33. Intellectual Property Rights</h2>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">33.1 Ownership</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">All intellectual property rights in and to the Website, App, Products, Services, software, firmware, product designs, industrial designs, technical documentation, algorithms, data models, trademarks, trade names, logos, domain names, content, text, graphics, images, videos, and all related materials (&quot;Optimist IP&quot;) are owned exclusively by Optimist or its licensors.</p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Nothing in this Agreement grants You any right, title, or interest in Optimist IP except the limited right to use the Website and App in accordance with these Terms.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">33.2 Copyright and Database Rights</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">All content on the Website and App is protected under Indian and international copyright and database laws. Compilation of content, product listings, pricing, and data structures constitutes proprietary databases owned by Optimist.</p>
+            <p className="text-gray-600 mb-4 leading-relaxed">You may not reproduce, modify, distribute, scrape, harvest, or create derivative works from any part of the Website, App, or Service without prior written permission.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">33.3 Limited License to Customer</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist grants You a limited, non-exclusive, non-transferable, revocable license to access and use the Website and App for personal, non-commercial purposes only, subject to these Terms.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">33.4 Restrictions</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">You shall not:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Reverse engineer, decompile, or disassemble any part of the Website, App, or Products</li>
               <li>Use data mining, bots, or scraping tools</li>
@@ -838,33 +696,17 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 34 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              34. License by Customer
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              By submitting any content, feedback, or communications to Optimist, You grant Optimist and its Affiliates a perpetual, irrevocable, royalty-free, worldwide, sublicensable license to use, reproduce, modify, publish, distribute, and display such content in any form or media for operational, analytical, or promotional purposes.
-            </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You waive any moral rights in such content to the extent permitted by law.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">34. License by Customer</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">By submitting any content, feedback, or communications to Optimist, You grant Optimist and its Affiliates a perpetual, irrevocable, royalty-free, worldwide, sublicensable license to use, reproduce, modify, publish, distribute, and display such content in any form or media for operational, analytical, or promotional purposes.</p>
+            <p className="text-gray-600 mb-4 leading-relaxed">You waive any moral rights in such content to the extent permitted by law.</p>
           </section>
 
-          {/* Section 35 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              35. Disclaimer of Warranties
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              To the maximum extent permitted by law, the Website, App, Products, and Services are provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis.
-            </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist makes no warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, non-infringement, accuracy, availability, reliability, performance, or uninterrupted operation.
-            </p>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist does not warrant that:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">35. Disclaimer of Warranties</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">To the maximum extent permitted by law, the Website, App, Products, and Services are provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis.</p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist makes no warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, non-infringement, accuracy, availability, reliability, performance, or uninterrupted operation.</p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist does not warrant that:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>The Website or App will be error-free</li>
               <li>Products will meet all expectations</li>
@@ -873,14 +715,9 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 36 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              36. Limitation of Liability
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              To the maximum extent permitted by applicable law:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">36. Limitation of Liability</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">To the maximum extent permitted by applicable law:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Optimist shall not be liable for any indirect, incidental, special, punitive, or consequential damages, including loss of profits, data, or goodwill</li>
               <li>Optimist shall not be liable for third-party actions or failures</li>
@@ -889,14 +726,9 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 37 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              37. Indemnification
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You agree to indemnify, defend, and hold harmless Optimist, its Affiliates, directors, officers, employees, agents, and service partners from any claims, damages, losses, liabilities, costs, or expenses (including legal fees) arising out of:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">37. Indemnification</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">You agree to indemnify, defend, and hold harmless Optimist, its Affiliates, directors, officers, employees, agents, and service partners from any claims, damages, losses, liabilities, costs, or expenses (including legal fees) arising out of:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Your breach of these Terms</li>
               <li>Your misuse of the Website, App, or Services</li>
@@ -906,24 +738,14 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 38 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              38. Third-Party Websites and Services
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              The Website or App may contain links to third-party websites or services. Optimist does not control or endorse such third parties and shall not be responsible for their content, performance, or policies. You access third-party services at Your own risk.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">38. Third-Party Websites and Services</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">The Website or App may contain links to third-party websites or services. Optimist does not control or endorse such third parties and shall not be responsible for their content, performance, or policies. You access third-party services at Your own risk.</p>
           </section>
 
-          {/* Section 39 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              39. Force Majeure
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist shall not be liable for failure or delay in performance due to events beyond its reasonable control, including but not limited to:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">39. Force Majeure</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist shall not be liable for failure or delay in performance due to events beyond its reasonable control, including but not limited to:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Natural disasters</li>
               <li>Government orders</li>
@@ -933,44 +755,19 @@ export default function TermsPage() {
               <li>Cyber attacks</li>
               <li>Supply chain disruptions</li>
             </ul>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Performance obligations shall be suspended for the duration of such events.
-            </p>
+            <p className="text-gray-600 mb-4 leading-relaxed">Performance obligations shall be suspended for the duration of such events.</p>
           </section>
 
-          {/* Section 40 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              40. Term and Termination
-            </h2>
-            
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              40.1 Term
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              This Agreement remains effective from the date of acceptance until terminated.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              40.2 Termination by Optimist
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Optimist may suspend or terminate Your access, account, or Orders at its sole discretion, without notice, if You violate these Terms, misuse the Service, or engage in unlawful conduct.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              40.3 Termination by Customer
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You may terminate this Agreement by ceasing use of the Website, App, and Services, subject to outstanding obligations.
-            </p>
-
-            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">
-              40.4 Effect of Termination
-            </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Upon termination, Optimist may:
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">40. Term and Termination</h2>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">40.1 Term</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">This Agreement remains effective from the date of acceptance until terminated.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">40.2 Termination by Optimist</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Optimist may suspend or terminate Your access, account, or Orders at its sole discretion, without notice, if You violate these Terms, misuse the Service, or engage in unlawful conduct.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">40.3 Termination by Customer</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">You may terminate this Agreement by ceasing use of the Website, App, and Services, subject to outstanding obligations.</p>
+            <h3 className="text-xl font-semibold text-optimist-blue-primary mb-3">40.4 Effect of Termination</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">Upon termination, Optimist may:</p>
             <ul className="list-disc pl-6 mb-4 text-gray-600 space-y-2">
               <li>Cancel pending Orders</li>
               <li>Refuse service</li>
@@ -979,109 +776,57 @@ export default function TermsPage() {
             </ul>
           </section>
 
-          {/* Section 41 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              41. Survival of Provisions
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              The following sections shall survive termination: Intellectual Property, Warranty Disclaimers, Limitation of Liability, Indemnification, Governing Law, Jurisdiction, and any provisions which by their nature should survive.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">41. Survival of Provisions</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">The following sections shall survive termination: Intellectual Property, Warranty Disclaimers, Limitation of Liability, Indemnification, Governing Law, Jurisdiction, and any provisions which by their nature should survive.</p>
           </section>
 
-          {/* Section 42 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              42. Assignment
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              You may not assign Your rights or obligations under this Agreement without Optimist&apos;s prior written consent. Optimist may assign this Agreement without restriction.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">42. Assignment</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">You may not assign Your rights or obligations under this Agreement without Optimist&apos;s prior written consent. Optimist may assign this Agreement without restriction.</p>
           </section>
 
-          {/* Section 43 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              43. Severability
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              If any provision is held unenforceable, the remaining provisions shall remain in full force and effect.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">43. Severability</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">If any provision is held unenforceable, the remaining provisions shall remain in full force and effect.</p>
           </section>
 
-          {/* Section 44 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              44. Waiver
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Failure by Optimist to enforce any right shall not constitute a waiver of such right.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">44. Waiver</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Failure by Optimist to enforce any right shall not constitute a waiver of such right.</p>
           </section>
 
-          {/* Section 45 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              45. Relationship of Parties
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Nothing in this Agreement creates a partnership, employment, or agency relationship between You and Optimist.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">45. Relationship of Parties</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Nothing in this Agreement creates a partnership, employment, or agency relationship between You and Optimist.</p>
           </section>
 
-          {/* Section 46 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              46. Governing Law and Jurisdiction
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              This Agreement shall be governed by the laws of India. Courts at Gurgaon, Haryana shall have exclusive jurisdiction over any dispute arising out of or in connection with this Agreement.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">46. Governing Law and Jurisdiction</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">This Agreement shall be governed by the laws of India. Courts at Gurgaon, Haryana shall have exclusive jurisdiction over any dispute arising out of or in connection with this Agreement.</p>
           </section>
 
-          {/* Section 47 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              47. Interpretation
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Words importing singular include plural and vice versa; references to statutes include amendments; headings are for convenience only and do not affect interpretation.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">47. Interpretation</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">Words importing singular include plural and vice versa; references to statutes include amendments; headings are for convenience only and do not affect interpretation.</p>
           </section>
 
-          {/* Section 48 */}
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              48. Grievance Officer and Contact Information
-            </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              In accordance with the Consumer Protection (E-Commerce) Rules, 2020, Optimist has designated a Grievance Officer to address customer complaints and concerns.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">48. Grievance Officer and Contact Information</h2>
+            <p className="text-gray-600 mb-4 leading-relaxed">In accordance with the Consumer Protection (E-Commerce) Rules, 2020, Optimist has designated a Grievance Officer to address customer complaints and concerns.</p>
             <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-              <p className="text-gray-900 mb-4 font-semibold">
-                Grievance Officer
-              </p>
+              <p className="text-gray-900 mb-4 font-semibold">Grievance Officer</p>
               <div className="space-y-3 text-gray-700">
-                <p>
-                  <span className="text-optimist-blue-primary font-semibold">Name:</span> [___________]
-                </p>
-                <p>
-                  <span className="text-optimist-blue-primary font-semibold">Organisation:</span> OctoLife Climate Solutions Private Limited
-                </p>
-                <p>
-                  <span className="text-optimist-blue-primary font-semibold">Email:</span> care@optimist.in
-                </p>
-                <p>
-                  <span className="text-optimist-blue-primary font-semibold">Support Hours:</span> Monday to Saturday, 10:00 AM - 6:00 PM IST
-                </p>
-                <p>
-                  <span className="text-optimist-blue-primary font-semibold">Response Timeframe:</span> Acknowledgement within 48 hours; resolution within 30 days
-                </p>
+                <p><span className="text-optimist-blue-primary font-semibold">Name:</span> [___________]</p>
+                <p><span className="text-optimist-blue-primary font-semibold">Organisation:</span> OctoLife Climate Solutions Private Limited</p>
+                <p><span className="text-optimist-blue-primary font-semibold">Email:</span> care@optimist.in</p>
+                <p><span className="text-optimist-blue-primary font-semibold">Support Hours:</span> Monday to Saturday, 10:00 AM - 6:00 PM IST</p>
+                <p><span className="text-optimist-blue-primary font-semibold">Response Timeframe:</span> Acknowledgement within 48 hours; resolution within 30 days</p>
               </div>
             </div>
           </section>
         </div>
       </div>
-    </div>
+    </FadeInWrapper>
   );
 }

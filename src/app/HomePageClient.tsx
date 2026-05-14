@@ -1,18 +1,36 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { BenefitsSection } from "@/components/landing/BenefitsSection";
-import { CTASection } from "@/components/landing/CTASection";
-import { EngineeredSection } from "@/components/landing/EngineeredSection";
-import { FeaturesShowcaseSection } from "@/components/landing/FeaturesShowcaseSection";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { IndiaFirstSection } from "@/components/landing/IndiaFirstSection";
-import { MadeSimpleSection } from "@/components/landing/MadeSimpleSection";
-import { OptimistAppSection } from "@/components/landing/OptimistAppSection";
-import { ProductPickerSection } from "@/components/landing/ProductPickerSection";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
+import { BenefitsSection } from "@/components/landing/BenefitsSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";
 import { useLandingContent } from "@/hooks/useMetaobjectContent";
+
+const FeaturesShowcaseSection = dynamic(
+  () => import("@/components/landing/FeaturesShowcaseSection").then((m) => ({ default: m.FeaturesShowcaseSection })),
+);
+const OptimistAppSection = dynamic(
+  () => import("@/components/landing/OptimistAppSection").then((m) => ({ default: m.OptimistAppSection })),
+);
+const MadeSimpleSection = dynamic(
+  () => import("@/components/landing/MadeSimpleSection").then((m) => ({ default: m.MadeSimpleSection })),
+);
+const EngineeredSection = dynamic(
+  () => import("@/components/landing/EngineeredSection").then((m) => ({ default: m.EngineeredSection })),
+);
+const TestimonialsSection = dynamic(
+  () => import("@/components/landing/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+);
+const ProductPickerSection = dynamic(
+  () => import("@/components/landing/ProductPickerSection").then((m) => ({ default: m.ProductPickerSection })),
+);
+const CTASection = dynamic(
+  () => import("@/components/landing/CTASection").then((m) => ({ default: m.CTASection })),
+);
+const IndiaFirstSection = dynamic(
+  () => import("@/components/landing/IndiaFirstSection").then((m) => ({ default: m.IndiaFirstSection })),
+);
 
 const easeOutExpo = "easeOut" as const;
 
