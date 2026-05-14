@@ -132,7 +132,7 @@ export default function SaleAssistButton() {
 
       <Script
         src="https://static.saleassist.ai/widgets/widget.js"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         onLoad={handleScriptLoad}
       />
     </>

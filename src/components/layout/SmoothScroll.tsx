@@ -27,8 +27,14 @@ const isMobileDevice = () => {
 // Check if device is iOS
 const isIOSDevice = () => {
   if (typeof window === "undefined") return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+};
+
+// Respect the user's reduced-motion preference — skip Lenis entirely for them.
+const prefersReducedMotion = () => {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 };
 
 export function SmoothScroll({ children }: SmoothScrollProps) {
@@ -36,25 +42,35 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   // Initialize false to match SSR output and avoid hydration mismatch.
   const [isMobile, setIsMobile] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Update on resize (for orientation changes)
+  // Update on resize (for orientation changes) + watch reduced-motion changes.
   useEffect(() => {
     setIsMounted(true);
     setIsMobile(isMobileDevice());
     setIsIOS(isIOSDevice());
+    setReducedMotion(prefersReducedMotion());
 
     const handleResize = () => {
       setIsMobile(isMobileDevice());
       setIsIOS(isIOSDevice());
     };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleMotionChange = () => setReducedMotion(mql.matches);
+    mql.addEventListener("change", handleMotionChange);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      mql.removeEventListener("change", handleMotionChange);
+    };
   }, []);
 
   useEffect(() => {
-    // Skip Lenis on mobile/iOS - use native scrolling for better touch experience
-    if (isMobile || isIOS) {
+    // Skip Lenis on mobile/iOS or when user prefers reduced motion — use native scrolling.
+    if (isMobile || isIOS || reducedMotion) {
       // Still need to update ScrollTrigger on native scroll
       const handleScroll = () => {
         ScrollTrigger.update();
@@ -109,11 +125,11 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
         window.__lenis = null;
       }
     };
-  }, [isMobile, isIOS]);
+  }, [isMobile, isIOS, reducedMotion]);
 
-  // On mobile/iOS, render without the wrapper div that might interfere with scrolling
+  // On mobile/iOS or reduced-motion, render without the wrapper div that might interfere with scrolling
   // Always render the wrapper on SSR (!isMounted) to avoid hydration mismatch
-  if (isMounted && (isMobile || isIOS)) {
+  if (isMounted && (isMobile || isIOS || reducedMotion)) {
     return <>{children}</>;
   }
 

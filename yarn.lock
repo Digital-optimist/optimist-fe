@@ -1176,23 +1176,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/hydrogen-react@npm:^2025.7.1":
-  version: 2025.10.0
-  resolution: "@shopify/hydrogen-react@npm:2025.10.0"
+"@shopify/hydrogen-react@npm:2025.7.1":
+  version: 2025.7.1
+  resolution: "@shopify/hydrogen-react@npm:2025.7.1"
   dependencies:
     "@google/model-viewer": "npm:^4.0.0"
     "@xstate/fsm": "npm:2.0.0"
     "@xstate/react": "npm:3.2.1"
     graphql: "npm:^16.10.0"
     type-fest: "npm:^4.33.0"
-    use-isomorphic-layout-effect: "npm:1.2.1"
-    use-sync-external-store: "npm:1.6.0"
+    use-isomorphic-layout-effect: "npm:1.1.2"
+    use-sync-external-store: "npm:1.2.0"
     worktop: "npm:^0.7.3"
   peerDependencies:
-    react: ^18.3.1 || ~19.0.3 || ~19.1.4 || ^19.2.3
-    react-dom: ^18.3.1 || ~19.0.3 || ~19.1.4 || ^19.2.3
+    react: 18.3.1
+    react-dom: 18.3.1
     vite: ^5.1.0 || ^6.2.1
-  checksum: 10c0/1d81cc81620e1c9a7e2efc6ee7d591558c58e1304a6daaca34166d4d7945a8abbc2e00af5b7bb0131b072c7b19513fbfb59dc9059c2aa87fd61a6b8a8d2b9eac
+  checksum: 10c0/89db4b5b5ae8ee5c79a3102c570a26d828a01b2948e408fe55764b40d49d4cf40d29e08ef406014ac3348492ec593a4f25bd54f701f0d88f659596fc634df476
   languageName: node
   linkType: hard
 
@@ -4599,7 +4599,7 @@ __metadata:
   dependencies:
     "@gsap/react": "npm:^2.1.2"
     "@playwright/test": "npm:^1.49.0"
-    "@shopify/hydrogen-react": "npm:^2025.7.1"
+    "@shopify/hydrogen-react": "npm:2025.7.1"
     "@tailwindcss/postcss": "npm:^4"
     "@types/node": "npm:^20"
     "@types/react": "npm:^19"
@@ -5906,7 +5906,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-isomorphic-layout-effect@npm:1.2.1, use-isomorphic-layout-effect@npm:^1.0.0":
+"use-isomorphic-layout-effect@npm:1.1.2":
+  version: 1.1.2
+  resolution: "use-isomorphic-layout-effect@npm:1.1.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/d8deea8b85e55ac6daba237a889630bfdbf0ebf60e9e22b6a78a78c26fabe6025e04ada7abef1e444e6786227d921e648b2707db8b3564daf757264a148a6e23
+  languageName: node
+  linkType: hard
+
+"use-isomorphic-layout-effect@npm:^1.0.0":
   version: 1.2.1
   resolution: "use-isomorphic-layout-effect@npm:1.2.1"
   peerDependencies:
@@ -5918,7 +5930,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.6.0, use-sync-external-store@npm:^1.0.0":
+"use-sync-external-store@npm:1.2.0":
+  version: 1.2.0
+  resolution: "use-sync-external-store@npm:1.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 10c0/ac4814e5592524f242921157e791b022efe36e451fe0d4fd4d204322d5433a4fc300d63b0ade5185f8e0735ded044c70bcf6d2352db0f74d097a238cebd2da02
+  languageName: node
+  linkType: hard
+
+"use-sync-external-store@npm:^1.0.0":
   version: 1.6.0
   resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:

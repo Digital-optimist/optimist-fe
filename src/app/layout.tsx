@@ -11,84 +11,59 @@ import SaleAssistLoader from "@/components/SaleAssistLoader";
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
 
-// ABC Solar Display - For headlines
+// ABC Solar Display - For headlines (only weights actually used; italics/800 dropped).
 const abcSolarDisplay = localFont({
   src: [
     {
-      path: "../assets/fonts/ABCSolarDisplay-Regular-Trial.otf",
+      path: "../assets/fonts/ABCSolarDisplay-Regular-Trial.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../assets/fonts/ABCSolarDisplay-RegularItalic-Trial.otf",
-      weight: "400",
-      style: "italic",
-    },
-    {
-      path: "../assets/fonts/ABCSolarDisplay-Medium-Trial.otf",
+      path: "../assets/fonts/ABCSolarDisplay-Medium-Trial.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../assets/fonts/ABCSolarDisplay-MediumItalic-Trial.otf",
-      weight: "500",
-      style: "italic",
-    },
-    {
-      path: "../assets/fonts/ABCSolarDisplay-Bold-Trial.otf",
+      path: "../assets/fonts/ABCSolarDisplay-Bold-Trial.woff2",
       weight: "700",
       style: "normal",
-    },
-    {
-      path: "../assets/fonts/ABCSolarDisplay-BoldItalic-Trial.otf",
-      weight: "700",
-      style: "italic",
-    },
-    {
-      path: "../assets/fonts/ABCSolarDisplay-Extrabold-Trial.otf",
-      weight: "800",
-      style: "normal",
-    },
-    {
-      path: "../assets/fonts/ABCSolarDisplay-ExtraboldItalic-Trial.otf",
-      weight: "800",
-      style: "italic",
     },
   ],
   variable: "--font-abc-solar-display",
   display: "swap",
 });
 
-// ABC Solar - For body text and UI
+// ABC Solar - For body text and UI.
 const abcSolar = localFont({
   src: [
     {
-      path: "../assets/fonts/ABCSolar-Light-Trial.otf",
+      path: "../assets/fonts/ABCSolar-Light-Trial.woff2",
       weight: "300",
       style: "normal",
     },
     {
-      path: "../assets/fonts/ABCSolar-Regular-Trial.otf",
+      path: "../assets/fonts/ABCSolar-Regular-Trial.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../assets/fonts/ABCSolar-RegularItalic-Trial.otf",
+      path: "../assets/fonts/ABCSolar-RegularItalic-Trial.woff2",
       weight: "400",
       style: "italic",
     },
     {
-      path: "../assets/fonts/ABCSolar-Medium-Trial.otf",
+      path: "../assets/fonts/ABCSolar-Medium-Trial.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../assets/fonts/ABCSolar-Semibold-Trial.otf",
+      path: "../assets/fonts/ABCSolar-Semibold-Trial.woff2",
       weight: "600",
       style: "normal",
     },
     {
-      path: "../assets/fonts/ABCSolar-Bold-Trial.otf",
+      path: "../assets/fonts/ABCSolar-Bold-Trial.woff2",
       weight: "700",
       style: "normal",
     },
@@ -131,7 +106,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning>
-        {/* Google Tag Manager */}
+        {/* Preconnect to the S3 assets bucket so the first image request
+            skips DNS + TCP + TLS handshakes (~100-300 ms saved on cold loads). */}
+        <link
+          rel="preconnect"
+          href="https://optimist-fe-assets.s3.amazonaws.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://optimist-fe-assets.s3.amazonaws.com"
+        />
+        {/* Google Tag Manager — loaded after the page is interactive so it doesn't block first paint. */}
         <Script
           id="gtm-script"
           strategy="afterInteractive"
@@ -145,14 +131,14 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Google Analytics 4 (gtag.js) */}
+        {/* Google Analytics 4 — pushed to lazyOnload so it only fires when the browser is idle. */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         <Script
           id="ga4-script"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
