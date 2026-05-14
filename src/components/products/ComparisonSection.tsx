@@ -179,14 +179,14 @@ export const ComparisonSection = memo(function ComparisonSection() {
         {/* Content */}
         <div className="relative z-[10] w-full max-w-[1440px] mx-auto pt-10 md:pt-[53px] pb-[90px] md:pb-[175px]">
           {/* Titles Row */}
-          <div ref={titlesRef} className="flex will-change-[transform,opacity]">
+          <div ref={titlesRef} className="flex">
             <div className="w-1/2 px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
-              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-bold text-white text-right mb-4 md:mb-6 lg:mb-10">
+              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-semibold md:font-bold text-white text-right tracking-wide md:tracking-normal mb-4 md:mb-6 lg:mb-10">
                 Optimist AC
               </h3>
             </div>
             <div className="w-1/2 px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
-              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-bold text-white/60 text-left mb-4 md:mb-6 lg:mb-10">
+              <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-semibold md:font-bold text-white/60 text-left tracking-wide md:tracking-normal mb-4 md:mb-6 lg:mb-10">
                 Market AC
               </h3>
             </div>
@@ -195,10 +195,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
           {/* Comparison Rows - Each row contains both benefit and drawback */}
           <div ref={rowsRef} className="flex flex-col gap-3 md:gap-6">
             {COMPARISON_DATA.map((item, index) => (
-              <div
-                key={index}
-                className="comparison-row flex items-stretch will-change-[transform,opacity]"
-              >
+              <div key={index} className="comparison-row flex items-stretch">
                 {/* Left - Benefit */}
                 <div className="w-1/2 flex justify-end items-stretch px-2 sm:px-4 md:px-4 lg:px-6 xl:px-8">
                   <div className="flex items-center justify-end gap-1.5 sm:gap-2 md:gap-2.5 bg-white/[0.12] rounded-lg md:rounded-xl px-2 sm:px-3 md:px-3 py-1 sm:py-1.5 md:py-2 w-full md:w-fit md:max-w-[320px]">
@@ -229,7 +226,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
       {/* AC Product Images - Single merged image positioned to span both sections */}
       <div
         ref={imagesRef}
-        className="absolute bottom-0 left-0 right-5 md:right-10 lg:right-[60px] z-[20] will-change-[transform,opacity]"
+        className="absolute bottom-0 left-0 right-5 md:right-10 lg:right-[60px] z-[20]"
       >
         <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="relative w-full h-[200px] md:h-[450px] lg:h-[650px]">

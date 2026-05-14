@@ -1,16 +1,8 @@
 import { memo } from "react";
 
-// =============================================================================
-// Icon Props
-// =============================================================================
-
 interface IconProps {
   className?: string;
 }
-
-// =============================================================================
-// Arrow Icons (for gallery navigation)
-// =============================================================================
 
 export const ArrowRightIcon = memo(function ArrowRightIcon({
   className,
@@ -32,54 +24,6 @@ export const ArrowRightIcon = memo(function ArrowRightIcon({
     </svg>
   );
 });
-
-// =============================================================================
-// Package Icon (for delivery info)
-// =============================================================================
-
-export const PackageIcon = memo(function PackageIcon({ className }: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M13.75 8.125L6.25 4.0625"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M17.5 13.3333V6.66667C17.4997 6.42448 17.435 6.18679 17.3124 5.97762C17.1898 5.76845 17.0139 5.59519 16.8021 5.47583L10.5521 1.8925C10.3857 1.79741 10.1958 1.74731 10.0026 1.74731C9.80936 1.74731 9.61942 1.79741 9.45312 1.8925L3.20312 5.47583C2.99129 5.59519 2.8154 5.76845 2.6928 5.97762C2.5702 6.18679 2.50545 6.42448 2.50521 6.66667V13.3333C2.50545 13.5755 2.5702 13.8132 2.6928 14.0224C2.8154 14.2316 2.99129 14.4048 3.20312 14.5242L9.45312 18.1075C9.61942 18.2026 9.80936 18.2527 10.0026 18.2527C10.1958 18.2527 10.3857 18.2026 10.5521 18.1075L16.8021 14.5242C17.0139 14.4048 17.1898 14.2316 17.3124 14.0224C17.435 13.8132 17.4997 13.5755 17.5 13.3333Z"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M2.69531 5.95L10.0036 10.0083L17.312 5.95"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10 18.3333V10"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
-// =============================================================================
-// Shopping Bag Icon (for Add to Cart button)
-// =============================================================================
 
 export const ShoppingBagIcon = memo(function ShoppingBagIcon({
   className,
@@ -115,145 +59,6 @@ export const ShoppingBagIcon = memo(function ShoppingBagIcon({
     </svg>
   );
 });
-
-// =============================================================================
-// Trophy Icon (for Details section)
-// =============================================================================
-
-export const TrophyIcon = memo(function TrophyIcon({ className }: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M6.25 17.5H13.75"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10 14.375V17.5"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M13.75 2.5H6.25V8.75C6.25 9.74456 6.64509 10.6984 7.34835 11.4016C8.05161 12.1049 9.00544 12.5 10 12.5C10.9946 12.5 11.9484 12.1049 12.6517 11.4016C13.3549 10.6984 13.75 9.74456 13.75 8.75V2.5Z"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M6.25 5H3.125C2.95924 5 2.80027 5.06585 2.68306 5.18306C2.56585 5.30027 2.5 5.45924 2.5 5.625V6.25C2.5 7.24456 2.89509 8.19839 3.59835 8.90165C4.30161 9.60491 5.25544 10 6.25 10"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M13.75 5H16.875C17.0408 5 17.1997 5.06585 17.3169 5.18306C17.4342 5.30027 17.5 5.45924 17.5 5.625V6.25C17.5 7.24456 17.1049 8.19839 16.4017 8.90165C15.6984 9.60491 14.7446 10 13.75 10"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
-// =============================================================================
-// Shield Check Icon (for Details section - Warranty)
-// =============================================================================
-
-export const ShieldCheckIcon = memo(function ShieldCheckIcon({
-  className,
-}: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10 18.3333C10 18.3333 16.6667 15 16.6667 10V4.16667L10 1.66667L3.33333 4.16667V10C3.33333 15 10 18.3333 10 18.3333Z"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7.5 10L9.16667 11.6667L12.5 8.33333"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
-// =============================================================================
-// Wrench Icon (for Details section - Installation)
-// =============================================================================
-
-export const WrenchIcon = memo(function WrenchIcon({ className }: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12.0833 4.58333C12.9946 4.58316 13.8812 4.87686 14.6125 5.42044C15.3439 5.96402 15.8804 6.72806 16.1431 7.5988C16.4058 8.46954 16.3806 9.40099 16.0714 10.2567C15.7621 11.1124 15.1851 11.8472 14.425 12.35L12.5 17.5H7.5L5.575 12.35C4.81489 11.8472 4.23788 11.1124 3.92865 10.2567C3.61941 9.40099 3.59421 8.46954 3.85691 7.5988C4.11961 6.72806 4.6561 5.96402 5.38746 5.42044C6.11882 4.87686 7.00538 4.58316 7.91667 4.58333H12.0833Z"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7.5 17.5V15.8333"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12.5 17.5V15.8333"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10 12.5V10"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.33333 10C8.79357 10 9.16667 9.6269 9.16667 9.16667C9.16667 8.70643 8.79357 8.33333 8.33333 8.33333C7.8731 8.33333 7.5 8.70643 7.5 9.16667C7.5 9.6269 7.8731 10 8.33333 10Z"
-        fill="currentColor"
-      />
-      <path
-        d="M11.6667 10C12.1269 10 12.5 9.6269 12.5 9.16667C12.5 8.70643 12.1269 8.33333 11.6667 8.33333C11.2064 8.33333 10.8333 8.70643 10.8333 9.16667C10.8333 9.6269 11.2064 10 11.6667 10Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-});
-
-// =============================================================================
-// Radio Button Icons (for variant selection)
-// =============================================================================
 
 export const RadioFilledIcon = memo(function RadioFilledIcon({
   className,
@@ -292,10 +97,6 @@ export const RadioEmptyIcon = memo(function RadioEmptyIcon({
   );
 });
 
-// =============================================================================
-// Status Icons
-// =============================================================================
-
 export const CheckCircleIcon = memo(function CheckCircleIcon({
   className,
 }: IconProps) {
@@ -331,43 +132,6 @@ export const XCircleIcon = memo(function XCircleIcon({ className }: IconProps) {
         d="M15 9L9 15M9 9L15 15"
         stroke="black"
         strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
-// =============================================================================
-// Product Detail Icons
-// =============================================================================
-
-export const DiamondIcon = memo(function DiamondIcon({ className }: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 2L2 9L12 22L22 9L12 2Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M2 9H22"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 2L8 9L12 22L16 9L12 2Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -415,28 +179,6 @@ export const InstallationIcon = memo(function InstallationIcon({
   );
 });
 
-export const DeliveryIcon = memo(function DeliveryIcon({
-  className,
-}: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M12 6V12L16 14"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
 export const CartIcon = memo(function CartIcon({ className }: IconProps) {
   return (
     <svg
@@ -462,10 +204,6 @@ export const CartIcon = memo(function CartIcon({ className }: IconProps) {
     </svg>
   );
 });
-
-// =============================================================================
-// Result Section Icons
-// =============================================================================
 
 export const SnowflakeIcon = memo(function SnowflakeIcon({
   className,
@@ -524,129 +262,6 @@ export const PersonWalkIcon = memo(function PersonWalkIcon({
   );
 });
 
-// =============================================================================
-// After Buy Section Icons
-// =============================================================================
-
-export const OrderConfirmIcon = memo(function OrderConfirmIcon({
-  className,
-}: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="20" cy="20" r="18" stroke="#3478F6" strokeWidth="2" />
-      <path
-        d="M13 20L18 25L27 15"
-        stroke="#3478F6"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
-export const UserCircleCheckIcon = memo(function UserCircleCheckIcon({
-  className,
-}: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="20" cy="14" r="6" stroke="#3478F6" strokeWidth="2" />
-      <path
-        d="M8 34C8 27.373 13.373 22 20 22C26.627 22 32 27.373 32 34"
-        stroke="#3478F6"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <circle
-        cx="32"
-        cy="32"
-        r="6"
-        fill="white"
-        stroke="#3478F6"
-        strokeWidth="2"
-      />
-      <path
-        d="M29 32L31 34L35 30"
-        stroke="#3478F6"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-});
-
-export const ScrollDocIcon = memo(function ScrollDocIcon({
-  className,
-}: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        x="8"
-        y="6"
-        width="24"
-        height="28"
-        rx="2"
-        stroke="#3478F6"
-        strokeWidth="2"
-      />
-      <path
-        d="M14 14H26"
-        stroke="#3478F6"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M14 20H26"
-        stroke="#3478F6"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M14 26H20"
-        stroke="#3478F6"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-});
-
-export const HeadphoneIcon = memo(function HeadphoneIcon({
-  className,
-}: IconProps) {
-  return (
-    <svg
-      className={className}
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M18.9272 5.12437C18.03 4.21817 16.9629 3.49783 15.7869 3.0046C14.611 2.51137 13.3493 2.25494 12.0741 2.25H12C9.41414 2.25 6.93419 3.27723 5.10571 5.10571C3.27723 6.93419 2.25 9.41414 2.25 12V17.25C2.25 17.8467 2.48705 18.419 2.90901 18.841C3.33097 19.2629 3.90326 19.5 4.5 19.5H6C6.59674 19.5 7.16903 19.2629 7.59099 18.841C8.01295 18.419 8.25 17.8467 8.25 17.25V13.5C8.25 12.9033 8.01295 12.331 7.59099 11.909C7.16903 11.4871 6.59674 11.25 6 11.25H3.78375C3.92839 9.68619 4.51578 8.196 5.47709 6.9541C6.43839 5.71219 7.73377 4.77003 9.21141 4.23803C10.689 3.70603 12.2877 3.60624 13.82 3.95035C15.3524 4.29446 16.7548 5.06822 17.8631 6.18094C19.2177 7.54247 20.0509 9.33662 20.2172 11.25H18C17.4033 11.25 16.831 11.4871 16.409 11.909C15.9871 12.331 15.75 12.9033 15.75 13.5V17.25C15.75 17.8467 15.9871 18.419 16.409 18.841C16.831 19.2629 17.4033 19.5 18 19.5H20.25C20.25 20.0967 20.0129 20.669 19.591 21.091C19.169 21.5129 18.5967 21.75 18 21.75H12.75C12.5511 21.75 12.3603 21.829 12.2197 21.9697C12.079 22.1103 12 22.3011 12 22.5C12 22.6989 12.079 22.8897 12.2197 23.0303C12.3603 23.171 12.5511 23.25 12.75 23.25H18C18.9946 23.25 19.9484 22.8549 20.6517 22.1516C21.3549 21.4484 21.75 20.4946 21.75 19.5V12C21.7549 10.7246 21.5081 9.46077 21.0237 8.28093C20.5393 7.10108 19.8268 6.02841 18.9272 5.12437ZM6 12.75C6.19891 12.75 6.38968 12.829 6.53033 12.9697C6.67098 13.1103 6.75 13.3011 6.75 13.5V17.25C6.75 17.4489 6.67098 17.6397 6.53033 17.7803C6.38968 17.921 6.19891 18 6 18H4.5C4.30109 18 4.11032 17.921 3.96967 17.7803C3.82902 17.6397 3.75 17.4489 3.75 17.25V12.75H6ZM18 18C17.8011 18 17.6103 17.921 17.4697 17.7803C17.329 17.6397 17.25 17.4489 17.25 17.25V13.5C17.25 13.3011 17.329 13.1103 17.4697 12.9697C17.6103 12.829 17.8011 12.75 18 12.75H20.25V18H18Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-});
-
 export const ServiceCommitmentIcon = memo(function ServiceCommitmentIcon({
   className,
 }: IconProps) {
@@ -663,34 +278,6 @@ export const ServiceCommitmentIcon = memo(function ServiceCommitmentIcon({
         d="M21.26 6.47008C21.2145 6.35764 21.1424 6.25791 21.0499 6.17944C20.9574 6.10097 20.8473 6.04611 20.7289 6.01956C20.6106 5.99302 20.4875 5.99557 20.3704 6.02701C20.2532 6.05845 20.1454 6.11784 20.0563 6.20008L16.2782 9.68665L14.6628 9.33977L14.316 7.72446L17.8025 3.94633C17.8848 3.85717 17.9442 3.74939 17.9756 3.63224C18.007 3.51508 18.0096 3.39205 17.9831 3.27369C17.9565 3.15533 17.9016 3.04517 17.8232 2.95267C17.7447 2.86017 17.645 2.78808 17.5325 2.74258C16.5078 2.32805 15.3969 2.17154 14.2975 2.28679C13.1981 2.40204 12.1439 2.78553 11.2274 3.40357C10.3109 4.02161 9.56017 4.85527 9.04125 5.83132C8.52233 6.80736 8.25106 7.89592 8.25128 9.00133C8.25007 9.93478 8.44156 10.8584 8.81378 11.7145L3.16909 16.5951C3.15503 16.6063 3.14191 16.6195 3.12878 16.6316C2.56611 17.1943 2.25 17.9575 2.25 18.7532C2.25 19.1472 2.32761 19.5374 2.47839 19.9014C2.62917 20.2654 2.85017 20.5962 3.12878 20.8748C3.40739 21.1534 3.73814 21.3744 4.10216 21.5252C4.46618 21.6759 4.85633 21.7536 5.25034 21.7536C6.04608 21.7536 6.80923 21.4374 7.37191 20.8748C7.38409 20.8626 7.39722 20.8485 7.40847 20.8354L12.2882 15.1888C13.3161 15.64 14.4403 15.8278 15.559 15.735C16.6777 15.6423 17.7557 15.272 18.6952 14.6576C19.6348 14.0433 20.4063 13.2043 20.9399 12.2167C21.4735 11.229 21.7524 10.1239 21.7513 9.00133C21.7527 8.13376 21.5859 7.27413 21.26 6.47008ZM15.0013 14.2513C14.1135 14.2501 13.2405 14.0244 12.4635 13.5951C12.3129 13.5119 12.1384 13.483 11.9691 13.5132C11.7997 13.5434 11.646 13.6309 11.5335 13.761L6.29284 19.8304C6.00925 20.0998 5.63162 20.2478 5.24048 20.2428C4.84934 20.2378 4.47563 20.0802 4.19903 19.8036C3.92242 19.527 3.76482 19.1533 3.75981 18.7621C3.7548 18.371 3.90279 17.9934 4.17222 17.7098L10.2369 12.4701C10.3672 12.3575 10.4549 12.2036 10.4851 12.0341C10.5153 11.8645 10.4863 11.6898 10.4028 11.5391C9.92475 10.6744 9.70038 9.69236 9.75553 8.70582C9.81068 7.71928 10.1431 6.76832 10.7146 5.96229C11.2861 5.15626 12.0735 4.52786 12.9862 4.14935C13.8989 3.77084 14.8999 3.65757 15.8741 3.82258L12.9491 6.99227C12.8677 7.08056 12.8087 7.1871 12.7771 7.30293C12.7454 7.41876 12.742 7.54049 12.7672 7.6579L13.2978 10.1263C13.3282 10.2675 13.3987 10.3969 13.5008 10.499C13.6029 10.6011 13.7323 10.6716 13.8735 10.702L16.3438 11.2326C16.4612 11.2578 16.5829 11.2544 16.6988 11.2227C16.8146 11.1911 16.9211 11.1321 17.0094 11.0507L20.1791 8.12571C20.3055 8.87853 20.2663 9.64984 20.0644 10.386C19.8624 11.1222 19.5026 11.8055 19.0098 12.3885C18.517 12.9715 17.9032 13.4401 17.2109 13.7618C16.5187 14.0835 15.7646 14.2506 15.0013 14.2513Z"
         fill="currentColor"
       />
-    </svg>
-  );
-});
-
-export const ToolboxIcon = memo(function ToolboxIcon({ className }: IconProps) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        x="4"
-        y="14"
-        width="32"
-        height="20"
-        rx="2"
-        stroke="#3478F6"
-        strokeWidth="2"
-      />
-      <path
-        d="M14 14V10C14 8.89543 14.8954 8 16 8H24C25.1046 8 26 8.89543 26 10V14"
-        stroke="#3478F6"
-        strokeWidth="2"
-      />
-      <path d="M4 22H36" stroke="#3478F6" strokeWidth="2" />
-      <rect x="17" y="20" width="6" height="4" rx="1" fill="#3478F6" />
     </svg>
   );
 });

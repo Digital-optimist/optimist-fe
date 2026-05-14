@@ -1,6 +1,12 @@
 "use client";
 
-import { memo, useCallback, useEffect, useRef, type KeyboardEvent } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  type KeyboardEvent,
+} from "react";
 import { ChevronDown } from "lucide-react";
 
 // =============================================================================
@@ -25,12 +31,12 @@ const DEFAULT_OPTIONS = [1, 2, 3, 4, 5] as const;
 // Component
 // =============================================================================
 
-export const QuantityDropdown = memo(function QuantityDropdown({ 
-  quantity, 
-  onQuantityChange, 
-  isOpen, 
+export const QuantityDropdown = memo(function QuantityDropdown({
+  quantity,
+  onQuantityChange,
+  isOpen,
   onToggle,
-  options = DEFAULT_OPTIONS
+  options = DEFAULT_OPTIONS,
 }: QuantityDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listboxRef = useRef<HTMLDivElement>(null);
@@ -40,7 +46,10 @@ export const QuantityDropdown = memo(function QuantityDropdown({
     if (!isOpen) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         onToggle();
       }
     };
@@ -52,47 +61,62 @@ export const QuantityDropdown = memo(function QuantityDropdown({
   // Focus first option when dropdown opens
   useEffect(() => {
     if (isOpen && listboxRef.current) {
-      const selectedOption = listboxRef.current.querySelector('[aria-selected="true"]') as HTMLButtonElement;
+      const selectedOption = listboxRef.current.querySelector(
+        '[aria-selected="true"]',
+      ) as HTMLButtonElement;
       selectedOption?.focus();
     }
   }, [isOpen]);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onToggle();
-    } else if (e.key === "Escape" && isOpen) {
-      e.preventDefault();
-      onToggle();
-    } else if (e.key === "ArrowDown" && !isOpen) {
-      e.preventDefault();
-      onToggle();
-    }
-  }, [isOpen, onToggle]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onToggle();
+      } else if (e.key === "Escape" && isOpen) {
+        e.preventDefault();
+        onToggle();
+      } else if (e.key === "ArrowDown" && !isOpen) {
+        e.preventDefault();
+        onToggle();
+      }
+    },
+    [isOpen, onToggle],
+  );
 
-  const handleOptionKeyDown = useCallback((e: KeyboardEvent<HTMLButtonElement>, qty: number, index: number) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
+  const handleOptionKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLButtonElement>, qty: number, index: number) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onQuantityChange(qty);
+        onToggle();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        onToggle();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const nextOption = listboxRef.current?.querySelectorAll(
+          '[role="option"]',
+        )[index + 1] as HTMLButtonElement;
+        nextOption?.focus();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prevOption = listboxRef.current?.querySelectorAll(
+          '[role="option"]',
+        )[index - 1] as HTMLButtonElement;
+        prevOption?.focus();
+      }
+    },
+    [onQuantityChange, onToggle],
+  );
+
+  const handleOptionClick = useCallback(
+    (qty: number) => {
       onQuantityChange(qty);
       onToggle();
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      onToggle();
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      const nextOption = listboxRef.current?.querySelectorAll('[role="option"]')[index + 1] as HTMLButtonElement;
-      nextOption?.focus();
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      const prevOption = listboxRef.current?.querySelectorAll('[role="option"]')[index - 1] as HTMLButtonElement;
-      prevOption?.focus();
-    }
-  }, [onQuantityChange, onToggle]);
-
-  const handleOptionClick = useCallback((qty: number) => {
-    onQuantityChange(qty);
-    onToggle();
-  }, [onQuantityChange, onToggle]);
+    },
+    [onQuantityChange, onToggle],
+  );
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
@@ -105,15 +129,17 @@ export const QuantityDropdown = memo(function QuantityDropdown({
         className="w-full h-11 flex items-center justify-between px-3 py-2.5 bg-[rgba(0,0,0,0.04)] rounded-[8px] hover:bg-[rgba(0,0,0,0.06)] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         type="button"
       >
-        <span className="text-gray-900 font-normal text-sm md:text-base">Quantity: {quantity}</span>
-        <ChevronDown 
-          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`} 
+        <span className="text-gray-900 font-normal text-sm md:text-base">
+          Quantity: {quantity}
+        </span>
+        <ChevronDown
+          className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
       </button>
-      
+
       {isOpen && (
-        <div 
+        <div
           ref={listboxRef}
           role="listbox"
           aria-label="Select quantity"
@@ -127,7 +153,9 @@ export const QuantityDropdown = memo(function QuantityDropdown({
               role="option"
               aria-selected={quantity === qty}
               className={`w-full px-4 py-2.5 text-left hover:bg-gray-100 transition-colors text-sm md:text-base focus:outline-none focus:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
-                quantity === qty ? "bg-blue-50 text-blue-600 font-medium" : "text-gray-900"
+                quantity === qty
+                  ? "bg-blue-50 text-blue-600 font-medium"
+                  : "text-gray-900"
               }`}
               type="button"
             >

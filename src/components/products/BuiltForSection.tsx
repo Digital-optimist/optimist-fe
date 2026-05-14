@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import ASSETS from "@/lib/assets";
 import { useRouter } from "next/navigation";
+import { FAQSection } from "./FAQSection";
 
 // =============================================================================
 // Main Component
@@ -19,29 +20,23 @@ export function BuiltForSection() {
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const router = useRouter();
 
-  // Use Framer Motion's useInView to detect when section is visible
-  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+  // Entrance animations: trigger as soon as the section starts entering viewport.
+  const isVisible = useInView(sectionRef, { once: true, amount: 0.05 });
 
-  // Play video when section comes into view
+  // Video play: trigger only when the video element itself is actually in view,
+  // so the animation plays while the user is looking at it — not before.
+  const desktopVideoInView = useInView(videoRef, { once: true, amount: 0.5 });
+  const mobileVideoInView = useInView(mobileVideoRef, { once: true, amount: 0.5 });
+
   useEffect(() => {
-    if (isInView && !hasStartedPlaying) {
-      setHasStartedPlaying(true);
+    if (hasStartedPlaying) return;
+    if (!desktopVideoInView && !mobileVideoInView) return;
 
-      // Play desktop video
-      if (videoRef.current) {
-        videoRef.current.play().catch((e) => {
-          setVideoEnded(true);
-        });
-      }
+    setHasStartedPlaying(true);
 
-      // Play mobile video
-      if (mobileVideoRef.current) {
-        mobileVideoRef.current.play().catch((e) => {
-          setVideoEnded(true);
-        });
-      }
-    }
-  }, [isInView, hasStartedPlaying]);
+    videoRef.current?.play().catch(() => setVideoEnded(true));
+    mobileVideoRef.current?.play().catch(() => setVideoEnded(true));
+  }, [desktopVideoInView, mobileVideoInView, hasStartedPlaying]);
 
   const handleVideoEnded = () => {
     setVideoEnded(true);
@@ -94,13 +89,13 @@ export function BuiltForSection() {
         <motion.div
           className="text-center mb-8 md:mb-11"
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={sectionVariants}
         >
           <p className="text-[#3478F6] text-sm md:text-base mb-2">
             India’s Real AC{" "}
           </p>
-          <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black">
+          <h2 className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black leading-tight tracking-wide md:tracking-normal">
             Your Optimist
           </h2>
         </motion.div>
@@ -109,7 +104,7 @@ export function BuiltForSection() {
         <motion.div
           className="hidden md:block relative w-full max-w-[1229px] mx-auto mb-12 md:mb-16"
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={imageContainerVariants}
         >
           {/* Container with relative positioning for absolute children */}
@@ -190,7 +185,7 @@ export function BuiltForSection() {
         <motion.div
           className="md:hidden relative w-full mb-8"
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isVisible ? "visible" : "hidden"}
           variants={imageContainerVariants}
         >
           {/* Container with relative positioning */}
@@ -267,32 +262,45 @@ export function BuiltForSection() {
           </div>
         </motion.div>
 
-        {/* Bottom Section - Outcome and CTA */}
+        {/* FAQ Section */}
         <motion.div
-          className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8"
+          initial="hidden"
+          animate={isVisible ? "visible" : "hidden"}
+          variants={sectionVariants}
+          transition={{ delay: 0.3 }}
+          className="mb-12 md:mb-16"
+        >
+          <FAQSection />
+        </motion.div>
+
+        {/* Bottom Section - Outcome and CTA */}
+        {/* <motion.div
+          className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8"
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={sectionVariants}
           transition={{ delay: 0.4 }}
         >
-          {/* Outcome */}
-          <div className="font-display text-center md:text-left">
-            <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight">
-              <span className="text-black">Nothing more,</span>
+ 
+          <div className="font-display text-left">
+            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-semibold md:font-bold leading-[1.15] tracking-wide md:tracking-normal">
+              <span className="text-black">Nothing </span>
+              <span className="text-[#3478F6]">more.</span>
             </p>
-            <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold leading-tight mt-1">
-              <span className="text-[#3478F6]">nothing less.</span>
+            <p className="text-[36px] md:text-4xl lg:text-5xl xl:text-[80px] font-semibold md:font-bold leading-[1.15] tracking-wide md:tracking-normal mt-1">
+              <span className="text-black">Nothing </span>
+              <span className="text-[#3478F6]">less.</span>
             </p>
           </div>
 
           <button
             onClick={() => router.push("/products")}
-            className="btn-buy-now flex items-center justify-center gap-2.5 px-8 md:px-12 py-4 h-14 md:h-16 rounded-full text-[#FFFCDC] font-semibold text-base md:text-xl whitespace-nowrap"
+            className="hidden md:flex btn-buy-now items-center justify-center gap-2.5 px-8 md:px-12 py-4 h-14 md:h-16 rounded-full text-[#FFFCDC] font-semibold text-base md:text-xl whitespace-nowrap"
           >
             <span>Buy Now</span>
             <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

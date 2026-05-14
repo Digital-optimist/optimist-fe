@@ -22,7 +22,7 @@ import {
   TeamSection,
   VariantCard,
   WarrantySection,
-} from "@/components/products123";
+} from "@/components/products";
 import { useToast } from "@/components/ui/Toast";
 import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
 import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";

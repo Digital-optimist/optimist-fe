@@ -4,7 +4,7 @@ Use this checklist before launch. Mark each item Pass / Fail / Blocked and add n
 
 ## 1. Commerce (Shopify)
 
-### Product page (`/products`, `/products123`)
+### Product page (`/products`)
 
 - [ ] First product loads (no blank screen)
 - [ ] Variant selection updates price, availability, Add to cart / Buy now

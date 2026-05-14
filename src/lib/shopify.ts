@@ -530,28 +530,6 @@ export async function getProducts(first: number = 20): Promise<Product[]> {
   return data.products.edges.map((edge) => edge.node);
 }
 
-export async function getProductByHandle(
-  handle: string,
-): Promise<Product | null> {
-  const query = `
-    ${IMAGE_FRAGMENT}
-    ${PRODUCT_VARIANT_FRAGMENT}
-    ${PRODUCT_FRAGMENT}
-    query GetProductByHandle($handle: String!) {
-      product(handle: $handle) {
-        ...ProductFragment
-      }
-    }
-  `;
-
-  const data = await shopifyFetch<{ product: Product | null }>({
-    query,
-    variables: { handle },
-  });
-
-  return data.product;
-}
-
 // =============================================================================
 // Cart Operations
 // =============================================================================
@@ -1262,51 +1240,6 @@ export async function customerAddressDelete(
   return !!data.customerAddressDelete.deletedCustomerAddressId;
 }
 
-export async function customerDefaultAddressUpdate(
-  customerAccessToken: string,
-  addressId: string,
-): Promise<Customer> {
-  const query = `
-    ${IMAGE_FRAGMENT}
-    ${ADDRESS_FRAGMENT}
-    ${CUSTOMER_FRAGMENT}
-    mutation CustomerDefaultAddressUpdate($customerAccessToken: String!, $addressId: ID!) {
-      customerDefaultAddressUpdate(customerAccessToken: $customerAccessToken, addressId: $addressId) {
-        customer {
-          ...CustomerFragment
-        }
-        customerUserErrors {
-          field
-          message
-          code
-        }
-      }
-    }
-  `;
-
-  const data = await shopifyFetch<{
-    customerDefaultAddressUpdate: {
-      customer: Customer | null;
-      customerUserErrors: { field: string[]; message: string; code: string }[];
-    };
-  }>({
-    query,
-    variables: { customerAccessToken, addressId },
-  });
-
-  if (data.customerDefaultAddressUpdate.customerUserErrors.length > 0) {
-    throw new Error(
-      data.customerDefaultAddressUpdate.customerUserErrors[0].message,
-    );
-  }
-
-  if (!data.customerDefaultAddressUpdate.customer) {
-    throw new Error("Failed to update default address");
-  }
-
-  return data.customerDefaultAddressUpdate.customer;
-}
-
 // =============================================================================
 // Customer Profile Update Operations
 // =============================================================================
@@ -1603,21 +1536,6 @@ export interface BlogArticle {
   } | null;
 }
 
-export interface Blog {
-  id: string;
-  handle: string;
-  title: string;
-  articles: {
-    edges: { node: BlogArticle }[];
-    pageInfo: {
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor: string | null;
-      endCursor: string | null;
-    };
-  };
-}
-
 // =============================================================================
 // Blog GraphQL Fragments
 // =============================================================================
@@ -1655,78 +1573,6 @@ const ARTICLE_FRAGMENT = `
 // =============================================================================
 // Blog Operations
 // =============================================================================
-
-export async function getBlogs(first: number = 10): Promise<Blog[]> {
-  const query = `
-    ${IMAGE_FRAGMENT}
-    ${ARTICLE_FRAGMENT}
-    query GetBlogs($first: Int!) {
-      blogs(first: $first) {
-        edges {
-          node {
-            id
-            handle
-            title
-            articles(first: 10) {
-              edges {
-                node {
-                  ...ArticleFragment
-                }
-              }
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  const data = await shopifyFetch<{ blogs: { edges: { node: Blog }[] } }>({
-    query,
-    variables: { first },
-  });
-
-  return data.blogs.edges.map((edge) => edge.node);
-}
-
-export async function getBlogByHandle(handle: string): Promise<Blog | null> {
-  const query = `
-    ${IMAGE_FRAGMENT}
-    ${ARTICLE_FRAGMENT}
-    query GetBlogByHandle($handle: String!) {
-      blog(handle: $handle) {
-        id
-        handle
-        title
-        articles(first: 50) {
-          edges {
-            node {
-              ...ArticleFragment
-            }
-          }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
-        }
-      }
-    }
-  `;
-
-  const data = await shopifyFetch<{ blog: Blog | null }>({
-    query,
-    variables: { handle },
-  });
-
-  return data.blog;
-}
 
 export async function getArticles(
   first: number = 20,
@@ -1806,14 +1652,6 @@ export async function getArticleByHandle(
   });
 
   return data.blog?.articleByHandle || null;
-}
-
-export async function getArticlesByTag(
-  tag: string,
-  first: number = 20,
-): Promise<BlogArticle[]> {
-  const { articles } = await getArticles(first, undefined, `tag:${tag}`);
-  return articles;
 }
 
 // Helper function to calculate read time

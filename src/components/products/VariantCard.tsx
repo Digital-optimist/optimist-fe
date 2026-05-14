@@ -42,8 +42,8 @@ export const VariantCard = memo(function VariantCard({
         isSelected
           ? "border-[#3478F6] bg-[rgba(52,120,246,0.06)]"
           : isOutOfStock
-          ? "border-[rgba(0,0,0,0.1)] bg-[rgba(0,0,0,0.02)] opacity-70"
-          : "border-[rgba(0,0,0,0.2)] bg-[rgba(0,0,0,0.04)] hover:border-[rgba(0,0,0,0.3)]"
+            ? "border-[rgba(0,0,0,0.1)] bg-[rgba(0,0,0,0.02)] opacity-70"
+            : "border-[rgba(0,0,0,0.2)] bg-[rgba(0,0,0,0.04)] hover:border-[rgba(0,0,0,0.3)]"
       }`}
       type="button"
     >
@@ -65,7 +65,9 @@ export const VariantCard = memo(function VariantCard({
               <RadioEmptyIcon className="w-5 h-5" />
             )}
           </div>
-          <p className={`font-semibold text-sm ${isOutOfStock ? "text-gray-500" : "text-gray-900"}`}>
+          <p
+            className={`font-semibold text-sm ${isOutOfStock ? "text-gray-500" : "text-gray-900"}`}
+          >
             {variant.name}
           </p>
         </div>
@@ -84,7 +86,9 @@ export const VariantCard = memo(function VariantCard({
               <RadioEmptyIcon className="w-5 h-5" />
             )}
           </div>
-          <p className={`font-semibold text-sm ${isOutOfStock ? "text-gray-500" : "text-gray-900"}`}>
+          <p
+            className={`font-semibold text-sm ${isOutOfStock ? "text-gray-500" : "text-gray-900"}`}
+          >
             {variant.name}
           </p>
         </div>
