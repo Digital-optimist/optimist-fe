@@ -98,7 +98,6 @@ export default function OrdersPage() {
         const data = await getCustomerOrders(accessToken, 50);
         setOrders(data);
       } catch (error) {
-        console.error("Failed to fetch orders:", error);
       } finally {
         setIsLoading(false);
       }
@@ -210,7 +209,6 @@ function OrderCard({ order, index }: { order: Order; index: number }) {
     try {
       await addToCart(item.variant.id, 1);
     } catch (err) {
-      console.error("Failed to add to cart:", err);
     } finally {
       setBuyingAgain(null);
     }

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useRef,
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-} from "react";
+import { useRef, useState, useEffect, useLayoutEffect, useMemo } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
@@ -89,7 +83,7 @@ function ACVideo() {
       requestRef.current = undefined;
       lastTimeRef.current = undefined;
     }
-    videoRef.current?.play().catch((e) => console.log("Video play failed", e));
+    videoRef.current?.play().catch((e) => {});
   };
 
   const handleMouseLeave = () => {

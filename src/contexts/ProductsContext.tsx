@@ -158,7 +158,9 @@ function getSubtitleForTonnage(tonnage: string): string {
  * Each product becomes a selectable variant option (1 Ton, 1.5 Ton, 2 Ton)
  */
 function hasTonnageInTitle(product: Product): boolean {
-  return /\d+\.?\d*\s*ton/i.test(product.title) || /\d+-ton/i.test(product.handle);
+  return (
+    /\d+\.?\d*\s*ton/i.test(product.title) || /\d+-ton/i.test(product.handle)
+  );
 }
 
 function productToVariant(product: Product): DisplayVariant {
@@ -265,7 +267,6 @@ export function ProductsProvider({
       const transformedProducts = shopifyProducts.map(transformProduct);
       setProducts(transformedProducts);
     } catch (err) {
-      console.error("Error fetching products:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch products");
     } finally {
       setIsLoading(false);

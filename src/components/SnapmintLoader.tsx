@@ -39,7 +39,7 @@ export default function SnapmintLoader(): null {
           }, 800);
         };
 
-        script.onerror = () => console.error("Snapmint script failed to load");
+        script.onerror = () => {};
 
         document.body.appendChild(script);
       } else {

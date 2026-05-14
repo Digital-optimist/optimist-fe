@@ -5,8 +5,7 @@ const domain =
 const storefrontAccessToken =
   process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN ||
   "3b12d6020365806434052cc061a5b5e3";
-const apiVersion =
-  process.env.NEXT_PUBLIC_SHOPIFY_API_VERSION || "2025-01";
+const apiVersion = process.env.NEXT_PUBLIC_SHOPIFY_API_VERSION || "2025-01";
 
 // =============================================================================
 // Types
@@ -1338,7 +1337,10 @@ function generateRandomPassword(): string {
   return password + "Aa1!";
 }
 
-export async function subscribeToWaitlist(phone: string, name?: string): Promise<boolean> {
+export async function subscribeToWaitlist(
+  phone: string,
+  name?: string,
+): Promise<boolean> {
   const randomPassword = generateRandomPassword();
 
   let cleanPhone = phone.replace(/\D/g, "");
@@ -1356,7 +1358,8 @@ export async function subscribeToWaitlist(phone: string, name?: string): Promise
 
   const nameParts = name?.trim().split(/\s+/) || [];
   const firstName = nameParts[0] || undefined;
-  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : undefined;
+  const lastName =
+    nameParts.length > 1 ? nameParts.slice(1).join(" ") : undefined;
 
   const query = `
     mutation CustomerCreate($input: CustomerCreateInput!) {
@@ -1378,7 +1381,12 @@ export async function subscribeToWaitlist(phone: string, name?: string): Promise
 
   const data = await shopifyFetch<{
     customerCreate: {
-      customer: { id: string; phone: string; firstName: string | null; lastName: string | null } | null;
+      customer: {
+        id: string;
+        phone: string;
+        firstName: string | null;
+        lastName: string | null;
+      } | null;
       customerUserErrors: { field: string[]; message: string; code: string }[];
     };
   }>({
@@ -1432,8 +1440,7 @@ export interface ContactFormSubmissionResult {
 }
 
 const GOOGLE_SHEETS_WEBHOOK_URL =
-  process.env.NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL ||
-  "";
+  process.env.NEXT_PUBLIC_GOOGLE_SHEETS_WEBHOOK_URL || "";
 
 async function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -1871,7 +1878,13 @@ const LANDING_PAGE_CONTENT_QUERY = `
 // =============================================================================
 
 function getFieldValue(
-  fields: Array<{ key: string; value: string | null; type: string; reference?: unknown; references?: unknown }>,
+  fields: Array<{
+    key: string;
+    value: string | null;
+    type: string;
+    reference?: unknown;
+    references?: unknown;
+  }>,
   key: string,
 ): string | null {
   return fields.find((f) => f.key === key)?.value ?? null;
@@ -1922,7 +1935,9 @@ function parseResultSection(ref: any): ResultSectionData {
     return {
       heading: getFieldValue(f, "heading") ?? "",
       subHeading: getFieldValue(f, "sub_heading") ?? "",
-      iconUrl: (getFieldReference(f, "icon") as { image?: { url: string } })?.image?.url ?? null,
+      iconUrl:
+        (getFieldReference(f, "icon") as { image?: { url: string } })?.image
+          ?.url ?? null,
     };
   });
   return { sectionHeading: heading, items };
@@ -1949,7 +1964,9 @@ function parseCustomerReviews(nodes: any[]): CustomerReviewItem[] {
 function parseExpertTestimonials(nodes: any[]): ExpertTestimonialItem[] {
   return nodes.map((node) => {
     const fields = node.fields ?? [];
-    const imageRef = getFieldReference(fields, "image") as { image?: { url: string } } | null;
+    const imageRef = getFieldReference(fields, "image") as {
+      image?: { url: string };
+    } | null;
     return {
       name: getFieldValue(fields, "name") ?? "",
       profession: getFieldValue(fields, "profession") ?? "",
@@ -1978,17 +1995,31 @@ export async function getProductPageContent(): Promise<ProductPageContent | null
 
     const fields = metaobject.fields ?? [];
 
-    const warrantyRef = getFieldReference(fields, "warranty_return_info") as { fields?: unknown[] } | null;
-    const moreInfoRef = getFieldReference(fields, "product_more_info") as { fields?: unknown[] } | null;
+    const warrantyRef = getFieldReference(fields, "warranty_return_info") as {
+      fields?: unknown[];
+    } | null;
+    const moreInfoRef = getFieldReference(fields, "product_more_info") as {
+      fields?: unknown[];
+    } | null;
     const resultRef = getFieldReference(fields, "result_section");
-    const customerNodes = getFieldReferences(fields, "hear_it_from_our_customers_content");
-    const expertNodes = getFieldReferences(fields, "industry_experts_section_content");
+    const customerNodes = getFieldReferences(
+      fields,
+      "hear_it_from_our_customers_content",
+    );
+    const expertNodes = getFieldReferences(
+      fields,
+      "industry_experts_section_content",
+    );
 
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      warrantyReturnInfo: parseVariantRichText((warrantyRef?.fields as any[]) ?? []),
+      warrantyReturnInfo: parseVariantRichText(
+        (warrantyRef?.fields as any[]) ?? [],
+      ),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      productMoreInfo: parseVariantRichText((moreInfoRef?.fields as any[]) ?? []),
+      productMoreInfo: parseVariantRichText(
+        (moreInfoRef?.fields as any[]) ?? [],
+      ),
       resultSection: parseResultSection(resultRef),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       customerReviews: parseCustomerReviews(customerNodes as any[]),
@@ -1996,7 +2027,6 @@ export async function getProductPageContent(): Promise<ProductPageContent | null
       expertTestimonials: parseExpertTestimonials(expertNodes as any[]),
     };
   } catch (error) {
-    console.error("Failed to fetch product page content:", error);
     return null;
   }
 }
@@ -2016,14 +2046,22 @@ export async function getLandingPageContent(): Promise<LandingPageContent | null
 
     const fields = metaobject.fields ?? [];
 
-    const heroHeadingLine1 = getFieldValue(fields, "hero_section_heading") ?? "India's Real AC.";
-    const heroHeadingLine2 = getFieldValue(fields, "hero_section_heading_line_2") ?? "Cools More. Uses Less.";
+    const heroHeadingLine1 =
+      getFieldValue(fields, "hero_section_heading") ?? "India's Real AC.";
+    const heroHeadingLine2 =
+      getFieldValue(fields, "hero_section_heading_line_2") ??
+      "Cools More. Uses Less.";
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const badgeNodes = getFieldReferences(fields, "hero_section_icon_and_text") as any[];
+    const badgeNodes = getFieldReferences(
+      fields,
+      "hero_section_icon_and_text",
+    ) as any[];
     const heroBadges: HeroBadge[] = badgeNodes.map((node) => {
       const f = node.fields ?? [];
-      const imageRef = getFieldReference(f, "image") as { image?: { url: string } } | null;
+      const imageRef = getFieldReference(f, "image") as {
+        image?: { url: string };
+      } | null;
       return {
         imageUrl: imageRef?.image?.url ?? "",
         text: getFieldValue(f, "text") ?? "",
@@ -2031,10 +2069,15 @@ export async function getLandingPageContent(): Promise<LandingPageContent | null
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const testimonialNodes = getFieldReferences(fields, "testimonials") as any[];
+    const testimonialNodes = getFieldReferences(
+      fields,
+      "testimonials",
+    ) as any[];
     const testimonials: TestimonialItem[] = testimonialNodes.map((node) => {
       const f = node.fields ?? [];
-      const imageRef = getFieldReference(f, "image") as { image?: { url: string } } | null;
+      const imageRef = getFieldReference(f, "image") as {
+        image?: { url: string };
+      } | null;
       return {
         name: getFieldValue(f, "name") ?? "",
         profession: getFieldValue(f, "date") ?? "",
@@ -2044,7 +2087,9 @@ export async function getLandingPageContent(): Promise<LandingPageContent | null
       };
     });
 
-    const footerImageRef = getFieldReference(fields, "footer_image") as { image?: { url: string } } | null;
+    const footerImageRef = getFieldReference(fields, "footer_image") as {
+      image?: { url: string };
+    } | null;
 
     return {
       heroHeadingLine1,
@@ -2054,7 +2099,6 @@ export async function getLandingPageContent(): Promise<LandingPageContent | null
       footerImageUrl: footerImageRef?.image?.url ?? null,
     };
   } catch (error) {
-    console.error("Failed to fetch landing page content:", error);
     return null;
   }
 }

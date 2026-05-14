@@ -23,29 +23,29 @@ export default function PrivacyPolicyPage() {
         <div className="max-w-none">
           <section className="mb-10">
             <p className="text-gray-600 mb-4 leading-relaxed">
-              OctoLife Climate Solutions Private Limited, operating under the
+              Octolife Climate Solutions Private Limited, operating under the
               brand name Optimist (hereinafter referred to as “Optimist”, “we”,
               “us” or “our”), is committed to protecting the privacy of all
               individuals whose personal data we collect, use, store, or
-              process. We recognise that personal information is a valuable asset
-              entrusted to us and we consider its protection to be a core
+              process. We recognise that personal information is a valuable
+              asset entrusted to us and we consider its protection to be a core
               responsibility of our business.
             </p>
             <p className="text-gray-600 mb-4 leading-relaxed">
               This Privacy Policy explains how we handle personal information
               collected through our website, mobile application, products,
               services, and all related customer interactions. This Policy is
-              issued in compliance with the Digital Personal Data Protection Act,
-              2023 (“DPDP Act”), the Information Technology Act, 2000, and the
-              Consumer Protection (E-Commerce) Rules, 2020.
+              issued in compliance with the Digital Personal Data Protection
+              Act, 2023 (“DPDP Act”), the Information Technology Act, 2000, and
+              the Consumer Protection (E-Commerce) Rules, 2020.
             </p>
             <p className="text-gray-600 mb-4 leading-relaxed">
               By accessing or using any Optimist platform or service, you agree
               to the terms of this Privacy Policy. Where we rely on your consent
-              to process personal data, you may withdraw that consent at any time
-              by contacting us at care@optimist.in or through the Optimist app
-              settings, without affecting the lawfulness of processing carried
-              out prior to withdrawal.
+              to process personal data, you may withdraw that consent at any
+              time by contacting us at care@optimist.in or through the Optimist
+              app settings, without affecting the lawfulness of processing
+              carried out prior to withdrawal.
             </p>
           </section>
 
@@ -109,10 +109,13 @@ export default function PrivacyPolicyPage() {
               3.1 Information Provided by You
             </h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              We may collect the following information when you interact with us:
+              We may collect the following information when you interact with
+              us:
             </p>
             <ul className="list-disc pl-6 mb-6 text-gray-600 space-y-3">
-              <li>Full name, mobile number, email address, and postal address</li>
+              <li>
+                Full name, mobile number, email address, and postal address
+              </li>
               <li>Purchase and invoice details</li>
               <li>Product model number and serial number</li>
               <li>Installation location details</li>
@@ -145,9 +148,9 @@ export default function PrivacyPolicyPage() {
             </h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
               We may receive personal information from e-commerce platforms
-              (Amazon, Flipkart, etc.) for order verification, authorized dealers
-              and installers, service partners, and logistics and fulfillment
-              partners.
+              (Amazon, Flipkart, etc.) for order verification, authorized
+              dealers and installers, service partners, and logistics and
+              fulfillment partners.
             </p>
           </section>
 
@@ -250,8 +253,8 @@ export default function PrivacyPolicyPage() {
               provide an adequate level of data protection as required under the
               DPDP Act, 2023, or under contractual safeguards that require the
               recipient to protect personal data to an equivalent standard. You
-              may request details of applicable safeguards by contacting our Data
-              Protection Officer.
+              may request details of applicable safeguards by contacting our
+              Data Protection Officer.
             </p>
           </section>
 
@@ -269,10 +272,17 @@ export default function PrivacyPolicyPage() {
                 Customer account and order data: 7 years from last transaction
                 (tax and legal compliance)
               </li>
-              <li>Warranty registration data: Duration of warranty plus 2 years</li>
-              <li>Connected product usage data: 3 years from last connection</li>
+              <li>
+                Warranty registration data: Duration of warranty plus 2 years
+              </li>
+              <li>
+                Connected product usage data: 3 years from last connection
+              </li>
               <li>Customer support records: 3 years from resolution</li>
-              <li>Marketing and consent records: Until consent is withdrawn plus 1 year</li>
+              <li>
+                Marketing and consent records: Until consent is withdrawn plus 1
+                year
+              </li>
               <li>Website and app logs: 12 months</li>
             </ul>
             <p className="text-gray-600 mb-4 leading-relaxed">
@@ -327,10 +337,10 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              To exercise any of these rights, please contact our Data Protection
-              Officer at care@optimist.in or through the Optimist app. We will
-              acknowledge your request within 72 hours and provide a substantive
-              response within 30 days.
+              To exercise any of these rights, please contact our Data
+              Protection Officer at care@optimist.in or through the Optimist
+              app. We will acknowledge your request within 72 hours and provide
+              a substantive response within 30 days.
             </p>
           </section>
 
@@ -360,8 +370,8 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p className="text-gray-600 mb-4 leading-relaxed">
               You may control or disable non-essential cookies through your
-              browser settings; however, some features may not function correctly
-              if cookies are disabled.
+              browser settings; however, some features may not function
+              correctly if cookies are disabled.
             </p>
           </section>
 
@@ -373,8 +383,8 @@ export default function PrivacyPolicyPage() {
               Our products and services are not intended for individuals below
               the age of 18. We do not knowingly collect personal data from
               children. If we become aware that personal data of a child has
-              been collected, we will take steps to delete such data promptly. If
-              you believe we have inadvertently collected data about a child,
+              been collected, we will take steps to delete such data promptly.
+              If you believe we have inadvertently collected data about a child,
               please contact us at care@optimist.in.
             </p>
           </section>
@@ -384,8 +394,8 @@ export default function PrivacyPolicyPage() {
               13. Amendments to This Policy
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              We reserve the right to modify this Privacy Policy at any time. For
-              material changes that affect your rights or how your data is
+              We reserve the right to modify this Privacy Policy at any time.
+              For material changes that affect your rights or how your data is
               processed, we will notify you by email to your registered address
               or through an in-app notification at least 15 days before the
               change takes effect, and will seek fresh consent where required
@@ -404,14 +414,14 @@ export default function PrivacyPolicyPage() {
               14. Grievance Redressal
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              In accordance with the Consumer Protection (E-Commerce) Rules, 2020
-              and the DPDP Act, 2023, Optimist has appointed a Data Protection
-              Officer and Grievance Officer to address privacy-related
-              complaints.
+              In accordance with the Consumer Protection (E-Commerce) Rules,
+              2020 and the DPDP Act, 2023, Optimist has appointed a Data
+              Protection Officer and Grievance Officer to address
+              privacy-related complaints.
             </p>
             <div className="bg-gray-50 rounded-2xl p-6 mb-4 border border-gray-200 text-gray-700 space-y-2">
               <p>Data Protection Officer</p>
-              <p>OctoLife Climate Solutions Private Limited</p>
+              <p>Octolife Climate Solutions Private Limited</p>
               <p>Email: care@optimist.in</p>
               <p>Support Hours: Monday to Saturday, 10:00 AM – 6:00 PM IST</p>
               <p>

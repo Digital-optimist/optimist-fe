@@ -84,7 +84,11 @@ interface CartContextType {
   totalQuantity: number;
   businessDetails: BusinessDetails;
   addToCart: (variantId: string, quantity?: number) => Promise<Cart | null>;
-  buyNow: (variantId: string, quantity?: number, attributes?: { key: string; value: string }[]) => Promise<string | null>;
+  buyNow: (
+    variantId: string,
+    quantity?: number,
+    attributes?: { key: string; value: string }[],
+  ) => Promise<string | null>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeFromCart: (lineId: string) => Promise<void>;
   openCart: () => void;
@@ -130,7 +134,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [businessDetails, setBusinessDetailsState] = useState<BusinessDetails>(EMPTY_BUSINESS_DETAILS);
+  const [businessDetails, setBusinessDetailsState] = useState<BusinessDetails>(
+    EMPTY_BUSINESS_DETAILS,
+  );
   const { accessToken, isAuthenticated } = useAuth();
 
   const totalQuantity = cart?.totalQuantity || 0;
@@ -155,7 +161,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (error) {
-        console.error("Failed to load cart:", error);
         localStorage.removeItem(CART_STORAGE_KEY);
       } finally {
         setIsLoading(false);
@@ -175,9 +180,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             accessToken,
           );
           setCart(updatedCart);
-        } catch (error) {
-          console.error("Failed to associate cart with customer:", error);
-        }
+        } catch (error) {}
       }
     };
 
@@ -314,18 +317,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const saveBusinessDetailsToCart = useCallback(async (cartIdOverride?: string) => {
-    const cartId = cartIdOverride || cart?.id;
-    if (!cartId || !businessDetails.isBusinessPurchase || !businessDetails.verified) return;
+  const saveBusinessDetailsToCart = useCallback(
+    async (cartIdOverride?: string) => {
+      const cartId = cartIdOverride || cart?.id;
+      if (
+        !cartId ||
+        !businessDetails.isBusinessPurchase ||
+        !businessDetails.verified
+      )
+        return;
 
-    try {
-      const attributes = buildBusinessCartAttributes(businessDetails);
-      const updatedCart = await updateCartAttributes(cartId, attributes);
-      setCart(updatedCart);
-    } catch (error) {
-      console.error("Failed to save business details to cart:", error);
-    }
-  }, [cart, businessDetails]);
+      try {
+        const attributes = buildBusinessCartAttributes(businessDetails);
+        const updatedCart = await updateCartAttributes(cartId, attributes);
+        setCart(updatedCart);
+      } catch (error) {}
+    },
+    [cart, businessDetails],
+  );
 
   const clearBusinessDetails = useCallback(() => {
     setBusinessDetailsState(EMPTY_BUSINESS_DETAILS);

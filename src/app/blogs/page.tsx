@@ -59,7 +59,9 @@ const sectionVariants = {
 export default function BlogsPage() {
   const [allArticles, setAllArticles] = useState<BlogArticle[]>([]); // Store all articles for tag extraction
   const [articles, setArticles] = useState<BlogArticle[]>([]);
-  const [featuredArticle, setFeaturedArticle] = useState<BlogArticle | null>(null);
+  const [featuredArticle, setFeaturedArticle] = useState<BlogArticle | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,9 +79,7 @@ export default function BlogsPage() {
       // Fetch a larger batch to get all available tags
       const { articles: fetchedArticles } = await getArticles(50);
       setAllArticles(fetchedArticles);
-    } catch (error) {
-      console.error("Error fetching all articles for tags:", error);
-    }
+    } catch (error) {}
   }, []);
 
   // Fetch articles for display (with optional tag filter)
@@ -87,12 +87,13 @@ export default function BlogsPage() {
     setIsLoading(true);
     try {
       // Build query based on active category
-      const query = activeCategory === "All" ? undefined : `tag:${activeCategory}`;
-      
+      const query =
+        activeCategory === "All" ? undefined : `tag:${activeCategory}`;
+
       const { articles: fetchedArticles, pageInfo } = await getArticles(
         ARTICLES_PER_PAGE,
         undefined,
-        query
+        query,
       );
 
       if (fetchedArticles.length > 0) {
@@ -100,17 +101,18 @@ export default function BlogsPage() {
         setFeaturedArticle(fetchedArticles[0]);
         // All articles including featured are shown in the grid
         setArticles(fetchedArticles.slice(0, ARTICLES_PER_PAGE));
-        
+
         // Calculate total pages (this is simplified - in production you'd get total count from API)
         // For now, we'll show pagination if there are more articles
-        setTotalPages(pageInfo.hasNextPage ? Math.max(currentPage + 1, 5) : currentPage);
+        setTotalPages(
+          pageInfo.hasNextPage ? Math.max(currentPage + 1, 5) : currentPage,
+        );
       } else {
         setFeaturedArticle(null);
         setArticles([]);
         setTotalPages(1);
       }
     } catch (error) {
-      console.error("Error fetching articles:", error);
       setFeaturedArticle(null);
       setArticles([]);
     } finally {

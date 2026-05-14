@@ -5,7 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Package, ChevronRight, ExternalLink, Building2, FileText, Loader2 } from "lucide-react";
+import {
+  Package,
+  ChevronRight,
+  ExternalLink,
+  Building2,
+  FileText,
+  Loader2,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { AccountLayout } from "@/components/account";
 import { getCustomerOrders, formatPrice, type Order } from "@/lib/shopify";
@@ -97,7 +104,6 @@ function OrderDetailContent() {
         const found = orders.find((o) => String(o.orderNumber) === orderNumber);
         setOrder(found || null);
       } catch (error) {
-        console.error("Failed to fetch order:", error);
       } finally {
         setIsLoading(false);
       }
@@ -487,7 +493,10 @@ function OrderDetailContent() {
                 </div>
 
                 <div className="space-y-2.5 text-[14px]">
-                  {getOrderAttribute(order.customAttributes, "Company Name") && (
+                  {getOrderAttribute(
+                    order.customAttributes,
+                    "Company Name",
+                  ) && (
                     <div className="flex items-start justify-between gap-3">
                       <span className="text-[#737373]">Company</span>
                       <span className="font-medium text-[#0A0A0A] text-right">
@@ -542,11 +551,13 @@ function OrderDetailContent() {
                     </a>
                   ) : invoice?.status === "pending" ? (
                     <p className="text-[13px] text-[#737373] text-center">
-                      Your GST invoice is being generated and will be available shortly.
+                      Your GST invoice is being generated and will be available
+                      shortly.
                     </p>
                   ) : (
                     <p className="text-[13px] text-[#737373] text-center">
-                      Your GST invoice will be emailed to you once it&apos;s ready.
+                      Your GST invoice will be emailed to you once it&apos;s
+                      ready.
                     </p>
                   )}
                 </div>

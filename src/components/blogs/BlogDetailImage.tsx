@@ -50,10 +50,10 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
           duration: 0.6,
           ease: "power3.out",
         },
-        "-=0.4"
+        "-=0.4",
       );
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   const formattedDate = formatArticleDate(article.publishedAt);
@@ -64,9 +64,7 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
       await navigator.clipboard.writeText(articleUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
+    } catch (err) {}
   };
 
   const handleShareTwitter = () => {
@@ -75,7 +73,7 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
     window.open(
       `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
       "_blank",
-      "noopener,noreferrer"
+      "noopener,noreferrer",
     );
   };
 
@@ -84,7 +82,7 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
       "_blank",
-      "noopener,noreferrer"
+      "noopener,noreferrer",
     );
   };
 

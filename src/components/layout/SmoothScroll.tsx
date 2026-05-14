@@ -24,11 +24,18 @@ const isMobileDevice = () => {
   );
 };
 
-// Check if device is iOS
+// Check if device is iOS. Prefers the modern userAgentData API, falls back to
+// the deprecated navigator.platform only when needed (Safari/iOS doesn't expose userAgentData yet).
 const isIOSDevice = () => {
   if (typeof window === "undefined") return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) return true;
+
+  const uaData = (navigator as Navigator & {
+    userAgentData?: { platform?: string };
+  }).userAgentData;
+  const platform = uaData?.platform ?? navigator.platform ?? "";
+  // iPadOS reports as MacIntel + touch — treat that combo as iOS.
+  return platform === "MacIntel" && navigator.maxTouchPoints > 1;
 };
 
 // Respect the user's reduced-motion preference — skip Lenis entirely for them.

@@ -122,7 +122,7 @@ export default function WarrantyPage() {
         <div className="max-w-none">
           <div className="bg-gradient-to-r from-optimist-blue-light/10 to-optimist-blue-primary/5 rounded-2xl p-6 mb-8 border border-optimist-blue-primary/10">
             <p className="text-gray-700 text-lg leading-relaxed mb-4">
-              Optimist, operated by OctoLife Climate Solutions Private Limited,
+              Optimist, operated by Octolife Climate Solutions Private Limited,
               offers a comprehensive warranty on its air conditioners. This
               Warranty Policy sets out the scope of coverage, conditions of
               validity, exclusions, and the process for making a warranty claim.
@@ -213,7 +213,10 @@ export default function WarrantyPage() {
             <div className="bg-amber-50 rounded-2xl p-6 border border-amber-200">
               <ul className="space-y-3">
                 {exclusions.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-amber-900">
+                  <li
+                    key={item}
+                    className="flex items-start gap-2 text-amber-900"
+                  >
                     <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-1" />
                     <span>{item}</span>
                   </li>
@@ -315,12 +318,12 @@ export default function WarrantyPage() {
               </div>
               <p className="text-gray-600 leading-relaxed mb-4">
                 Upon receipt of a warranty claim, Optimist will arrange for an
-                authorised service engineer to visit the customer&apos;s premises
-                and inspect the product. If the fault is confirmed to be covered
-                under this warranty, the necessary repair or part replacement
-                will be carried out at ₹0 to the customer. No prior approval or
-                additional documentation is required from the customer for
-                covered repairs.
+                authorised service engineer to visit the customer&apos;s
+                premises and inspect the product. If the fault is confirmed to
+                be covered under this warranty, the necessary repair or part
+                replacement will be carried out at ₹0 to the customer. No prior
+                approval or additional documentation is required from the
+                customer for covered repairs.
               </p>
               <p className="text-gray-600 leading-relaxed">
                 In cases where a spare part required for repair is unavailable
@@ -369,8 +372,8 @@ export default function WarrantyPage() {
                 </Link>{" "}
                 available at www.optimist.in. In case of any conflict between
                 this Policy and those documents, this Warranty Policy shall
-                prevail in matters specifically relating to warranty coverage and
-                claims.
+                prevail in matters specifically relating to warranty coverage
+                and claims.
               </p>
             </div>
           </PolicySection>

@@ -38,7 +38,7 @@ interface AuthContextType extends AuthState {
     email: string,
     password: string,
     firstName?: string,
-    lastName?: string
+    lastName?: string,
   ) => Promise<void>;
   recoverPassword: (email: string) => Promise<void>;
   refreshCustomer: () => Promise<void>;
@@ -79,12 +79,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const stored = localStorage.getItem(AUTH_STORAGE_KEY);
         if (stored) {
-          const { accessToken: storedToken, expiresAt }: StoredAuth = JSON.parse(stored);
-          
+          const { accessToken: storedToken, expiresAt }: StoredAuth =
+            JSON.parse(stored);
+
           // Check if token is expired
           if (new Date(expiresAt) > new Date()) {
             setAccessToken(storedToken);
-            
+
             // Fetch customer data
             const customerData = await getCustomer(storedToken);
             if (customerData) {
@@ -100,7 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (error) {
-        console.error("Failed to load stored auth:", error);
         localStorage.removeItem(AUTH_STORAGE_KEY);
       } finally {
         setIsLoading(false);
@@ -145,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     },
-    [saveAuth]
+    [saveAuth],
   );
 
   // Logout
@@ -153,9 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (accessToken) {
       try {
         await customerAccessTokenDelete(accessToken);
-      } catch (error) {
-        console.error("Failed to delete access token:", error);
-      }
+      } catch (error) {}
     }
     clearAuth();
   }, [accessToken, clearAuth]);
@@ -166,23 +164,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: string,
       password: string,
       firstName?: string,
-      lastName?: string
+      lastName?: string,
     ) => {
       setIsLoading(true);
       try {
-        const { customer: newCustomer, customerAccessToken } = await customerCreate(
-          email,
-          password,
-          firstName,
-          lastName
-        );
+        const { customer: newCustomer, customerAccessToken } =
+          await customerCreate(email, password, firstName, lastName);
         saveAuth(customerAccessToken);
         setCustomer(newCustomer);
       } finally {
         setIsLoading(false);
       }
     },
-    [saveAuth]
+    [saveAuth],
   );
 
   // Recover Password
@@ -193,15 +187,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Refresh Customer
   const refreshCustomer = useCallback(async () => {
     if (!accessToken) return;
-    
+
     try {
       const customerData = await getCustomer(accessToken);
       if (customerData) {
         setCustomer(customerData);
       }
-    } catch (error) {
-      console.error("Failed to refresh customer:", error);
-    }
+    } catch (error) {}
   }, [accessToken]);
 
   // Update Profile
@@ -214,7 +206,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const updatedCustomer = await customerUpdate(accessToken, data);
       setCustomer(updatedCustomer);
     },
-    [accessToken]
+    [accessToken],
   );
 
   return (

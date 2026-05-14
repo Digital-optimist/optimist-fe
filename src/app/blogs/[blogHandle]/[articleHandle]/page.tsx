@@ -17,7 +17,6 @@ export async function generateStaticParams() {
       articleHandle: article.handle,
     }));
   } catch (error) {
-    console.error("Error generating static params for blog articles:", error);
     return [];
   }
 }

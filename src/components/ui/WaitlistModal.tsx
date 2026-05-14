@@ -163,7 +163,7 @@ function SuccessView() {
     fetch("/animations/Confetti.json")
       .then((res) => res.json())
       .then((data) => setConfettiData(data))
-      .catch((err) => console.error("Failed to load confetti animation:", err));
+      .catch((err) => {});
   }, []);
 
   return (
