@@ -69,9 +69,11 @@ export function HeroSection({
   const parallaxContainerRef = useRef<HTMLDivElement>(null);
   const parallaxContentRef = useRef<HTMLDivElement>(null);
   const leafVideoRef1 = useRef<HTMLVideoElement>(null);
+  const leafVideoRefMobile = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showLeafVideo, setShowLeafVideo] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -83,12 +85,35 @@ export function HeroSection({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Set leaf video playback speed (slower)
+  // Defer mounting the decorative leaf video until the browser is idle —
+  // keeps it out of the critical path so LCP fires on the hero image, not the 1.9 MB MP4.
   useEffect(() => {
-    if (leafVideoRef1.current) {
-      leafVideoRef1.current.playbackRate = 0.3;
-    }
+    const ric = (
+      window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+        cancelIdleCallback?: (id: number) => void;
+      }
+    ).requestIdleCallback;
+    const cic = (
+      window as Window & { cancelIdleCallback?: (id: number) => void }
+    ).cancelIdleCallback;
+
+    const handle = ric
+      ? ric(() => setShowLeafVideo(true), { timeout: 2000 })
+      : window.setTimeout(() => setShowLeafVideo(true), 600);
+
+    return () => {
+      if (cic) cic(handle);
+      else window.clearTimeout(handle);
+    };
   }, []);
+
+  // Set leaf video playback speed (slower) once each video element mounts.
+  useEffect(() => {
+    if (!showLeafVideo) return;
+    if (leafVideoRef1.current) leafVideoRef1.current.playbackRate = 0.3;
+    if (leafVideoRefMobile.current) leafVideoRefMobile.current.playbackRate = 0.3;
+  }, [showLeafVideo]);
 
   // Mouse parallax effect - push in opposite direction (desktop only)
   useEffect(() => {
@@ -237,26 +262,30 @@ export function HeroSection({
               className="object-cover object-center pointer-events-none"
               priority
             />
-            {/* Leaves video overlay - subtle effect */}
-            <video
-              src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute pointer-events-none"
-              style={{
-                top: "50%",
-                left: "50%",
-                width: "150%",
-                height: "150%",
-                objectFit: "cover",
-                objectPosition: "center",
-                transform: "translate(-50%, -50%) rotate(180deg)",
-                opacity: 0.18,
-                mixBlendMode: "multiply",
-              }}
-            />
+            {/* Leaves video overlay - subtle effect (deferred to idle so LCP isn't blocked) */}
+            {showLeafVideo && (
+              <video
+                ref={leafVideoRefMobile}
+                src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="absolute pointer-events-none"
+                style={{
+                  top: "50%",
+                  left: "50%",
+                  width: "150%",
+                  height: "150%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  transform: "translate(-50%, -50%) rotate(180deg)",
+                  opacity: 0.18,
+                  mixBlendMode: "multiply",
+                }}
+              />
+            )}
           </div>
 
           {/* Content Container - normal flow layout */}
@@ -393,27 +422,30 @@ export function HeroSection({
               className="object-cover object-center pointer-events-none"
               priority
             />
-            {/* Leaves video overlay - subtle effect */}
-            <video
-              ref={leafVideoRef1}
-              src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute pointer-events-none"
-              style={{
-                top: "50%",
-                left: "50%",
-                width: "150%",
-                height: "150%",
-                objectFit: "cover",
-                objectPosition: "center",
-                transform: "translate(-50%, -50%) rotate(180deg)",
-                opacity: 0.18,
-                mixBlendMode: "multiply",
-              }}
-            />
+            {/* Leaves video overlay - subtle effect (deferred to idle so LCP isn't blocked) */}
+            {showLeafVideo && (
+              <video
+                ref={leafVideoRef1}
+                src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className="absolute pointer-events-none"
+                style={{
+                  top: "50%",
+                  left: "50%",
+                  width: "150%",
+                  height: "150%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  transform: "translate(-50%, -50%) rotate(180deg)",
+                  opacity: 0.18,
+                  mixBlendMode: "multiply",
+                }}
+              />
+            )}
           </div>
 
           {/* Parallax content wrapper for mouse movement effect */}

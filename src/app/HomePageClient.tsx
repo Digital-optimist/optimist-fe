@@ -3,10 +3,12 @@
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { BenefitsSection } from "@/components/landing/BenefitsSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";
 import { useLandingContent } from "@/hooks/useMetaobjectContent";
 
+const BenefitsSection = dynamic(
+  () => import("@/components/landing/BenefitsSection").then((m) => ({ default: m.BenefitsSection })),
+);
 const FeaturesShowcaseSection = dynamic(
   () => import("@/components/landing/FeaturesShowcaseSection").then((m) => ({ default: m.FeaturesShowcaseSection })),
 );
