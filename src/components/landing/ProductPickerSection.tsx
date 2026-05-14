@@ -3,7 +3,6 @@
 import {
   useRef,
   useState,
-  Suspense,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -12,9 +11,6 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { RotateCcw, Share2, ShieldCheck, Truck } from "lucide-react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Environment, OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/Toast";
@@ -22,89 +18,6 @@ import { ASSETS } from "@/lib/assets";
 import { useJudgeMeRating } from "@/lib/judgeme";
 import { redirectWithAnalytics } from "@/lib/analytics";
 import PincodeModal from "@/components/ui/PincodeModal";
-
-function ACModel() {
-  const { scene, animations } = useGLTF("/Product Card Animation 01.glb");
-  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
-
-  // Setup animation mixer
-  useEffect(() => {
-    if (animations.length > 0) {
-      mixerRef.current = new THREE.AnimationMixer(scene);
-      animations.forEach((clip) => {
-        const action = mixerRef.current!.clipAction(clip);
-        action.play();
-      });
-    }
-
-    return () => {
-      if (mixerRef.current) {
-        mixerRef.current.stopAllAction();
-      }
-    };
-  }, [scene, animations]);
-
-  // Update animation on each frame
-  useFrame((_, delta) => {
-    if (mixerRef.current) {
-      mixerRef.current.update(delta);
-    }
-  });
-
-  return (
-    <primitive
-      object={scene}
-      scale={1.5}
-      position={[0, -0.5, 0]}
-      rotation={[0, Math.PI / 6, 0]}
-    />
-  );
-}
-
-function ACModelCanvas() {
-  return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 35 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
-      style={{ background: "transparent" }}
-    >
-      <Suspense fallback={null}>
-        {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 8, 5]} intensity={1.2} />
-        <directionalLight
-          position={[-5, 3, 3]}
-          intensity={0.4}
-          color="#e0f0ff"
-        />
-        <directionalLight position={[0, 2, -5]} intensity={0.3} />
-        <pointLight
-          position={[3, 0, 2]}
-          intensity={0.5}
-          color="#0ea5e9"
-          distance={10}
-        />
-
-        {/* AC Model */}
-        <ACModel />
-
-        {/* Environment for reflections */}
-        <Environment preset="city" environmentIntensity={0.3} />
-
-        {/* Allow user to rotate the model */}
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          autoRotate
-          autoRotateSpeed={1}
-          minPolarAngle={Math.PI / 3}
-          maxPolarAngle={Math.PI / 2}
-        />
-      </Suspense>
-    </Canvas>
-  );
-}
 
 // Fallback tab shown while Shopify data is loading
 const FALLBACK_TABS = [{ id: "fallback-1.5", label: "1.5 TON" }];

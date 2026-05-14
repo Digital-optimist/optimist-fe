@@ -23,10 +23,21 @@ export function BuiltForSection() {
   // Entrance animations: trigger as soon as the section starts entering viewport.
   const isVisible = useInView(sectionRef, { once: true, amount: 0.05 });
 
+  // Start downloading the video file only when the section is within ~600px of the viewport.
+  // Keeps the MP4 off the initial-page critical path.
+  const sectionNearViewport = useInView(sectionRef, {
+    once: true,
+    margin: "600px 0px 600px 0px",
+  });
+
   // Video play: trigger only when the video element itself is actually in view,
   // so the animation plays while the user is looking at it — not before.
   const desktopVideoInView = useInView(videoRef, { once: true, amount: 0.5 });
   const mobileVideoInView = useInView(mobileVideoRef, { once: true, amount: 0.5 });
+
+  const videoSrc = sectionNearViewport
+    ? ASSETS.videos.productCardAnimation2
+    : undefined;
 
   useEffect(() => {
     if (hasStartedPlaying) return;
@@ -119,7 +130,8 @@ export function BuiltForSection() {
             >
               <video
                 ref={videoRef}
-                src={ASSETS.videos.productCardAnimation2}
+                src={videoSrc}
+                preload="metadata"
                 className="w-full h-full object-contain mix-blend-multiply"
                 muted
                 playsInline
@@ -200,7 +212,8 @@ export function BuiltForSection() {
             >
               <video
                 ref={mobileVideoRef}
-                src={ASSETS.videos.productCardAnimation2}
+                src={videoSrc}
+                preload="metadata"
                 className="w-full h-full object-contain   mix-blend-multiply"
                 muted
                 playsInline
