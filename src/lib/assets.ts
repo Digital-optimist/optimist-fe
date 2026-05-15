@@ -215,7 +215,7 @@ export const ASSETS = {
   info4: "/assets/info4.png",
   mobileBg: "/assets/bgg.png",
   circletick: "/assets/circletick.png",
-  optimistImageAsset: "/images/ACImageAsset.jpeg/",
+  optimistImageAsset: "/assets/ACImageAsset.jpeg",
 } as const;
 
 export default ASSETS;
