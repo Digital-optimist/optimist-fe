@@ -322,7 +322,7 @@ export function ProductPickerSection() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
               {/* Mobile: Image First */}
               <div className="lg:hidden">
-                <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-[20px] overflow-hidden shadow-sm">
+                <div className="relative bg-white rounded-[20px] overflow-hidden shadow-sm">
                   {/* Share Button */}
                   {/* <button
                     onClick={handleShare}
@@ -335,11 +335,10 @@ export function ProductPickerSection() {
                   {/* AC Image */}
                   <div className="aspect-[4/3] relative flex items-center justify-center p-8">
                     <Image
-                      src={ASSETS.mainAcMobile}
+                      src={ASSETS.optimistImageAsset}
                       alt="Optimist AC Unit"
-                      width={600}
-                      height={450}
-                      className="w-full h-auto object-contain"
+                      fill
+                      className="px-4 object-cover"
                     />
                   </div>
                 </div>
