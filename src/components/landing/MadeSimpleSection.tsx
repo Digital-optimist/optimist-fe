@@ -5,7 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useRouter } from "next/navigation";
 
-const REMOTE_IMG = "/images/made-simple/remote.png";
+const REMOTE_IMG = "/images/made-simple/remote.webp";
 const PALM_TREE_MASK = "/images/made-simple/palm-tree-mask.svg";
 const ELLIPSE_GROUP_DESKTOP = "/images/made-simple/ellipse-group-desktop.svg";
 const ELLIPSE_MOBILE_2 = "/images/made-simple/ellipse2.svg";

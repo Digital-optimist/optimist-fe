@@ -14,8 +14,8 @@ const benefits = [
     headline: "Tested to cool\nat 50\u00b0C",
     description: "No performance drop when others derate.",
     variant: "blue" as const,
-    mobileAsset: "/images/benf0-ac-angle.png",
-    desktopAsset1: "/images/benf0-ac-angle.png",
+    mobileAsset: "/images/benf0-ac-angle.webp",
+    desktopAsset1: "/images/benf0-ac-angle.webp",
   },
   {
     id: 1,
@@ -23,8 +23,8 @@ const benefits = [
     headline: "India’s #1 Rated\n Energy Efficient AC",
     description: "25-35% lower electricity bills\n every single day!",
     variant: "light" as const,
-    mobileAsset: "/images/Group 480960421.png",
-    desktopAsset1: "/images/Group 48096042.png",
+    mobileAsset: "/images/Group 480960421.webp",
+    desktopAsset1: "/images/Group 48096042.webp",
   },
   {
     id: 2,
