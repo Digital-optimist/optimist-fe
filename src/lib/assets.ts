@@ -30,7 +30,7 @@ export const ASSETS = {
 
   // Warranty Section
   warrantyCard: "/assets/products/warranty-card.webp",
-  warrantyCheck: getAssetUrl("/warranty-check.png"),
+  warrantyCheck: "/assets/proof/checkmark.webp",
 
   // Recognition Section
   shieldSlash: "/icons/shield-slash.svg",
@@ -62,7 +62,7 @@ export const ASSETS = {
   clipPathGroup2: getAssetUrl("Clip path group2.png"),
 
   // Contact Us
-  contactUsBg: "/assets/contactUs.jpeg",
+  contactUsBg: "/assets/contactUs.webp",
 
   // Ratings & Stars
   fiveStarRating: getAssetUrl("5StarRating.png"),
@@ -107,8 +107,8 @@ export const ASSETS = {
   calendarCheckIcon: "/icons/calendar-check.svg",
 
   // Hero Badge Icons
-  thermometerBadge: "/icons/thermometer-badge.png",
-  iseer5StarBadge: "/icons/iseer-5star-badge.png",
+  thermometerBadge: "/icons/thermometer-badge.webp",
+  iseer5StarBadge: "/icons/iseer-5star-badge.webp",
 
   calendar: getAssetUrl("mobilerApp6.png"),
   filter: getAssetUrl("mobilerApp5.png"),
@@ -136,14 +136,14 @@ export const ASSETS = {
   // Auth Page Assets
   loginMobileGradient: getAssetUrl("loginMobileGradient.png"),
   desktopMobileGradient: getAssetUrl("DesktopMobileGradient.png"),
-  accountDecorativeAsset: "/assets/accountDecorativeAsset.png",
+  accountDecorativeAsset: "/assets/accountDecorativeAsset.webp",
 
   // Proof Section
-  proofCheckmark: "/assets/proof/checkmark.png",
-  proofCertifiedBadge: "/assets/proof/certified-badge.png",
-  proofSigmaCertificate: "/images/Frame 2085663005.png",
-  proofSaveEnergyBadge: "/assets/proof/save-energy-badge.png",
-  proofBeeLabel: "/assets/proof/bee-label.png",
+  proofCheckmark: "/assets/proof/checkmark.webp",
+  proofCertifiedBadge: "/assets/proof/certified-badge.webp",
+  proofSigmaCertificate: "/images/Frame 2085663005.webp",
+  proofSaveEnergyBadge: "/assets/proof/save-energy-badge.webp",
+  proofBeeLabel: "/assets/proof/bee-label.webp",
 
   // Inside Optimist Section
   insideOptimistAcUnit: "/assets/inside-optimist/ac-unit.webp",
@@ -156,28 +156,28 @@ export const ASSETS = {
   teamLabPhotoMobile: "/assets/team/team-mobile.webp",
 
   // Featured On Logos
-  featuredAngelone: "/assets/featured/angelone.png",
-  featuredNews18: "/assets/featured/news18.png",
-  featuredPti: "/assets/featured/pti.png",
-  featuredInc42: "/assets/featured/inc42.png",
+  featuredAngelone: "/assets/featured/angelone.webp",
+  featuredNews18: "/assets/featured/news18.webp",
+  featuredPti: "/assets/featured/pti.webp",
+  featuredInc42: "/assets/featured/inc42.webp",
   featuredRediff: "/assets/featured/rediff.png",
   featuredEntrackr: "/assets/featured/entrackr.png",
-  featuredEntrepreneur: "/assets/featured/entrepreneur.png",
+  featuredEntrepreneur: "/assets/featured/entrepreneur.webp",
 
   // Mobile App Section Assets
-  mob1: "/assets/mob1.png",
-  mob2: "/assets/mob2.png",
-  mob3: "/assets/mob3.png",
-  mob4: "/assets/mob4.png",
-  mob5: "/assets/mob5.png",
-  mob6: "/assets/mob6.png",
-  info1: "/assets/Info1.png",
-  info2: "/assets/Info2.png",
-  info3: "/assets/info3.png",
-  info4: "/assets/info4.png",
-  mobileBg: "/assets/bgg.png",
+  mob1: "/assets/mob1.webp",
+  mob2: "/assets/mob2.webp",
+  mob3: "/assets/mob3.webp",
+  mob4: "/assets/mob4.webp",
+  mob5: "/assets/mob5.webp",
+  mob6: "/assets/mob6.webp",
+  info1: "/assets/info1.webp",
+  info2: "/assets/info2.webp",
+  info3: "/assets/info3.webp",
+  info4: "/assets/info4.webp",
+  mobileBg: "/assets/bgg.webp",
   circletick: "/assets/circletick.png",
-  optimistImageAsset: "/assets/ACImageAsset.jpeg",
+  optimistImageAsset: "/assets/ACImageAsset.webp",
 } as const;
 
 export default ASSETS;
