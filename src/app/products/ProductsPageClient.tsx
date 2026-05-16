@@ -8,20 +8,11 @@ import {
   WarrantyIcon,
 } from "@/components/icons/ProductIcons";
 import {
-  AsFeaturedSection,
-  BuiltForSection,
   ComparisonSection,
   CustomerVideosSection,
-  ExpertTestimonialsSection,
   ImageGallery,
-  InsideOptimistSection,
-  ProofSection,
   QuantityDropdown,
-  ResultSection,
-  ReviewsSection,
-  TeamSection,
   VariantCard,
-  WarrantySection,
 } from "@/components/products";
 import { useToast } from "@/components/ui/Toast";
 import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
@@ -33,8 +24,62 @@ import { redirectWithAnalytics } from "@/lib/analytics";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { useProductPageContent } from "@/hooks/useMetaobjectContent";
 import PincodeModal from "@/components/ui/PincodeModal";
-import { BusinessPurchaseSection } from "@/components/products/BusinessPurchaseSection";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+// Below-the-fold sections — split into their own chunks to shrink the main
+// hydration bundle. SSR is preserved (default) so SEO-relevant copy still
+// ships in the initial HTML.
+const BusinessPurchaseSection = dynamic(() =>
+  import("@/components/products/BusinessPurchaseSection").then((m) => ({
+    default: m.BusinessPurchaseSection,
+  })),
+);
+const ResultSection = dynamic(() =>
+  import("@/components/products/ResultSection").then((m) => ({
+    default: m.ResultSection,
+  })),
+);
+const ExpertTestimonialsSection = dynamic(() =>
+  import("@/components/products/ExpertTestimonialsSection").then((m) => ({
+    default: m.ExpertTestimonialsSection,
+  })),
+);
+const InsideOptimistSection = dynamic(() =>
+  import("@/components/products/InsideOptimistSection").then((m) => ({
+    default: m.InsideOptimistSection,
+  })),
+);
+const TeamSection = dynamic(() =>
+  import("@/components/products/TeamSection").then((m) => ({
+    default: m.TeamSection,
+  })),
+);
+const ProofSection = dynamic(() =>
+  import("@/components/products/ProofSection").then((m) => ({
+    default: m.ProofSection,
+  })),
+);
+const AsFeaturedSection = dynamic(() =>
+  import("@/components/products/AsFeaturedSection").then((m) => ({
+    default: m.AsFeaturedSection,
+  })),
+);
+const WarrantySection = dynamic(() =>
+  import("@/components/products/WarrantySection").then((m) => ({
+    default: m.WarrantySection,
+  })),
+);
+const ReviewsSection = dynamic(() =>
+  import("@/components/products/ReviewsSection").then((m) => ({
+    default: m.ReviewsSection,
+  })),
+);
+const BuiltForSection = dynamic(() =>
+  import("@/components/products/BuiltForSection").then((m) => ({
+    default: m.BuiltForSection,
+  })),
+);
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 

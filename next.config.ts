@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
   trailingSlash: true, // Generate /products/index.html instead of /products.html
   reactCompiler: true,
   images: {
-    unoptimized: true, // Required for static export
+    // Custom loader lets us resize Shopify CDN images via ?width=N query
+    // params at build time. Local & S3 assets pass through unchanged
+    // (they are pre-optimized as WebP at the correct dimensions).
+    loader: "custom",
+    loaderFile: "./src/lib/imageLoader.ts",
+    formats: ["image/webp"],
     remotePatterns: [
       {
         protocol: "https",
@@ -14,6 +19,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "optimist-fe-assets.s3.amazonaws.com",
       },
     ],
   },

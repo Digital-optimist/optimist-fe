@@ -181,14 +181,14 @@ export const WarrantySection = memo(function WarrantySection() {
         {/* Content Card */}
         <div ref={contentRef} className="border border-[rgba(0,0,0,0.12)] rounded-2xl md:rounded-3xl overflow-hidden md:h-[545px]">
           <div className="flex flex-col md:flex-row items-center md:items-center md:justify-between p-4 md:pl-5 md:pr-0 md:py-10 gap-[18px] md:gap-4">
-            {/* Warranty Card Image - using Figma's exact positioning/cropping */}
+            {/* Warranty Card Image — source is pre-cropped to the visible region. */}
             <div className="relative w-[200px] md:w-[326px] h-[285px] md:h-[465px] shrink-0 overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={ASSETS.warrantyCard}
                 alt="Optimist Warranty Card - Peace of mind, built in"
-                className="absolute w-[266.67%] h-[124.57%] max-w-none"
-                style={{ left: '-75%', top: '-9.73%' }}
+                fill
+                sizes="(min-width: 768px) 326px, 200px"
+                className="object-cover"
               />
             </div>
 

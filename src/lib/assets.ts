@@ -26,8 +26,8 @@ export const ASSETS = {
   heroAc: getAssetUrl("hero_ac.png"),
   mainAcMobile: getAssetUrl("MainACMobile.png"),
   acTilt: getAssetUrl("/acTiltedAngle.png"),
-  comparisonShadowBg: getAssetUrl("comparison-shadow-bg.png"),
-  acComparison: getAssetUrl("acComparison.png"),
+  comparisonShadowBg: "/assets/products/comparison-shadow-bg.webp",
+  acComparison: "/assets/products/acComparison.webp",
   team1: getAssetUrl("Team1.png"),
   team2: getAssetUrl("Team2.png"),
   team3: getAssetUrl("Team3.png"),
@@ -39,7 +39,7 @@ export const ASSETS = {
   indiaStoryValidated: getAssetUrl("india-story-validated.png"),
 
   // Warranty Section
-  warrantyCard: getAssetUrl("/warranty-card.png"),
+  warrantyCard: "/assets/products/warranty-card.webp",
   warrantyCheck: getAssetUrl("/warranty-check.png"),
 
   // Recognition Section
@@ -184,14 +184,14 @@ export const ASSETS = {
   proofBeeLabel: "/assets/proof/bee-label.png",
 
   // Inside Optimist Section
-  insideOptimistAcUnit: "/assets/inside-optimist/ac-unit.png",
-  insideOptimistHeatExchanger: "/assets/inside-optimist/heat-exchanger.jpeg",
-  insideOptimistCompressor: "/assets/inside-optimist/compressor.png",
-  insideOptimistExpansionValve: "/assets/inside-optimist/expansion-valve.png",
+  insideOptimistAcUnit: "/assets/inside-optimist/ac-unit.webp",
+  insideOptimistHeatExchanger: "/assets/inside-optimist/heat-exchanger.webp",
+  insideOptimistCompressor: "/assets/inside-optimist/compressor.webp",
+  insideOptimistExpansionValve: "/assets/inside-optimist/expansion-valve.webp",
 
   // Team Section
-  teamLabPhoto: "/assets/team/team-lab-photo.jpg",
-  teamLabPhotoMobile: "/assets/team mobile.png",
+  teamLabPhoto: "/assets/team/team-lab-photo.webp",
+  teamLabPhotoMobile: "/assets/team/team-mobile.webp",
 
   // Featured On Logos
   featuredAngelone: "/assets/featured/angelone.png",

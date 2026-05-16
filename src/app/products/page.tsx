@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { type Metadata } from "next";
-import { getProducts } from "@/lib/shopify";
+import { getProducts, type Product } from "@/lib/shopify";
 import ProductsPageClient from "./ProductsPageClient";
 import { ProductDetailSkeleton } from "@/components/products/ProductDetailSkeleton";
 
@@ -51,12 +51,44 @@ async function getProductData() {
 // Server Component
 // =============================================================================
 
+function getLcpImageUrl(product: Product | null): string | null {
+  if (!product) return null;
+  const fromMedia = product.media?.edges.find(
+    ({ node }) => node.mediaContentType === "IMAGE" && node.image,
+  )?.node.image?.url;
+  if (fromMedia) return fromMedia;
+  return product.images?.edges[0]?.node.url ?? product.featuredImage?.url ?? null;
+}
+
+function withWidth(url: string, width: number): string {
+  try {
+    const u = new URL(url);
+    u.searchParams.set("width", String(width));
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 export default async function ProductsPage() {
   const product = await getProductData();
+  const lcpUrl = getLcpImageUrl(product);
 
   return (
-    <Suspense fallback={<ProductDetailSkeleton />}>
-      <ProductsPageClient product={product} />
-    </Suspense>
+    <>
+      {lcpUrl && (
+        <link
+          rel="preload"
+          as="image"
+          fetchPriority="high"
+          href={withWidth(lcpUrl, 828)}
+          imageSrcSet={`${withWidth(lcpUrl, 640)} 640w, ${withWidth(lcpUrl, 828)} 828w, ${withWidth(lcpUrl, 1080)} 1080w, ${withWidth(lcpUrl, 1200)} 1200w`}
+          imageSizes="(max-width: 768px) 100vw, 50vw"
+        />
+      )}
+      <Suspense fallback={<ProductDetailSkeleton />}>
+        <ProductsPageClient product={product} />
+      </Suspense>
+    </>
   );
 }
