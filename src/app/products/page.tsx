@@ -74,6 +74,11 @@ function withWidth(url: string, width: number): string {
   }
 }
 
+// Fallback used when the Shopify fetch fails — keeps SSR HTML stable so the
+// LCP H1 still paints with usable text on first byte instead of an empty
+// string that re-renders post-hydration.
+const FALLBACK_TITLE = "Optimist 5 Star Inverter Split AC";
+
 export default async function ProductsPage() {
   // Fetch product + CMS content in parallel at build time so both ship in
   // the initial static HTML. Avoids a client-side round-trip on every visit
@@ -83,6 +88,7 @@ export default async function ProductsPage() {
     getProductPageContent(),
   ]);
   const lcpUrl = getLcpImageUrl(product);
+  const initialTitle = product?.title ?? FALLBACK_TITLE;
 
   return (
     <>
@@ -97,7 +103,11 @@ export default async function ProductsPage() {
         />
       )}
       <Suspense fallback={<ProductDetailSkeleton />}>
-        <ProductsPageClient product={product} pageContent={pageContent} />
+        <ProductsPageClient
+          product={product}
+          pageContent={pageContent}
+          initialTitle={initialTitle}
+        />
       </Suspense>
     </>
   );

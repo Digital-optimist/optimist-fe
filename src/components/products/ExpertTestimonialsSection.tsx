@@ -122,8 +122,6 @@ export const ExpertTestimonialsSection = memo(
       return [];
     }, [experts]);
 
-    console.log("TESTIMONIALS:", TESTIMONIALS);
-
     const ROW_2_ORDER = useMemo(() => {
       const len = TESTIMONIALS.length;
       if (len <= 1) return [0];
