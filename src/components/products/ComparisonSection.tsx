@@ -155,12 +155,20 @@ export const ComparisonSection = memo(function ComparisonSection() {
               top: 0,
             }}
           >
-            <Image
+            {/* Plain <img> + srcset because output:"export" + custom loader
+                can't generate responsive variants for local assets. The
+                mobile variant is roughly 50% the byte weight of the desktop
+                source — meaningful since this is a decorative below-fold
+                background. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={ASSETS.comparisonShadowBg}
-              alt=""
-              fill
+              srcSet={`${ASSETS.comparisonShadowBgMobile} 800w, ${ASSETS.comparisonShadowBg} 1200w`}
               sizes="100vw"
-              className="object-top opacity-[0.3]"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-top object-cover opacity-[0.3]"
             />
           </div>
         </div>
@@ -179,7 +187,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
         {/* Content */}
         <div className="relative z-[10] w-full max-w-[1440px] mx-auto pt-10 md:pt-[53px] pb-[90px] md:pb-[175px]">
           {/* Titles Row */}
-          <div ref={titlesRef} className="flex">
+          <div ref={titlesRef} className="flex will-change-transform">
             <div className="w-1/2 px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
               <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-semibold md:font-bold text-white text-right tracking-wide md:tracking-normal mb-4 md:mb-6 lg:mb-10">
                 Optimist AC
@@ -193,7 +201,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
           </div>
 
           {/* Comparison Rows - Each row contains both benefit and drawback */}
-          <div ref={rowsRef} className="flex flex-col gap-3 md:gap-6">
+          <div ref={rowsRef} className="flex flex-col gap-3 md:gap-6 will-change-transform">
             {COMPARISON_DATA.map((item, index) => (
               <div key={index} className="comparison-row flex items-stretch">
                 {/* Left - Benefit */}
@@ -226,7 +234,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
       {/* AC Product Images - Single merged image positioned to span both sections */}
       <div
         ref={imagesRef}
-        className="absolute bottom-0 left-0 right-5 md:right-10 lg:right-[60px] z-[20]"
+        className="absolute bottom-0 left-0 right-5 md:right-10 lg:right-[60px] z-[20] will-change-transform"
       >
         <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="relative w-full h-[200px] md:h-[450px] lg:h-[650px]">

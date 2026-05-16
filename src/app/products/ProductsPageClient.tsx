@@ -148,17 +148,6 @@ const scaleUpVariants = {
 };
 
 // Hero section variants
-const heroGalleryVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: easeOutExpo,
-    },
-  },
-};
-
 const heroInfoContainerVariants = {
   hidden: { opacity: 1 },
   visible: {
@@ -589,13 +578,11 @@ export default function ProductsPageClient({
       <div ref={heroRef} className="pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-16">
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
-            {/* Left Column - Image Gallery */}
-            <motion.div
-              className="hidden lg:block w-full"
-              initial="hidden"
-              animate="visible"
-              variants={heroGalleryVariants}
-            >
+            {/* Left Column - Image Gallery
+                Rendered as a plain div (no Framer Motion fade-in) because this
+                contains the LCP product image — any opacity:0 initial state
+                delays LCP by the full hydration+animation duration. */}
+            <div className="hidden lg:block w-full">
               <ImageGallery
                 images={displayImages}
                 selectedIndex={selectedImageIndex}
@@ -603,7 +590,7 @@ export default function ProductsPageClient({
                 onPrev={handlePrevImage}
                 onNext={handleNextImage}
               />
-            </motion.div>
+            </div>
 
             {/* Right Column - Product Info */}
             <motion.div
@@ -678,12 +665,10 @@ export default function ProductsPageClient({
                 )}
               </motion.div>
 
-              {/* Mobile Image Gallery */}
-              <motion.div
-                ref={mobileGalleryRef}
-                variants={heroInfoItemVariants}
-                className="lg:hidden"
-              >
+              {/* Mobile Image Gallery — same rationale as desktop: this is
+                  the LCP element, so it must paint immediately without
+                  Framer Motion's fade-in. */}
+              <div ref={mobileGalleryRef} className="lg:hidden">
                 <ImageGallery
                   images={displayImages}
                   selectedIndex={selectedImageIndex}
@@ -691,7 +676,7 @@ export default function ProductsPageClient({
                   onPrev={handlePrevImage}
                   onNext={handleNextImage}
                 />
-              </motion.div>
+              </div>
 
               {/* Total/Price */}
               <motion.div

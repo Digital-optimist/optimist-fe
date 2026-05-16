@@ -5,13 +5,16 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
-import SnapmintLoader from "@/components/SnapmintLoader";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
 
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
 
 // ABC Solar Display - For headlines (only weights actually used; italics/800 dropped).
+// preload: false — Next.js auto-preloads every weight by default, which shipped
+// ~400 KiB of woff2 up-front on /products/. With display:"swap" the browser
+// renders fallback text immediately and fetches woff2 only for weights actually
+// painted on the visible page.
 const abcSolarDisplay = localFont({
   src: [
     {
@@ -32,6 +35,7 @@ const abcSolarDisplay = localFont({
   ],
   variable: "--font-abc-solar-display",
   display: "swap",
+  preload: false,
 });
 
 // ABC Solar - For body text and UI.
@@ -70,6 +74,7 @@ const abcSolar = localFont({
   ],
   variable: "--font-abc-solar",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -117,6 +122,14 @@ export default function RootLayout({
           rel="dns-prefetch"
           href="https://optimist-fe-assets.s3.amazonaws.com"
         />
+        {/* Preconnect to Shopify CDN — serves the product gallery, including
+            the LCP image on /products/. Saves ~80 ms on the LCP fetch. */}
+        <link
+          rel="preconnect"
+          href="https://cdn.shopify.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="https://cdn.shopify.com" />
         {/* Google Tag Manager — loaded after the page is interactive so it doesn't block first paint. */}
         <Script
           id="gtm-script"
@@ -166,7 +179,6 @@ export default function RootLayout({
           />
         </noscript>
         <Providers>
-          <SnapmintLoader />
           <SmoothScroll>
             <LayoutContent>{children}</LayoutContent>
           </SmoothScroll>

@@ -38,13 +38,11 @@
     "vitest": "^2.1.0"
   },
   "browserslist": [
-    ">0.5%",
+    "Chrome >= 109",
+    "Safari >= 16",
+    "Firefox >= 109",
+    "Edge >= 109",
     "not dead",
-    "not op_mini all",
-    "not ie 11",
-    "Chrome >= 87",
-    "Safari >= 14",
-    "Firefox >= 78",
-    "Edge >= 88"
+    "not op_mini all"
   ]
 }

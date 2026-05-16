@@ -22,6 +22,7 @@ export const ASSETS = {
   heroAc: getAssetUrl("hero_ac.png"),
   acTilt: getAssetUrl("/acTiltedAngle.png"),
   comparisonShadowBg: "/assets/products/comparison-shadow-bg.webp",
+  comparisonShadowBgMobile: "/assets/products/comparison-shadow-bg-mobile.webp",
   acComparison: "/assets/products/acComparison.webp",
   team1: getAssetUrl("Team1.png"),
   team2: getAssetUrl("Team2.png"),
