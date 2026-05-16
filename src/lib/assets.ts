@@ -82,7 +82,7 @@ export const ASSETS = {
   ellipse6513: getAssetUrl("Ellipse 6513.png"),
 
   // Decorative
-  family: getAssetUrl("Family.png"),
+  family: "/assets/Family.webp",
   frame48095518: getAssetUrl("Frame 48095518.png"),
 
   // Hand Images (Optimist App Section)
