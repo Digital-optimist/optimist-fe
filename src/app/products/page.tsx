@@ -97,9 +97,9 @@ export default async function ProductsPage() {
           rel="preload"
           as="image"
           fetchPriority="high"
-          href={withWidth(lcpUrl, 828)}
-          imageSrcSet={`${withWidth(lcpUrl, 640)} 640w, ${withWidth(lcpUrl, 828)} 828w, ${withWidth(lcpUrl, 1080)} 1080w, ${withWidth(lcpUrl, 1200)} 1200w`}
-          imageSizes="(max-width: 768px) 100vw, 50vw"
+          href={withWidth(lcpUrl, 750)}
+          imageSrcSet={`${withWidth(lcpUrl, 480)} 480w, ${withWidth(lcpUrl, 640)} 640w, ${withWidth(lcpUrl, 750)} 750w, ${withWidth(lcpUrl, 1080)} 1080w`}
+          imageSizes="(max-width: 768px) 90vw, 50vw"
         />
       )}
       <Suspense fallback={<ProductDetailSkeleton />}>

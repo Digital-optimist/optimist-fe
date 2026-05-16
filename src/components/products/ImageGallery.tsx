@@ -140,7 +140,7 @@ export const ImageGallery = memo(function ImageGallery({
             src={currentUrl ?? ""}
             alt={`Product image ${selectedIndex + 1} of ${images.length}`}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 90vw, 50vw"
             className="object-cover"
             priority
             fetchPriority="high"
