@@ -10,11 +10,7 @@ import SaleAssistLoader from "@/components/SaleAssistLoader";
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
 
-// ABC Solar Display - For headlines (only weights actually used; italics/800 dropped).
-// preload: false — Next.js auto-preloads every weight by default, which shipped
-// ~400 KiB of woff2 up-front on /products/. With display:"swap" the browser
-// renders fallback text immediately and fetches woff2 only for weights actually
-// painted on the visible page.
+// ABC Solar Display - For headlines.
 const abcSolarDisplay = localFont({
   src: [
     {
@@ -35,10 +31,11 @@ const abcSolarDisplay = localFont({
   ],
   variable: "--font-abc-solar-display",
   display: "swap",
-  preload: false,
 });
 
-// ABC Solar - For body text and UI.
+// ABC Solar - For body text and UI. RegularItalic is omitted: no Tailwind
+// `italic` class is applied anywhere in src/, so it would only ship bytes
+// no one uses.
 const abcSolar = localFont({
   src: [
     {
@@ -50,11 +47,6 @@ const abcSolar = localFont({
       path: "../assets/fonts/ABCSolar-Regular-Trial.woff2",
       weight: "400",
       style: "normal",
-    },
-    {
-      path: "../assets/fonts/ABCSolar-RegularItalic-Trial.woff2",
-      weight: "400",
-      style: "italic",
     },
     {
       path: "../assets/fonts/ABCSolar-Medium-Trial.woff2",
@@ -74,7 +66,6 @@ const abcSolar = localFont({
   ],
   variable: "--font-abc-solar",
   display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {

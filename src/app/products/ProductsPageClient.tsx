@@ -203,6 +203,7 @@ function getVariantRichText(
 interface ProductsPageClientProps {
   product: Product | null;
   pageContent: ProductPageContent | null;
+  initialTitle: string;
 }
 
 // =============================================================================
@@ -212,6 +213,7 @@ interface ProductsPageClientProps {
 export default function ProductsPageClient({
   product,
   pageContent,
+  initialTitle,
 }: ProductsPageClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -614,14 +616,13 @@ export default function ProductsPageClient({
                 )}
               </motion.div>
 
-              {/* Title & Star Rating */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-1.5"
-              >
+              {/* Title & Star Rating — plain div, not motion: this H1 is the
+                  LCP element on desktop, and Framer Motion's opacity:0 →
+                  opacity:1 fade-in delays LCP timing until the animation
+                  completes (~600ms after mount). */}
+              <div className="flex flex-col gap-1.5">
                 <h1 className="text-[20px] md:text-[40px] font-semibold text-black leading-tight">
-                  {selectedVariant?.productTitle ||
-                    `Optimist ${selectedVariant?.name || ""} 5 Star Inverter Split AC`}
+                  {selectedVariant?.productTitle || initialTitle}
                 </h1>
                 {judgeCount > 0 && (
                   <div className="flex items-center gap-1.5">
@@ -663,7 +664,7 @@ export default function ProductsPageClient({
                     </span>
                   </div>
                 )}
-              </motion.div>
+              </div>
 
               {/* Mobile Image Gallery — same rationale as desktop: this is
                   the LCP element, so it must paint immediately without

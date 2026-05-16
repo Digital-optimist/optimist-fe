@@ -2030,7 +2030,6 @@ export async function getProductPageContent(): Promise<ProductPageContent | null
       expertTestimonials: parseExpertTestimonials(expertNodes as any[]),
     };
   } catch (error) {
-    console.error("[getProductPageContent] failed:", error);
     return null;
   }
 }
