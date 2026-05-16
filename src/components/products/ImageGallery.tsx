@@ -143,6 +143,7 @@ export const ImageGallery = memo(function ImageGallery({
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
             priority
+            fetchPriority="high"
           />
         )}
 
@@ -224,7 +225,7 @@ export const ImageGallery = memo(function ImageGallery({
                     src={mediaUrl}
                     alt={`Thumbnail ${index + 1}`}
                     fill
-                    sizes="84px"
+                    sizes="(min-width: 768px) 84px, 44px"
                     className="object-cover rounded-[12px]"
                   />
                 )}
