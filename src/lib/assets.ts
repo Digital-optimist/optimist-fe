@@ -84,7 +84,11 @@ export const ASSETS = {
 
   // Decorative
   family: "/assets/Family.webp",
-  frame48095518: getAssetUrl("Frame 48095518.png"),
+  // Logo — produced by scripts/optimize-images.mjs from the S3 source PNG.
+  // Was 85 KiB at 4896×976; the local WebP is ~5 KiB at 800×160 and is
+  // sized for the largest display slot (Footer at 60% of 1440 px). Lazy-
+  // loaded by next/image (loading="lazy" is set at the call site).
+  frame48095518: "/assets/logo.webp",
 
   // Hand Images (Optimist App Section)
   filterTracking: getAssetUrl("Filter tracking.png"),

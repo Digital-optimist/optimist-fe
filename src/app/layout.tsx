@@ -103,11 +103,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning>
         {/* Preconnect to the S3 assets bucket so the first image request
-            skips DNS + TCP + TLS handshakes (~100-300 ms saved on cold loads). */}
+            skips DNS + TCP + TLS handshakes (~100-300 ms saved on cold loads).
+            No crossOrigin — S3 images are loaded as plain <img>/<Image> without
+            credentials, so the anonymous-CORS preconnect was flagged by
+            Lighthouse as "unused" because the actual request didn't match. */}
         <link
           rel="preconnect"
           href="https://optimist-fe-assets.s3.amazonaws.com"
-          crossOrigin="anonymous"
         />
         <link
           rel="dns-prefetch"

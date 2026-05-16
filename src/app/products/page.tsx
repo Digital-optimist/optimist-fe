@@ -42,12 +42,18 @@ export const metadata: Metadata = {
 // Data Fetching (Server-side)
 // =============================================================================
 
-async function getProductData() {
+async function getAllProducts() {
   try {
-    const products = await getProducts(1);
-    return products.length > 0 ? products[0] : null;
-  } catch (error) {
-    return null;
+    // Fetch all variants the products page needs. Previously this was
+    // fetched twice — once here (first product only, for SSR LCP preload)
+    // and again from <ProductsProvider> on mount. The second fetch ran
+    // during hydration and blocked the variants/price UI from settling for
+    // ~500-1500 ms. Now we fetch once on the server and hand the full list
+    // down to the route-scoped ProductsProvider.
+    const products = await getProducts(10);
+    return products;
+  } catch {
+    return [] as Product[];
   }
 }
 
@@ -83,10 +89,11 @@ export default async function ProductsPage() {
   // Fetch product + CMS content in parallel at build time so both ship in
   // the initial static HTML. Avoids a client-side round-trip on every visit
   // and eliminates the null-first-render flash for CMS-driven copy.
-  const [product, pageContent] = await Promise.all([
-    getProductData(),
+  const [products, pageContent] = await Promise.all([
+    getAllProducts(),
     getProductPageContent(),
   ]);
+  const product = products.length > 0 ? products[0] : null;
   const lcpUrl = getLcpImageUrl(product);
   const initialTitle = product?.title ?? FALLBACK_TITLE;
 
@@ -105,6 +112,7 @@ export default async function ProductsPage() {
       <Suspense fallback={<ProductDetailSkeleton />}>
         <ProductsPageClient
           product={product}
+          products={products}
           pageContent={pageContent}
           initialTitle={initialTitle}
         />

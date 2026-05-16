@@ -19,6 +19,7 @@ import https from "node:https";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
 const productsAssetsDir = path.join(repoRoot, "public/assets/products");
+const publicAssetsDir = path.join(repoRoot, "public/assets");
 const force = process.argv.includes("--force");
 
 const localTargets = [
@@ -88,6 +89,19 @@ const remoteTargets = [
     quality: 80,
   },
 ];
+
+// Logo (Frame 48095518.png) — Lighthouse flagged this as the single biggest
+// avoidable image on every page: 85 KiB PNG at 4896×976 served for a
+// 278×55 display slot. The custom next/image loader passes S3 URLs through
+// without resizing, so the only fix is to pre-optimize and self-host.
+// Output goes to /public/assets/logo.webp; assets.ts (frame48095518) points
+// at the local path.
+const logoTarget = {
+  url: "https://optimist-fe-assets.s3.amazonaws.com/Frame%2048095518.png",
+  out: path.join(publicAssetsDir, "logo.webp"),
+  maxWidth: 800, // Matches the <Image width={800}> declared in Footer.tsx
+  quality: 82,
+};
 
 function fmtKB(bytes) {
   return `${(bytes / 1024).toFixed(1)} KiB`;
@@ -181,6 +195,22 @@ async function processRemote(t) {
   console.log(`  ✓ ${t.url.split("/").pop()} (${fmtKB(srcSize)}) → ${t.out} (${fmtKB(outSize)})  -${savings}%`);
 }
 
+async function processLogo(t) {
+  if (!force && (await exists(t.out))) {
+    console.log(`  ✓ already exists: public/assets/logo.webp`);
+    return;
+  }
+  console.log(`  ↓ downloading ${t.url} …`);
+  const srcBuf = await download(t.url);
+  const outBuf = await convertBuffer(srcBuf, t);
+  await mkdir(path.dirname(t.out), { recursive: true });
+  await writeFile(t.out, outBuf);
+  const srcSize = srcBuf.length;
+  const outSize = outBuf.length;
+  const savings = ((1 - outSize / srcSize) * 100).toFixed(0);
+  console.log(`  ✓ logo (${fmtKB(srcSize)}) → public/assets/logo.webp (${fmtKB(outSize)})  -${savings}%`);
+}
+
 (async () => {
   console.log("\nOptimizing local /public/assets …");
   for (const t of localTargets) {
@@ -198,6 +228,13 @@ async function processRemote(t) {
     } catch (e) {
       console.error(`  ✗ ${t.url}: ${e.message}`);
     }
+  }
+
+  console.log("\nOptimizing logo → public/assets/logo.webp …");
+  try {
+    await processLogo(logoTarget);
+  } catch (e) {
+    console.error(`  ✗ ${logoTarget.url}: ${e.message}`);
   }
 
   console.log("\nDone. All assets are now self-hosted in public/.");

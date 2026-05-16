@@ -5,7 +5,6 @@ import { ShopifyProvider } from "@shopify/hydrogen-react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { WaitlistProvider } from "@/contexts/WaitlistContext";
-import { ProductsProvider } from "@/contexts/ProductsContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import { WaitlistModal } from "@/components/ui/WaitlistModal";
 
@@ -13,6 +12,12 @@ interface ProvidersProps {
   children: ReactNode;
 }
 
+// NOTE: ProductsProvider used to be mounted globally here. It triggered a
+// Shopify GraphQL fetch on mount of every route, including /products/ where
+// the page already fetches the same data on the server. The provider has
+// been pushed down to the routes that actually consume useProducts() — the
+// landing page (HomePageClient) and /products/ (ProductsPageClient) — so it
+// no longer runs (and no longer fetches) on unrelated routes.
 export function Providers({ children }: ProvidersProps) {
   return (
     <ShopifyProvider
@@ -25,12 +30,10 @@ export function Providers({ children }: ProvidersProps) {
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
-            <ProductsProvider>
-              <WaitlistProvider>
-                {children}
-                <WaitlistModal />
-              </WaitlistProvider>
-            </ProductsProvider>
+            <WaitlistProvider>
+              {children}
+              <WaitlistModal />
+            </WaitlistProvider>
           </CartProvider>
         </AuthProvider>
       </ToastProvider>

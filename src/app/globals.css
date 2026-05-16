@@ -52,6 +52,24 @@
   --font-display: var(--font-abc-solar-display);
 }
 
+/* Hover/active scale utility — replaces framer-motion's whileHover/whileTap
+   on the products page CTAs. Disabled below the reduced-motion threshold. */
+.btn-scale {
+  transform: scale(1);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn-scale {
+    transition: transform 0.2s ease-out;
+  }
+  .btn-scale:hover:not(:disabled) {
+    transform: scale(1.02);
+  }
+  .btn-scale:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
 /* Base Styles */
 html {
   -webkit-overflow-scrolling: touch;

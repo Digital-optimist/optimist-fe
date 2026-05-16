@@ -7,17 +7,14 @@ import {
   ShoppingBagIcon,
   WarrantyIcon,
 } from "@/components/icons/ProductIcons";
-import {
-  ComparisonSection,
-  CustomerVideosSection,
-  ImageGallery,
-  QuantityDropdown,
-  VariantCard,
-} from "@/components/products";
+import { ImageGallery, QuantityDropdown } from "@/components/products";
 import { useToast } from "@/components/ui/Toast";
 import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
-import { useProducts, type DisplayVariant } from "@/contexts/ProductsContext";
-import { ASSETS } from "@/lib/assets";
+import {
+  useProducts,
+  ProductsProvider,
+  type DisplayVariant,
+} from "@/contexts/ProductsContext";
 import { useJudgeMeRating } from "@/lib/judgeme";
 import {
   type Product,
@@ -33,14 +30,18 @@ import dynamic from "next/dynamic";
 // Below-the-fold sections — split into their own chunks to shrink the main
 // hydration bundle. SSR is preserved (default) so SEO-relevant copy still
 // ships in the initial HTML.
+// ComparisonSection is included here even though it's the first section
+// after the hero — it imports GSAP, which would otherwise ship in the
+// initial chunk and bloat hydration. Splitting it out keeps GSAP off the
+// LCP/TBT path.
+const ComparisonSection = dynamic(() =>
+  import("@/components/products/ComparisonSection").then((m) => ({
+    default: m.ComparisonSection,
+  })),
+);
 const BusinessPurchaseSection = dynamic(() =>
   import("@/components/products/BusinessPurchaseSection").then((m) => ({
     default: m.BusinessPurchaseSection,
-  })),
-);
-const ResultSection = dynamic(() =>
-  import("@/components/products/ResultSection").then((m) => ({
-    default: m.ResultSection,
   })),
 );
 const ExpertTestimonialsSection = dynamic(() =>
@@ -83,93 +84,15 @@ const BuiltForSection = dynamic(() =>
     default: m.BuiltForSection,
   })),
 );
-import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// Easing
-const easeOutExpo = "easeOut" as const;
-
-// Page transition variants
-const pageVariants = {
-  initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: { duration: 0.4, ease: easeOutExpo },
-  },
-  exit: { opacity: 0 },
-};
-
-// Section animation variants — lightweight (opacity-only on mobile, small y on desktop)
-const sectionVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: easeOutExpo,
-    },
-  },
-};
-
-const slideFromLeftVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.5,
-      ease: easeOutExpo,
-    },
-  },
-};
-
-const slideFromRightVariants = {
-  hidden: { opacity: 0, x: 20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.5,
-      ease: easeOutExpo,
-    },
-  },
-};
-
-const scaleUpVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-      ease: easeOutExpo,
-    },
-  },
-};
-
-// Hero section variants
-const heroInfoContainerVariants = {
-  hidden: { opacity: 1 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const heroInfoItemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: easeOutExpo,
-    },
-  },
-};
+// NOTE: framer-motion was removed from this file (see PageSpeed pass).
+// The outer page wrapper used to be a <motion.div> with initial={opacity:0}
+// which kept the LCP image invisible until hydration completed — costing
+// ~3.7s of "element render delay" on mobile. Hero fade-ins were also opacity
+// 0 → 1 motion wrappers, blocking the same paint. They were swapped for
+// plain divs. Below-the-fold sections each handle their own scroll-in
+// animations (GSAP / CSS), so the wrappers in this file were redundant.
 
 // =============================================================================
 // Constants
@@ -202,15 +125,31 @@ function getVariantRichText(
 
 interface ProductsPageClientProps {
   product: Product | null;
+  products: Product[];
   pageContent: ProductPageContent | null;
   initialTitle: string;
 }
 
 // =============================================================================
 // Main Component
+//
+// Outer wrapper installs a route-scoped <ProductsProvider> seeded with the
+// server-fetched product list. This shadows the global ProductsProvider in
+// Providers.tsx for this subtree, so useProducts() consumers see real data
+// at the very first render instead of an empty/loading state that fills in
+// only after a client-side Shopify fetch (which used to add ~500-1500 ms
+// of hydration jank — variants flashed in, prices jumped).
 // =============================================================================
 
-export default function ProductsPageClient({
+export default function ProductsPageClient(props: ProductsPageClientProps) {
+  return (
+    <ProductsProvider initialProducts={props.products}>
+      <ProductsPageInner {...props} />
+    </ProductsProvider>
+  );
+}
+
+function ProductsPageInner({
   product,
   pageContent,
   initialTitle,
@@ -568,13 +507,9 @@ export default function ProductsPageClient({
   }
 
   return (
-    <motion.div
+    <div
       ref={containerRef}
       className="min-h-screen bg-white md:pb-0 overflow-x-clip"
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
     >
       {/* Product Detail Section */}
       <div ref={heroRef} className="pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-16">
@@ -595,17 +530,9 @@ export default function ProductsPageClient({
             </div>
 
             {/* Right Column - Product Info */}
-            <motion.div
-              className="w-full space-y-4 md:space-y-5"
-              initial="hidden"
-              animate="visible"
-              variants={heroInfoContainerVariants}
-            >
+            <div className="w-full space-y-4 md:space-y-5">
               {/* Badge */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex items-center gap-2"
-              >
+              <div className="flex items-center gap-2">
                 <span className="relative inline-flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2 bg-[rgba(52,120,246,0.12)] text-[#3478F6] text-xs md:text-sm font-normal rounded-full shadow-[inset_0px_-2px_4px_0px_#ccdeff]">
                   India’s Real AC
                 </span>
@@ -614,7 +541,7 @@ export default function ProductsPageClient({
                     Out of Stock
                   </span>
                 )}
-              </motion.div>
+              </div>
 
               {/* Title & Star Rating — plain div, not motion: this H1 is the
                   LCP element on desktop, and Framer Motion's opacity:0 →
@@ -680,11 +607,7 @@ export default function ProductsPageClient({
               </div>
 
               {/* Total/Price */}
-              <motion.div
-                ref={priceRef}
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-1.5"
-              >
+              <div ref={priceRef} className="flex flex-col gap-1.5">
                 <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
                   Total
                 </h3>
@@ -718,13 +641,10 @@ export default function ProductsPageClient({
                     This variant is currently out of stock
                   </span>
                 )}
-              </motion.div>
+              </div>
 
               {/* Quantity */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="md:mt-[-20px] mt-[-12px]"
-              >
+              <div className="md:mt-[-20px] mt-[-12px]">
                 <QuantityDropdown
                   quantity={quantity}
                   onQuantityChange={handleQuantityChange}
@@ -732,12 +652,12 @@ export default function ProductsPageClient({
                   onToggle={handleQuantityToggle}
                   options={QUANTITY_OPTIONS}
                 />
-              </motion.div>
+              </div>
 
               {/* Business Purchase (GST) */}
-              <motion.div variants={heroInfoItemVariants}>
+              <div>
                 <BusinessPurchaseSection />
-              </motion.div>
+              </div>
 
               {/* Snapmint EMI Widget */}
               {/* <motion.div variants={heroInfoItemVariants}>
@@ -811,29 +731,21 @@ export default function ProductsPageClient({
                 )}
               </motion.div> */}
 
-              {/* Action Buttons */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="flex flex-col gap-3"
-              >
+              {/* Action Buttons
+                  CSS hover/active scale instead of framer-motion whileHover/whileTap.
+                  The .btn-scale class is defined in globals.css. */}
+              <div className="flex flex-col gap-3">
                 <div className="flex gap-3 md:gap-4">
-                  <motion.button
+                  <button
                     onClick={handleAddToCart}
                     disabled={isCartLoading || !canAddToCart}
-                    className={`flex-1 flex items-center justify-center gap-2 md:gap-2.5 px-4 md:px-6 py-3 md:py-4 border rounded-full font-medium text-sm md:text-base transition-all ${
+                    className={`btn-scale flex-1 flex items-center justify-center gap-2 md:gap-2.5 px-4 md:px-6 py-3 md:py-4 border rounded-full font-medium text-sm md:text-base transition-all ${
                       buttonState === "loading"
                         ? "border-gray-200 text-gray-400"
                         : buttonState === "outOfStock"
                           ? "border-gray-200 text-gray-400 cursor-not-allowed"
                           : "border-[rgba(0,0,0,0.12)] text-black hover:border-[rgba(0,0,0,0.24)] disabled:opacity-50"
                     }`}
-                    whileHover={
-                      canAddToCart
-                        ? { scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }
-                        : {}
-                    }
-                    whileTap={canAddToCart ? { scale: 0.98 } : {}}
-                    transition={{ duration: 0.2 }}
                   >
                     <ShoppingBagIcon className="w-5 h-5 md:w-6 md:h-6" />
                     <span>
@@ -843,38 +755,32 @@ export default function ProductsPageClient({
                           ? "Out of Stock"
                           : "Add to Cart"}
                     </span>
-                  </motion.button>
-                  <motion.button
+                  </button>
+                  <button
                     onClick={handleBuyNow}
                     disabled={isCartLoading || !canAddToCart}
-                    className={`flex-1 px-4 md:px-6 py-3 md:py-4 rounded-full font-medium text-sm md:text-base text-center transition-all ${
+                    className={`btn-scale flex-1 px-4 md:px-6 py-3 md:py-4 rounded-full font-medium text-sm md:text-base text-center transition-all ${
                       buttonState === "loading"
                         ? "bg-gray-300 text-gray-500"
                         : buttonState === "outOfStock"
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                           : "btn-buy-now text-[#FFFCDC]"
                     }`}
-                    whileHover={canAddToCart ? { scale: 1.02 } : {}}
-                    whileTap={canAddToCart ? { scale: 0.98 } : {}}
-                    transition={{ duration: 0.2 }}
                   >
                     {buttonState === "loading"
                       ? "Loading..."
                       : buttonState === "outOfStock"
                         ? "Unavailable"
                         : "Buy Now"}
-                  </motion.button>
+                  </button>
                 </div>
-                <motion.button
+                <button
                   onClick={() => {
                     (window as any).saleassist?.mountWidget({
                       id: "b64c75ac-d186-4979-a841-1572d8d9614b",
                     });
                   }}
-                  className="w-full flex items-center justify-center gap-2 md:gap-2.5 px-4 md:px-6 py-3 md:py-4 border border-[rgba(0,0,0,0.12)] rounded-full font-medium text-sm md:text-base text-black hover:border-[rgba(0,0,0,0.24)] transition-all"
-                  whileHover={{ scale: 1.02, borderColor: "rgba(0,0,0,0.24)" }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
+                  className="btn-scale w-full flex items-center justify-center gap-2 md:gap-2.5 px-4 md:px-6 py-3 md:py-4 border border-[rgba(0,0,0,0.12)] rounded-full font-medium text-sm md:text-base text-black hover:border-[rgba(0,0,0,0.24)] transition-all"
                 >
                   <svg
                     className="w-5 h-5 md:w-6 md:h-6"
@@ -893,11 +799,11 @@ export default function ProductsPageClient({
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
                   </span>
-                </motion.button>
-              </motion.div>
+                </button>
+              </div>
 
               {/* Feature Icons Row */}
-              <motion.div variants={heroInfoItemVariants}>
+              <div>
                 <div className="w-full grid grid-cols-3 gap-2 py-4 px-3 bg-[#F8F8F8] rounded-xl">
                   {[
                     {
@@ -924,16 +830,13 @@ export default function ProductsPageClient({
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
 
               {/* Divider */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="h-px bg-gray-200 w-full"
-              />
+              <div className="h-px bg-gray-200 w-full" />
 
               {/* Description Accordion */}
-              <motion.div variants={heroInfoItemVariants}>
+              <div>
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
@@ -979,16 +882,13 @@ export default function ProductsPageClient({
                     )}
                   </div>
                 </details>
-              </motion.div>
+              </div>
 
               {/* Divider */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="h-px bg-gray-200 w-full"
-              />
+              <div className="h-px bg-gray-200 w-full" />
 
               {/* More Info Accordion */}
-              <motion.div variants={heroInfoItemVariants}>
+              <div>
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
@@ -1015,16 +915,13 @@ export default function ProductsPageClient({
                     )}
                   />
                 </details>
-              </motion.div>
+              </div>
 
               {/* Divider */}
-              <motion.div
-                variants={heroInfoItemVariants}
-                className="h-px bg-gray-200 w-full"
-              />
+              <div className="h-px bg-gray-200 w-full" />
 
               {/* Warranty Return Accordion */}
-              <motion.div variants={heroInfoItemVariants}>
+              <div>
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <h3 className="text-sm md:text-base font-medium text-black uppercase tracking-wide">
@@ -1051,141 +948,64 @@ export default function ProductsPageClient({
                     )}
                   />
                 </details>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Comparison Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={sectionVariants}
-      >
-        <ComparisonSection />
-      </motion.div>
-
-      {/* Result Section */}
-      {/* <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={slideFromRightVariants}
-      >
-        <ResultSection
-          heading={pageContent?.resultSection.sectionHeading}
-          items={pageContent?.resultSection.items}
-        />
-      </motion.div> */}
-
-      {/* Customer Videos Section */}
-      {/* <CustomerVideosSection customers={pageContent?.customerReviews} /> */}
+      {/* Below-the-fold sections.
+          The motion.div whileInView wrappers that used to sit here were
+          removed — each section already runs its own scroll-in animation
+          (GSAP / CSS), so the outer wrappers added framer-motion to the
+          initial bundle without adding any visual effect. */}
+      <ComparisonSection />
 
       {/* Expert Testimonials Section */}
       <ExpertTestimonialsSection experts={pageContent?.expertTestimonials} />
 
-      {/* Inside Optimist Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={sectionVariants}
-      >
-        <InsideOptimistSection />
-      </motion.div>
+      <InsideOptimistSection />
 
-      {/* Team Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={scaleUpVariants}
-      >
-        <TeamSection />
-      </motion.div>
+      <TeamSection />
 
-      {/* Proof over Promises Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={sectionVariants}
-      >
-        <ProofSection />
-      </motion.div>
+      <ProofSection />
 
-      {/* As Featured On Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={sectionVariants}
-      >
-        <AsFeaturedSection />
-      </motion.div>
+      <AsFeaturedSection />
 
-      {/* Warranty Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={slideFromRightVariants}
-      >
-        <WarrantySection />
-      </motion.div>
+      <WarrantySection />
 
-      {/* Reviews Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={sectionVariants}
-      >
-        <ReviewsSection
-          products={shopProducts.map((p) => ({
-            id: p.id,
-            label: p.title,
-          }))}
-          productId={selectedVariant?.productId || product?.id}
-        />
-      </motion.div>
+      <ReviewsSection
+        products={shopProducts.map((p) => ({
+          id: p.id,
+          label: p.title,
+        }))}
+        productId={selectedVariant?.productId || product?.id}
+      />
 
-      {/* Built For Section */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={sectionVariants}
-      >
-        <BuiltForSection />
-      </motion.div>
+      <BuiltForSection />
 
-      {/* Mobile Fixed Footer - appears when mobile image gallery scrolls out of viewport */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={
-          showMobileFooter ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-        }
-        transition={{ duration: 0.3, ease: "easeOut" }}
+      {/* Mobile Fixed Footer — show/hide via CSS transform (no framer-motion). */}
+      <div
+        aria-hidden={!showMobileFooter}
         style={{ pointerEvents: showMobileFooter ? "auto" : "none" }}
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/85 backdrop-blur-md border-t border-white/[0.12] shadow-[0_-4px_20px_rgba(0,0,0,0.3)] [transform:translateZ(0)]"
+        className={`fixed bottom-0 left-0 right-0 z-50 md:hidden bg-black/85 backdrop-blur-md border-t border-white/[0.12] shadow-[0_-4px_20px_rgba(0,0,0,0.3)] transition-[opacity,transform] duration-300 ease-out [transform:translateZ(0)] ${
+          showMobileFooter
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-5"
+        }`}
       >
         <div className="px-4 py-3">
           <div className="flex items-center gap-3">
-            <motion.button
+            <button
               onClick={handleAddToCart}
               disabled={isCartLoading || !canAddToCart}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full font-medium text-sm transition-all ${
+              className={`btn-scale flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full font-medium text-sm transition-all ${
                 buttonState === "loading"
                   ? "bg-gray-300 text-gray-500"
                   : buttonState === "outOfStock"
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-white text-black hover:bg-white/90 disabled:opacity-50"
               }`}
-              whileHover={canAddToCart ? { scale: 1.02 } : {}}
-              whileTap={canAddToCart ? { scale: 0.98 } : {}}
             >
               <CartIcon className="w-5 h-5" />
               <span>
@@ -1195,29 +1015,27 @@ export default function ProductsPageClient({
                     ? "Out of Stock"
                     : "Add to Cart"}
               </span>
-            </motion.button>
-            <motion.button
+            </button>
+            <button
               onClick={handleBuyNow}
               disabled={isCartLoading || !canAddToCart}
-              className={`flex-1 px-4 py-3 rounded-full font-medium text-sm text-center transition-all ${
+              className={`btn-scale flex-1 px-4 py-3 rounded-full font-medium text-sm text-center transition-all ${
                 buttonState === "loading"
                   ? "bg-gray-400 text-gray-600"
                   : buttonState === "outOfStock"
                     ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                     : "btn-buy-now text-[#FFFCDC]"
               }`}
-              whileHover={canAddToCart ? { scale: 1.02 } : {}}
-              whileTap={canAddToCart ? { scale: 0.98 } : {}}
             >
               {buttonState === "loading"
                 ? "Loading..."
                 : buttonState === "outOfStock"
                   ? "Unavailable"
                   : "Buy Now"}
-            </motion.button>
+            </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Pincode Check Modal — opens on Buy Now */}
       <PincodeModal
@@ -1231,6 +1049,6 @@ export default function ProductsPageClient({
         loadingLabel="Opening checkout…"
         isConfirmLoading={isBuyNowLoading}
       />
-    </motion.div>
+    </div>
   );
 }

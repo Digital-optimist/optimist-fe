@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";
+import { ProductsProvider } from "@/contexts/ProductsContext";
 import { useLandingContent } from "@/hooks/useMetaobjectContent";
 
 const BenefitsSection = dynamic(
@@ -63,6 +64,7 @@ export default function HomePageClient() {
 
   return (
     <LandingContentProvider content={landingContent}>
+    <ProductsProvider>
     <motion.main
       initial="initial"
       animate="animate"
@@ -148,6 +150,7 @@ export default function HomePageClient() {
         <IndiaFirstSection />
       </motion.div>
     </motion.main>
+    </ProductsProvider>
     </LandingContentProvider>
   );
 }
