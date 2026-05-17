@@ -4,7 +4,6 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { useLandingContent } from "@/hooks/useMetaobjectContent";
 import { ASSETS } from "@/lib/assets";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -143,14 +142,18 @@ const socialHoverVariants = {
   tap: { scale: 0.95 },
 };
 
-export function Footer() {
+interface FooterProps {
+  footerImageSrc: string | null;
+}
+
+export function Footer({ footerImageSrc: footerImageSrcProp }: FooterProps) {
   const footerRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const { content: landingContent } = useLandingContent();
-  const footerImageSrc = landingContent?.footerImageUrl ?? ASSETS.family;
+  const footerImageSrc = footerImageSrcProp ?? ASSETS.family;
+  const isRemoteFooterImage = !!footerImageSrcProp;
 
   const isContentInView = useInView(contentRef, { once: true, amount: 0.2 });
   const isImageInView = useInView(imageRef, { once: true, amount: 0.3 });
@@ -305,7 +308,7 @@ export function Footer() {
               fill
               className="object-cover z-0 brightness-[0.8]"
               sizes="(max-width: 1400px) 100vw, 1400px"
-              unoptimized={!!landingContent?.footerImageUrl}
+              unoptimized={isRemoteFooterImage}
             />
 
             {/* Blue Gradient Overlay - higher z-index than family image */}

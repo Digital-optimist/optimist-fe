@@ -284,6 +284,27 @@ export async function createReview(
 
 const ratingCache = new Map<string, { rating: number; count: number }>();
 
+// Defer non-essential work until the browser is idle so it doesn't compete
+// with hydration. ~50-200ms slip is invisible since the fetch was async anyway,
+// but it frees the main thread for INP-sensitive interactions right after load.
+function scheduleIdle(cb: () => void): () => void {
+  if (typeof window === "undefined") {
+    cb();
+    return () => {};
+  }
+  type IdleHandle = number;
+  const w = window as Window & {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => IdleHandle;
+    cancelIdleCallback?: (handle: IdleHandle) => void;
+  };
+  if (typeof w.requestIdleCallback === "function") {
+    const handle = w.requestIdleCallback(cb, { timeout: 2000 });
+    return () => w.cancelIdleCallback?.(handle);
+  }
+  const handle = window.setTimeout(cb, 1);
+  return () => window.clearTimeout(handle);
+}
+
 export function useJudgeMeRating(productId?: string): {
   rating: number;
   count: number;
@@ -308,40 +329,45 @@ export function useJudgeMeRating(productId?: string): {
     setLoading(true);
     let cancelled = false;
 
-    if (externalId) {
-      widgetFetch("preview_badge", `&external_id=${externalId}`)
-        .then((res) => {
-          if (cancelled) return;
-          const result = parsePreviewBadge(res.badge || "");
-          ratingCache.set(cacheKey, result);
-          setData(result);
-        })
-        .catch(() => {})
-        .finally(() => {
-          if (!cancelled) setLoading(false);
-        });
-    } else {
-      Promise.all([
-        widgetFetch("all_reviews_rating"),
-        widgetFetch("all_reviews_count"),
-      ])
-        .then(([ratingRes, countRes]) => {
-          if (cancelled) return;
-          const result = {
-            rating: parseFloat(ratingRes.all_reviews_rating || "0"),
-            count: parseInt(countRes.all_reviews_count || "0", 10),
-          };
-          ratingCache.set(cacheKey, result);
-          setData(result);
-        })
-        .catch(() => {})
-        .finally(() => {
-          if (!cancelled) setLoading(false);
-        });
-    }
+    const cancelIdle = scheduleIdle(() => {
+      if (cancelled) return;
+
+      if (externalId) {
+        widgetFetch("preview_badge", `&external_id=${externalId}`)
+          .then((res) => {
+            if (cancelled) return;
+            const result = parsePreviewBadge(res.badge || "");
+            ratingCache.set(cacheKey, result);
+            setData(result);
+          })
+          .catch(() => {})
+          .finally(() => {
+            if (!cancelled) setLoading(false);
+          });
+      } else {
+        Promise.all([
+          widgetFetch("all_reviews_rating"),
+          widgetFetch("all_reviews_count"),
+        ])
+          .then(([ratingRes, countRes]) => {
+            if (cancelled) return;
+            const result = {
+              rating: parseFloat(ratingRes.all_reviews_rating || "0"),
+              count: parseInt(countRes.all_reviews_count || "0", 10),
+            };
+            ratingCache.set(cacheKey, result);
+            setData(result);
+          })
+          .catch(() => {})
+          .finally(() => {
+            if (!cancelled) setLoading(false);
+          });
+      }
+    });
 
     return () => {
       cancelled = true;
+      cancelIdle();
     };
   }, [cacheKey, externalId]);
 

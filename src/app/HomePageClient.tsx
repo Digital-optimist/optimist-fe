@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";
 import { ProductsProvider } from "@/contexts/ProductsContext";
-import { useLandingContent } from "@/hooks/useMetaobjectContent";
+import type { LandingPageContent } from "@/lib/shopify";
 
 const BenefitsSection = dynamic(
   () => import("@/components/landing/BenefitsSection").then((m) => ({ default: m.BenefitsSection })),
@@ -59,8 +59,12 @@ const sectionVariants = {
   }),
 };
 
-export default function HomePageClient() {
-  const { content: landingContent } = useLandingContent();
+interface HomePageClientProps {
+  initialContent: LandingPageContent | null;
+}
+
+export default function HomePageClient({ initialContent }: HomePageClientProps) {
+  const landingContent = initialContent;
 
   return (
     <LandingContentProvider content={landingContent}>

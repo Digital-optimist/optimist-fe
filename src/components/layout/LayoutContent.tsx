@@ -15,9 +15,10 @@ const NO_FOOTER_ROUTES = [
 
 interface LayoutContentProps {
   children: React.ReactNode;
+  footerImageSrc: string | null;
 }
 
-export function LayoutContent({ children }: LayoutContentProps) {
+export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) {
   const pathname = usePathname();
   const hideFooter = NO_FOOTER_ROUTES.some((route) =>
     pathname.startsWith(route),
@@ -28,7 +29,7 @@ export function LayoutContent({ children }: LayoutContentProps) {
       <ScrollResetOnRouteChange />
       <Navigation />
       <main>{children}</main>
-      {!hideFooter && <Footer />}
+      {!hideFooter && <Footer footerImageSrc={footerImageSrc} />}
     </>
   );
 }
