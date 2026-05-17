@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
-import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
@@ -172,9 +171,7 @@ export default function RootLayout({
           />
         </noscript>
         <Providers>
-          <SmoothScroll>
-            <LayoutContent>{children}</LayoutContent>
-          </SmoothScroll>
+          <LayoutContent>{children}</LayoutContent>
         </Providers>
 
         <SaleAssistLoader />
