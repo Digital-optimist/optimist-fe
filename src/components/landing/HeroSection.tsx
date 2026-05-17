@@ -262,11 +262,12 @@ export function HeroSection({
               className="object-cover object-center pointer-events-none"
               priority
             />
-            {/* Leaves video overlay - subtle effect (deferred to idle so LCP isn't blocked) */}
+            {/* Leaves video overlay - subtle effect (deferred to idle so LCP isn't blocked).
+                WebM (VP9) is ~50% smaller than MP4 for this leafy content; MP4 is the
+                fallback for browsers without VP9 support. */}
             {showLeafVideo && (
               <video
                 ref={leafVideoRefMobile}
-                src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
                 autoPlay
                 loop
                 muted
@@ -284,7 +285,10 @@ export function HeroSection({
                   opacity: 0.18,
                   mixBlendMode: "multiply",
                 }}
-              />
+              >
+                <source src="/animations/leaves.webm" type="video/webm" />
+                <source src="/animations/leaves.mp4" type="video/mp4" />
+              </video>
             )}
           </div>
 
@@ -426,7 +430,6 @@ export function HeroSection({
             {showLeafVideo && (
               <video
                 ref={leafVideoRef1}
-                src="/animations/small-vecteezy_summer-concept-the-motion-of-leaves-sunlight-natural-shadow_29616214_small.mp4"
                 autoPlay
                 loop
                 muted
@@ -444,7 +447,10 @@ export function HeroSection({
                   opacity: 0.18,
                   mixBlendMode: "multiply",
                 }}
-              />
+              >
+                <source src="/animations/leaves.webm" type="video/webm" />
+                <source src="/animations/leaves.mp4" type="video/mp4" />
+              </video>
             )}
           </div>
 

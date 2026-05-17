@@ -5,6 +5,8 @@ import "./globals.css";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
+import { WebVitals } from "./_components/WebVitals";
+import { getLandingPageContent } from "@/lib/shopify";
 
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
@@ -93,11 +95,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const landingContent = await getLandingPageContent();
+  const footerImageSrc = landingContent?.footerImageUrl ?? null;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head suppressHydrationWarning>
@@ -171,9 +176,12 @@ export default function RootLayout({
           />
         </noscript>
         <Providers>
-          <LayoutContent>{children}</LayoutContent>
+          <LayoutContent footerImageSrc={footerImageSrc}>
+            {children}
+          </LayoutContent>
         </Providers>
 
+        <WebVitals />
         <SaleAssistLoader />
       </body>
     </html>

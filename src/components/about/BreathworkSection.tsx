@@ -84,10 +84,8 @@ export function BreathworkSection() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source
-            src="/animations/68e6057dd670c86ab26c8544_Kore Hero Banner Ripple BG-transcode.mp4"
-            type="video/mp4"
-          />
+          <source src="/animations/ripple-bg.webm" type="video/webm" />
+          <source src="/animations/ripple-bg.mp4" type="video/mp4" />
         </video>
       </div>
 

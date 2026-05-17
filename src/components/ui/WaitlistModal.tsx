@@ -5,7 +5,6 @@ import { X, Check } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useWaitlist } from "@/contexts/WaitlistContext";
-import Lottie from "lottie-react";
 
 // =============================================================================
 // Phone Validation
@@ -156,29 +155,9 @@ function PhoneFormView() {
 
 function SuccessView() {
   const { closeModal } = useWaitlist();
-  const [confettiData, setConfettiData] = useState<object | null>(null);
-
-  // Fetch the Lottie animation JSON from public folder
-  useEffect(() => {
-    fetch("/animations/Confetti.json")
-      .then((res) => res.json())
-      .then((data) => setConfettiData(data))
-      .catch((err) => {});
-  }, []);
 
   return (
     <div className="flex flex-col items-center text-center px-6 py-8 md:px-10 md:py-10 relative overflow-hidden">
-      {/* Confetti Animation - Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        {confettiData && (
-          <Lottie
-            animationData={confettiData}
-            loop={false}
-            className="w-full h-full"
-          />
-        )}
-      </div>
-
       {/* Close Button */}
       <button
         onClick={closeModal}

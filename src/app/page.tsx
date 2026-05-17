@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HomePageClient from "./HomePageClient";
+import { getLandingPageContent } from "@/lib/shopify";
 
 export const metadata: Metadata = {
   title: {
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
     "India’s highest ISEER-rated AC (6.05), proven to cool at 50°C. Save 25–35% on electricity bills every day. With India’s first gas level indicator and 5-year warranty",
 };
 
-export default function HomePage() {
-  return <HomePageClient />;
+export default async function HomePage() {
+  const landingContent = await getLandingPageContent();
+  return <HomePageClient initialContent={landingContent} />;
 }

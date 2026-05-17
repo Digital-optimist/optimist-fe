@@ -154,7 +154,7 @@ export function FutureSection() {
             {/* Extra padding at top to account for the overlapping image */}
             <div className="px-4 md:px-12 lg:px-16 pt-[60px] md:pt-[80px] lg:pt-[114px] pb-10 md:pb-16 lg:pb-[114px]">
               {/* Vision Statement */}
-              <p className="font-medium italic md:not-italic text-[24px] md:text-[30px] lg:text-[36px] text-white text-center leading-[1.4] max-w-full md:max-w-[900px] mx-auto mb-10 md:mb-16 lg:mb-[50px]">
+              <p className="font-medium text-[24px] md:text-[30px] lg:text-[36px] text-white text-center leading-[1.4] max-w-full md:max-w-[900px] mx-auto mb-10 md:mb-16 lg:mb-[50px]">
                 We see a future where cooling becomes a true partner to energy
                 saving.
               </p>
