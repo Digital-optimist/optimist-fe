@@ -1540,6 +1540,26 @@ export interface FeedbackFormData {
 const FEEDBACK_WEBHOOK_URL =
   process.env.NEXT_PUBLIC_FEEDBACK_WEBHOOK_URL || "";
 
+// Format a Date as IST in "YYYY-MM-DD HH:mm:ss" — Sheets auto-parses this as a
+// datetime cell, and it's sortable lexicographically.
+function formatIST(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const get = (type: string) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get(
+    "minute",
+  )}:${get("second")}`;
+}
+
 export async function submitFeedbackForm(
   data: FeedbackFormData,
 ): Promise<ContactFormSubmissionResult> {
@@ -1554,7 +1574,7 @@ export async function submitFeedbackForm(
     phone: `+91${data.phone}`,
     ...data.ratings,
     comments: data.comments || "",
-    submittedAt: new Date().toISOString(),
+    submittedAt: formatIST(new Date()),
   };
 
   try {
