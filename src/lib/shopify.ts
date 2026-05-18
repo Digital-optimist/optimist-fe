@@ -1517,6 +1517,68 @@ export async function submitContactForm(
 }
 
 // =============================================================================
+// Customer Feedback Form Submission (separate Google Sheet)
+// =============================================================================
+
+export interface FeedbackFormRatings {
+  deliveryOnTime: number;
+  packagingCondition: number;
+  deliveryOverall: number;
+  installationOnTime: number;
+  installationProfessional: number;
+  installationNeat: number;
+  technicianExplained: number;
+  installationOverall: number;
+}
+
+export interface FeedbackFormData {
+  phone: string;
+  ratings: FeedbackFormRatings;
+  comments: string;
+}
+
+const FEEDBACK_WEBHOOK_URL =
+  process.env.NEXT_PUBLIC_FEEDBACK_WEBHOOK_URL || "";
+
+export async function submitFeedbackForm(
+  data: FeedbackFormData,
+): Promise<ContactFormSubmissionResult> {
+  if (!FEEDBACK_WEBHOOK_URL) {
+    return {
+      success: false,
+      error: "Form submission is not configured. Please contact support.",
+    };
+  }
+
+  const payload = {
+    phone: `+91${data.phone}`,
+    ...data.ratings,
+    comments: data.comments || "",
+    submittedAt: new Date().toISOString(),
+  };
+
+  try {
+    // Same no-cors + text/plain trick as submitContactForm — avoids GAS's
+    // CORS preflight and handles its 302 redirect to a different origin.
+    await fetch(FEEDBACK_WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to submit form",
+    };
+  }
+}
+
+// =============================================================================
 // Blog Types
 // =============================================================================
 

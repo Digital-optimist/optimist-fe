@@ -11,7 +11,11 @@ const NO_FOOTER_ROUTES = [
   "/sign-up",
   "/forgot-password",
   "/reset-password",
+  "/feedback",
 ];
+
+// Routes that should not have the top Navigation
+const NO_NAV_ROUTES = ["/feedback"];
 
 interface LayoutContentProps {
   children: React.ReactNode;
@@ -23,11 +27,12 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
   const hideFooter = NO_FOOTER_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
+  const hideNav = NO_NAV_ROUTES.some((route) => pathname.startsWith(route));
 
   return (
     <>
       <ScrollResetOnRouteChange />
-      <Navigation />
+      {!hideNav && <Navigation />}
       <main>{children}</main>
       {!hideFooter && <Footer footerImageSrc={footerImageSrc} />}
     </>
