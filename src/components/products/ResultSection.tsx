@@ -1,15 +1,31 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect, type ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
-import {
-  SnowflakeIcon,
-  PiggyBankIcon,
-  PersonWalkIcon,
-} from "@/components/icons/ProductIcons";
+import { motion, type Variants } from "framer-motion";
+import { SnowflakeIcon } from "@/components/icons/ProductIcons";
 import type { ResultSectionItem } from "@/lib/shopify";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2 } },
+};
+
+const titleReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const cardsStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+};
+
+const cardReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
 // =============================================================================
 // Types
@@ -63,10 +79,6 @@ export const ResultSection = memo(function ResultSection({
   heading,
   items,
 }: ResultSectionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-
   const features: ResultFeature[] =
     items && items.length > 0
       ? items.map((item) => ({
@@ -87,85 +99,35 @@ export const ResultSection = memo(function ResultSection({
         }))
       : [];
 
-  useLayoutEffect(() => {
-    if (titleRef.current) {
-      gsap.set(titleRef.current, { opacity: 0, y: 40 });
-    }
-    if (cardsRef.current) {
-      const cards = cardsRef.current.querySelectorAll(".result-card");
-      gsap.set(cards, { opacity: 0, y: 40 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      tl.to(
-        titleRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      const cards = cardsRef.current?.querySelectorAll(".result-card");
-      if (cards) {
-        tl.to(
-          cards,
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0.2,
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="w-full pb-8 xs:pb-10 sm:pb-12 md:pb-16 lg:pb-20 xl:pb-24 mt-[0px] xs:mt-[0px] sm:mt-[-16px] md:mt-[-64px] lg:mt-[-80px] xl:mt-[-96px] bg-white"
       aria-labelledby="result-heading"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className="w-full max-w-[1440px] mx-auto px-4 xs:px-5 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        <h2
-          ref={titleRef}
+        <motion.h2
           id="result-heading"
           className="font-display text-2xl md:text-4xl lg:text-[40px] font-semibold text-black text-center leading-tight tracking-wide md:tracking-normal mb-5 md:mb-8 lg:mb-10"
+          variants={titleReveal}
         >
           {heading ?? "The Result."}
-        </h2>
+        </motion.h2>
 
-        <div
-          ref={cardsRef}
+        <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 md:gap-6 lg:gap-[26px] w-full max-w-[400px] sm:max-w-none mx-auto"
+          variants={cardsStagger}
         >
           {features.map((feature, index) => (
-            <div key={index} className="result-card w-full">
+            <motion.div key={index} className="w-full" variants={cardReveal}>
               <FeatureCard feature={feature} />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 });

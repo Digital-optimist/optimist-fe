@@ -3,9 +3,8 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useAnimationControls, useInView } from "framer-motion";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
 import { ASSETS } from "@/lib/assets";
+import { fadeUp, viewportOnce } from "@/lib/motion-variants";
 
 // =============================================================================
 // Supporters Section - Infinite horizontal scroll marquee with smooth animation
@@ -163,11 +162,9 @@ function Marquee({
 
 export function SupportersSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const marqueeContainerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Detect when section is in view for initial fade-in
+  // Detect when section is in view to drive the staggered logo reveal below.
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -184,45 +181,6 @@ export function SupportersSection() {
 
     return () => observer.disconnect();
   }, []);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Title animation
-      tl.from(
-        titleRef.current,
-        {
-          opacity: 0,
-          y: 30,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Marquee container fade in
-      tl.from(
-        marqueeContainerRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        0.3,
-      );
-    },
-    { scope: sectionRef },
-  );
 
   // Container variants for staggered logo appearance
   const containerVariants = {
@@ -260,19 +218,17 @@ export function SupportersSection() {
       className="bg-white pb-12 md:pb-16 lg:pb-20 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto">
-        {/* Title */}
-        <h2
-          ref={titleRef}
-          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-black text-center tracking-[1.6px] mb-8 md:mb-10 lg:mb-12 px-4 md:px-6 lg:px-10 will-change-[transform,opacity]"
+        <motion.h2
+          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-black text-center tracking-[1.6px] mb-8 md:mb-10 lg:mb-12 px-4 md:px-6 lg:px-10"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUp}
         >
           Supporters
-        </h2>
+        </motion.h2>
 
-        {/* Marquee Container */}
-        <div
-          ref={marqueeContainerRef}
-          className="will-change-[transform,opacity]"
-        >
+        <div>
           {/* Mobile Marquee */}
           <div className="sm:hidden">
             <Marquee speed={20} pauseOnHover={false}>

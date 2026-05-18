@@ -1,9 +1,38 @@
 "use client";
 
-import { useRef, memo } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { memo } from "react";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+};
+
+const headerReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const palmTreeReveal: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 1, ease: "easeOut" },
+  },
+};
+
+const cardsStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const cardReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
 // =============================================================================
 // Our Values Section - Company values with decorative palm tree
@@ -146,77 +175,19 @@ const VALUES_DATA: ValueCardProps[] = [
 ];
 
 export function ProofOfWorkSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const palmTreeRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Header animation
-      tl.from(
-        headerRef.current,
-        {
-          opacity: 0,
-          y: 30,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Palm tree animation (desktop only)
-      if (palmTreeRef.current) {
-        tl.from(
-          palmTreeRef.current,
-          {
-            opacity: 0,
-            scale: 0.95,
-            duration: 1,
-            ease: "power3.out",
-          },
-          0.2,
-        );
-      }
-
-      // Value cards animation
-      if (contentRef.current) {
-        const cards = contentRef.current.querySelectorAll("[data-value-card]");
-        tl.from(
-          cards,
-          {
-            opacity: 0,
-            y: 30,
-            duration: 0.6,
-            ease: "power3.out",
-            stagger: 0.1,
-          },
-          0.3,
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section ref={sectionRef} className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 overflow-hidden">
-      {/* Global clip path definition - rendered once for both desktop and mobile */}
+    <motion.section
+      className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 overflow-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
+    >
       <PalmTreeClipDef />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-        {/* Header Section */}
-        <div
-          ref={headerRef}
-          className="flex flex-col gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mb-6 sm:mb-8 md:mb-10 lg:mb-12 will-change-[transform,opacity]"
+        <motion.div
+          className="flex flex-col gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 mb-6 sm:mb-8 md:mb-10 lg:mb-12"
+          variants={headerReveal}
         >
           {/* Label */}
           <p className="font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#3478F6] leading-normal">
@@ -227,41 +198,40 @@ export function ProofOfWorkSection() {
           <h2 className="font-display font-semibold text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black leading-[1.2] sm:leading-[1.25] lg:leading-normal max-w-full sm:max-w-[400px] md:max-w-[480px] lg:max-w-[545px]">
             The standards we hold ourselves to.
           </h2>
-        </div>
+        </motion.div>
 
-        {/* Main Content - Desktop: Palm tree left + Grid right, Mobile/Tablet: Stack */}
         <div className="flex flex-col xl:flex-row gap-8 sm:gap-10 md:gap-12 lg:gap-14 xl:gap-16">
-          {/* Palm Tree - Desktop: Left side, Mobile/Tablet: Bottom */}
-          <div
-            ref={palmTreeRef}
-            className="hidden xl:block shrink-0 will-change-[transform,opacity]"
+          <motion.div
+            className="hidden xl:block shrink-0"
+            variants={palmTreeReveal}
           >
             <PalmTreeDecoration />
-          </div>
+          </motion.div>
 
-          {/* Values Grid */}
-          <div
-            ref={contentRef}
+          <motion.div
             className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 md:gap-8 lg:gap-x-10 lg:gap-y-10 xl:gap-x-11 xl:gap-y-11"
+            variants={cardsStagger}
           >
             {VALUES_DATA.map((value, index) => (
-              <div key={index} data-value-card>
+              <motion.div key={index} variants={cardReveal}>
                 <ValueCard
                   title={value.title}
                   subtitle={value.subtitle}
                   description={value.description}
                 />
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          {/* Palm Tree - Mobile/Tablet: Bottom centered */}
-          <div className="xl:hidden mt-4 sm:mt-6 md:mt-8 flex justify-center will-change-[transform,opacity]">
+          <motion.div
+            className="xl:hidden mt-4 sm:mt-6 md:mt-8 flex justify-center"
+            variants={palmTreeReveal}
+          >
             <PalmTreeDecoration />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

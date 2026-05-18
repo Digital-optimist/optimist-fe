@@ -1,97 +1,61 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { viewportOnce } from "@/lib/motion-variants";
 
-// =============================================================================
-// CTA Section - "Nothing extra. Nothing unnecessary" with Buy Now button
-// =============================================================================
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2 } },
+};
+
+const textReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const buttonReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
 export function CTASection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Text animation
-      tl.from(
-        textRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Button animation
-      tl.from(
-        buttonRef.current,
-        {
-          opacity: 0,
-          y: 30,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0.2,
-      );
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white py-12 md:py-16 lg:py-20 xl:py-24 overflow-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 xl:px-[40px]">
-        {/* Content Container */}
         <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-4 md:gap-6 lg:gap-8">
-          {/* Text Content */}
-          <div
-            ref={textRef}
-            className="flex flex-col font-display text-center lg:text-left will-change-[transform,opacity] lg:max-w-[809px]"
+          <motion.div
+            className="flex flex-col font-display text-center lg:text-left lg:max-w-[809px]"
+            variants={textReveal}
           >
-            {/* Line 1: Everything you need. */}
             <p className="font-semibold text-[28px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[64px] text-black leading-[1.2] lg:leading-normal">
               Best Cooling.{" "}
               <span className="text-[#3478F6]">Lowest Bills.</span>
             </p>
 
-            {/* Line 2: Nothing you don't. */}
             <p className="font-semibold text-[28px] sm:text-[40px] md:text-[56px] lg:text-[64px] xl:text-[64px] text-black leading-[1.2] lg:leading-normal">
               Designed for <span className="text-[#3478F6]">Tomorrow.</span>
             </p>
-          </div>
+          </motion.div>
 
-          <button
-            ref={buttonRef}
+          <motion.button
             onClick={() => router.push("/products")}
-            className="group relative flex items-center justify-center gap-2.5 min-w-[180px] sm:min-w-[200px] md:min-w-[220px] lg:min-w-[241px] w-auto px-8 md:px-10 lg:px-[48px] h-[52px] sm:h-[56px] md:h-[60px] lg:h-[64px] rounded-[36px] overflow-hidden shrink-0 will-change-[transform,opacity] transition-transform duration-300 hover:scale-[1.03]"
-            style={{
-              background: "#3478F6",
-            }}
+            className="group relative flex items-center justify-center gap-2.5 min-w-[180px] sm:min-w-[200px] md:min-w-[220px] lg:min-w-[241px] w-auto px-8 md:px-10 lg:px-[48px] h-[52px] sm:h-[56px] md:h-[60px] lg:h-[64px] rounded-[36px] overflow-hidden shrink-0 transition-transform duration-300 hover:scale-[1.03]"
+            style={{ background: "#3478F6" }}
+            variants={buttonReveal}
           >
             <span className="font-display font-semibold text-[16px] md:text-[18px] lg:text-[20px] text-[#FFFCDC] text-center whitespace-nowrap">
               Buy Now
             </span>
 
-            {/* Arrow Icon */}
             <svg
               width="24"
               height="24"
@@ -108,10 +72,10 @@ export function CTASection() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </motion.button>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

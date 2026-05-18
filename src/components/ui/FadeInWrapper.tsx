@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { type ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface FadeInWrapperProps {
   children: ReactNode;
@@ -10,23 +9,18 @@ interface FadeInWrapperProps {
 }
 
 export function FadeInWrapper({ children, className }: FadeInWrapperProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        contentRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-      );
-    },
-    { scope: containerRef },
-  );
-
   return (
-    <div ref={containerRef} className={className}>
-      <div ref={contentRef}>{children}</div>
+    <div className={className}>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.8, ease: "easeOut" },
+        }}
+      >
+        {children}
+      </motion.div>
     </div>
   );
 }

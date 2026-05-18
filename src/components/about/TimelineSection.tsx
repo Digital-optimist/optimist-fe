@@ -2,9 +2,29 @@
 
 import { useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const titleReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const cardSlide: Variants = {
+  hidden: { opacity: 0, x: 60 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2, delayChildren: 0 } },
+};
+
+const cardsStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+};
 
 // Arrow Icon Component for scroll navigation
 function ScrollArrowIcon({
@@ -210,11 +230,7 @@ function TimelineCard({
 }
 
 export function TimelineSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
 
   const [isHovered, setIsHovered] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -248,75 +264,22 @@ export function TimelineSection() {
     [updateScrollState],
   );
 
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Title animation
-      tl.from(
-        titleRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Cards animation
-      if (cardsRef.current) {
-        const cards = cardsRef.current.children;
-        tl.from(
-          cards,
-          {
-            opacity: 0,
-            x: 60,
-            duration: 0.8,
-            ease: "power3.out",
-            stagger: 0.15,
-          },
-          0.2,
-        );
-      }
-
-      // Progress bar animation
-      tl.from(
-        progressRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        0.4,
-      );
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white py-12 md:py-16 lg:py-20 overflow-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className="max-w-[1440px] mx-auto">
-        {/* Title - Engineering a new standard */}
-        <h2
-          ref={titleRef}
-          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-center mb-8 md:mb-12 lg:mb-16 px-4 will-change-[transform,opacity]"
+        <motion.h2
+          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-center mb-8 md:mb-12 lg:mb-16 px-4"
+          variants={titleReveal}
         >
           <span className="text-black">Engineering a </span>
           <span className="text-[#3478F6]">new standard.</span>
-        </h2>
+        </motion.h2>
 
         {/* Horizontal Scroll Container with hover arrows */}
         <div
@@ -366,32 +329,26 @@ export function TimelineSection() {
             onScroll={updateScrollState}
             className="overflow-x-auto scrollbar-hide pb-4"
           >
-            <div
-              ref={cardsRef}
+            <motion.div
               className="flex gap-4 md:gap-6 lg:gap-9 px-4 md:px-6 lg:px-12 w-max"
+              variants={cardsStagger}
             >
               {timelineData.map((item) => (
-                <TimelineCard
-                  key={item.id}
-                  label={item.label}
-                  year={item.year}
-                  description={item.description}
-                  image={item.image}
-                />
+                <motion.div key={item.id} variants={cardSlide}>
+                  <TimelineCard
+                    label={item.label}
+                    year={item.year}
+                    description={item.description}
+                    image={item.image}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
 
-        {/* Timeline Progress Indicator */}
-        {/* <div
-          ref={progressRef}
-          className="mt-6 md:mt-8 lg:mt-10 px-4 md:px-6 lg:px-12 will-change-[transform,opacity]"
-        >
-          <TimelineProgress total={timelineData.length} />
-        </div> */}
       </div>
-    </section>
+    </motion.section>
   );
 }
 

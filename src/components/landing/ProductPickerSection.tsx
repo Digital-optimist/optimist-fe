@@ -1,10 +1,20 @@
 "use client";
 
-import { useRef, useState, useEffect, useLayoutEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { RotateCcw, Share2, ShieldCheck, Truck } from "lucide-react";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2 } },
+};
+
+const blockReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 import { useProducts } from "@/contexts/ProductsContext";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/Toast";
@@ -104,9 +114,6 @@ function formatPrice(price: number): string {
 // }
 
 export function ProductPickerSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
   const { showToast } = useToast();
   const { combinedProduct, isLoading: isPriceLoading } = useProducts();
   const { buyNow, isLoading: isCartLoading } = useCart();
@@ -205,73 +212,23 @@ export function ProductPickerSection() {
     }
   };
 
-  // Set initial states immediately to prevent flash/lag on first scroll
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 40 });
-    }
-    if (cardRef.current) {
-      gsap.set(cardRef.current, { opacity: 0, y: 40 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      // Batch animations into a single timeline with one ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true, // Only animate once for better performance
-        },
-      });
-
-      // Header animation - use 'to' since initial state is set
-      tl.to(
-        headerRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      // Card animation with slight delay
-      tl.to(
-        cardRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0.2,
-      );
-    },
-    { scope: sectionRef },
-  );
-
   const activeProduct =
     activeTab && VARIANT_COPY[activeTab]
       ? VARIANT_COPY[activeTab]
       : DEFAULT_COPY;
 
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white py-8 md:py-12 lg:py-16 overflow-x-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className=" mx-auto px-4 md:px-12 lg:px-16">
-        {/* Header with decorative lines */}
-        <div
-          ref={headerRef}
-          className="flex items-center justify-center gap-4 md:gap-6 mb-10 md:mb-14 will-change-[transform,opacity]"
+        <motion.div
+          className="flex items-center justify-center gap-4 md:gap-6 mb-10 md:mb-14"
+          variants={blockReveal}
         >
           {/* Left line */}
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gray-400 md:to-gray-300" />
@@ -283,13 +240,12 @@ export function ProductPickerSection() {
 
           {/* Right line */}
           <div className="flex-1 h-px bg-gradient-to-l from-transparent to-gray-400 md:to-gray-300" />
-        </div>
+        </motion.div>
 
-        {/* Main Card */}
-        <div
-          ref={cardRef}
-          className="bg-[#F8F8FA] rounded-[24px] md:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
+        <motion.div
+          className="bg-[#F8F8FA] rounded-[24px] md:rounded-[32px] overflow-hidden"
           style={{ boxShadow: "0px -4px 4px 0px #00000014 inset" }}
+          variants={blockReveal}
         >
           {/* Tab Navigation */}
           <div className="border-b border-gray-200">
@@ -508,7 +464,7 @@ export function ProductPickerSection() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <PincodeModal
@@ -522,6 +478,6 @@ export function ProductPickerSection() {
         loadingLabel="Opening checkout…"
         isConfirmLoading={isBuyNowLoading}
       />
-    </section>
+    </motion.section>
   );
 }

@@ -5,6 +5,7 @@ import "./globals.css";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
+import SnapmintLoader from "@/components/SnapmintLoader";
 import { WebVitals } from "./_components/WebVitals";
 import { getLandingPageContent } from "@/lib/shopify";
 
@@ -182,6 +183,7 @@ export default async function RootLayout({
         </Providers>
 
         <WebVitals />
+        <SnapmintLoader />
         <SaleAssistLoader />
       </body>
     </html>

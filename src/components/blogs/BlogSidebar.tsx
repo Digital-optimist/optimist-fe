@@ -1,38 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { Mail, Zap } from "lucide-react";
+import { fadeRight, viewportOnce } from "@/lib/motion-variants";
 
 // =============================================================================
 // Blog Sidebar - Newsletter subscription card
 // =============================================================================
 
 export function BlogSidebar() {
-  const sidebarRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
-
-  useGSAP(
-    () => {
-      gsap.from(sidebarRef.current, {
-        opacity: 0,
-        x: 30,
-        duration: 0.7,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sidebarRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-    },
-    { scope: sidebarRef }
-  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,9 +42,12 @@ export function BlogSidebar() {
   };
 
   return (
-    <div
-      ref={sidebarRef}
-      className="relative bg-white rounded-[24px] will-change-[transform,opacity]"
+    <motion.div
+      className="relative bg-white rounded-[24px]"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={fadeRight}
     >
       {/* Inner shadow overlay */}
       <div
@@ -142,7 +126,7 @@ export function BlogSidebar() {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

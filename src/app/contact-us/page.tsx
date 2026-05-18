@@ -1,8 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Paperclip, X, Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -757,9 +755,6 @@ function ContactForm({ onSuccess }: ContactFormProps) {
 // =============================================================================
 
 export default function ContactPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const leftContentRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleFormSuccess = () => {
@@ -770,41 +765,21 @@ export default function ContactPage() {
     setShowSuccessModal(false);
   };
 
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
-      });
-
-      // Animate left content
-      tl.fromTo(
-        leftContentRef.current,
-        { opacity: 0, x: -40 },
-        { opacity: 1, x: 0, duration: 0.8 },
-      );
-
-      // Animate form
-      tl.fromTo(
-        formRef.current,
-        { opacity: 0, x: 40 },
-        { opacity: 1, x: 0, duration: 0.8 },
-        "-=0.6",
-      );
-    },
-    { scope: containerRef },
-  );
-
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-[#f5f5f5] pt-24 md:pt-28 lg:pt-32 pb-16 px-2 sm:px-6 lg:px-8"
-    >
+    <div className="min-h-screen bg-[#f5f5f5] pt-24 md:pt-28 lg:pt-32 pb-16 px-2 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Main white container card */}
         <div className="bg-white rounded-[32px] p-8 px-4 md:p-12 lg:p-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-            {/* Left Column - Heading & Info */}
-            <div ref={leftContentRef} className="lg:sticky lg:top-32">
+            <motion.div
+              className="lg:sticky lg:top-32"
+              initial={{ opacity: 0, x: -40 }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                transition: { duration: 0.8, ease: "easeOut" },
+              }}
+            >
               {/* Headline */}
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                 <span className="text-blue-500">Talk to the team</span>
@@ -971,12 +946,18 @@ export default function ContactPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right Column - Form */}
-            <div ref={formRef}>
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                transition: { duration: 0.8, ease: "easeOut", delay: 0.2 },
+              }}
+            >
               <ContactForm onSuccess={handleFormSuccess} />
-            </div>
+            </motion.div>
           </div>
 
           {/* Footer Micro Line */}

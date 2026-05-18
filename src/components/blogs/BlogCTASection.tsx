@@ -1,56 +1,32 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ASSETS } from "@/lib/assets";
+import { fadeLeft, viewportOnce } from "@/lib/motion-variants";
+
+const decorReveal: Variants = {
+  hidden: { opacity: 0, x: 40, rotate: -10 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    rotate: 0,
+    transition: { duration: 0.8, ease: "easeOut", delay: 0.3 },
+  },
+};
 
 // =============================================================================
 // Blog CTA Section - "Want to know more about us?" with gradient background
 // =============================================================================
 
 export function BlogCTASection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const decorRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      // Set initial state explicitly
-      gsap.set(contentRef.current, { opacity: 0, x: -40 });
-      gsap.set(decorRef.current, { opacity: 0, x: 40, rotation: -10 });
-
-      let hasAnimated = false;
-
-      const animateIn = () => {
-        if (hasAnimated) return;
-        hasAnimated = true;
-        gsap.to(contentRef.current, { opacity: 1, x: 0, duration: 0.8, ease: "power3.out" });
-        gsap.to(decorRef.current, { opacity: 1, x: 0, rotation: 0, duration: 0.8, ease: "power3.out", delay: 0.3 });
-      };
-
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 95%",
-          toggleActions: "play none none none",
-          once: true,
-          onEnter: animateIn,
-        },
-      });
-
-      // Fallback: ensure content is visible after 2 seconds regardless of scroll
-      setTimeout(animateIn, 2000);
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white py-8 md:py-12 lg:py-16"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
         {/* CTA Card with Gradient Background */}
@@ -63,9 +39,9 @@ export function BlogCTASection() {
         >
           {/* Content Container */}
           <div className="relative z-10 px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 lg:px-16 lg:py-10 xl:pl-16 xl:pr-[320px]">
-            <div
-              ref={contentRef}
-              className="flex flex-col gap-5 sm:gap-6 lg:gap-6 max-w-[768px] will-change-[transform,opacity]"
+            <motion.div
+              className="flex flex-col gap-5 sm:gap-6 lg:gap-6 max-w-[768px]"
+              variants={fadeLeft}
             >
               {/* Heading and Supporting Text */}
               <div className="flex flex-col gap-3 sm:gap-4">
@@ -97,13 +73,13 @@ export function BlogCTASection() {
                   }}
                 />
               </Link>
-            </div>
+            </motion.div>
           </div>
 
           {/* Decorative Cloud/Starburst Element */}
-          <div
-            ref={decorRef}
-            className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-[180px] h-[280px] md:w-[200px] md:h-[320px] lg:w-[220px] lg:h-[346px] xl:w-[222px] will-change-[transform,opacity]"
+          <motion.div
+            className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 w-[180px] h-[280px] md:w-[200px] md:h-[320px] lg:w-[220px] lg:h-[346px] xl:w-[222px]"
+            variants={decorReveal}
           >
             <Image
               src={ASSETS.clipPathGroup2}
@@ -112,10 +88,10 @@ export function BlogCTASection() {
               className="object-contain"
               sizes="(max-width: 768px) 180px, (max-width: 1024px) 200px, 222px"
             />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

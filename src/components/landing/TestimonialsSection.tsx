@@ -2,17 +2,27 @@
 
 import {
   useRef,
-  useLayoutEffect,
   useState,
   useCallback,
   useEffect,
 } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
-import { Play } from "lucide-react";
-import ASSETS from "@/lib/assets";
+import { motion, type Variants } from "framer-motion";
 import type { TestimonialItem } from "@/lib/shopify";
+import {
+  fadeUp,
+  staggerParent,
+  viewportOnce,
+} from "@/lib/motion-variants";
+
+const sectionStagger = staggerParent(0.2);
+
+const headerReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const cardsStagger = staggerParent(0.15);
 
 // Scroll Arrow Icon Component
 function ScrollArrowIcon({
@@ -69,8 +79,6 @@ export function TestimonialsSection({
           image: t.imageUrl || "",
         }))
       : [];
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -143,79 +151,24 @@ export function TestimonialsSection({
     scrollToCard(newIndex);
   };
 
-  // Set initial states immediately to prevent flash/lag on first scroll
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 40 });
-    }
-    const cards = carouselRef.current?.querySelectorAll(".testimonial-card");
-    if (cards) {
-      gsap.set(cards, { opacity: 0, y: 40 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      // Batch all animations into a single timeline with one ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true, // Only animate once for better performance
-        },
-      });
-
-      // Header animation - use 'to' since initial state is already set
-      tl.to(
-        headerRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      // Cards stagger animation
-      const cards = carouselRef.current?.querySelectorAll(".testimonial-card");
-      if (cards) {
-        tl.to(
-          cards,
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0.2, // Start slightly after header
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-[#F8F8FA] py-8 md:py-12 lg:py-16 overflow-x-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
-        {/* Header */}
-        <div
-          ref={headerRef}
-          className="text-center mb-10 md:mb-14 will-change-[transform,opacity]"
+        <motion.div
+          className="text-center mb-10 md:mb-14"
+          variants={headerReveal}
         >
           <h2 className="font-display text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900">
             Real Stories from{" "}
             <span className="text-optimist-blue-primary">Our Early Users</span>
           </h2>
-        </div>
+        </motion.div>
 
         {/* Carousel wrapper with hover arrows */}
         <div
@@ -259,16 +212,17 @@ export function TestimonialsSection({
             <ScrollArrowIcon direction="right" size={22} />
           </button>
 
-          {/* Testimonials Carousel */}
-          <div
+          <motion.div
             ref={carouselRef}
             onScroll={updateScrollState}
             className="flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory md:snap-none"
+            variants={cardsStagger}
           >
             {testimonials.map((testimonial) => (
-              <div
+              <motion.div
                 key={testimonial.id}
                 className="testimonial-card flex-shrink-0 w-[85%] md:w-[600px] lg:w-[700px] bg-white rounded-[24px] overflow-hidden shadow-sm snap-center md:snap-align-none"
+                variants={fadeUp}
               >
                 {/* Mobile Layout - Stacked */}
                 <div className="md:hidden">
@@ -353,11 +307,11 @@ export function TestimonialsSection({
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

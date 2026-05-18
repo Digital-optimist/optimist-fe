@@ -1,12 +1,18 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { BlogArticle, formatArticleDate } from "@/lib/shopify";
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
+import {
+  fadeScale,
+  fadeUpSmall,
+  staggerParent,
+  viewportOnce,
+} from "@/lib/motion-variants";
+
+const stagger = staggerParent(0.2);
 
 // =============================================================================
 // Blog Detail Image - Featured image with author info and social share
@@ -17,44 +23,7 @@ interface BlogDetailImageProps {
 }
 
 export function BlogDetailImage({ article }: BlogDetailImageProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const metaRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Image animation
-      tl.from(imageRef.current, {
-        opacity: 0,
-        scale: 0.98,
-        duration: 0.8,
-        ease: "power3.out",
-      });
-
-      // Meta animation
-      tl.from(
-        metaRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        "-=0.4",
-      );
-    },
-    { scope: sectionRef },
-  );
 
   const formattedDate = formatArticleDate(article.publishedAt);
   const articleUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -87,13 +56,19 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
   };
 
   return (
-    <section ref={sectionRef} className="bg-white pb-8 md:pb-12">
+    <section className="bg-white pb-8 md:pb-12">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px]">
-        <div className="flex flex-col gap-[20px] sm:gap-[24px]">
+        <motion.div
+          className="flex flex-col gap-[20px] sm:gap-[24px]"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={stagger}
+        >
           {/* Featured Image */}
-          <div
-            ref={imageRef}
-            className="relative w-full aspect-[16/9] md:aspect-[2.4/1] rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden bg-gray-100 will-change-[transform,opacity]"
+          <motion.div
+            className="relative w-full aspect-[16/9] md:aspect-[2.4/1] rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden bg-gray-100"
+            variants={fadeScale}
           >
             {article.image ? (
               <Image
@@ -121,12 +96,12 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
                 </svg>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Meta and Social Share */}
-          <div
-            ref={metaRef}
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-8 will-change-[transform,opacity]"
+          <motion.div
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-8"
+            variants={fadeUpSmall}
           >
             {/* Author and Date */}
             <div className="flex flex-wrap items-start sm:items-center gap-4 sm:gap-8 md:gap-16">
@@ -198,8 +173,8 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
                 </svg>
               </button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

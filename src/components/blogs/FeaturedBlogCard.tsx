@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,6 +8,7 @@ import {
   calculateReadTime,
   formatArticleDate,
 } from "@/lib/shopify";
+import { fadeUp, viewportOnce } from "@/lib/motion-variants";
 
 // =============================================================================
 // Featured Blog Card - Large horizontal card for the latest/featured article
@@ -20,52 +19,17 @@ interface FeaturedBlogCardProps {
 }
 
 export function FeaturedBlogCard({ article }: FeaturedBlogCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      if (!cardRef.current) return;
-
-      // Set initial state
-      gsap.set(cardRef.current, { opacity: 0, y: 40 });
-
-      let hasAnimated = false;
-
-      const animateIn = () => {
-        if (hasAnimated) return;
-        hasAnimated = true;
-        gsap.to(cardRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        });
-      };
-
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: "top 95%",
-          toggleActions: "play none none none",
-          once: true,
-          onEnter: animateIn,
-        },
-      });
-
-      // Fallback: ensure card is visible after 1.5 seconds
-      setTimeout(animateIn, 1500);
-    },
-    { scope: cardRef },
-  );
-
   const readTime = calculateReadTime(article.content);
   const formattedDate = formatArticleDate(article.publishedAt);
   const category = article?.tags || [];
 
   return (
-    <div
-      ref={cardRef}
-      className="bg-white rounded-[24px] overflow-hidden will-change-[transform,opacity] max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px] "
+    <motion.div
+      className="bg-white rounded-[24px] overflow-hidden max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px] "
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={fadeUp}
     >
       <div
         className="max-w-[1280px] mx-auto rounded-[24px]"
@@ -142,7 +106,7 @@ export function FeaturedBlogCard({ article }: FeaturedBlogCardProps) {
           </div>
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

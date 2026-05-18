@@ -1,11 +1,36 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect } from "react";
+import { memo } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { CheckCircleIcon, XCircleIcon } from "@/components/icons/ProductIcons";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2 } },
+};
+
+const titlesReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const rowsStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const rowReveal: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const imagesReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
 // =============================================================================
 // Constants
@@ -49,88 +74,14 @@ const COMPARISON_DATA = [
 // =============================================================================
 
 export const ComparisonSection = memo(function ComparisonSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titlesRef = useRef<HTMLDivElement>(null);
-  const rowsRef = useRef<HTMLDivElement>(null);
-  const imagesRef = useRef<HTMLDivElement>(null);
-
-  // Set initial states to prevent flash
-  useLayoutEffect(() => {
-    if (titlesRef.current) {
-      gsap.set(titlesRef.current, { opacity: 0, y: 40 });
-    }
-    if (rowsRef.current) {
-      const rows = rowsRef.current.querySelectorAll(".comparison-row");
-      gsap.set(rows, { opacity: 0, y: 20 });
-    }
-    if (imagesRef.current) {
-      gsap.set(imagesRef.current, { opacity: 0, y: 40 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Titles animation
-      tl.to(
-        titlesRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      // Rows stagger animation
-      const rows = rowsRef.current?.querySelectorAll(".comparison-row");
-      if (rows) {
-        tl.to(
-          rows,
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.08,
-            duration: 0.6,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0.2,
-        );
-      }
-
-      // Images animation
-      tl.to(
-        imagesRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0.4,
-      );
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="relative w-full"
       aria-labelledby="comparison-heading"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       {/* Gradient Background Section */}
       <div className="relative overflow-hidden">
@@ -186,8 +137,10 @@ export const ComparisonSection = memo(function ComparisonSection() {
 
         {/* Content */}
         <div className="relative z-[10] w-full max-w-[1440px] mx-auto pt-10 md:pt-[53px] pb-[90px] md:pb-[175px]">
-          {/* Titles Row */}
-          <div ref={titlesRef} className="flex will-change-transform">
+          <motion.div
+            className="flex will-change-transform"
+            variants={titlesReveal}
+          >
             <div className="w-1/2 px-2 sm:px-4 md:px-6 lg:px-12 xl:px-16">
               <h3 className="font-display text-[28px] md:text-[48px] lg:text-[64px] font-semibold md:font-bold text-white text-right tracking-wide md:tracking-normal mb-4 md:mb-6 lg:mb-10">
                 Optimist AC
@@ -198,12 +151,18 @@ export const ComparisonSection = memo(function ComparisonSection() {
                 Market AC
               </h3>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Comparison Rows - Each row contains both benefit and drawback */}
-          <div ref={rowsRef} className="flex flex-col gap-3 md:gap-6 will-change-transform">
+          <motion.div
+            className="flex flex-col gap-3 md:gap-6 will-change-transform"
+            variants={rowsStagger}
+          >
             {COMPARISON_DATA.map((item, index) => (
-              <div key={index} className="comparison-row flex items-stretch">
+              <motion.div
+                key={index}
+                className="flex items-stretch"
+                variants={rowReveal}
+              >
                 {/* Left - Benefit */}
                 <div className="w-1/2 flex justify-end items-stretch px-2 sm:px-4 md:px-4 lg:px-6 xl:px-8">
                   <div className="flex items-center justify-end gap-1.5 sm:gap-2 md:gap-2.5 bg-white/[0.12] rounded-lg md:rounded-xl px-2 sm:px-3 md:px-3 py-1 sm:py-1.5 md:py-2 w-full md:w-fit md:max-w-[320px]">
@@ -222,19 +181,17 @@ export const ComparisonSection = memo(function ComparisonSection() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* White Background Section for bottom half of AC images */}
       <div className="relative bg-white h-[95px] md:h-[200px] lg:min-h-[350px]" />
 
-      {/* AC Product Images - Single merged image positioned to span both sections */}
-      <div
-        ref={imagesRef}
+      <motion.div
         className="absolute bottom-0 left-0 right-5 md:right-10 lg:right-[60px] z-[20] will-change-transform"
+        variants={imagesReveal}
       >
         <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="relative w-full h-[200px] md:h-[450px] lg:h-[650px]">
@@ -247,7 +204,7 @@ export const ComparisonSection = memo(function ComparisonSection() {
             />
           </div>
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 });

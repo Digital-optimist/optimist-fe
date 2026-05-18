@@ -1,10 +1,30 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect, useCallback, useMemo } from "react";
+import { memo, useRef, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import {
+  motion,
+  useAnimationControls,
+  useInView,
+  type Variants,
+} from "framer-motion";
+
+type MarqueeControls = ReturnType<typeof useAnimationControls>;
 import type { ExpertTestimonialItem } from "@/lib/shopify";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const headerReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const trackReveal: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.8, ease: "easeOut", delay: 0.2 },
+  },
+};
 
 // =============================================================================
 // Types & Data
@@ -129,121 +149,88 @@ export const ExpertTestimonialsSection = memo(
     }, [TESTIMONIALS.length]);
 
     const sectionRef = useRef<HTMLElement>(null);
-    const headerRef = useRef<HTMLDivElement>(null);
     const desktopTrackRef = useRef<HTMLDivElement>(null);
     const mobileTrack1Ref = useRef<HTMLDivElement>(null);
     const mobileTrack2Ref = useRef<HTMLDivElement>(null);
-    const tweensRef = useRef<gsap.core.Tween[]>([]);
+    const isPausedRef = useRef(false);
+    const desktopControls = useAnimationControls();
+    const mobile1Controls = useAnimationControls();
+    const mobile2Controls = useAnimationControls();
+    const isInView = useInView(sectionRef, { amount: 0.01, once: false });
 
-    useLayoutEffect(() => {
-      if (headerRef.current) {
-        gsap.set(headerRef.current, { opacity: 0, y: 30 });
-      }
-      [desktopTrackRef, mobileTrack1Ref, mobileTrack2Ref].forEach((ref) => {
-        if (ref.current) gsap.set(ref.current, { opacity: 0 });
-      });
-    }, []);
-
-    useGSAP(
-      () => {
-        tweensRef.current = [];
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 85%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        });
-
-        tl.to(
-          headerRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0,
-        );
-
-        [desktopTrackRef, mobileTrack1Ref, mobileTrack2Ref].forEach((ref) => {
-          if (ref.current) {
-            tl.to(
-              ref.current,
-              { opacity: 1, duration: 0.8, ease: "power3.out" },
-              0.2,
-            );
-          }
-        });
-
-        const setupRightwardMarquee = (
-          track: HTMLDivElement,
-          duration: number,
-        ) => {
-          const totalWidth = track.scrollWidth / 2;
-          gsap.set(track, { x: -totalWidth });
-          const tween = gsap.to(track, {
-            x: 0,
-            duration,
-            ease: "none",
-            repeat: -1,
-            paused: false,
-          });
-          tweensRef.current.push(tween);
-        };
-
-        const setupLeftwardMarquee = (
-          track: HTMLDivElement,
-          duration: number,
-        ) => {
-          const totalWidth = track.scrollWidth / 2;
-          gsap.set(track, { x: 0 });
-          const tween = gsap.to(track, {
-            x: -totalWidth,
-            duration,
-            ease: "none",
-            repeat: -1,
-            paused: false,
-          });
-          tweensRef.current.push(tween);
-        };
-
-        if (desktopTrackRef.current) {
-          setupRightwardMarquee(desktopTrackRef.current, 60);
-        }
-        if (mobileTrack1Ref.current) {
-          setupRightwardMarquee(mobileTrack1Ref.current, 45);
-        }
-        if (mobileTrack2Ref.current) {
-          setupLeftwardMarquee(mobileTrack2Ref.current, 60);
-        }
-
-        // Control animation based on viewport visibility
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            onEnter: () => tweensRef.current.forEach((t) => t.play()),
-            onLeave: () => tweensRef.current.forEach((t) => t.pause()),
-            onEnterBack: () => tweensRef.current.forEach((t) => t.play()),
-            onLeaveBack: () => tweensRef.current.forEach((t) => t.pause()),
+    const playRightward = useCallback(
+      (controls: MarqueeControls, trackEl: HTMLDivElement, duration: number) => {
+        const totalWidth = trackEl.scrollWidth / 2;
+        if (totalWidth <= 0) return;
+        controls.start({
+          x: [-totalWidth, 0],
+          transition: {
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration,
+              ease: "linear",
+            },
           },
         });
       },
-      { scope: sectionRef },
+      [],
     );
 
+    const playLeftward = useCallback(
+      (controls: MarqueeControls, trackEl: HTMLDivElement, duration: number) => {
+        const totalWidth = trackEl.scrollWidth / 2;
+        if (totalWidth <= 0) return;
+        controls.start({
+          x: [0, -totalWidth],
+          transition: {
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration,
+              ease: "linear",
+            },
+          },
+        });
+      },
+      [],
+    );
+
+    const startAll = useCallback(() => {
+      if (desktopTrackRef.current)
+        playRightward(desktopControls, desktopTrackRef.current, 60);
+      if (mobileTrack1Ref.current)
+        playRightward(mobile1Controls, mobileTrack1Ref.current, 45);
+      if (mobileTrack2Ref.current)
+        playLeftward(mobile2Controls, mobileTrack2Ref.current, 60);
+    }, [
+      desktopControls,
+      mobile1Controls,
+      mobile2Controls,
+      playRightward,
+      playLeftward,
+    ]);
+
+    const stopAll = useCallback(() => {
+      desktopControls.stop();
+      mobile1Controls.stop();
+      mobile2Controls.stop();
+    }, [desktopControls, mobile1Controls, mobile2Controls]);
+
+    useEffect(() => {
+      if (isInView && !isPausedRef.current) startAll();
+      else stopAll();
+    }, [isInView, startAll, stopAll, TESTIMONIALS]);
+
     const handleMouseEnter = useCallback(() => {
-      tweensRef.current.forEach((t) => t.pause());
-    }, []);
+      isPausedRef.current = true;
+      stopAll();
+    }, [stopAll]);
 
     const handleMouseLeave = useCallback(() => {
-      tweensRef.current.forEach((t) => t.play());
-    }, []);
+      isPausedRef.current = false;
+      if (isInView) startAll();
+    }, [isInView, startAll]);
 
     const row2Items = ROW_2_ORDER.map((i) => TESTIMONIALS[i]);
 
@@ -255,50 +242,63 @@ export const ExpertTestimonialsSection = memo(
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Header */}
-        <div
-          ref={headerRef}
+        <motion.div
           className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 mb-10 md:mb-14 lg:mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={headerReveal}
         >
           <h2 className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-center text-black leading-tight tracking-wide md:tracking-normal">
             <span className="text-[#3478F6]">Reviewed by </span>
             Industry Experts
           </h2>
-        </div>
+        </motion.div>
 
-        {/* Desktop Single-Row Marquee (lg+) */}
-        <div className="hidden lg:block relative">
-          <div
+        <motion.div
+          className="hidden lg:block relative"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={trackReveal}
+        >
+          <motion.div
             ref={desktopTrackRef}
             className="flex gap-6 items-stretch will-change-transform"
+            animate={desktopControls}
           >
             {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
               <DesktopCard key={`dt-${t.id}-${i}`} testimonial={t} />
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* Mobile Two-Row Marquee (<lg) */}
-        <div className="lg:hidden flex flex-col gap-6 relative">
-          {/* Row 1 */}
-          <div
+        <motion.div
+          className="lg:hidden flex flex-col gap-6 relative"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={trackReveal}
+        >
+          <motion.div
             ref={mobileTrack1Ref}
             className="flex gap-6 items-stretch will-change-transform"
+            animate={mobile1Controls}
           >
             {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
               <MobileCard key={`mt1-${t.id}-${i}`} testimonial={t} />
             ))}
-          </div>
-          {/* Row 2 (different order for visual variety) */}
-          <div
+          </motion.div>
+          <motion.div
             ref={mobileTrack2Ref}
             className="flex gap-6 items-stretch will-change-transform"
+            animate={mobile2Controls}
           >
             {[...row2Items, ...row2Items].map((t, i) => (
               <MobileCard key={`mt2-${t.id}-${i}`} testimonial={t} />
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
     );
   },

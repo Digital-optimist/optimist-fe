@@ -1,104 +1,49 @@
 "use client";
 
-import { useRef, useLayoutEffect } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { useRouter } from "next/navigation";
+import {
+  fadeLeft,
+  staggerParent,
+  viewportOnce,
+} from "@/lib/motion-variants";
+
+const sectionStagger = staggerParent(0.1);
+
+const flowerReveal: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
+
+const badgesStagger = staggerParent(0.15);
+
+const badgeReveal: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
 export function IndiaFirstSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const leftCardRef = useRef<HTMLDivElement>(null);
-  const flowerRef = useRef<HTMLDivElement>(null);
-  const badgesRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Set initial states immediately to prevent flash/lag on first scroll
-  useLayoutEffect(() => {
-    if (leftCardRef.current) {
-      gsap.set(leftCardRef.current, { opacity: 0, x: -40 });
-    }
-    if (flowerRef.current) {
-      gsap.set(flowerRef.current, { opacity: 0, scale: 0.95 });
-    }
-    const badgeCards = badgesRef.current?.querySelectorAll(".badge-card");
-    if (badgeCards) {
-      gsap.set(badgeCards, { opacity: 0, y: 20 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      // Batch all animations into a single timeline with one ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true, // Only animate once for better performance
-        },
-      });
-
-      // Left card animation - use 'to' since initial state is already set
-      tl.to(
-        leftCardRef.current,
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      // Flower image animation
-      tl.to(
-        flowerRef.current,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0.1,
-      );
-
-      // Badges staggered animation
-      const badgeCards = badgesRef.current?.querySelectorAll(".badge-card");
-      if (badgeCards) {
-        tl.to(
-          badgeCards,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.15,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0.2,
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="relative py-4 md:py-6 overflow-x-hidden bg-white"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
-        {/* Desktop: 2-column grid, Mobile: stacked */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-4 md:gap-6">
-          {/* Left Column - Dark Product Card */}
-          <div
-            ref={leftCardRef}
-            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[420px] md:min-h-[520px] lg:min-h-[620px] will-change-[transform,opacity]"
+          <motion.div
+            variants={fadeLeft}
+            className="relative rounded-[24px] md:rounded-[32px] overflow-hidden min-h-[420px] md:min-h-[520px] lg:min-h-[620px]"
             style={{
               background:
                 "linear-gradient(180deg, #000000 0%, #1a1a1a 40%, #666666 70%, #cccccc 90%, #f5f5f5 100%)",
@@ -161,14 +106,12 @@ export function IndiaFirstSection() {
                 className="w-full h-auto object-contain"
               />
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Column - Flower + Badge Cards */}
           <div className="flex flex-col gap-4 md:gap-6">
-            {/* Flower Image */}
-            <div
-              ref={flowerRef}
-              className="relative bg-white border border-gray-200 rounded-[24px] md:rounded-[32px] overflow-hidden flex-1 min-h-[240px] md:min-h-[300px] lg:min-h-[340px] flex items-center justify-center will-change-[transform,opacity]"
+            <motion.div
+              variants={flowerReveal}
+              className="relative bg-white border border-gray-200 rounded-[24px] md:rounded-[32px] overflow-hidden flex-1 min-h-[240px] md:min-h-[300px] lg:min-h-[340px] flex items-center justify-center"
             >
               {/* Star shape with palm tree video */}
               <div
@@ -204,16 +147,15 @@ export function IndiaFirstSection() {
                   }}
                 />
               </div>
-            </div>
+            </motion.div>
 
-            {/* Badge Cards Container */}
-            <div
-              ref={badgesRef}
-              className="flex flex-col gap-3 md:gap-4 will-change-[transform,opacity]"
+            <motion.div
+              className="flex flex-col gap-3 md:gap-4"
+              variants={badgesStagger}
             >
-              {/* India's 1st Badge Card */}
-              <div
-                className="badge-card relative rounded-[20px] md:rounded-[24px] overflow-hidden px-5 py-4 md:px-6 md:py-5"
+              <motion.div
+                variants={badgeReveal}
+                className="relative rounded-[20px] md:rounded-[24px] overflow-hidden px-5 py-4 md:px-6 md:py-5"
                 style={{
                   background:
                     "linear-gradient(135deg, #3478F6 0%, #5BA8E8 50%, #69CDEB 75%, #89D8F0 100%)",
@@ -247,11 +189,11 @@ export function IndiaFirstSection() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* 4.8 Rated Badge Card */}
-              <div
-                className="badge-card relative rounded-[20px] md:rounded-[24px] overflow-hidden px-5 py-4 md:px-6 md:py-5"
+              <motion.div
+                variants={badgeReveal}
+                className="relative rounded-[20px] md:rounded-[24px] overflow-hidden px-5 py-4 md:px-6 md:py-5"
                 style={{
                   background:
                     "linear-gradient(135deg, #3478F6 0%, #5BA8E8 50%, #69CDEB 75%, #89D8F0 100%)",
@@ -296,11 +238,11 @@ export function IndiaFirstSection() {
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";
 import { ProductsProvider } from "@/contexts/ProductsContext";
@@ -37,15 +38,6 @@ const IndiaFirstSection = dynamic(
 
 const easeOutExpo = "easeOut" as const;
 
-const pageVariants = {
-  initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: { duration: 0.4, ease: easeOutExpo },
-  },
-  exit: { opacity: 0 },
-};
-
 const sectionVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -65,15 +57,24 @@ interface HomePageClientProps {
 
 export default function HomePageClient({ initialContent }: HomePageClientProps) {
   const landingContent = initialContent;
+  // Fade the page in on mount via opacity transition on a plain <main>.
+  // We don't use a motion component here because Framer Motion adds
+  // `will-change: transform` to motion elements, and that on an ancestor
+  // breaks `position: fixed` / `position: sticky` descendants — which we
+  // need intact for BenefitsSection and FeaturesShowcaseSection scroll pins.
+  const [mainOpacity, setMainOpacity] = useState(0);
+  useEffect(() => {
+    setMainOpacity(1);
+  }, []);
 
   return (
     <LandingContentProvider content={landingContent}>
     <ProductsProvider>
-    <motion.main
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
+    <main
+      style={{
+        opacity: mainOpacity,
+        transition: "opacity 0.4s ease-out",
+      }}
     >
       <HeroSection
         headingLine1={landingContent?.heroHeadingLine1}
@@ -153,7 +154,7 @@ export default function HomePageClient({ initialContent }: HomePageClientProps) 
       >
         <IndiaFirstSection />
       </motion.div>
-    </motion.main>
+    </main>
     </ProductsProvider>
     </LandingContentProvider>
   );

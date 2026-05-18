@@ -4,15 +4,33 @@ import {
   memo,
   useRef,
   useState,
-  useLayoutEffect,
+  useEffect,
   useCallback,
   useMemo,
 } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import {
+  motion,
+  useAnimationControls,
+  useInView,
+  type Variants,
+} from "framer-motion";
 import { Star, Play } from "lucide-react";
 import type { CustomerReviewItem, VideoSource } from "@/lib/shopify";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const headerReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const trackReveal: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.8, ease: "easeOut", delay: 0.2 },
+  },
+};
 
 // =============================================================================
 // Types
@@ -227,10 +245,11 @@ export const CustomerVideosSection = memo(function CustomerVideosSection({
   customers,
 }: CustomerVideosSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLHeadingElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const tweenRef = useRef<gsap.core.Tween | null>(null);
   const playingCountRef = useRef(0);
+  const isPausedRef = useRef(false);
+  const marqueeControls = useAnimationControls();
+  const isInView = useInView(sectionRef, { amount: 0.01, once: false });
 
   const videos: CustomerVideo[] = useMemo(() => {
     if (customers && customers.length > 0) {
@@ -266,98 +285,83 @@ export const CustomerVideosSection = memo(function CustomerVideosSection({
     return [...oneSet, ...oneSet];
   }, [videos]);
 
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 30 });
+  // Drive the infinite marquee. Re-runs whenever something changes the play state
+  // (viewport visibility, hover, or a video starting to play) — we either start the
+  // looping translate or stop it. The duration is derived from track width so the
+  // pixel speed stays constant regardless of how many cards are present.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const shouldPlay =
+      isInView && !isPausedRef.current && playingCountRef.current === 0;
+
+    if (!shouldPlay) {
+      marqueeControls.stop();
+      return;
     }
-    if (trackRef.current) {
-      gsap.set(trackRef.current, { opacity: 0 });
-    }
-  }, []);
 
-  useGSAP(
-    () => {
-      if (!trackRef.current) return;
+    const totalWidth = track.scrollWidth / 2;
+    if (totalWidth <= 0) return;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      tl.to(
-        headerRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      tl.to(
-        trackRef.current,
-        {
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0.2,
-      );
-
-      const track = trackRef.current;
-      const totalWidth = track.scrollWidth / 2;
-      const duration = totalWidth / SCROLL_SPEED;
-
-      tweenRef.current = gsap.to(track, {
-        x: -totalWidth,
-        duration,
-        ease: "none",
-        repeat: -1,
-        paused: false,
-      });
-
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          onEnter: () => {
-            if (playingCountRef.current === 0) tweenRef.current?.play();
-          },
-          onLeave: () => tweenRef.current?.pause(),
-          onEnterBack: () => {
-            if (playingCountRef.current === 0) tweenRef.current?.play();
-          },
-          onLeaveBack: () => tweenRef.current?.pause(),
-        },
-      });
-    },
-    { scope: sectionRef },
-  );
+    const duration = totalWidth / SCROLL_SPEED;
+    marqueeControls.start({
+      x: [0, -totalWidth],
+      transition: {
+        x: { repeat: Infinity, repeatType: "loop", duration, ease: "linear" },
+      },
+    });
+  }, [isInView, marqueeControls, loopedVideos]);
 
   const handleMouseEnter = useCallback(() => {
-    if (playingCountRef.current === 0) tweenRef.current?.pause();
-  }, []);
+    isPausedRef.current = true;
+    marqueeControls.stop();
+  }, [marqueeControls]);
 
   const handleMouseLeave = useCallback(() => {
-    if (playingCountRef.current === 0) tweenRef.current?.play();
-  }, []);
+    isPausedRef.current = false;
+    const track = trackRef.current;
+    if (!track || !isInView || playingCountRef.current > 0) return;
+    const totalWidth = track.scrollWidth / 2;
+    if (totalWidth <= 0) return;
+    const duration = totalWidth / SCROLL_SPEED;
+    marqueeControls.start({
+      x: [0, -totalWidth],
+      transition: {
+        x: { repeat: Infinity, repeatType: "loop", duration, ease: "linear" },
+      },
+    });
+  }, [isInView, marqueeControls]);
 
-  const handlePlayStateChange = useCallback((playing: boolean) => {
-    playingCountRef.current += playing ? 1 : -1;
-    if (playingCountRef.current > 0) {
-      tweenRef.current?.pause();
-    } else {
-      playingCountRef.current = 0;
-      tweenRef.current?.play();
-    }
-  }, []);
+  const handlePlayStateChange = useCallback(
+    (playing: boolean) => {
+      playingCountRef.current = Math.max(
+        0,
+        playingCountRef.current + (playing ? 1 : -1),
+      );
+      if (playingCountRef.current > 0) {
+        marqueeControls.stop();
+      } else if (isInView && !isPausedRef.current) {
+        const track = trackRef.current;
+        if (!track) return;
+        const totalWidth = track.scrollWidth / 2;
+        if (totalWidth <= 0) return;
+        const duration = totalWidth / SCROLL_SPEED;
+        marqueeControls.start({
+          x: [0, -totalWidth],
+          transition: {
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration,
+              ease: "linear",
+            },
+          },
+        });
+      }
+    },
+    [isInView, marqueeControls],
+  );
 
   return (
     <section
@@ -367,17 +371,27 @@ export const CustomerVideosSection = memo(function CustomerVideosSection({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <h2
-        ref={headerRef}
+      <motion.h2
         className="font-display font-semibold text-2xl md:text-4xl lg:text-[40px] text-black text-center leading-tight tracking-wide md:tracking-normal mb-8 md:mb-12 lg:mb-14 px-4"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={headerReveal}
       >
         Hear it from our customers
-      </h2>
+      </motion.h2>
 
-      <div className="relative">
-        <div
+      <motion.div
+        className="relative"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={trackReveal}
+      >
+        <motion.div
           ref={trackRef}
           className="flex gap-[10px] items-start will-change-transform"
+          animate={marqueeControls}
         >
           {loopedVideos.map((video, index) => (
             <VideoCard
@@ -387,8 +401,8 @@ export const CustomerVideosSection = memo(function CustomerVideosSection({
               onPlayStateChange={handlePlayStateChange}
             />
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 });

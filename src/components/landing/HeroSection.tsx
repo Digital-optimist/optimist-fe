@@ -1,7 +1,5 @@
 "use client";
 
-import { gsap } from "@/lib/gsap";
-import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -9,16 +7,14 @@ import { ASSETS } from "@/lib/assets";
 import { useRouter } from "next/navigation";
 import type { HeroBadge } from "@/lib/shopify";
 
-// Smooth scroll to element using GSAP
+// Smooth scroll to element using the browser's native API. The original used
+// GSAP's `scrollTo` plugin with a 0.1s duration — effectively instant — so the
+// native equivalent is functionally identical.
 const scrollToSection = (elementId: string) => {
   const element = document.getElementById(elementId);
   if (element) {
     const targetPosition = element.getBoundingClientRect().top + window.scrollY;
-    gsap.to(window, {
-      scrollTo: { y: targetPosition, autoKill: false },
-      duration: 0.1,
-      ease: "power2.inOut",
-    });
+    window.scrollTo({ top: targetPosition, behavior: "smooth" });
   }
 };
 
@@ -160,12 +156,9 @@ export function HeroSection({
       currentX += (targetX - currentX) * smoothness;
       currentY += (targetY - currentY) * smoothness;
 
-      // Apply transform
-      gsap.set(content, {
-        x: currentX,
-        y: currentY,
-        force3D: true,
-      });
+      // Apply transform directly — cheaper than going through a library for
+      // a per-frame parallax update on a single element.
+      content.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
 
       animationId = requestAnimationFrame(animate);
     };
@@ -184,50 +177,83 @@ export function HeroSection({
     };
   }, [isMobile]);
 
-  // Initial entrance animations
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
+  // Initial entrance — animate each tracked element on mount via inline DOM
+  // transitions. This replaces the original GSAP timeline; the timing chosen
+  // here mirrors the original cadence (each phase overlaps slightly with the
+  // previous) but the values are direct so the visual result is stable.
+  useEffect(() => {
+    const headlineSpans =
+      headlineRef.current?.querySelectorAll<HTMLSpanElement>("span") ?? [];
+    headlineSpans.forEach((el, i) => {
+      el.style.opacity = "0";
+      el.style.transform = "translate3d(0, 60px, 0)";
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)";
+        el.style.transitionDelay = `${i * 0.15}s`;
+        el.style.opacity = "1";
+        el.style.transform = "translate3d(0, 0, 0)";
       });
+    });
 
-      // Staggered headline animation
-      tl.fromTo(
-        headlineRef.current?.querySelectorAll("span") || [],
-        { opacity: 0, y: 60, rotateX: -15 },
-        { opacity: 1, y: 0, rotateX: 0, stagger: 0.15, duration: 1 },
-      )
-        // Badges fade in
-        .fromTo(
-          badgesRef.current,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          "-=0.5",
-        )
-        // Desktop buttons
-        .fromTo(
-          buttonsRef.current?.children || [],
-          { opacity: 0, x: 30 },
-          { opacity: 1, x: 0, stagger: 0.1, duration: 0.6 },
-          "-=0.4",
-        )
-        // Mobile buttons
-        .fromTo(
-          mobileButtonsRef.current?.children || [],
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, stagger: 0.1, duration: 0.6 },
-          "-=0.6",
-        )
-        // AC Image with scale effect
-        .fromTo(
-          imageRef.current,
-          { opacity: 0, y: 80, scale: 0.95 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" },
-          "-=0.8",
-        );
-    },
-    { scope: sectionRef },
-  );
+    const fadeUpEl = (el: HTMLElement | null, delay: number, fromY = 30) => {
+      if (!el) return;
+      el.style.opacity = "0";
+      el.style.transform = `translate3d(0, ${fromY}px, 0)`;
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
+        el.style.transitionDelay = `${delay}s`;
+        el.style.opacity = "1";
+        el.style.transform = "translate3d(0, 0, 0)";
+      });
+    };
+
+    fadeUpEl(badgesRef.current, 0.5);
+
+    const desktopBtns = Array.from(
+      buttonsRef.current?.children ?? [],
+    ) as HTMLElement[];
+    desktopBtns.forEach((el, i) => {
+      el.style.opacity = "0";
+      el.style.transform = "translate3d(30px, 0, 0)";
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+        el.style.transitionDelay = `${0.9 + i * 0.1}s`;
+        el.style.opacity = "1";
+        el.style.transform = "translate3d(0, 0, 0)";
+      });
+    });
+
+    const mobileBtns = Array.from(
+      mobileButtonsRef.current?.children ?? [],
+    ) as HTMLElement[];
+    mobileBtns.forEach((el, i) => {
+      el.style.opacity = "0";
+      el.style.transform = "translate3d(0, 20px, 0)";
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+        el.style.transitionDelay = `${0.9 + i * 0.1}s`;
+        el.style.opacity = "1";
+        el.style.transform = "translate3d(0, 0, 0)";
+      });
+    });
+
+    if (imageRef.current) {
+      const el = imageRef.current;
+      el.style.opacity = "0";
+      el.style.transform = "translate3d(0, 80px, 0) scale(0.95)";
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+        el.style.transitionDelay = "0.7s";
+        el.style.opacity = "1";
+        el.style.transform = "translate3d(0, 0, 0) scale(1)";
+      });
+    }
+  }, []);
 
   // Use CSS-based responsive sizing for SSR, only switch to JS-based after mount
   // Note: Using 'svh' (small viewport height) on mobile instead of 'dvh' to prevent

@@ -1,11 +1,21 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect } from "react";
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.2 } },
+};
+
+const blockReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
 // =============================================================================
 // Types
@@ -92,66 +102,17 @@ const FeatureItem = memo(function FeatureItem({ feature }: { feature: WarrantyFe
 // =============================================================================
 
 export const WarrantySection = memo(function WarrantySection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  // Set initial states to prevent flash
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 40 });
-    }
-    if (contentRef.current) {
-      gsap.set(contentRef.current, { opacity: 0, y: 40 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Header animation
-      tl.to(
-        headerRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0
-      );
-
-      // Content card animation
-      tl.to(
-        contentRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0.2
-      );
-    },
-    { scope: sectionRef }
-  );
-
   return (
-    <section ref={sectionRef} className="w-full py-12 md:py-20 lg:py-24 bg-white" aria-labelledby="warranty-heading">
+    <motion.section
+      className="w-full py-12 md:py-20 lg:py-24 bg-white"
+      aria-labelledby="warranty-heading"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
+    >
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10">
-        {/* Header */}
-        <div ref={headerRef} className="mb-6 md:mb-11">
+        <motion.div className="mb-6 md:mb-11" variants={blockReveal}>
           <div className="flex items-start justify-between">
             <div>
               {/* Subtitle */}
@@ -176,10 +137,12 @@ export const WarrantySection = memo(function WarrantySection() {
               Learn more
             </Link>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Content Card */}
-        <div ref={contentRef} className="border border-[rgba(0,0,0,0.12)] rounded-2xl md:rounded-3xl overflow-hidden md:h-[545px]">
+        <motion.div
+          className="border border-[rgba(0,0,0,0.12)] rounded-2xl md:rounded-3xl overflow-hidden md:h-[545px]"
+          variants={blockReveal}
+        >
           <div className="flex flex-col md:flex-row items-center md:items-center md:justify-between p-4 md:pl-5 md:pr-0 md:py-10 gap-[18px] md:gap-4">
             {/* Warranty Card Image — source is pre-cropped to the visible region. */}
             <div className="relative w-[200px] md:w-[326px] h-[285px] md:h-[465px] shrink-0 overflow-hidden">
@@ -210,9 +173,8 @@ export const WarrantySection = memo(function WarrantySection() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Learn more CTA - Mobile */}
         <div className="flex md:hidden mt-6">
           <Link
             href="/warranty"
@@ -225,6 +187,6 @@ export const WarrantySection = memo(function WarrantySection() {
           </Link>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 });

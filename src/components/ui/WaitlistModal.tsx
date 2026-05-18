@@ -2,8 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { X, Check } from "lucide-react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { AnimatePresence, motion } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 
 // =============================================================================
@@ -201,54 +200,6 @@ function SuccessView() {
 
 export function WaitlistModal() {
   const { isModalOpen, modalView, closeModal } = useWaitlist();
-  const modalRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  // Animation
-  useGSAP(() => {
-    if (!modalRef.current || !overlayRef.current || !panelRef.current) return;
-
-    if (isModalOpen) {
-      // Show modal
-      gsap.set(modalRef.current, { display: "flex" });
-      gsap.to(overlayRef.current, {
-        opacity: 1,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-      gsap.fromTo(
-        panelRef.current,
-        { opacity: 0, scale: 0.95, y: 20 },
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.4,
-          ease: "power3.out",
-        },
-      );
-    } else {
-      // Hide modal
-      gsap.to(overlayRef.current, {
-        opacity: 0,
-        duration: 0.2,
-        ease: "power2.in",
-      });
-      gsap.to(panelRef.current, {
-        opacity: 0,
-        scale: 0.95,
-        y: 20,
-        duration: 0.2,
-        ease: "power2.in",
-        onComplete: () => {
-          if (modalRef.current) {
-            gsap.set(modalRef.current, { display: "none" });
-          }
-        },
-      });
-    }
-  }, [isModalOpen]);
 
   // Close on escape
   useEffect(() => {
@@ -263,27 +214,42 @@ export function WaitlistModal() {
   }, [isModalOpen, closeModal]);
 
   return (
-    <div
-      ref={modalRef}
-      className="fixed inset-0 z-[100] hidden items-center justify-center p-4"
-      aria-modal="true"
-      role="dialog"
-    >
-      {/* Overlay with Blur */}
-      <div
-        ref={overlayRef}
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0"
-        onClick={closeModal}
-      />
+    <AnimatePresence>
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          aria-modal="true"
+          role="dialog"
+        >
+          <motion.div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={closeModal}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.3, ease: "easeOut" } }}
+            exit={{ opacity: 0, transition: { duration: 0.2, ease: "easeIn" } }}
+          />
 
-      {/* Modal Panel */}
-      <div
-        ref={panelRef}
-        className="relative w-full max-w-lg bg-white rounded-[24px] md:rounded-[32px] shadow-2xl opacity-0"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {modalView === "phone" ? <PhoneFormView /> : <SuccessView />}
-      </div>
-    </div>
+          <motion.div
+            className="relative w-full max-w-lg bg-white rounded-[24px] md:rounded-[32px] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              transition: { duration: 0.4, ease: "easeOut" },
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.95,
+              y: 20,
+              transition: { duration: 0.2, ease: "easeIn" },
+            }}
+          >
+            {modalView === "phone" ? <PhoneFormView /> : <SuccessView />}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -235,15 +235,17 @@ function ProductsPageInner({
     setSelectedImageIndex(0);
   }, [selectedVariant?.id]);
 
-  // Re-init Snapmint widget when variant/price changes
-  // useEffect(() => {
-  //   if (selectedVariant?.price) {
-  //     const tid = setTimeout(() => {
-  //       window.loadOnPage?.();
-  //     }, 500);
-  //     return () => clearTimeout(tid);
-  //   }
-  // }, [selectedVariant?.price]);
+  // Re-init Snapmint EMI widget when the variant/price changes — the script
+  // binds the EMI calculation to the price in `data-snapmint-price`, so a
+  // variant switch needs `window.loadOnPage()` to re-read the new value.
+  useEffect(() => {
+    if (selectedVariant?.price) {
+      const tid = setTimeout(() => {
+        window.loadOnPage?.();
+      }, 500);
+      return () => clearTimeout(tid);
+    }
+  }, [selectedVariant?.price]);
 
   const activeProductId = selectedVariant?.productId || product?.id;
   const { rating: judgeRating, count: judgeCount } =
@@ -659,8 +661,12 @@ function ProductsPageInner({
                 <BusinessPurchaseSection />
               </div>
 
-              {/* Snapmint EMI Widget */}
-              {/* <motion.div variants={heroInfoItemVariants}>
+              {/* Snapmint EMI Widget — the loader script (mounted globally in
+                  layout.tsx via SnapmintLoader) injects EMI copy into
+                  `.snap_emi_txt` based on the price in
+                  `.snapmint_lowest_emi_value`. Both elements must exist for
+                  the widget to render. */}
+              <div>
                 <div className="snap_emi_txt"></div>
                 <span
                   className="snapmint_lowest_emi_value"
@@ -669,7 +675,7 @@ function ProductsPageInner({
                   data-snapmint-merchant_id={"8097"}
                   data-snapmint-page="products_page"
                 ></span>
-              </motion.div> */}
+              </div>
 
               {/* Variants */}
               {/* <motion.div

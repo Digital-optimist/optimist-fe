@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useRef, useState, useEffect, useLayoutEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { ASSETS } from "@/lib/assets";
 
@@ -329,107 +328,124 @@ export function BenefitsSection() {
   const headerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    () => {
-      const carousel = carouselRef.current;
-      const section = sectionRef.current;
-      if (!carousel || !section) return;
+  // Distance the carousel must translate left to expose all cards. Measured
+  // from the DOM on mount + resize + image load — same metric the old
+  // ScrollTrigger maintained.
+  const [scrollDistance, setScrollDistance] = useState(0);
 
-      const isMobile = window.innerWidth < 768;
+  useLayoutEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
 
-      if (isMobile) {
-        gsap.set(headerRef.current, { opacity: 1, y: 30 });
-      } else {
-        gsap.set(headerRef.current, { opacity: 0, y: 40 });
-      }
+    const updateMetrics = () => {
+      const cards = carousel.querySelectorAll(".benefit-card");
+      if (!cards.length) return;
+      const gap = parseFloat(getComputedStyle(carousel).columnGap) || 16;
+      const cardWidth = cards[0].getBoundingClientRect().width;
+      const totalWidth = (cardWidth + gap) * cards.length - gap;
+      const containerWidth =
+        carousel.parentElement?.getBoundingClientRect().width ||
+        window.innerWidth;
+      setScrollDistance(Math.max(totalWidth - containerWidth + 48, 0));
+    };
 
-      let scrollDistance = 0;
+    updateMetrics();
 
-      const updateMetrics = () => {
-        const cards = carousel.querySelectorAll(".benefit-card");
-        if (!cards.length) return;
-        const gap = parseFloat(getComputedStyle(carousel).columnGap) || 16;
-        const cardWidth = cards[0].getBoundingClientRect().width;
-        const totalWidth = (cardWidth + gap) * cards.length - gap;
-        const containerWidth =
-          carousel.parentElement?.getBoundingClientRect().width ||
-          window.innerWidth;
-        scrollDistance = Math.max(totalWidth - containerWidth + 48, 0);
-      };
+    const ro = new ResizeObserver(updateMetrics);
+    ro.observe(carousel);
+    if (carousel.parentElement) ro.observe(carousel.parentElement);
 
-      updateMetrics();
+    const images = carousel.querySelectorAll("img");
+    const handleImageLoad = () => updateMetrics();
+    images.forEach((img) => {
+      if (!img.complete) img.addEventListener("load", handleImageLoad);
+    });
 
-      // Header fade in — desktop only (mobile header is shown immediately)
-      if (!isMobile) {
-        gsap.to(headerRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          force3D: true,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-            once: true,
-          },
-        });
-      }
+    return () => {
+      ro.disconnect();
+      images.forEach((img) => img.removeEventListener("load", handleImageLoad));
+    };
+  }, []);
 
-      // Horizontal scroll driven by vertical scroll — all devices
-      ScrollTrigger.create({
-        trigger: triggerRef.current,
-        start: "top top",
-        end: () => `+=${scrollDistance + window.innerHeight * 0.5}`,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: isMobile ? 0 : 1,
-        scrub: 1,
-        invalidateOnRefresh: true,
-        onRefresh: updateMetrics,
-        onUpdate: (self) => {
-          const xMove = -scrollDistance * self.progress;
-          gsap.set(carousel, { x: xMove, force3D: true });
-        },
-      });
+  // Drive the carousel's horizontal translation from vertical scroll progress
+  // through the trigger container. The inner element is `position: sticky` so
+  // it pins to the viewport top for the duration of the trigger's height —
+  // exactly mirroring GSAP's `pin: true` + `scrub: 1` behaviour.
+  const { scrollYProgress } = useScroll({
+    target: triggerRef,
+    offset: ["start start", "end end"],
+  });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
 
-      // Refresh after images load
-      const images = carousel.querySelectorAll("img");
-      const handleImageLoad = () => {
-        updateMetrics();
-        ScrollTrigger.refresh();
-      };
-      images.forEach((img) => {
-        if (!img.complete) {
-          img.addEventListener("load", handleImageLoad);
+  // Header fade-in on desktop only (mobile shows it immediately on mount).
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      el.style.opacity = "1";
+      el.style.transform = "translate3d(0, 0, 0)";
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = "0";
+          el.style.transform = "translate3d(0, 40px, 0)";
+          requestAnimationFrame(() => {
+            el.style.transition =
+              "opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)";
+            el.style.opacity = "1";
+            el.style.transform = "translate3d(0, 0, 0)";
+          });
+          obs.disconnect();
         }
-      });
+      },
+      { threshold: 0.2 },
+    );
 
-      return () => {
-        images.forEach((img) => {
-          img.removeEventListener("load", handleImageLoad);
-        });
-      };
-    },
-    { scope: sectionRef },
-  );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section
       id="benefits"
       ref={sectionRef}
-      className="relative bg-[#FFFFFF] overflow-x-hidden z-[1]"
+      className="relative bg-[#FFFFFF] overflow-x-clip z-[1]"
     >
-      {/* Spacer for AC image + Buy Now button overflow from hero section */}
       <div className="pt-[20px] md:pt-[200px]" />
 
-      {/* Pinned scroll container */}
-      <div ref={triggerRef} className="pt-4 md:pt-6 pb-8 md:pb-12 lg:pb-16">
-        <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none">
-          {/* Section Header */}
-          <div
-            ref={headerRef}
-            className="mb-16 md:mb-8 will-change-[transform,opacity]"
-          >
+      {/* The trigger container's height creates the scroll distance the user
+          must scroll through. We use a CSS-computed `min-height` based on
+          viewport units as a defensive baseline so the trigger is always
+          tall enough to hold the carousel scroll even before the JS
+          measurement of scrollDistance arrives. The exact `height` is then
+          set from the measured scrollDistance for precise alignment.
+
+          ~325vw covers: 4 cards × ~80vw width + 3 × 24px gaps - 100vw
+          container = ~220vw of horizontal travel, plus 100vh for the
+          pinned viewport — total ≈ 100vh + 220vw. Padding the estimate to
+          325vw is safe and never under-sizes the trigger. */}
+      <div
+        ref={triggerRef}
+        className="relative"
+        style={{
+          height:
+            scrollDistance > 0
+              ? `calc(100vh + ${scrollDistance}px)`
+              : undefined,
+          minHeight: "calc(100vh + 240vw)",
+        }}
+      >
+        <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+          <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none w-full">
+            <div
+              ref={headerRef}
+              className="mb-16 md:mb-8 will-change-[transform,opacity]"
+            >
             <h2 className="hidden md:block font-display text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#212121] leading-tight">
               <span
                 style={{
@@ -464,23 +480,24 @@ export function BenefitsSection() {
             </h2>
           </div>
 
-          {/* Carousel */}
-          <div
-            ref={carouselRef}
-            className="flex gap-4 md:gap-6 overflow-visible pb-4 md:pb-0 will-change-transform"
-          >
-            {benefits.map((benefit, index) => (
-              <div key={benefit.id}>
-                {index === 0 && <BenefitCard0 benefit={benefit} />}
-                {index === 1 && <BenefitCard1 benefit={benefit} />}
-                {index === 2 && (
-                  <BenefitCard2 benefit={benefit as (typeof benefits)[2]} />
-                )}
-                {index === 3 && (
-                  <BenefitCard3 benefit={benefit as (typeof benefits)[3]} />
-                )}
-              </div>
-            ))}
+            <motion.div
+              ref={carouselRef}
+              className="flex gap-4 md:gap-6 overflow-visible pb-4 md:pb-0 will-change-transform"
+              style={{ x }}
+            >
+              {benefits.map((benefit, index) => (
+                <div key={benefit.id}>
+                  {index === 0 && <BenefitCard0 benefit={benefit} />}
+                  {index === 1 && <BenefitCard1 benefit={benefit} />}
+                  {index === 2 && (
+                    <BenefitCard2 benefit={benefit as (typeof benefits)[2]} />
+                  )}
+                  {index === 3 && (
+                    <BenefitCard3 benefit={benefit as (typeof benefits)[3]} />
+                  )}
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </div>

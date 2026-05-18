@@ -2,9 +2,33 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const titleReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const cardSlide: Variants = {
+  hidden: { opacity: 0, x: 60 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const navReveal: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut", delayChildren: 0.2 },
+  },
+};
+
+const cardsStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
+};
 
 // =============================================================================
 // Core Team Section - Team members carousel with scroll-based focus
@@ -259,11 +283,7 @@ function TeamCard({
 }
 
 export function CoreTeamSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const navRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const [focusedIndex, setFocusedIndex] = useState(0);
@@ -368,61 +388,6 @@ export function CoreTeamSection() {
       }
     },
     [calculateFocusedCard, focusedIndex],
-  );
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Title animation
-      tl.from(
-        titleRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Cards animation
-      if (cardsRef.current) {
-        const cards = cardsRef.current.children;
-        tl.from(
-          cards,
-          {
-            opacity: 0,
-            x: 60,
-            duration: 0.8,
-            ease: "power3.out",
-            stagger: 0.15,
-          },
-          0.2,
-        );
-      }
-
-      // Navigation animation
-      tl.from(
-        navRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        0.4,
-      );
-    },
-    { scope: sectionRef },
   );
 
   const updateScrollState = useCallback(() => {
@@ -537,23 +502,24 @@ export function CoreTeamSection() {
   }, [focusedIndex]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="bg-white pb-12 md:pb-16 lg:pb-20 overflow-hidden"
-    >
+    <section className="bg-white pb-12 md:pb-16 lg:pb-20 overflow-hidden">
       <div className="max-w-[1440px] mx-auto">
-        {/* Title - Core Team */}
-        <h2
-          ref={titleRef}
-          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-black text-center tracking-[0.04em] mb-8 md:mb-12 lg:mb-16 px-4 will-change-[transform,opacity]"
+        <motion.h2
+          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-black text-center tracking-[0.04em] mb-8 md:mb-12 lg:mb-16 px-4"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={titleReveal}
         >
           Core Team
-        </h2>
+        </motion.h2>
 
-        {/* Horizontal Scroll Container with hover arrows */}
-        <div
-          ref={navRef}
+        <motion.div
           className="relative group"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={navReveal}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -600,17 +566,18 @@ export function CoreTeamSection() {
             onTouchStart={handleTouchStart}
             className="overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory md:snap-none"
           >
-            <div
-              ref={cardsRef}
+            <motion.div
               className="flex gap-4 md:gap-6 lg:gap-8 px-4 md:px-6 lg:px-10 w-max"
+              variants={cardsStagger}
             >
               {teamData.map((member, index) => (
-                <div
+                <motion.div
                   key={member.id}
                   ref={(el) => {
                     cardRefs.current[index] = el;
                   }}
                   className="snap-center md:snap-align-none"
+                  variants={cardSlide}
                 >
                   <TeamCard
                     title={member.title}
@@ -623,11 +590,11 @@ export function CoreTeamSection() {
                     isMobile={isMobile}
                     previousCompanies={member.previousCompanies}
                   />
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,9 +1,15 @@
 "use client";
 
-import { useRef, useLayoutEffect } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import {
+  fadeLeft,
+  fadeRight,
+  staggerParent,
+  viewportOnce,
+} from "@/lib/motion-variants";
+
+const cardsStagger = staggerParent(0.1);
 
 const REMOTE_IMG = "/images/made-simple/remote.webp";
 const PALM_TREE_MASK = "/images/made-simple/palm-tree-mask.svg";
@@ -13,70 +19,21 @@ const ELLIPSE_MOBILE_3 = "/images/made-simple/ellipse3.svg";
 const LINE_SVG = "/images/made-simple/line.svg";
 
 export function MadeSimpleSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const leftCardRef = useRef<HTMLDivElement>(null);
-  const rightCardRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  useLayoutEffect(() => {
-    if (leftCardRef.current) {
-      gsap.set(leftCardRef.current, { opacity: 0, x: -40 });
-    }
-    if (rightCardRef.current) {
-      gsap.set(rightCardRef.current, { opacity: 0, x: 40 });
-    }
-  }, []);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      tl.to(
-        leftCardRef.current,
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      tl.to(
-        rightCardRef.current,
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0.1,
-      );
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="py-4 md:py-6 overflow-x-hidden bg-white"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={cardsStagger}
     >
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[488fr_900fr] gap-6">
-          {/* ───── LEFT CARD: Gradient + Headline ───── */}
-          <div
-            ref={leftCardRef}
-            className="relative rounded-[44px] overflow-hidden will-change-[transform,opacity] h-[409px] lg:h-[580px]"
+          <motion.div
+            variants={fadeLeft}
+            className="relative rounded-[44px] overflow-hidden h-[409px] lg:h-[580px]"
             style={{
               backgroundImage:
                 "linear-gradient(145deg, #1265FF 25.27%, #69CDEB 87.59%, #46F5A0 120.92%)",
@@ -119,12 +76,11 @@ export function MadeSimpleSection() {
                 Buy Now
               </button>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ───── RIGHT CARD: Remote Section ───── */}
-          <div
-            ref={rightCardRef}
-            className="relative rounded-[44px] overflow-hidden will-change-[transform,opacity] bg-[rgba(52,120,246,0.06)] border border-[rgba(33,33,33,0.2)] h-[466px] lg:h-auto"
+          <motion.div
+            variants={fadeRight}
+            className="relative rounded-[44px] overflow-hidden bg-[rgba(52,120,246,0.06)] border border-[rgba(33,33,33,0.2)] h-[466px] lg:h-auto"
           >
             {/* Desktop decorative ellipses */}
             <div
@@ -351,9 +307,9 @@ export function MadeSimpleSection() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

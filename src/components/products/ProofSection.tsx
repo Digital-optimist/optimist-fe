@@ -9,9 +9,13 @@ import {
   useLayoutEffect,
 } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
-import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+} from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { ASSETS } from "@/lib/assets";
 
@@ -432,126 +436,156 @@ const DesktopProofScroll = memo(function DesktopProofScroll({
 }: {
   isInView: boolean;
 }) {
-  const pinRef = useRef<HTMLDivElement>(null);
+  // Pin trigger (outer) drives vertical scroll progress. The sticky child
+  // below stays glued to the top while we scroll through this height, and
+  // the carousel's `x` is mapped from that progress.
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const [totalScroll, setTotalScroll] = useState(0);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
+  // Measure how far the carousel must translate left to expose all cards.
   useLayoutEffect(() => {
-    if (trackRef.current) {
-      gsap.set(trackRef.current, { opacity: 0, y: 30 });
-    }
+    const track = trackRef.current;
+    const cardsContainer = cardsContainerRef.current;
+    if (!track || !cardsContainer) return;
+
+    const updateMetrics = () => {
+      setTotalScroll(Math.max(track.scrollWidth - cardsContainer.clientWidth, 0));
+    };
+
+    updateMetrics();
+    const ro = new ResizeObserver(updateMetrics);
+    ro.observe(track);
+    ro.observe(cardsContainer);
+
+    const images = track.querySelectorAll("img");
+    const handleImageLoad = () => updateMetrics();
+    images.forEach((img) => {
+      if (!img.complete) img.addEventListener("load", handleImageLoad);
+    });
+
+    return () => {
+      ro.disconnect();
+      images.forEach((img) => img.removeEventListener("load", handleImageLoad));
+    };
   }, []);
 
-  useGSAP(
-    () => {
-      const pin = pinRef.current;
-      const track = trackRef.current;
-      const cardsContainer = cardsContainerRef.current;
-      if (!pin || !track || !cardsContainer) return;
+  const { scrollYProgress } = useScroll({
+    target: triggerRef,
+    offset: ["start start", "end end"],
+  });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -totalScroll]);
 
-      // Fade track in on first arrival
-      gsap.to(track, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: pin,
-          start: "top 80%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      const totalScroll = track.scrollWidth - cardsContainer.clientWidth;
-      if (totalScroll <= 0 || PROOF_CARDS.length <= 1) return;
-
-      const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
-      const gap = 24;
-
-      ScrollTrigger.create({
-        trigger: pin,
-        start: "top 40px",
-        end: () => `+=${totalScroll}`,
-        pin: true,
-        anticipatePin: 1,
-        scrub: 1,
-        onUpdate: (self) => {
-          const x = self.progress * totalScroll;
-          gsap.set(track, { x: -x, force3D: true });
-
-          if (cardEls.length > 0) {
-            const firstCardWidth = cardEls[0].offsetWidth;
-            const idx = Math.round(x / (firstCardWidth + gap));
-            setActiveCardIndex(
-              Math.min(Math.max(idx, 0), PROOF_CARDS.length - 1),
-            );
-          }
-        },
-      });
-    },
-    { scope: pinRef },
-  );
-
-  const handleDotClick = useCallback((index: number) => {
+  // Track which card is "active" for the scroll dots.
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
     const track = trackRef.current;
-    const pin = pinRef.current;
-    const cardsContainer = cardsContainerRef.current;
-    if (!track || !pin || !cardsContainer) return;
-
+    if (!track || PROOF_CARDS.length <= 1) return;
     const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
     if (cardEls.length === 0) return;
-
-    const totalScroll = track.scrollWidth - cardsContainer.clientWidth;
     const gap = 24;
-    const targetX = index * (cardEls[0].offsetWidth + gap);
-    const progress = Math.min(targetX / totalScroll, 1);
+    const firstCardWidth = cardEls[0].offsetWidth;
+    const distancePx = progress * totalScroll;
+    const idx = Math.round(distancePx / (firstCardWidth + gap));
+    setActiveCardIndex(Math.min(Math.max(idx, 0), PROOF_CARDS.length - 1));
+  });
 
-    const triggers = ScrollTrigger.getAll().filter(
-      (t) => t.vars.trigger === pin,
+  // Fade the track in once it enters the viewport (only fires once).
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.style.opacity = "0";
+    el.style.transform = "translate3d(0, 30px, 0)";
+
+    const observer = new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          requestAnimationFrame(() => {
+            el.style.transition =
+              "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+            el.style.opacity = "1";
+            el.style.transform = "translate3d(0, 0, 0)";
+          });
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.2 },
     );
-    if (triggers.length > 0) {
-      const trigger = triggers[0];
-      const scrollTarget =
-        trigger.start + progress * (trigger.end - trigger.start);
-      gsap.to(window, {
-        scrollTo: scrollTarget,
-        duration: 0.6,
-        ease: "power2.inOut",
-      });
-    }
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
+
+  // Programmatically scroll the page so that the requested card is centered.
+  // We compute the target scrollY by reading the trigger's bounding box,
+  // matching the old ScrollTrigger-based dot navigation.
+  const handleDotClick = useCallback(
+    (index: number) => {
+      const trigger = triggerRef.current;
+      const track = trackRef.current;
+      if (!trigger || !track || totalScroll <= 0) return;
+      const cardEls = track.querySelectorAll<HTMLElement>("[data-proof-card]");
+      if (cardEls.length === 0) return;
+
+      const gap = 24;
+      const targetX = index * (cardEls[0].offsetWidth + gap);
+      const progress = Math.min(targetX / totalScroll, 1);
+
+      const rect = trigger.getBoundingClientRect();
+      const triggerTop = rect.top + window.scrollY;
+      const triggerHeight = trigger.offsetHeight - window.innerHeight;
+      const scrollTarget = triggerTop + progress * triggerHeight;
+
+      window.scrollTo({ top: scrollTarget, behavior: "smooth" });
+    },
+    [totalScroll],
+  );
+
+  // Trigger container height = viewport height + scroll distance so the user
+  // scrolls through the carousel's horizontal travel while it stays pinned.
+  const triggerHeight = totalScroll > 0
+    ? `${totalScroll + (typeof window !== "undefined" ? window.innerHeight : 800)}px`
+    : undefined;
 
   return (
     <div className="hidden lg:block">
-      <div ref={pinRef} className="bg-white pb-4">
-        {/* Section Header - inside pinned container */}
-        <motion.h2
-          className="font-display font-semibold text-[40px] text-black text-center leading-tight tracking-normal mb-12"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={headerVariants}
-        >
-          Proof over Promises.
-        </motion.h2>
+      <div
+        ref={triggerRef}
+        className="bg-white pb-4"
+        style={{ height: triggerHeight }}
+      >
+        <div ref={stickyRef} className="sticky top-0 pt-10">
+          <motion.h2
+            className="font-display font-semibold text-[40px] text-black text-center leading-tight tracking-normal mb-12"
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={headerVariants}
+          >
+            Proof over Promises.
+          </motion.h2>
 
-        <div ref={cardsContainerRef} className="overflow-hidden">
-          <div ref={trackRef} className={`flex gap-6 will-change-transform ${PROOF_CARDS.length === 1 ? "justify-center" : ""}`}>
-            {PROOF_CARDS.map((card) => (
-              <div key={card.id} data-proof-card>
-                <DesktopProofCard card={card} />
-              </div>
-            ))}
+          <div ref={cardsContainerRef} className="overflow-hidden">
+            <motion.div
+              ref={trackRef}
+              className={`flex gap-6 will-change-transform ${PROOF_CARDS.length === 1 ? "justify-center" : ""}`}
+              style={{ x }}
+            >
+              {PROOF_CARDS.map((card) => (
+                <div key={card.id} data-proof-card>
+                  <DesktopProofCard card={card} />
+                </div>
+              ))}
+            </motion.div>
           </div>
+          {PROOF_CARDS.length > 1 && (
+            <ScrollDots
+              total={PROOF_CARDS.length}
+              activeIndex={activeCardIndex}
+              onDotClick={handleDotClick}
+            />
+          )}
         </div>
-        {PROOF_CARDS.length > 1 && (
-          <ScrollDots
-            total={PROOF_CARDS.length}
-            activeIndex={activeCardIndex}
-            onDotClick={handleDotClick}
-          />
-        )}
       </div>
     </div>
   );

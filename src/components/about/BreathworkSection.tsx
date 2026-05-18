@@ -1,13 +1,8 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
-
-// =============================================================================
-// Animated Lines Section - Cooling reimagined for Indian reality
-// Video background with ripple effect - text lines animate on scroll
-// =============================================================================
+import { useRef } from "react";
+import { motion, type Variants } from "framer-motion";
+import { viewportOnce } from "@/lib/motion-variants";
 
 // Animated lines content
 const animatedLines = [
@@ -16,65 +11,27 @@ const animatedLines = [
   "Comfort without the compromise.",
 ];
 
+// Stagger 0.7s between each line — matches the original GSAP "index * 0.7" cadence.
+const linesStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.7 } },
+};
+
+const lineReveal: Variants = {
+  hidden: { opacity: 0, y: 60, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 1.2, ease: "easeOut" },
+  },
+};
+
 export function BreathworkSection() {
-  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const linesRef = useRef<HTMLDivElement>(null);
-
-  // Refresh ScrollTrigger after component mounts to handle desktop layout
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useGSAP(
-    () => {
-      if (!linesRef.current) return;
-      
-      const lines = linesRef.current.querySelectorAll(".animated-line");
-      
-      // Set initial state using GSAP (not inline styles)
-      gsap.set(lines, {
-        opacity: 0,
-        y: 60,
-        scale: 0.95,
-      });
-
-      // Main timeline triggered once on scroll
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 30%",
-          toggleActions: "play none none none",
-        },
-      });
-
-      // Animate each text line one by one with stagger
-      lines.forEach((line, index) => {
-        tl.to(
-          line,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1.2,
-            ease: "power3.out",
-          },
-          index * 0.7, // Each line starts 0.7s after the previous
-        );
-      });
-    },
-    { scope: sectionRef, dependencies: [] },
-  );
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden min-h-[600px] md:min-h-[700px] lg:min-h-[800px]"
-    >
+    <section className="relative overflow-hidden min-h-[600px] md:min-h-[700px] lg:min-h-[800px]">
       {/* Video Background with Ripple Effect */}
       <div className="absolute inset-0 w-full h-full">
         <video
@@ -89,17 +46,19 @@ export function BreathworkSection() {
         </video>
       </div>
 
-      {/* Center content */}
       <div className="relative z-10 max-w-[1440px] mx-auto px-4 py-16 md:py-24 lg:py-32">
-        {/* Animated lines */}
-        <div
-          ref={linesRef}
+        <motion.div
           className="flex flex-col items-center justify-center gap-6 md:gap-8 lg:gap-10 min-h-[400px] md:min-h-[480px] lg:min-h-[560px]"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={linesStagger}
         >
           {animatedLines.map((line, index) => (
-            <p
+            <motion.p
               key={index}
-              className="animated-line font-light text-[22px] md:text-[32px] lg:text-[42px] text-center leading-[1.3] tracking-[-0.01em] will-change-transform"
+              className="font-light text-[22px] md:text-[32px] lg:text-[42px] text-center leading-[1.3] tracking-[-0.01em]"
+              variants={lineReveal}
             >
               {index === 0 ? (
                 <>
@@ -127,9 +86,9 @@ export function BreathworkSection() {
                   </span>
                 </>
               )}
-            </p>
+            </motion.p>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion } from "framer-motion";
 import { BlogArticle } from "@/lib/shopify";
 import BlogCard from "./BlogCard";
+import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
+
+const stagger = staggerParent(0.1);
 
 // =============================================================================
 // Blog Grid - Grid of blog cards
@@ -16,48 +17,6 @@ interface BlogGridProps {
 }
 
 export function BlogGrid({ articles, isLoading = false }: BlogGridProps) {
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      if (!gridRef.current || isLoading) return;
-
-      const cards = gridRef.current.querySelectorAll(".blog-card");
-      if (cards.length === 0) return;
-
-      // Set initial state
-      gsap.set(cards, { opacity: 0, y: 40 });
-
-      let hasAnimated = false;
-
-      const animateIn = () => {
-        if (hasAnimated) return;
-        hasAnimated = true;
-        gsap.to(cards, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-        });
-      };
-
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: gridRef.current,
-          start: "top 95%",
-          toggleActions: "play none none none",
-          once: true,
-          onEnter: animateIn,
-        },
-      });
-
-      // Fallback: ensure cards are visible after 1.5 seconds
-      setTimeout(animateIn, 1500);
-    },
-    { scope: gridRef, dependencies: [articles, isLoading] },
-  );
-
   if (isLoading) {
     return (
       <div className="bg-white py-8 md:py-10 lg:py-12">
@@ -117,16 +76,23 @@ export function BlogGrid({ articles, isLoading = false }: BlogGridProps) {
   return (
     <div className="bg-white py-8 md:py-10 lg:py-12">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
-        <div
-          ref={gridRef}
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={stagger}
         >
           {articles.map((article, index) => (
-            <div key={article.id} className="blog-card">
+            <motion.div
+              key={article.id}
+              className="blog-card"
+              variants={fadeUp}
+            >
               <BlogCard article={article} index={index} />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

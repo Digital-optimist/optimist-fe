@@ -1,12 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
-
-// =============================================================================
-// Blog Category Tabs - Filter tabs for blog categories
-// =============================================================================
+import { motion } from "framer-motion";
+import { fadeUp, viewportOnce } from "@/lib/motion-variants";
 
 interface BlogCategoryTabsProps {
   categories: string[];
@@ -19,43 +14,23 @@ export function BlogCategoryTabs({
   activeCategory,
   onCategoryChange,
 }: BlogCategoryTabsProps) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.from(sectionRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.7,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 90%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-    },
-    { scope: sectionRef },
-  );
-
-  // Don't render if there are no categories or only "All"
   if (!categories || categories.length <= 1) {
     return null;
   }
 
   return (
-    <div
-      ref={sectionRef}
-      className="bg-white pt-16 md:pt-20 lg:pt-24 will-change-[transform,opacity]"
+    <motion.div
+      className="bg-white pt-16 md:pt-20 lg:pt-24"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={fadeUp}
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
-        {/* Section Title */}
         <h3 className="font-display font-semibold text-[28px] sm:text-[28px] md:text-[32px] lg:text-[36px] text-[#101828] text-center mb-6 md:mb-8">
           Explore more topics
         </h3>
 
-        {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-2 md:gap-3">
           {categories.map((category) => (
             <button
@@ -72,7 +47,7 @@ export function BlogCategoryTabs({
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

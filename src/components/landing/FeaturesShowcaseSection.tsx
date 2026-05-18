@@ -2,9 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
-import { ScrollTrigger } from "@/lib/gsap";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 
 // Helper to detect iOS Safari
@@ -197,222 +195,178 @@ export function FeaturesShowcaseSection() {
     }
   }, [initializeVideo]);
 
-  // Desktop video scrubbing - starts when section enters viewport
-  useGSAP(
-    () => {
-      if (!isLargeScreen) return;
+  // Desktop video scrubbing — drive video.currentTime from vertical scroll
+  // progress through the section. The lerp + rAF loop smooths the seeks so we
+  // don't paint a sharp jitter on every scroll event.
+  const desktopScrubState = useRef({
+    targetTime: 0,
+    currentTime: 0,
+    lastTargetTime: 0,
+    rafId: null as number | null,
+    isSeekingAllowed: true,
+  });
+  const { scrollYProgress: desktopScrollProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end end"],
+  });
 
-      const video = videoRef.current;
-      if (!video || !sectionRef.current) return;
+  useEffect(() => {
+    if (!isLargeScreen) return;
+    const video = videoRef.current;
+    if (!video) return;
+    video.pause();
+    const state = desktopScrubState.current;
+    state.isSeekingAllowed = true;
+    return () => {
+      state.isSeekingAllowed = false;
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+    };
+  }, [isLargeScreen, videoReady]);
 
-      video.pause();
+  useMotionValueEvent(desktopScrollProgress, "change", (progress) => {
+    if (!isLargeScreen) return;
+    const video = videoRef.current;
+    if (!video || !Number.isFinite(video.duration)) return;
 
-      // Track target time and current interpolated time for smoother seeking
-      let targetTime = 0;
-      let currentTime = 0;
-      let lastTargetTime = 0;
-      let isSeekingAllowed = true;
-      let rafId: number | null = null;
+    const state = desktopScrubState.current;
+    state.lastTargetTime = state.targetTime;
+    state.targetTime = progress * video.duration;
 
-      // Lerp factors - use faster lerp for reverse scrolling
-      const lerpFactorForward = 0.15;
-      const lerpFactorReverse = 0.35;
+    const lerpFactorForward = 0.15;
+    const lerpFactorReverse = 0.35;
 
-      // Use requestAnimationFrame with lerp for smoother video updates
-      const updateVideoTime = () => {
-        if (!isSeekingAllowed) return;
+    const updateVideoTime = () => {
+      if (!state.isSeekingAllowed) return;
+      if (video.readyState < 1 || !Number.isFinite(video.duration)) return;
 
-        if (video.readyState >= 1 && Number.isFinite(video.duration)) {
-          // Lerp towards target time for smoother transitions
-          const diff = targetTime - currentTime;
-          const isReverse = targetTime < lastTargetTime;
+      const diff = state.targetTime - state.currentTime;
+      const isReverse = state.targetTime < state.lastTargetTime;
+      const lerpFactor = isReverse ? lerpFactorReverse : lerpFactorForward;
 
-          // Use faster lerp for reverse scrolling to improve responsiveness
-          const lerpFactor = isReverse ? lerpFactorReverse : lerpFactorForward;
+      if (Math.abs(diff) > video.duration * 0.15) {
+        state.currentTime = state.currentTime + diff * 0.5;
+      } else if (Math.abs(diff) < 0.01) {
+        state.currentTime = state.targetTime;
+      } else {
+        state.currentTime += diff * lerpFactor;
+      }
 
-          // For large jumps (like quick scroll direction change), snap faster
-          if (Math.abs(diff) > video.duration * 0.15) {
-            // Jump closer to target for large differences
-            currentTime = currentTime + diff * 0.5;
-          } else if (Math.abs(diff) < 0.01) {
-            // If difference is very small, snap to target
-            currentTime = targetTime;
-          } else {
-            // Smooth interpolation towards target
-            currentTime += diff * lerpFactor;
+      if (Math.abs(video.currentTime - state.currentTime) > 0.02) {
+        if (
+          !isReverse &&
+          "fastSeek" in video &&
+          typeof video.fastSeek === "function"
+        ) {
+          try {
+            video.fastSeek(state.currentTime);
+          } catch {
+            video.currentTime = state.currentTime;
           }
-
-          // Only seek if there's a meaningful difference
-          if (Math.abs(video.currentTime - currentTime) > 0.02) {
-            // Use regular currentTime for reverse seeking (more accurate than fastSeek)
-            // fastSeek can be inaccurate when seeking backward
-            if (
-              !isReverse &&
-              "fastSeek" in video &&
-              typeof video.fastSeek === "function"
-            ) {
-              try {
-                video.fastSeek(currentTime);
-              } catch {
-                video.currentTime = currentTime;
-              }
-            } else {
-              video.currentTime = currentTime;
-            }
-          }
-
-          // Continue animation loop if not at target
-          if (Math.abs(targetTime - currentTime) > 0.01) {
-            rafId = requestAnimationFrame(updateVideoTime);
-          }
+        } else {
+          video.currentTime = state.currentTime;
         }
-      };
+      }
 
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top bottom", // Start as soon as section enters viewport
-        end: "bottom bottom",
-        scrub: 0.1,
-        onUpdate: (self) => {
-          if (Number.isFinite(video.duration)) {
-            lastTargetTime = targetTime;
-            targetTime = self.progress * video.duration;
-            // Cancel any pending frame and start new animation loop
-            if (rafId) cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(updateVideoTime);
-          }
-        },
-      });
+      if (Math.abs(state.targetTime - state.currentTime) > 0.01) {
+        state.rafId = requestAnimationFrame(updateVideoTime);
+      }
+    };
 
-      return () => {
-        isSeekingAllowed = false;
-        if (rafId) cancelAnimationFrame(rafId);
-      };
-    },
-    {
-      scope: sectionRef,
-      dependencies: [isLargeScreen, videoReady],
-    },
-  );
+    if (state.rafId) cancelAnimationFrame(state.rafId);
+    state.rafId = requestAnimationFrame(updateVideoTime);
+  });
 
-  // Mobile: Separate ScrollTriggers for video scrubbing and content transitions
-  useGSAP(
-    () => {
-      if (isLargeScreen) return;
+  // Mobile video scrubbing + active feature breakpoints — same idea as
+  // desktop above, but with mobile-specific throttling for slower devices.
+  const mobileScrubState = useRef({
+    targetTime: 0,
+    currentTime: 0,
+    lastTargetTime: 0,
+    rafId: null as number | null,
+    lastSeekTime: 0,
+  });
+  const { scrollYProgress: mobileScrollProgress } = useScroll({
+    target: mobileSectionRef,
+    offset: ["start 25%", "end end"],
+  });
 
-      const video = mobileVideoRef.current;
-      const section = mobileSectionRef.current;
-      if (!video || !section) return;
+  useEffect(() => {
+    if (isLargeScreen) return;
+    const video = mobileVideoRef.current;
+    if (!video) return;
+    video.pause();
+    const state = mobileScrubState.current;
+    return () => {
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+    };
+  }, [isLargeScreen, mobileVideoReady]);
 
-      video.pause();
+  useMotionValueEvent(mobileScrollProgress, "change", (progress) => {
+    if (isLargeScreen) return;
+    const video = mobileVideoRef.current;
+    if (!video || !Number.isFinite(video.duration)) return;
 
-      // Track target time and current interpolated time for smoother seeking
-      let targetTime = 0;
-      let currentTime = 0;
-      let lastTargetTime = 0;
-      let rafId: number | null = null;
-      let lastSeekTime = 0;
-      const seekThrottleMs = 16; // ~60fps throttle for seeking
+    const state = mobileScrubState.current;
+    state.lastTargetTime = state.targetTime;
+    state.targetTime = progress * video.duration;
 
-      // Lerp factors - increased for faster, more responsive video updates on mobile
-      const lerpFactorForward = 0.18; // Reduced for slower video progression
-      const lerpFactorReverse = 0.35; // Reduced for smoother reverse
+    const lerpFactorForward = 0.18;
+    const lerpFactorReverse = 0.35;
+    const seekThrottleMs = 16;
 
-      // Use requestAnimationFrame with lerp for smoother video updates
-      const updateVideoTime = () => {
-        if (video.readyState >= 2 && Number.isFinite(video.duration)) {
-          const now = performance.now();
+    const updateVideoTime = () => {
+      if (video.readyState < 2 || !Number.isFinite(video.duration)) return;
 
-          // Lerp towards target time for smoother transitions
-          const diff = targetTime - currentTime;
-          const isReverse = targetTime < lastTargetTime;
+      const now = performance.now();
+      const diff = state.targetTime - state.currentTime;
+      const isReverse = state.targetTime < state.lastTargetTime;
+      const lerpFactor = isReverse ? lerpFactorReverse : lerpFactorForward;
 
-          // Use faster lerp for reverse scrolling to improve responsiveness
-          const lerpFactor = isReverse ? lerpFactorReverse : lerpFactorForward;
+      if (Math.abs(diff) > video.duration * 0.1) {
+        state.currentTime = state.currentTime + diff * 0.7;
+      } else if (Math.abs(diff) < 0.005) {
+        state.currentTime = state.targetTime;
+      } else {
+        state.currentTime += diff * lerpFactor;
+      }
 
-          // For large jumps (like quick scroll direction change), snap faster
-          if (Math.abs(diff) > video.duration * 0.1) {
-            // Jump closer to target for large differences (increased from 0.5 to 0.7)
-            currentTime = currentTime + diff * 0.7;
-          } else if (Math.abs(diff) < 0.005) {
-            // If difference is very small, snap to target
-            currentTime = targetTime;
+      const shouldSeek = Math.abs(video.currentTime - state.currentTime) > 0.016;
+      const isThrottled = now - state.lastSeekTime < seekThrottleMs;
+
+      if (shouldSeek && !isThrottled) {
+        state.lastSeekTime = now;
+        try {
+          if (
+            !isReverse &&
+            "fastSeek" in video &&
+            typeof video.fastSeek === "function"
+          ) {
+            video.fastSeek(state.currentTime);
           } else {
-            // Smooth interpolation towards target
-            currentTime += diff * lerpFactor;
+            video.currentTime = state.currentTime;
           }
-
-          // Only seek if there's a meaningful difference and we're not throttled
-          const shouldSeek = Math.abs(video.currentTime - currentTime) > 0.016;
-          const isThrottled = now - lastSeekTime < seekThrottleMs;
-
-          if (shouldSeek && !isThrottled) {
-            lastSeekTime = now;
-            try {
-              // Use fastSeek when available and going forward (it's faster but less accurate)
-              if (
-                !isReverse &&
-                "fastSeek" in video &&
-                typeof video.fastSeek === "function"
-              ) {
-                video.fastSeek(currentTime);
-              } else {
-                video.currentTime = currentTime;
-              }
-            } catch {
-              // Ignore seeking errors
-            }
-          }
-
-          // Continue animation loop if not at target
-          if (Math.abs(targetTime - currentTime) > 0.005) {
-            rafId = requestAnimationFrame(updateVideoTime);
-          }
+        } catch {
+          // ignore seeking errors
         }
-      };
+      }
 
-      const featureBreakpoints = [0, 0.33, 0.66, 1];
+      if (Math.abs(state.targetTime - state.currentTime) > 0.005) {
+        state.rafId = requestAnimationFrame(updateVideoTime);
+      }
+    };
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top 25%",
-        end: "bottom bottom",
-        scrub: 0.3, // Increased from 0.05 for better scroll responsiveness on mobile
-        onUpdate: (self) => {
-          const progress = self.progress;
+    if (state.rafId) cancelAnimationFrame(state.rafId);
+    state.rafId = requestAnimationFrame(updateVideoTime);
 
-          // Update video time based on scroll progress
-          if (Number.isFinite(video.duration)) {
-            lastTargetTime = targetTime;
-            targetTime = progress * video.duration;
-            if (rafId) cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(updateVideoTime);
-          }
-
-          // Update active feature based on breakpoints
-          let newActiveFeature = 0;
-          for (let i = 1; i < featureBreakpoints.length; i++) {
-            if (progress >= featureBreakpoints[i]) {
-              newActiveFeature = i;
-            } else {
-              break;
-            }
-          }
-          newActiveFeature = Math.min(newActiveFeature, features.length - 1);
-          setActiveFeature(newActiveFeature);
-        },
-      });
-
-      // Cleanup
-      return () => {
-        if (rafId) cancelAnimationFrame(rafId);
-      };
-    },
-    {
-      scope: mobileSectionRef,
-      dependencies: [isLargeScreen, mobileVideoReady], // Added mobileVideoReady dependency
-    },
-  );
+    // Update active feature based on scroll progress breakpoints.
+    const featureBreakpoints = [0, 0.33, 0.66, 1];
+    let newActiveFeature = 0;
+    for (let i = 1; i < featureBreakpoints.length; i++) {
+      if (progress >= featureBreakpoints[i]) newActiveFeature = i;
+      else break;
+    }
+    setActiveFeature(Math.min(newActiveFeature, features.length - 1));
+  });
 
   return (
     <>

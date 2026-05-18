@@ -1,10 +1,24 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import { viewportOnce } from "@/lib/motion-variants";
+
+const sectionStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.15 } },
+};
+
+const titleReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const imageReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
 // =============================================================================
 // Future Section - "The Future We See" with team image and vision statement
@@ -37,100 +51,26 @@ const features = [
 ];
 
 export function FutureSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Title animation
-      tl.from(
-        titleRef.current,
-        {
-          opacity: 0,
-          y: 30,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Image animation
-      tl.from(
-        imageRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0.2,
-      );
-
-      // Card animation
-      tl.from(
-        cardRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0.3,
-      );
-
-      // Features animation
-      if (featuresRef.current) {
-        const featureItems =
-          featuresRef.current.querySelectorAll(".feature-item");
-        tl.from(
-          featureItems,
-          {
-            opacity: 0,
-            y: 20,
-            duration: 0.6,
-            ease: "power3.out",
-            stagger: 0.1,
-          },
-          0.5,
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white overflow-hidden max-w-[100vw]"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={sectionStagger}
     >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 overflow-hidden">
-        {/* Title */}
-        <h2
-          ref={titleRef}
-          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-black text-center tracking-[1.6px] mb-8 md:mb-12 lg:mb-16 will-change-[transform,opacity]"
+        <motion.h2
+          className="font-display font-semibold text-[28px] md:text-[36px] lg:text-[40px] text-black text-center tracking-[1.6px] mb-8 md:mb-12 lg:mb-16"
+          variants={titleReveal}
         >
           What&apos;s <span className="text-[#3478F6]">Ahead</span>
-        </h2>
+        </motion.h2>
 
-        {/* Container for overlapping image and card */}
         <div className="relative w-full overflow-hidden">
-          {/* Team Image - overlaps the blue card */}
-          <div
-            ref={imageRef}
-            className="relative z-10 w-[92%] max-w-[1172px] mx-auto aspect-[1172/498] rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden will-change-[transform,opacity]"
+          <motion.div
+            className="relative z-10 w-[92%] max-w-[1172px] mx-auto aspect-[1172/498] rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden"
+            variants={imageReveal}
           >
             <Image
               src={ASSETS.futureTeam}
@@ -140,12 +80,11 @@ export function FutureSection() {
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 1172px"
               priority
             />
-          </div>
+          </motion.div>
 
-          {/* Blue Gradient Card - positioned to be overlapped by image */}
-          <div
-            ref={cardRef}
-            className="relative w-full md:max-w-[1360px] mx-auto rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden will-change-[transform,opacity] -mt-[40px] md:-mt-[60px] lg:-mt-[74px]"
+          <motion.div
+            className="relative w-full md:max-w-[1360px] mx-auto rounded-[20px] md:rounded-[28px] lg:rounded-[32px] overflow-hidden -mt-[40px] md:-mt-[60px] lg:-mt-[74px]"
+            variants={imageReveal}
             style={{
               background:
                 "linear-gradient(180deg, #3478F6 0%, #1E4690 129.18%)",
@@ -160,10 +99,7 @@ export function FutureSection() {
               </p>
 
               {/* Features Grid */}
-              <div
-                ref={featuresRef}
-                className="relative w-full overflow-hidden"
-              >
+              <div className="relative w-full overflow-hidden">
                 {/* Mobile 2x2 Grid */}
                 <div className="md:hidden w-full">
                   {/* Top Row */}
@@ -269,10 +205,10 @@ export function FutureSection() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

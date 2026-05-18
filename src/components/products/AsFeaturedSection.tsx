@@ -1,23 +1,15 @@
 "use client";
 
-import { memo, useRef, useLayoutEffect } from "react";
+import { memo, useRef, useEffect } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
-
-// =============================================================================
-// Types
-// =============================================================================
+import { viewportOnce } from "@/lib/motion-variants";
 
 interface FeaturedLogo {
   src: string;
   alt: string;
 }
-
-// =============================================================================
-// Constants
-// =============================================================================
 
 const FEATURED_LOGOS: FeaturedLogo[] = [
   { src: ASSETS.featuredAngelone, alt: "AngelOne" },
@@ -29,9 +21,18 @@ const FEATURED_LOGOS: FeaturedLogo[] = [
   { src: ASSETS.featuredEntrepreneur, alt: "Entrepreneur" },
 ];
 
-// =============================================================================
-// Logo Card Component
-// =============================================================================
+const headerReveal: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const trackReveal: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.8, ease: "easeOut", delay: 0.2 },
+  },
+};
 
 const LogoCard = memo(function LogoCard({ logo }: { logo: FeaturedLogo }) {
   return (
@@ -48,95 +49,48 @@ const LogoCard = memo(function LogoCard({ logo }: { logo: FeaturedLogo }) {
   );
 });
 
-// =============================================================================
-// Main Component
-// =============================================================================
-
 export const AsFeaturedSection = memo(function AsFeaturedSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLParagraphElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const marqueeControls = useAnimationControls();
 
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 30 });
-    }
-    if (trackRef.current) {
-      gsap.set(trackRef.current, { opacity: 0 });
-    }
-  }, []);
+  // Kick off the infinite marquee once we know the track width.
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const totalWidth = track.scrollWidth / 2;
+    if (totalWidth <= 0) return;
 
-  useGSAP(
-    () => {
-      if (!trackRef.current) return;
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      tl.to(
-        headerRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      tl.to(
-        trackRef.current,
-        {
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0.2,
-      );
-
-      const track = trackRef.current;
-      const totalWidth = track.scrollWidth / 2;
-
-      gsap.to(track, {
-        x: -totalWidth,
-        duration: 30,
-        ease: "none",
-        repeat: -1,
-        modifiers: {
-          x: gsap.utils.unitize((x: number) => {
-            return x % totalWidth;
-          }),
-        },
-      });
-    },
-    { scope: sectionRef },
-  );
+    marqueeControls.start({
+      x: [0, -totalWidth],
+      transition: {
+        x: { repeat: Infinity, repeatType: "loop", duration: 30, ease: "linear" },
+      },
+    });
+  }, [marqueeControls]);
 
   return (
     <section
-      ref={sectionRef}
       className="w-full py-8 md:py-12 lg:py-16 bg-[#FAFAFA] overflow-hidden"
       aria-label="As featured on"
     >
       <div className="w-full max-w-[1440px] mx-auto">
-        {/* Header */}
-        <p
-          ref={headerRef}
+        <motion.p
           className="font-display font-semibold text-xl sm:text-2xl md:text-[32px] lg:text-[36px] text-black text-center tracking-wide md:tracking-normal mb-6 md:mb-10 px-4 md:px-6 lg:px-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={headerReveal}
         >
           As featured on
-        </p>
+        </motion.p>
 
-        {/* Marquee Container */}
-        <div className="relative">
-          {/* Left fade gradient */}
+        <motion.div
+          className="relative"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={trackReveal}
+        >
           <div
             className="absolute left-0 top-0 bottom-0 w-[60px] sm:w-[120px] md:w-[200px] lg:w-[289px] z-10 pointer-events-none"
             style={{
@@ -145,7 +99,6 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
             }}
           />
 
-          {/* Right fade gradient */}
           <div
             className="absolute right-0 top-0 bottom-0 w-[60px] sm:w-[120px] md:w-[200px] lg:w-[289px] z-10 pointer-events-none"
             style={{
@@ -154,17 +107,16 @@ export const AsFeaturedSection = memo(function AsFeaturedSection() {
             }}
           />
 
-          {/* Scrolling Track */}
-          <div
+          <motion.div
             ref={trackRef}
             className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-10 items-center will-change-transform"
+            animate={marqueeControls}
           >
-            {/* Double the logos for seamless infinite loop */}
             {[...FEATURED_LOGOS, ...FEATURED_LOGOS].map((logo, index) => (
               <LogoCard key={`${logo.alt}-${index}`} logo={logo} />
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,86 +1,38 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion } from "framer-motion";
 import { BlogArticle } from "@/lib/shopify";
-
-// =============================================================================
-// Blog Detail Hero - Tags, Title, and Excerpt
-// =============================================================================
+import {
+  fadeUp,
+  fadeUpSmall,
+  staggerParent,
+  viewportOnce,
+} from "@/lib/motion-variants";
 
 interface BlogDetailHeroProps {
   article: BlogArticle;
 }
 
+const stagger = staggerParent(0.2);
+
 export function BlogDetailHero({ article }: BlogDetailHeroProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const badgesRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const excerptRef = useRef<HTMLParagraphElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Badges animation
-      tl.from(badgesRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: "power3.out",
-      });
-
-      // Title animation
-      tl.from(
-        titleRef.current,
-        {
-          opacity: 0,
-          y: 30,
-          duration: 0.7,
-          ease: "power3.out",
-        },
-        "-=0.4",
-      );
-
-      // Excerpt animation
-      tl.from(
-        excerptRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.6,
-          ease: "power3.out",
-        },
-        "-=0.4",
-      );
-    },
-    { scope: sectionRef },
-  );
-
   const tags = article.tags || [];
 
   return (
-    <section
-      ref={sectionRef}
-      className="bg-white md:pt-8 pt-4 pb-6 md:pb-8"
-    >
+    <section className="bg-white md:pt-8 pt-4 pb-6 md:pb-8">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[32px]">
-        <div className="max-w-[768px]">
-          {/* Tags and Title */}
+        <motion.div
+          className="max-w-[768px]"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={stagger}
+        >
           <div className="flex flex-col gap-[16px]">
-            {/* Tags */}
             {tags.length > 0 && (
-              <div
-                ref={badgesRef}
-                className="flex flex-wrap gap-[12px] sm:gap-[16px] will-change-[transform,opacity]"
+              <motion.div
+                className="flex flex-wrap gap-[12px] sm:gap-[16px]"
+                variants={fadeUpSmall}
               >
                 {tags.map((tag) => (
                   <div
@@ -96,28 +48,26 @@ export function BlogDetailHero({ article }: BlogDetailHeroProps) {
                     />
                   </div>
                 ))}
-              </div>
+              </motion.div>
             )}
 
-            {/* Title */}
-            <h1
-              ref={titleRef}
-              className="font-display font-semibold text-[28px] sm:text-[36px] md:text-[42px] lg:text-[48px] text-[#101828] leading-[1.2] lg:leading-[60px] tracking-[-0.02em] will-change-[transform,opacity]"
+            <motion.h1
+              className="font-display font-semibold text-[28px] sm:text-[36px] md:text-[42px] lg:text-[48px] text-[#101828] leading-[1.2] lg:leading-[60px] tracking-[-0.02em]"
+              variants={fadeUp}
             >
               {article.title}
-            </h1>
+            </motion.h1>
           </div>
 
-          {/* Excerpt */}
           {article.excerpt && (
-            <p
-              ref={excerptRef}
-              className="mt-[16px] sm:mt-[20px] md:mt-[24px] font-display text-[16px] sm:text-[18px] md:text-[20px] text-[rgba(0,0,0,0.5)] leading-[1.5] lg:leading-[26px] will-change-[transform,opacity]"
+            <motion.p
+              className="mt-[16px] sm:mt-[20px] md:mt-[24px] font-display text-[16px] sm:text-[18px] md:text-[20px] text-[rgba(0,0,0,0.5)] leading-[1.5] lg:leading-[26px]"
+              variants={fadeUpSmall}
             >
               {article.excerpt}
-            </p>
+            </motion.p>
           )}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

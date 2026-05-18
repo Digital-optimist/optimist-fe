@@ -8,8 +8,6 @@ import {
   useLayoutEffect,
 } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
 import { ASSETS } from "@/lib/assets";
 
 // ============================================
@@ -558,12 +556,9 @@ export function OptimistAppSection() {
       currentX += (targetX - currentX) * smoothness;
       currentY += (targetY - currentY) * smoothness;
 
-      // Apply transform
-      gsap.set(content, {
-        x: currentX,
-        y: currentY,
-        force3D: true,
-      });
+      // Apply transform directly — cheaper than going through a library for a
+      // per-frame parallax update on a single element.
+      content.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
 
       animationId = requestAnimationFrame(animate);
     };
@@ -686,70 +681,57 @@ export function OptimistAppSection() {
     return feature?.handImage || ASSETS.liveEnergyMeter;
   }, [hoveredFeature, activeFeature]);
 
-  // Set initial states immediately to prevent flash/lag on first scroll
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 40 });
-    }
-    if (phoneRef.current) {
-      gsap.set(phoneRef.current, { opacity: 0, y: 60, scale: 0.9 });
-    }
-    const cards = featuresRef.current?.querySelectorAll(".feature-card");
-    if (cards) {
-      gsap.set(cards, { opacity: 0, scale: 0.9, y: 20 });
-    }
-  }, []);
+  // Section entrance — fires once when the section enters the viewport.
+  // The original used a scroll-scrubbed GSAP timeline; this fires the same
+  // animations together when the section is ~85% into view, which keeps the
+  // visual but drops the scrub-on-scroll behaviour (acceptable trade-off).
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-  // GSAP animations
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          end: "top 30%",
-          scrub: 0.8, // Smooth scroll-linked animation with slight lag
-        },
+    const playEntrance = () => {
+      const fadeUpEl = (
+        el: HTMLElement | null,
+        delay: number,
+        fromY = 40,
+        scale = 1,
+      ) => {
+        if (!el) return;
+        el.style.opacity = "0";
+        el.style.transform = `translate3d(0, ${fromY}px, 0) scale(${scale})`;
+        requestAnimationFrame(() => {
+          el.style.transition =
+            "opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+          el.style.transitionDelay = `${delay}s`;
+          el.style.opacity = "1";
+          el.style.transform = "translate3d(0, 0, 0) scale(1)";
+        });
+      };
+
+      fadeUpEl(headerRef.current, 0);
+      fadeUpEl(phoneRef.current, 0.15, 60, 0.9);
+
+      const cards = featuresRef.current?.querySelectorAll<HTMLElement>(
+        ".feature-card",
+      );
+      cards?.forEach((card, i) => {
+        fadeUpEl(card, 0.3 + i * 0.08, 20, 0.9);
       });
+    };
 
-      tl.to(
-        headerRef.current,
-        { opacity: 1, y: 0, duration: 1, ease: "power2.out", force3D: true },
-        0,
-      );
+    const observer = new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          playEntrance();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
 
-      tl.to(
-        phoneRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 1.2,
-          ease: "power2.out",
-          force3D: true,
-        },
-        0.15,
-      );
-
-      const cards = featuresRef.current?.querySelectorAll(".feature-card");
-      if (cards) {
-        tl.to(
-          cards,
-          {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            stagger: 0.08,
-            duration: 1,
-            ease: "power2.out",
-            force3D: true,
-          },
-          0.3,
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   const handleCardHover = (id: FeatureId) => {
     setHoveredFeature(id);

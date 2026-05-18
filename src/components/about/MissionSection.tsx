@@ -1,75 +1,35 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import {
+  fadeLeft,
+  fadeUp,
+  staggerParent,
+  viewportOnce,
+} from "@/lib/motion-variants";
+
+const stagger = staggerParent(0.15);
 
 // =============================================================================
 // Mission Section - "To redefine what comfort means for India."
 // =============================================================================
 
 export function MissionSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Text animation
-      tl.from(
-        textRef.current,
-        {
-          opacity: 0,
-          x: -40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Cards animation
-      if (cardsRef.current) {
-        const cards = cardsRef.current.children;
-        tl.from(
-          cards,
-          {
-            opacity: 0,
-            y: 40,
-            duration: 0.8,
-            ease: "power3.out",
-            stagger: 0.15,
-          },
-          0.2,
-        );
-      }
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28 overflow-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={stagger}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-        {/* Main Container - Responsive flexbox */}
         <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-8 sm:gap-10 md:gap-12 lg:gap-14 xl:gap-16">
-          {/* Left - Text Content */}
-          <div
-            ref={textRef}
-            className="flex flex-col gap-5 sm:gap-6 md:gap-7 lg:gap-8 w-full xl:w-[580px] 2xl:w-[620px] shrink-0 will-change-[transform,opacity]"
+          <motion.div
+            className="flex flex-col gap-5 sm:gap-6 md:gap-7 lg:gap-8 w-full xl:w-[580px] 2xl:w-[620px] shrink-0"
+            variants={fadeLeft}
           >
             {/* Label */}
             <p className="font-normal text-sm sm:text-base md:text-lg lg:text-xl xl:text-[24px] text-[#3478F6] leading-normal">
@@ -89,15 +49,16 @@ export function MissionSection() {
                 matters.
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right - Cards */}
-          <div
-            ref={cardsRef}
+          <motion.div
             className="flex flex-col sm:flex-row xl:flex-row gap-4 sm:gap-5 md:gap-6 items-stretch w-full xl:w-auto"
+            variants={staggerParent(0.15)}
           >
-            {/* Image Card */}
-            <div className="relative w-full sm:flex-1 xl:w-[320px] 2xl:w-[396px] h-[280px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[480px] rounded-[16px] sm:rounded-[20px] lg:rounded-[24px] overflow-hidden will-change-[transform,opacity]">
+            <motion.div
+              className="relative w-full sm:flex-1 xl:w-[320px] 2xl:w-[396px] h-[280px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[480px] rounded-[16px] sm:rounded-[20px] lg:rounded-[24px] overflow-hidden"
+              variants={fadeUp}
+            >
               <Image
                 src={ASSETS.missionImage}
                 alt="Comfort redefined for India"
@@ -113,10 +74,12 @@ export function MissionSection() {
                     "linear-gradient(268deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.5) 98%)",
                 }}
               />
-            </div>
+            </motion.div>
 
-            {/* ISEER Rating Card */}
-            <div className="bg-gradient-to-br from-[#3478F6] to-[#1E4690] w-full sm:flex-1 xl:w-[260px] 2xl:w-[301px] h-[220px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[480px] rounded-[16px] sm:rounded-[20px] overflow-hidden p-4 sm:p-5 md:p-6 will-change-[transform,opacity]">
+            <motion.div
+              className="bg-gradient-to-br from-[#3478F6] to-[#1E4690] w-full sm:flex-1 xl:w-[260px] 2xl:w-[301px] h-[220px] sm:h-[320px] md:h-[380px] lg:h-[420px] xl:h-[460px] 2xl:h-[480px] rounded-[16px] sm:rounded-[20px] overflow-hidden p-4 sm:p-5 md:p-6"
+              variants={fadeUp}
+            >
               <div className="flex flex-col justify-between h-full text-white">
                 <div className="flex flex-col gap-1 sm:gap-2">
                   <p className="font-medium text-sm sm:text-base md:text-lg lg:text-[18px] xl:text-[20px] leading-none opacity-90">
@@ -145,11 +108,11 @@ export function MissionSection() {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

@@ -1,16 +1,9 @@
 "use client";
 
-import {
-  useRef,
-  useState,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-} from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { ASSETS } from "@/lib/assets";
 
@@ -76,33 +69,6 @@ function AccordionItem({
   onClick,
   index,
 }: AccordionItemProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
-
-  // Animate the description height when active state changes
-  useEffect(() => {
-    if (!contentRef.current || !descriptionRef.current) return;
-
-    if (isActive) {
-      // Expand animation
-      const height = descriptionRef.current.scrollHeight;
-      gsap.to(contentRef.current, {
-        height: height,
-        opacity: 1,
-        duration: 0.4,
-        ease: "power2.out",
-      });
-    } else {
-      // Collapse animation
-      gsap.to(contentRef.current, {
-        height: 0,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.inOut",
-      });
-    }
-  }, [isActive]);
-
   return (
     <div className="relative flex items-center">
       <button
@@ -123,8 +89,6 @@ function AccordionItem({
       >
         {/* Header row with icon and title */}
         <div className="flex items-center gap-4">
-          {/* Icon */}
-
           <div className="w-10 h-10 flex-shrink-0 relative">
             <Image
               src={isActive ? ASSETS.lightningBlue : ASSETS.lightningWhite}
@@ -134,7 +98,6 @@ function AccordionItem({
             />
           </div>
 
-          {/* Title */}
           <div className="flex-1">
             <h3
               className={`text-lg font-semibold transition-colors duration-300 ${
@@ -146,19 +109,31 @@ function AccordionItem({
           </div>
         </div>
 
-        {/* Expandable description area with GSAP animation */}
-        <div
-          ref={contentRef}
-          className="overflow-hidden"
-          style={{ height: 0, opacity: 0 }}
-        >
-          <p
-            ref={descriptionRef}
-            className="text-base text-[#6B7280] mt-1 pb-1 mb-4 ml-14 font-medium"
-          >
-            {feature.description}
-          </p>
-        </div>
+        {/* Expandable description — animate height + opacity via Framer.
+            `height: "auto"` works inside motion.div as long as the child has
+            an intrinsic size, which the <p> below does. */}
+        <AnimatePresence initial={false}>
+          {isActive && (
+            <motion.div
+              className="overflow-hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+                transition: { duration: 0.4, ease: "easeOut" },
+              }}
+              exit={{
+                height: 0,
+                opacity: 0,
+                transition: { duration: 0.3, ease: "easeInOut" },
+              }}
+            >
+              <p className="text-base text-[#6B7280] mt-1 pb-1 mb-4 ml-14 font-medium">
+                {feature.description}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </button>
 
       {/* Connecting Line - Only visible on desktop when active */}
@@ -185,107 +160,15 @@ function AnimatedImage({
   activeFeatureId,
   isMobile = false,
 }: AnimatedImageProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const currentImageRef = useRef<HTMLDivElement>(null);
-  const nextImageRef = useRef<HTMLDivElement>(null);
-  const prevFeatureIdRef = useRef<number | null>(activeFeatureId);
-  const isAnimatingRef = useRef(false);
-
   // Get current feature data
   const currentFeature =
     features.find((f) => f.id === activeFeatureId) || features[0];
   const imageSrc = isMobile ? currentFeature.mobileImage : currentFeature.image;
 
-  // Desktop only: slide animation effect
-  useEffect(() => {
-    // Skip animation on mobile - just show single image
-    if (isMobile) {
-      prevFeatureIdRef.current = activeFeatureId;
-      return;
-    }
-
-    // Skip if same feature or already animating
-    if (
-      prevFeatureIdRef.current === activeFeatureId ||
-      isAnimatingRef.current
-    ) {
-      return;
-    }
-
-    // Skip animation on first render
-    if (prevFeatureIdRef.current === null && activeFeatureId !== null) {
-      prevFeatureIdRef.current = activeFeatureId;
-      return;
-    }
-
-    const currentImg = currentImageRef.current;
-    const nextImg = nextImageRef.current;
-
-    if (!currentImg || !nextImg) return;
-
-    isAnimatingRef.current = true;
-
-    // Create GSAP timeline for coordinated animation
-    const tl = gsap.timeline({
-      onComplete: () => {
-        isAnimatingRef.current = false;
-        prevFeatureIdRef.current = activeFeatureId;
-        // Reset positions after animation
-        gsap.set(currentImg, { x: 0, opacity: 1, scale: 1 });
-        gsap.set(nextImg, { x: "100%", opacity: 0, scale: 0.95 });
-      },
-    });
-
-    // Slide current image out to left + scale down
-    tl.to(
-      currentImg,
-      {
-        x: "-100%",
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.5,
-        ease: "power2.inOut",
-      },
-      0,
-    );
-
-    // Slide new image in from right + scale up
-    tl.fromTo(
-      nextImg,
-      { x: "100%", opacity: 0, scale: 0.95 },
-      {
-        x: 0,
-        opacity: 1,
-        scale: 1.05, // Scale up when active
-        duration: 0.5,
-        ease: "power2.out",
-      },
-      0.15, // Slight delay for staggered effect
-    );
-
-    // Settle scale back to normal after expansion
-    tl.to(
-      nextImg,
-      {
-        scale: 1,
-        duration: 0.3,
-        ease: "power2.out",
-      },
-      0.65,
-    );
-
-    return () => {
-      tl.kill();
-    };
-  }, [activeFeatureId, isMobile]);
-
   // Mobile: Simple single image with fade transition
   if (isMobile) {
     return (
-      <div
-        ref={containerRef}
-        className="relative w-full aspect-[4/3] rounded-[32px] border-[12px] border-black/5 shadow-2xl overflow-hidden"
-      >
+      <div className="relative w-full aspect-[4/3] rounded-[32px] border-[12px] border-black/5 shadow-2xl overflow-hidden">
         <Image
           src={imageSrc}
           alt="Optimist AC with intelligent engineering"
@@ -298,41 +181,39 @@ function AnimatedImage({
     );
   }
 
-  // Desktop: Slide animation with two image layers
+  // Desktop: Apple-style slide transition between feature images via
+  // AnimatePresence. The key is the feature id so each change triggers a
+  // new motion.div to enter from the right while the old one exits left.
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full min-h-[500px] rounded-[48px] border-[12px] border-black/5 shadow-2xl overflow-hidden"
-    >
-      {/* Current Image (will slide out) */}
-      <div
-        ref={currentImageRef}
-        className="absolute inset-0 will-change-transform"
-      >
-        <Image
-          src={imageSrc}
-          alt="Optimist AC with intelligent engineering"
-          fill
-          className="object-cover rounded-[24px]"
-          sizes="(max-width: 1024px) 100vw, 60vw"
-          priority
-        />
-      </div>
-
-      {/* Next Image (will slide in) */}
-      <div
-        ref={nextImageRef}
-        className="absolute inset-0 will-change-transform"
-        style={{ transform: "translateX(100%)", opacity: 0 }}
-      >
-        <Image
-          src={imageSrc}
-          alt="Optimist AC with intelligent engineering"
-          fill
-          className="object-cover rounded-[24px]"
-          sizes="(max-width: 1024px) 100vw, 60vw"
-        />
-      </div>
+    <div className="relative w-full h-full min-h-[500px] rounded-[48px] border-[12px] border-black/5 shadow-2xl overflow-hidden">
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.div
+          key={currentFeature.id}
+          className="absolute inset-0 will-change-transform"
+          initial={{ x: "100%", opacity: 0, scale: 0.95 }}
+          animate={{
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+          }}
+          exit={{
+            x: "-100%",
+            opacity: 0,
+            scale: 0.95,
+            transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+          }}
+        >
+          <Image
+            src={imageSrc}
+            alt="Optimist AC with intelligent engineering"
+            fill
+            className="object-cover rounded-[24px]"
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            priority
+          />
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
@@ -413,81 +294,68 @@ export function EngineeredSection() {
     };
   }, []);
 
-  // Set initial states immediately to prevent flash/lag on first scroll
-  useLayoutEffect(() => {
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: 50 });
-    }
-    const featureCards = featuresRef.current?.querySelectorAll(".feature-card");
-    if (featureCards) {
-      gsap.set(featureCards, { opacity: 0, x: -40, scale: 0.95 });
-    }
-    if (imageContainerRef.current) {
-      gsap.set(imageContainerRef.current, { opacity: 0, scale: 0.92, y: 30 });
-    }
-  }, []);
+  // Entrance reveal — IntersectionObserver fires once when the section enters
+  // view; we then drive header/feature-cards/image transitions via inline
+  // styles. This replaces a GSAP scroll-triggered timeline.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-  useGSAP(
-    () => {
-      // Batch all animations into a single timeline with one ScrollTrigger
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true, // Only animate once for better performance
-        },
-      });
-
-      // Header animation - use 'to' since initial state is already set
-      tl.to(
-        headerRef.current,
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0,
-      );
-
-      // Features stagger animation - Apple-style sequential reveal
-      const featureCards =
-        featuresRef.current?.querySelectorAll(".feature-card");
-      if (featureCards) {
-        tl.to(
-          featureCards,
-          {
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            stagger: 0.12,
-            duration: 0.7,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0.2, // Start slightly after header
-        );
+    const playEntrance = () => {
+      if (headerRef.current) {
+        const el = headerRef.current;
+        el.style.opacity = "0";
+        el.style.transform = "translate3d(0, 50px, 0)";
+        requestAnimationFrame(() => {
+          el.style.transition =
+            "opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)";
+          el.style.opacity = "1";
+          el.style.transform = "translate3d(0, 0, 0)";
+        });
       }
 
-      // Image container animation with subtle scale
-      tl.to(
-        imageContainerRef.current,
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
-          force3D: true,
-        },
-        0.3, // Start slightly after features
+      const featureCards = featuresRef.current?.querySelectorAll<HTMLElement>(
+        ".feature-card",
       );
-    },
-    { scope: sectionRef },
-  );
+      featureCards?.forEach((el, i) => {
+        el.style.opacity = "0";
+        el.style.transform = "translate3d(-40px, 0, 0) scale(0.95)";
+        requestAnimationFrame(() => {
+          el.style.transition =
+            "opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)";
+          el.style.transitionDelay = `${0.2 + i * 0.12}s`;
+          el.style.opacity = "1";
+          el.style.transform = "translate3d(0, 0, 0) scale(1)";
+        });
+      });
+
+      if (imageContainerRef.current) {
+        const el = imageContainerRef.current;
+        el.style.opacity = "0";
+        el.style.transform = "translate3d(0, 30px, 0) scale(0.92)";
+        requestAnimationFrame(() => {
+          el.style.transition =
+            "opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)";
+          el.style.transitionDelay = "0.3s";
+          el.style.opacity = "1";
+          el.style.transform = "translate3d(0, 0, 0) scale(1)";
+        });
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry], obs) => {
+        if (entry.isIntersecting) {
+          playEntrance();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section

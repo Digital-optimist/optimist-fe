@@ -1,78 +1,46 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
+import { staggerParent, viewportOnce } from "@/lib/motion-variants";
+
+const stagger = staggerParent(0.2);
+
+const titleReveal: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
+
+const cardReveal: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
+};
 
 // =============================================================================
 // About Hero Section - "Cooling, built for a warming world."
 // =============================================================================
 
 export function AboutHeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          end: "top 25%",
-          toggleActions: "play none none none",
-          once: true,
-        },
-      });
-
-      // Title animation
-      tl.from(
-        titleRef.current,
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      );
-
-      // Card animation
-      tl.from(
-        cardRef.current,
-        {
-          opacity: 0,
-          y: 60,
-          duration: 1,
-          ease: "power3.out",
-        },
-        0.2,
-      );
-    },
-    { scope: sectionRef },
-  );
-
   return (
-    <section
-      ref={sectionRef}
+    <motion.section
       className="bg-white pt-24 pb-12 md:pb-16 lg:pb-20 overflow-hidden"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={stagger}
     >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
-        {/* Title - Cooling, built for a warming world. */}
-        <h1
-          ref={titleRef}
-          className="font-display text-[32px] md:text-[48px] lg:text-[64px] font-bold text-center mb-6 md:mb-8 lg:mb-10 will-change-[transform,opacity]"
+        <motion.h1
+          className="font-display text-[32px] md:text-[48px] lg:text-[64px] font-bold text-center mb-6 md:mb-8 lg:mb-10"
+          variants={titleReveal}
         >
           <span className="text-black">Real Cooling for a </span>
           <span className="text-[#3478F6]">Warming India</span>
-        </h1>
+        </motion.h1>
 
-        {/* Hero Card with Background Video/Image */}
-        <div
-          ref={cardRef}
-          className="relative w-full max-w-[1344px] mx-auto rounded-[32px] overflow-hidden will-change-[transform,opacity]"
+        <motion.div
+          className="relative w-full max-w-[1344px] mx-auto rounded-[32px] overflow-hidden"
+          variants={cardReveal}
         >
           {/* Desktop Layout - 556px height */}
           <div className="hidden md:block relative w-full h-[450px] lg:h-[556px]">
@@ -123,9 +91,9 @@ export function AboutHeroSection() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
