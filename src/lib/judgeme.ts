@@ -4,6 +4,13 @@ const SHOP_DOMAIN = "aet2fp-ks.myshopify.com";
 const PUBLIC_TOKEN = "gdjODw0sMwsBYtb-2OJdVwbUajY";
 const API_BASE = "https://judge.me/api/v1";
 
+const CLOUDINARY_CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD || "";
+const CLOUDINARY_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || "";
+
+export const IMAGE_UPLOAD_ENABLED = Boolean(
+  CLOUDINARY_CLOUD && CLOUDINARY_PRESET,
+);
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -15,6 +22,8 @@ export interface JudgeMeReview {
   body: string;
   author: string;
   date: string;
+  pictures: string[];
+  videos: string[];
 }
 
 export interface RatingDistribution {
@@ -37,7 +46,10 @@ export interface CreateReviewPayload {
   title?: string;
   body: string;
   productId?: string;
+  image?: File;
 }
+
+export const REVIEW_IMAGE_MAX_BYTES = 500 * 1024;
 
 // =============================================================================
 // HTML Parsers (using DOMParser for reliable extraction)
@@ -87,6 +99,35 @@ function parseSummaryFromHeader(html: string): {
   return { totalReviews, averageRating, distribution };
 }
 
+function extractMediaSrc(el: Element): string {
+  return (
+    el.getAttribute("src") ||
+    el.getAttribute("data-src") ||
+    el.getAttribute("data-original") ||
+    ""
+  );
+}
+
+function collectPicturesAndVideos(
+  item: Element,
+  pictureSelector: string,
+  videoSelector: string,
+): { pictures: string[]; videos: string[] } {
+  const pictures: string[] = [];
+  item.querySelectorAll(pictureSelector).forEach((img) => {
+    const src = extractMediaSrc(img);
+    if (src && !src.startsWith("data:")) pictures.push(src);
+  });
+
+  const videos: string[] = [];
+  item.querySelectorAll(videoSelector).forEach((el) => {
+    const src = extractMediaSrc(el);
+    if (src) videos.push(src);
+  });
+
+  return { pictures, videos };
+}
+
 function parseReviewsFromHTML(html: string): JudgeMeReview[] {
   if (!html) return [];
 
@@ -116,8 +157,14 @@ function parseReviewsFromHTML(html: string): JudgeMeReview[] {
     const timestampEl = item.querySelector(".jdgm-rev__timestamp");
     const date = timestampEl?.getAttribute("data-content") || "";
 
+    const { pictures, videos } = collectPicturesAndVideos(
+      item,
+      ".jdgm-rev__pic-img, .jdgm-rev__pics img",
+      ".jdgm-rev__video video[src], .jdgm-rev__video source",
+    );
+
     if (body || title) {
-      reviews.push({ id, rating, title, body, author, date });
+      reviews.push({ id, rating, title, body, author, date, pictures, videos });
     }
   });
 
@@ -218,8 +265,23 @@ function parseCarouselReviews(html: string): JudgeMeReview[] {
       timestampEl?.textContent?.trim() ||
       "";
 
+    const { pictures, videos } = collectPicturesAndVideos(
+      item,
+      ".jdgm-carousel-item__img-wrapper img, .jdgm-carousel-item__product-img img, img.jdgm-carousel-item__review-image",
+      ".jdgm-carousel-item__video video[src], .jdgm-carousel-item__video source, video[src]",
+    );
+
     if (body || title) {
-      reviews.push({ id, rating: stars, title, body, author, date });
+      reviews.push({
+        id,
+        rating: stars,
+        title,
+        body,
+        author,
+        date,
+        pictures,
+        videos,
+      });
     }
   });
 
@@ -232,30 +294,80 @@ export async function fetchFeaturedReviews(): Promise<JudgeMeReview[]> {
 }
 
 /**
- * Uses form-encoded body to avoid CORS preflight (OPTIONS).
- * Judge.me's POST /reviews supports this and returns proper CORS headers
- * for "simple requests" but not for preflighted JSON requests.
+ * Upload an image to Cloudinary via an unsigned preset. Returns the
+ * public secure_url that Judge.me can store as a `picture_urls[]` entry.
+ * The preset (configured in Cloudinary dashboard) enforces max size,
+ * allowed formats, and target folder server-side.
+ */
+async function uploadImageToCloudinary(image: File): Promise<string | null> {
+  if (!IMAGE_UPLOAD_ENABLED) return null;
+  const form = new FormData();
+  form.append("file", image);
+  form.append("upload_preset", CLOUDINARY_PRESET);
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+    { method: "POST", body: form },
+  );
+  if (!res.ok) return null;
+  const data = (await res.json()) as { secure_url?: string };
+  return data.secure_url || null;
+}
+
+/**
+ * Uses `application/x-www-form-urlencoded` to avoid CORS preflight.
+ * Images are uploaded to Cloudinary first (Judge.me's public API only
+ * accepts `picture_urls[]`, never raw file uploads).
  */
 export async function createReview(
   payload: CreateReviewPayload,
 ): Promise<{ success: boolean; message: string }> {
+  if (payload.image && payload.image.size > REVIEW_IMAGE_MAX_BYTES) {
+    return {
+      success: false,
+      message: "Image must be 500 KB or smaller.",
+    };
+  }
+
+  if (payload.image && !IMAGE_UPLOAD_ENABLED) {
+    return {
+      success: false,
+      message:
+        "Image uploads are not configured. Please submit the review without an image.",
+    };
+  }
+
   try {
-    const formData = new URLSearchParams();
-    formData.append("shop_domain", SHOP_DOMAIN);
-    formData.append("platform", "shopify");
-    formData.append("name", payload.name);
-    formData.append("email", payload.email);
-    formData.append("rating", String(payload.rating));
-    formData.append("title", payload.title || "");
-    formData.append("body", payload.body);
+    let pictureUrl: string | null = null;
+    if (payload.image) {
+      pictureUrl = await uploadImageToCloudinary(payload.image);
+      if (!pictureUrl) {
+        return {
+          success: false,
+          message: "Could not upload image. Please try again.",
+        };
+      }
+    }
+
+    const form = new URLSearchParams();
+    form.append("shop_domain", SHOP_DOMAIN);
+    form.append("platform", "shopify");
+    form.append("name", payload.name);
+    form.append("email", payload.email);
+    form.append("rating", String(payload.rating));
+    form.append("title", payload.title || "");
+    form.append("body", payload.body);
     if (payload.productId) {
-      formData.append("id", extractNumericId(payload.productId));
+      form.append("id", extractNumericId(payload.productId));
+    }
+    if (pictureUrl) {
+      form.append("picture_urls[]", pictureUrl);
     }
 
     const res = await fetch(`${API_BASE}/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
+      body: form.toString(),
     });
 
     if (!res.ok) {

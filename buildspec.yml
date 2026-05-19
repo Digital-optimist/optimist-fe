@@ -10,6 +10,8 @@ env:
     NEXT_PUBLIC_GST_VERIFY_API_URL: https://mg1up8l9ee.execute-api.us-east-1.amazonaws.com/gst/verify
     NEXT_PUBLIC_INVOICE_API_URL: https://mg1up8l9ee.execute-api.us-east-1.amazonaws.com/invoice
     NEXT_PUBLIC_FEEDBACK_WEBHOOK_URL: https://script.google.com/macros/s/AKfycbwr2NkZCUsoxrB3ksfBrniquGKTuBhUyRp4Q9VsmNJe3WwyZhYHOY7QmSJg1_whCeG5/exec
+    NEXT_PUBLIC_CLOUDINARY_CLOUD: da90e0enr
+    NEXT_PUBLIC_CLOUDINARY_PRESET: po9daeov
 
 phases:
   install:

@@ -36,6 +36,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "optimist-fe-assets.s3.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.judge.me",
+      },
+      {
+        protocol: "https",
+        hostname: "judge.me",
+      },
     ],
   },
 };

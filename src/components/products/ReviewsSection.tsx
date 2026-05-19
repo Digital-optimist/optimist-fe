@@ -1,12 +1,15 @@
 "use client";
 
 import { memo, useRef, useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { Star, X, Loader2 } from "lucide-react";
+import { Star, X, Loader2, Paperclip } from "lucide-react";
 import {
   fetchReviewsSummary,
   fetchFeaturedReviews,
   createReview,
+  REVIEW_IMAGE_MAX_BYTES,
+  IMAGE_UPLOAD_ENABLED,
   type JudgeMeReview,
   type ReviewsSummary,
   type RatingDistribution,
@@ -165,15 +168,52 @@ const RatingBar = memo(function RatingBar({
 // Review Card Component
 // =============================================================================
 
+const ReviewMedia = memo(function ReviewMedia({
+  picture,
+  video,
+}: {
+  picture?: string;
+  video?: string;
+}) {
+  if (!picture && !video) return null;
+
+  return (
+    <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black/[0.04] mb-5 md:mb-6">
+      {video ? (
+        <video
+          src={video}
+          poster={picture}
+          controls
+          playsInline
+          preload="none"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <Image
+          src={picture as string}
+          alt=""
+          fill
+          loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover"
+        />
+      )}
+    </div>
+  );
+});
+
 const ReviewCard = memo(function ReviewCard({
   review,
 }: {
   review: JudgeMeReview;
 }) {
   const relativeTime = useRelativeTime(review.date);
+  const picture = review.pictures[0];
+  const video = review.videos[0];
 
   return (
     <div className="bg-white border border-black/[0.12] rounded-[20px] md:rounded-[24px] p-5 md:p-6 flex flex-col h-full">
+      <ReviewMedia picture={picture} video={video} />
       <div className="flex flex-col gap-6 md:gap-8 flex-1">
         <div className="flex flex-col gap-5 md:gap-8">
           <div className="flex items-center justify-between">
@@ -369,15 +409,60 @@ const WriteReviewModal = memo(function WriteReviewModal({
     success: boolean;
     message: string;
   } | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (productId) setSelectedProductId(productId);
   }, [productId]);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
+  const handleImageSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setImageError("Please select an image file.");
+        return;
+      }
+      if (file.size > REVIEW_IMAGE_MAX_BYTES) {
+        setImageError(
+          `Image must be 500 KB or smaller. (Selected: ${Math.round(file.size / 1024)} KB)`,
+        );
+        return;
+      }
+      setImageError(null);
+      setImage(file);
+      setImagePreview((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return URL.createObjectURL(file);
+      });
+    },
+    [],
+  );
+
+  const removeImage = useCallback(() => {
+    setImage(null);
+    setImagePreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    setImageError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, []);
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       if (rating === 0 || !name.trim() || !email.trim() || !body.trim()) return;
+      if (imageError) return;
 
       setSubmitting(true);
       setResult(null);
@@ -389,6 +474,7 @@ const WriteReviewModal = memo(function WriteReviewModal({
         title: title.trim(),
         body: body.trim(),
         productId: selectedProductId || productId,
+        image: image ?? undefined,
       });
 
       setResult(res);
@@ -404,13 +490,27 @@ const WriteReviewModal = memo(function WriteReviewModal({
           setBody("");
           setSelectedProductId(productId || "");
           setResult(null);
+          removeImage();
         }, 2500);
       }
     },
-    [name, email, rating, title, body, onClose, productId, selectedProductId],
+    [
+      name,
+      email,
+      rating,
+      title,
+      body,
+      onClose,
+      productId,
+      selectedProductId,
+      image,
+      imageError,
+      removeImage,
+    ],
   );
 
-  const isValid = rating > 0 && name.trim() && email.trim() && body.trim();
+  const isValid =
+    rating > 0 && name.trim() && email.trim() && body.trim() && !imageError;
 
   return (
     <AnimatePresence>
@@ -554,6 +654,61 @@ const WriteReviewModal = memo(function WriteReviewModal({
                     className="w-full px-4 py-3 rounded-xl border border-black/10 bg-black/[0.02] text-sm text-black placeholder:text-black/30 focus:outline-none focus:border-black/30 transition-colors resize-none"
                   />
                 </div>
+
+                {IMAGE_UPLOAD_ENABLED && (
+                <div>
+                  <label className="block text-sm font-medium text-black mb-1.5">
+                    Photo (optional, max 500 KB)
+                  </label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                  />
+                  {image && imagePreview ? (
+                    <div className="flex items-center gap-3 p-2 bg-black/[0.02] rounded-xl border border-black/10">
+                      <Image
+                        src={imagePreview}
+                        alt=""
+                        width={56}
+                        height={56}
+                        unoptimized
+                        className="w-14 h-14 rounded-lg object-cover shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-black truncate">
+                          {image.name}
+                        </p>
+                        <p className="text-xs text-black/50">
+                          {Math.round(image.size / 1024)} KB
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        aria-label="Remove image"
+                        className="p-2 rounded-full hover:bg-black/5 transition-colors shrink-0"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2 px-4 py-3 rounded-xl border border-black/10 bg-black/[0.02] text-sm text-black/70 hover:bg-black/[0.04] transition-colors w-full"
+                    >
+                      <Paperclip size={16} />
+                      <span>Attach a photo</span>
+                    </button>
+                  )}
+                  {imageError && (
+                    <p className="text-xs text-red-600 mt-1.5">{imageError}</p>
+                  )}
+                </div>
+                )}
 
                 {result && !result.success && (
                   <p className="text-sm text-red-600">{result.message}</p>
