@@ -14,7 +14,7 @@ import { StarRating } from "./StarRating";
 // Types & Constants
 // =============================================================================
 
-type Step = "intro" | "delivery" | "installation" | "comments" | "success";
+type Step = "intro" | "delivery" | "installation" | "success";
 
 interface FeedbackErrors {
   phone?: string;
@@ -40,8 +40,8 @@ const DELIVERY_QUESTIONS: {
   key: keyof FeedbackFormRatings;
   label: string;
 }[] = [
-  { key: "deliveryOnTime", label: "Was the AC delivered on time?" },
-  { key: "packagingCondition", label: "Was the AC packaging in good condition?" },
+  { key: "deliveryOnTime", label: "Your AC was delivered on time." },
+  { key: "packagingCondition", label: "The AC packaging was in good condition." },
   { key: "deliveryOverall", label: "How was your overall delivery experience?" },
 ];
 
@@ -84,7 +84,8 @@ export default function FeedbackFormClient() {
   const [currentStep, setCurrentStep] = useState<Step>("intro");
   const [phone, setPhone] = useState("");
   const [ratings, setRatings] = useState<FeedbackFormRatings>(INITIAL_RATINGS);
-  const [comments, setComments] = useState("");
+  const [deliveryComments, setDeliveryComments] = useState("");
+  const [installationComments, setInstallationComments] = useState("");
   const [errors, setErrors] = useState<FeedbackErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -122,23 +123,26 @@ export default function FeedbackFormClient() {
     setCurrentStep("installation");
   };
 
-  const handleInstallationNext = () => {
+  const handleSubmit = async () => {
     if (!installationComplete) {
       setErrors({ installation: "Please rate all five questions to continue" });
       return;
     }
-    setErrors({});
-    setCurrentStep("comments");
-  };
-
-  const handleSubmit = async () => {
     setIsSubmitting(true);
     setErrors({});
     try {
+      const combinedComments = [
+        deliveryComments.trim() && `Delivery: ${deliveryComments.trim()}`,
+        installationComments.trim() &&
+          `Installation: ${installationComments.trim()}`,
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
       const result = await submitFeedbackForm({
         phone,
         ratings,
-        comments: comments.trim(),
+        comments: combinedComments,
       });
       if (!result.success) {
         setErrors({ general: result.error || "Failed to submit feedback" });
@@ -159,7 +163,6 @@ export default function FeedbackFormClient() {
     setErrors({});
     if (currentStep === "delivery") setCurrentStep("intro");
     else if (currentStep === "installation") setCurrentStep("delivery");
-    else if (currentStep === "comments") setCurrentStep("installation");
   };
 
   return (
@@ -199,9 +202,8 @@ export default function FeedbackFormClient() {
                 <span style={{ color: "#3478F6" }}>Optimist.</span>
               </h1>
               <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.6] text-[#525252] max-w-xl">
-                We&apos;d love your quick feedback on delivery and installation
-                experience so we can continuously improve. This form takes about
-                2 minutes.
+                We&apos;d love your feedback on the delivery and installation
+                experience so we can do better. This form takes about 2 minutes.
               </p>
 
               <form onSubmit={handleStart} className="mt-8 space-y-2 max-w-md">
@@ -233,7 +235,7 @@ export default function FeedbackFormClient() {
                     }}
                     placeholder="9876543210"
                     autoComplete="tel-national"
-                    className="flex-1 h-full text-[15px] text-[#0A0A0A] placeholder-[#A3A3A3] bg-transparent outline-none pr-4"
+                    className="flex-1 h-full text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] bg-transparent outline-none pr-4"
                   />
                 </div>
                 <AnimatePresence>
@@ -273,8 +275,8 @@ export default function FeedbackFormClient() {
                 style={{ color: "#0A0A0A" }}
               >
                 Delivery{" "}
-                <span className="text-[#737373] font-normal text-[18px] sm:text-[22px]">
-                  (Page 1/3)
+                <span className="text-[#737373] font-normal text-[13px] sm:text-[14px]">
+                  (Page 1/2)
                 </span>
               </h2>
 
@@ -289,6 +291,12 @@ export default function FeedbackFormClient() {
                   />
                 ))}
               </div>
+
+              <CommentsField
+                value={deliveryComments}
+                onChange={setDeliveryComments}
+                disabled={isSubmitting}
+              />
 
               <AnimatePresence>
                 {errors.delivery && (
@@ -330,8 +338,8 @@ export default function FeedbackFormClient() {
                 style={{ color: "#0A0A0A" }}
               >
                 Installation{" "}
-                <span className="text-[#737373] font-normal text-[18px] sm:text-[22px]">
-                  (Page 2/3)
+                <span className="text-[#737373] font-normal text-[13px] sm:text-[14px]">
+                  (Page 2/2)
                 </span>
               </h2>
 
@@ -347,6 +355,12 @@ export default function FeedbackFormClient() {
                 ))}
               </div>
 
+              <CommentsField
+                value={installationComments}
+                onChange={setInstallationComments}
+                disabled={isSubmitting}
+              />
+
               <AnimatePresence>
                 {errors.installation && (
                   <motion.p
@@ -359,51 +373,6 @@ export default function FeedbackFormClient() {
                   </motion.p>
                 )}
               </AnimatePresence>
-
-              <div className="mt-10">
-                <PrimaryButton
-                  type="button"
-                  onClick={handleInstallationNext}
-                  disabled={!installationComplete}
-                >
-                  Next
-                  <ArrowRight className="w-4 h-4" />
-                </PrimaryButton>
-              </div>
-            </motion.section>
-          )}
-
-          {currentStep === "comments" && (
-            <motion.section
-              key="comments"
-              variants={stepTransition}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              <h2
-                className="font-display font-bold text-[24px] sm:text-[30px] leading-[1.2] tracking-[-0.3px]"
-                style={{ color: "#0A0A0A" }}
-              >
-                Anything we could have done better?{" "}
-                <span className="text-[#737373] font-normal text-[18px] sm:text-[22px]">
-                  (Page 3/3)
-                </span>
-              </h2>
-
-              <textarea
-                value={comments}
-                onChange={(e) => setComments(e.target.value)}
-                disabled={isSubmitting}
-                maxLength={1000}
-                placeholder="Share any details that could help us serve you better (optional)"
-                rows={5}
-                className="mt-6 w-full px-4 py-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[15px] text-[#0A0A0A] placeholder-[#A3A3A3] resize-y leading-[1.5] outline-none transition-all duration-200 hover:border-[#A3A3A3] focus:border-[#3478F6] focus:shadow-[0_4px_20px_-5px_rgba(52,120,246,0.25)] disabled:opacity-60"
-              />
-              <div className="mt-1 text-right text-[12px] text-[#A3A3A3]">
-                {comments.length}/1000
-              </div>
 
               <AnimatePresence>
                 {errors.general && (
@@ -418,11 +387,11 @@ export default function FeedbackFormClient() {
                 )}
               </AnimatePresence>
 
-              <div className="mt-8">
+              <div className="mt-10">
                 <PrimaryButton
                   type="button"
                   onClick={handleSubmit}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !installationComplete}
                 >
                   {isSubmitting ? (
                     <>
@@ -517,6 +486,37 @@ function Question({
         disabled={disabled}
         labelledBy={labelId}
       />
+    </div>
+  );
+}
+
+function CommentsField({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="mt-10">
+      <label className="block text-[14px] font-medium text-[#525252] tracking-[0.28px] mb-2">
+        Anything we could have done better?{" "}
+        <span className="text-[#A3A3A3]">(optional)</span>
+      </label>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        maxLength={1000}
+        placeholder="Share any details that could help us serve you better"
+        rows={4}
+        className="w-full px-4 py-3 rounded-[10px] border border-[#E5E5E5] bg-white text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] resize-y leading-[1.5] outline-none transition-all duration-200 hover:border-[#A3A3A3] focus:border-[#3478F6] focus:shadow-[0_4px_20px_-5px_rgba(52,120,246,0.25)] disabled:opacity-60"
+      />
+      <div className="mt-1 text-right text-[12px] text-[#A3A3A3]">
+        {value.length}/1000
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import Image from "next/image";
 import FeedbackFormClient from "./FeedbackFormClient";
 
 export const metadata: Metadata = {
-  title: "Share Your Feedback",
+  title: "Product Installation Feedback",
   description:
     "Tell us about your Optimist AC delivery and installation experience so we can keep improving.",
   robots: { index: false, follow: false },

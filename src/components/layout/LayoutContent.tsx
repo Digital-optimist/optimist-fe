@@ -11,11 +11,11 @@ const NO_FOOTER_ROUTES = [
   "/sign-up",
   "/forgot-password",
   "/reset-password",
-  "/feedback",
+  "/product-installation",
 ];
 
 // Routes that should not have the top Navigation
-const NO_NAV_ROUTES = ["/feedback"];
+const NO_NAV_ROUTES = ["/product-installation"];
 
 interface LayoutContentProps {
   children: React.ReactNode;
