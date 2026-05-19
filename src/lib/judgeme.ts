@@ -101,6 +101,8 @@ function parseSummaryFromHeader(html: string): {
 
 function extractMediaSrc(el: Element): string {
   return (
+    el.getAttribute("href") ||
+    el.getAttribute("data-mfp-src") ||
     el.getAttribute("src") ||
     el.getAttribute("data-src") ||
     el.getAttribute("data-original") ||
@@ -157,11 +159,30 @@ function parseReviewsFromHTML(html: string): JudgeMeReview[] {
     const timestampEl = item.querySelector(".jdgm-rev__timestamp");
     const date = timestampEl?.getAttribute("data-content") || "";
 
-    const { pictures, videos } = collectPicturesAndVideos(
-      item,
-      ".jdgm-rev__pic-img, .jdgm-rev__pics img",
-      ".jdgm-rev__video video[src], .jdgm-rev__video source",
+    // Prefer .jdgm-rev__pic-link anchors (their href is the full-res image,
+    // e.g. ?w=1024) over .jdgm-rev__pic-img (which only has a w=160 thumb in
+    // data-src). Fall back to the img if no anchor wrapper is present.
+    const linkPics: string[] = [];
+    item.querySelectorAll(".jdgm-rev__pic-link").forEach((a) => {
+      const src = extractMediaSrc(a);
+      if (src && !src.startsWith("data:")) linkPics.push(src);
+    });
+    const imgPics: string[] = [];
+    item.querySelectorAll(".jdgm-rev__pic-img, .jdgm-rev__pics img").forEach(
+      (img) => {
+        const src = extractMediaSrc(img);
+        if (src && !src.startsWith("data:")) imgPics.push(src);
+      },
     );
+    const pictures = linkPics.length ? linkPics : imgPics;
+
+    const videos: string[] = [];
+    item
+      .querySelectorAll(".jdgm-rev__video video[src], .jdgm-rev__video source")
+      .forEach((el) => {
+        const src = extractMediaSrc(el);
+        if (src) videos.push(src);
+      });
 
     if (body || title) {
       reviews.push({ id, rating, title, body, author, date, pictures, videos });
@@ -224,10 +245,7 @@ export async function fetchReviewsSummary(
     return { averageRating, totalReviews, distribution, reviews };
   }
 
-  const data = await widgetFetch(
-    "all_reviews_page",
-    "&page=1&review_type=shop-reviews",
-  );
+  const data = await widgetFetch("all_reviews_page", "&page=1");
 
   const { totalReviews, averageRating, distribution } = parseSummaryFromHeader(
     data.all_reviews_header || "",

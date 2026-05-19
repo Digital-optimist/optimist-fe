@@ -44,6 +44,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "judge.me",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "judgeme.imgix.net",
+      },
     ],
   },
 };

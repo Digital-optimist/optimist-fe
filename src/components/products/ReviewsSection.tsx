@@ -175,6 +175,7 @@ const ReviewMedia = memo(function ReviewMedia({
   picture?: string;
   video?: string;
 }) {
+  console.log(picture);
   if (!picture && !video) return null;
 
   return (
@@ -208,6 +209,7 @@ const ReviewCard = memo(function ReviewCard({
   review: JudgeMeReview;
 }) {
   const relativeTime = useRelativeTime(review.date);
+  console.log("rr", review);
   const picture = review.pictures[0];
   const video = review.videos[0];
 
@@ -656,58 +658,60 @@ const WriteReviewModal = memo(function WriteReviewModal({
                 </div>
 
                 {IMAGE_UPLOAD_ENABLED && (
-                <div>
-                  <label className="block text-sm font-medium text-black mb-1.5">
-                    Photo (optional, max 500 KB)
-                  </label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageSelect}
-                    className="hidden"
-                  />
-                  {image && imagePreview ? (
-                    <div className="flex items-center gap-3 p-2 bg-black/[0.02] rounded-xl border border-black/10">
-                      <Image
-                        src={imagePreview}
-                        alt=""
-                        width={56}
-                        height={56}
-                        unoptimized
-                        className="w-14 h-14 rounded-lg object-cover shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-black truncate">
-                          {image.name}
-                        </p>
-                        <p className="text-xs text-black/50">
-                          {Math.round(image.size / 1024)} KB
-                        </p>
+                  <div>
+                    <label className="block text-sm font-medium text-black mb-1.5">
+                      Photo (optional, max 500 KB)
+                    </label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                    />
+                    {image && imagePreview ? (
+                      <div className="flex items-center gap-3 p-2 bg-black/[0.02] rounded-xl border border-black/10">
+                        <Image
+                          src={imagePreview}
+                          alt=""
+                          width={56}
+                          height={56}
+                          unoptimized
+                          className="w-14 h-14 rounded-lg object-cover shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-black truncate">
+                            {image.name}
+                          </p>
+                          <p className="text-xs text-black/50">
+                            {Math.round(image.size / 1024)} KB
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={removeImage}
+                          aria-label="Remove image"
+                          className="p-2 rounded-full hover:bg-black/5 transition-colors shrink-0"
+                        >
+                          <X size={16} />
+                        </button>
                       </div>
+                    ) : (
                       <button
                         type="button"
-                        onClick={removeImage}
-                        aria-label="Remove image"
-                        className="p-2 rounded-full hover:bg-black/5 transition-colors shrink-0"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl border border-black/10 bg-black/[0.02] text-sm text-black/70 hover:bg-black/[0.04] transition-colors w-full"
                       >
-                        <X size={16} />
+                        <Paperclip size={16} />
+                        <span>Attach a photo</span>
                       </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-3 rounded-xl border border-black/10 bg-black/[0.02] text-sm text-black/70 hover:bg-black/[0.04] transition-colors w-full"
-                    >
-                      <Paperclip size={16} />
-                      <span>Attach a photo</span>
-                    </button>
-                  )}
-                  {imageError && (
-                    <p className="text-xs text-red-600 mt-1.5">{imageError}</p>
-                  )}
-                </div>
+                    )}
+                    {imageError && (
+                      <p className="text-xs text-red-600 mt-1.5">
+                        {imageError}
+                      </p>
+                    )}
+                  </div>
                 )}
 
                 {result && !result.success && (
@@ -757,10 +761,17 @@ export const ReviewsSection = memo(function ReviewsSection({
   useEffect(() => {
     let cancelled = false;
 
+    // Use `summary.reviews` (parsed from Judge.me's all_reviews_page widget)
+    // because it includes user-uploaded pictures. featured_carousel only
+    // exposes the product image, not review pictures, so it can't render
+    // image reviews. The featured carousel call is kept as a fallback for
+    // shops with no published reviews yet.
     Promise.all([fetchReviewsSummary(), fetchFeaturedReviews()])
       .then(([summary, featured]) => {
         if (cancelled) return;
-        setReviewsData({ ...summary, reviews: featured });
+        const reviews =
+          summary.reviews.length > 0 ? summary.reviews : featured;
+        setReviewsData({ ...summary, reviews });
       })
       .catch(() => {})
       .finally(() => {
