@@ -214,27 +214,25 @@ const ReviewCard = memo(function ReviewCard({
   const video = review.videos[0];
 
   return (
-    <div className="bg-white border border-black/[0.12] rounded-[20px] md:rounded-[24px] p-5 md:p-6 flex flex-col h-full">
+    <div className="bg-white border border-black/[0.12] rounded-[20px] md:rounded-[24px] p-5 md:p-6 flex flex-col">
       <ReviewMedia picture={picture} video={video} />
-      <div className="flex flex-col gap-6 md:gap-8 flex-1">
-        <div className="flex flex-col gap-5 md:gap-8">
-          <div className="flex items-center justify-between">
-            <StarRating rating={review.rating} />
-            <span className="text-sm md:text-base text-black">
-              {relativeTime}
-            </span>
-          </div>
-          {review.title && (
-            <p className="font-semibold text-sm md:text-base text-black">
-              {review.title}
-            </p>
-          )}
-          <p className="text-sm md:text-base text-black leading-relaxed line-clamp-5 whitespace-pre-line">
-            {review.body}
-          </p>
+      <div className="flex flex-col gap-5 md:gap-8">
+        <div className="flex items-center justify-between">
+          <StarRating rating={review.rating} />
+          <span className="text-sm md:text-base text-black">
+            {relativeTime}
+          </span>
         </div>
+        {review.title && (
+          <p className="font-semibold text-sm md:text-base text-black">
+            {review.title}
+          </p>
+        )}
+        <p className="text-sm md:text-base text-black leading-relaxed line-clamp-5 whitespace-pre-line">
+          {review.body}
+        </p>
       </div>
-      <p className="font-semibold text-sm md:text-base text-black text-right mt-6 md:mt-auto md:pt-6">
+      <p className="font-semibold text-sm md:text-base text-black text-right mt-5 md:mt-6">
         ~{review.author}
       </p>
     </div>
@@ -295,28 +293,36 @@ const AutoScrollReviewsGrid = memo(function AutoScrollReviewsGrid({
   isInView: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+  const mobileColRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
-  const offsetRef = useRef(0);
+  const leftOffsetRef = useRef(0);
+  const rightOffsetRef = useRef(0);
+  const mobileOffsetRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
   const scrollSpeed = 0.5;
 
   const startScrolling = useCallback(() => {
-    const track = trackRef.current;
-    const container = containerRef.current;
-    if (!track || !container) return;
-
     const step = () => {
-      if (!trackRef.current || !containerRef.current) return;
+      // Each column loops at its own scrollHeight/2 — that's the only way
+      // masonry columns of different heights can both loop seamlessly.
+      const advance = (
+        el: HTMLDivElement | null,
+        offsetRef: React.MutableRefObject<number>,
+      ) => {
+        if (!el || el.offsetParent === null) return;
+        const max = el.scrollHeight / 2;
+        if (max <= 0) return;
+        let next = offsetRef.current + scrollSpeed;
+        if (next >= max) next = 0;
+        offsetRef.current = next;
+        el.style.transform = `translateY(${-next}px)`;
+      };
 
-      offsetRef.current += scrollSpeed;
-
-      const maxOffset = trackRef.current.scrollHeight / 2;
-      if (offsetRef.current >= maxOffset) {
-        offsetRef.current = 0;
-      }
-
-      trackRef.current.style.transform = `translateY(${-offsetRef.current}px)`;
+      advance(leftColRef.current, leftOffsetRef);
+      advance(rightColRef.current, rightOffsetRef);
+      advance(mobileColRef.current, mobileOffsetRef);
 
       animationRef.current = requestAnimationFrame(step);
     };
@@ -347,7 +353,15 @@ const AutoScrollReviewsGrid = memo(function AutoScrollReviewsGrid({
     setTimeout(() => setIsPaused(false), 2000);
   }, []);
 
-  const doubledReviews = [...reviews, ...reviews];
+  // Masonry: split reviews into two columns (round-robin keeps weights
+  // approximately balanced regardless of which reviews have images), then
+  // double each column's contents for the seamless scroll loop.
+  const leftColumn: JudgeMeReview[] = [];
+  const rightColumn: JudgeMeReview[] = [];
+  reviews.forEach((r, i) => (i % 2 === 0 ? leftColumn : rightColumn).push(r));
+  const doubledLeft = [...leftColumn, ...leftColumn];
+  const doubledRight = [...rightColumn, ...rightColumn];
+  const doubledAll = [...reviews, ...reviews];
 
   return (
     <div
@@ -366,14 +380,39 @@ const AutoScrollReviewsGrid = memo(function AutoScrollReviewsGrid({
         ref={containerRef}
         className="overflow-hidden max-h-[440px] md:max-h-[520px]"
       >
+        {/* Mobile: single column keeps reviews in chronological order */}
         <div
-          ref={trackRef}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6"
+          ref={mobileColRef}
+          className="flex flex-col gap-4 sm:hidden"
           style={{ willChange: "transform" }}
         >
-          {doubledReviews.map((review, index) => (
-            <ReviewCard key={`${review.id}-${index}`} review={review} />
+          {doubledAll.map((review, index) => (
+            <ReviewCard key={`m-${review.id}-${index}`} review={review} />
           ))}
+        </div>
+
+        {/* Desktop: two independently-scrolling masonry columns */}
+        <div className="hidden sm:grid sm:grid-cols-2 sm:items-start gap-4 md:gap-6">
+          <div
+            ref={leftColRef}
+            className="flex flex-col gap-4 md:gap-6 min-w-0"
+            style={{ willChange: "transform" }}
+          >
+            {doubledLeft.map((review, index) => (
+              <ReviewCard key={`l-${review.id}-${index}`} review={review} />
+            ))}
+          </div>
+          {rightColumn.length > 0 && (
+            <div
+              ref={rightColRef}
+              className="flex flex-col gap-4 md:gap-6 min-w-0"
+              style={{ willChange: "transform" }}
+            >
+              {doubledRight.map((review, index) => (
+                <ReviewCard key={`r-${review.id}-${index}`} review={review} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
