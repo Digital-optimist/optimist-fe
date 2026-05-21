@@ -2,7 +2,7 @@
 
 import { memo, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useAnimationControls, type Variants } from "framer-motion";
+import { m as motion, useAnimationControls, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { viewportOnce } from "@/lib/motion-variants";
 

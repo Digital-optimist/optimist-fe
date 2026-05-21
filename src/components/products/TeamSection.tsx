@@ -2,7 +2,7 @@
 
 import { memo, useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { m as motion, useInView, AnimatePresence } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 
 // =============================================================================

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { BlogArticle } from "@/lib/shopify";
 import {
   fadeUp,

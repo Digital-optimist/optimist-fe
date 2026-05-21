@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { LandingContentProvider } from "@/contexts/LandingContentContext";

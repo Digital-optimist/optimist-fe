@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { RotateCcw, Share2, ShieldCheck, Truck } from "lucide-react";
 import { viewportOnce } from "@/lib/motion-variants";
 

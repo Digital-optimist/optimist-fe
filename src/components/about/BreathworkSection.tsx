@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { viewportOnce } from "@/lib/motion-variants";
 
 // Animated lines content

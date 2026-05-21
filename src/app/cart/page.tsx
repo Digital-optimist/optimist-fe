@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { ShoppingBag, ArrowRight, ArrowLeft, Minus, Plus, Trash2, Package } from "lucide-react";
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/shopify";

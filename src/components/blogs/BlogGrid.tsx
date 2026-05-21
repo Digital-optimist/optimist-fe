@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { BlogArticle } from "@/lib/shopify";
 import BlogCard from "./BlogCard";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";

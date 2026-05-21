@@ -2,7 +2,7 @@
 
 import { memo, useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { ASSETS } from "@/lib/assets";
 

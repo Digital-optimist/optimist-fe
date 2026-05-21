@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { ShopifyProvider } from "@shopify/hydrogen-react";
+import { LazyMotion, domAnimation } from "framer-motion";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { WaitlistProvider } from "@/contexts/WaitlistContext";
@@ -18,15 +18,23 @@ interface ProvidersProps {
 // been pushed down to the routes that actually consume useProducts() — the
 // landing page (HomePageClient) and /products/ (ProductsPageClient) — so it
 // no longer runs (and no longer fetches) on unrelated routes.
+//
+// ShopifyProvider from @shopify/hydrogen-react was removed: a codebase grep
+// shows zero consumers of any Hydrogen-React hook (`useShop`, Hydrogen's
+// `useCart`, `useShopifyCookies`, etc.). The custom CartContext uses
+// @/lib/shopify directly. ShopifyProvider was shipping ~15-25 KB of
+// hydrogen-react context provider code on every page for no benefit.
+//
+// LazyMotion wraps everything so the lighter `m` component (used via the
+// `import { m as motion }` alias across the codebase) loads its animation
+// features lazily as a single ~25 KB chunk instead of inlining the full
+// ~52 KB framer-motion engine into every chunk that touches an animation.
+// domAnimation covers animate / initial / exit / whileHover / whileTap /
+// whileInView / drag — every animation type used in this codebase. If
+// `layout`/`layoutId` animations are added later, switch to `domMax`.
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ShopifyProvider
-      storeDomain={`https://octolife-3.myshopify.com`}
-      storefrontToken={"3b12d6020365806434052cc061a5b5e3"}
-      storefrontApiVersion="2025-07"
-      countryIsoCode="IN"
-      languageIsoCode="EN"
-    >
+    <LazyMotion features={domAnimation} strict={false}>
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
@@ -37,6 +45,6 @@ export function Providers({ children }: ProvidersProps) {
           </CartProvider>
         </AuthProvider>
       </ToastProvider>
-    </ShopifyProvider>
+    </LazyMotion>
   );
 }

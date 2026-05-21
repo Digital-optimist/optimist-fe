@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "analyze": "ANALYZE=true yarn prebuild && ANALYZE=true next build --webpack",
-    "lhci": "lhci autorun"
+    "lhci": "lhci autorun",
+    "lhci:mobile": "lhci autorun --config=./lighthouserc.mobile.json"
   },
   "dependencies": {
     "@shopify/hydrogen-react": "2025.7.1",

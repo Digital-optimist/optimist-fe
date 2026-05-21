@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Paperclip, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { submitContactForm } from "@/lib/shopify";

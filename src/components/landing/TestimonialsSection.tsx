@@ -7,7 +7,7 @@ import {
   useEffect,
 } from "react";
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import type { TestimonialItem } from "@/lib/shopify";
 import {
   fadeUp,

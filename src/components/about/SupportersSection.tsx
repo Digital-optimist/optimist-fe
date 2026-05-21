@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useAnimationControls, useInView } from "framer-motion";
+import { m as motion, useAnimationControls, useInView } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { fadeUp, viewportOnce } from "@/lib/motion-variants";
 

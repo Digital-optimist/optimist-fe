@@ -2,29 +2,24 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { useRouter } from "next/navigation";
 import type { HeroBadge } from "@/lib/shopify";
 
-// Smooth scroll to element using the browser's native API. The original used
-// GSAP's `scrollTo` plugin with a 0.1s duration — effectively instant — so the
-// native equivalent is functionally identical.
-const scrollToSection = (elementId: string) => {
-  const element = document.getElementById(elementId);
-  if (element) {
-    const targetPosition = element.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: targetPosition, behavior: "smooth" });
-  }
-};
-
-function HeroACImage({ isMobile }: { isMobile: boolean }) {
+// HeroACImage is the LCP element on `/`. It used to be wrapped in
+// <motion.div initial={{ opacity:0, scale:0.9, y:40 }} animate={...}/> which
+// kept it invisible until framer-motion hydrated and ran the animation —
+// costing ~LCP delay equal to the animation start delay + paint time. The
+// entrance is now a pure-CSS keyframe (`hero-ac-enter`) so the element
+// paints immediately at its final state for LCP purposes and animates in
+// without any JS in the critical path. The mobile/desktop image swap is
+// handled via Tailwind responsive classes on two next/Image instances; the
+// hidden one is `display: none`, so the browser doesn't fetch it.
+function HeroACImage({ variant }: { variant: "mobile" | "desktop" }) {
+  const isMobile = variant === "mobile";
   return (
-    <motion.div
-      className="relative flex items-end justify-center"
-      initial={{ opacity: 0, scale: 0.9, y: 40 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
+    <div
+      className="relative flex items-end justify-center hero-ac-enter"
       style={{
         width: isMobile ? "100vw" : "clamp(680px, 60vw, 1000px)",
         maxWidth: isMobile ? "none" : "1050px",
@@ -37,9 +32,10 @@ function HeroACImage({ isMobile }: { isMobile: boolean }) {
         width={1050}
         height={700}
         className="object-contain w-full h-auto"
+        sizes={isMobile ? "100vw" : "(min-width: 1024px) 1000px, 60vw"}
         priority
       />
-    </motion.div>
+    </div>
   );
 }
 
@@ -55,30 +51,27 @@ export function HeroSection({
   badges,
 }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const badgesRef = useRef<HTMLDivElement>(null);
-  const buttonsRef = useRef<HTMLDivElement>(null);
-  const mobileButtonsRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const gradientRef = useRef<HTMLDivElement>(null);
   const parallaxContainerRef = useRef<HTMLDivElement>(null);
   const parallaxContentRef = useRef<HTMLDivElement>(null);
   const leafVideoRef1 = useRef<HTMLVideoElement>(null);
   const leafVideoRefMobile = useRef<HTMLVideoElement>(null);
+  // The mobile + desktop layouts are now BOTH rendered (gated by CSS
+  // `md:hidden` / `hidden md:block`), so animation targets are looked up via
+  // class selectors instead of refs — refs would only point to one variant.
   const router = useRouter();
+  // isMobile is only used to gate the mouse-parallax effect (a desktop-only
+  // affordance). It NO LONGER drives layout — both mobile and desktop layouts
+  // are rendered in the SSR HTML and toggled by Tailwind `md:` classes, so
+  // there is no hydration swap and no CLS on mobile.
   const [isMobile, setIsMobile] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const [showLeafVideo, setShowLeafVideo] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   // Defer mounting the decorative leaf video until the browser is idle —
@@ -178,26 +171,33 @@ export function HeroSection({
   }, [isMobile]);
 
   // Initial entrance — animate each tracked element on mount via inline DOM
-  // transitions. This replaces the original GSAP timeline; the timing chosen
-  // here mirrors the original cadence (each phase overlaps slightly with the
-  // previous) but the values are direct so the visual result is stable.
+  // transitions. Queried by className so the effect applies to BOTH the
+  // mobile and desktop variants (both are now in the DOM, one hidden via
+  // CSS). The visual cadence is preserved frame-for-frame from the previous
+  // ref-based version; only the lookup mechanism changed.
   useEffect(() => {
-    const headlineSpans =
-      headlineRef.current?.querySelectorAll<HTMLSpanElement>("span") ?? [];
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const headlineSpans = section.querySelectorAll<HTMLSpanElement>(
+      ".hero-headline span",
+    );
     headlineSpans.forEach((el, i) => {
       el.style.opacity = "0";
       el.style.transform = "translate3d(0, 60px, 0)";
       requestAnimationFrame(() => {
         el.style.transition =
           "opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)";
-        el.style.transitionDelay = `${i * 0.15}s`;
+        // Stagger restarts per variant; nth-child(n) on the queried list
+        // gives a continuous stagger across both, which visually reads as
+        // each variant staggering on its own (only one is visible).
+        el.style.transitionDelay = `${(i % 2) * 0.15}s`;
         el.style.opacity = "1";
         el.style.transform = "translate3d(0, 0, 0)";
       });
     });
 
-    const fadeUpEl = (el: HTMLElement | null, delay: number, fromY = 30) => {
-      if (!el) return;
+    const fadeUpEl = (el: HTMLElement, delay: number, fromY = 30) => {
       el.style.opacity = "0";
       el.style.transform = `translate3d(0, ${fromY}px, 0)`;
       requestAnimationFrame(() => {
@@ -209,84 +209,85 @@ export function HeroSection({
       });
     };
 
-    fadeUpEl(badgesRef.current, 0.5);
+    section
+      .querySelectorAll<HTMLDivElement>(".js-hero-badges")
+      .forEach((el) => fadeUpEl(el, 0.5));
 
-    const desktopBtns = Array.from(
-      buttonsRef.current?.children ?? [],
-    ) as HTMLElement[];
-    desktopBtns.forEach((el, i) => {
-      el.style.opacity = "0";
-      el.style.transform = "translate3d(30px, 0, 0)";
-      requestAnimationFrame(() => {
-        el.style.transition =
-          "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
-        el.style.transitionDelay = `${0.9 + i * 0.1}s`;
-        el.style.opacity = "1";
-        el.style.transform = "translate3d(0, 0, 0)";
+    section
+      .querySelectorAll<HTMLDivElement>(".js-hero-desktop-buttons")
+      .forEach((container) => {
+        Array.from(container.children).forEach((child, i) => {
+          const el = child as HTMLElement;
+          el.style.opacity = "0";
+          el.style.transform = "translate3d(30px, 0, 0)";
+          requestAnimationFrame(() => {
+            el.style.transition =
+              "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+            el.style.transitionDelay = `${0.9 + i * 0.1}s`;
+            el.style.opacity = "1";
+            el.style.transform = "translate3d(0, 0, 0)";
+          });
+        });
       });
-    });
 
-    const mobileBtns = Array.from(
-      mobileButtonsRef.current?.children ?? [],
-    ) as HTMLElement[];
-    mobileBtns.forEach((el, i) => {
-      el.style.opacity = "0";
-      el.style.transform = "translate3d(0, 20px, 0)";
-      requestAnimationFrame(() => {
-        el.style.transition =
-          "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
-        el.style.transitionDelay = `${0.9 + i * 0.1}s`;
-        el.style.opacity = "1";
-        el.style.transform = "translate3d(0, 0, 0)";
+    section
+      .querySelectorAll<HTMLDivElement>(".js-hero-mobile-buttons")
+      .forEach((container) => {
+        Array.from(container.children).forEach((child, i) => {
+          const el = child as HTMLElement;
+          el.style.opacity = "0";
+          el.style.transform = "translate3d(0, 20px, 0)";
+          requestAnimationFrame(() => {
+            el.style.transition =
+              "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+            el.style.transitionDelay = `${0.9 + i * 0.1}s`;
+            el.style.opacity = "1";
+            el.style.transform = "translate3d(0, 0, 0)";
+          });
+        });
       });
-    });
 
-    if (imageRef.current) {
-      const el = imageRef.current;
-      el.style.opacity = "0";
-      el.style.transform = "translate3d(0, 80px, 0) scale(0.95)";
-      requestAnimationFrame(() => {
-        el.style.transition =
-          "opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-        el.style.transitionDelay = "0.7s";
-        el.style.opacity = "1";
-        el.style.transform = "translate3d(0, 0, 0) scale(1)";
+    // Desktop AC image wrapper — animates the wrapper, not the inner
+    // HeroACImage (which has its own CSS keyframe). They compose: wrapper
+    // fades+slides, inner ACs scale-in from `hero-ac-enter`.
+    section
+      .querySelectorAll<HTMLDivElement>(".js-hero-image-wrapper")
+      .forEach((el) => {
+        el.style.opacity = "0";
+        el.style.transform = "translate3d(0, 80px, 0) scale(0.95)";
+        requestAnimationFrame(() => {
+          el.style.transition =
+            "opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+          el.style.transitionDelay = "0.7s";
+          el.style.opacity = "1";
+          el.style.transform = "translate3d(0, 0, 0) scale(1)";
+        });
       });
-    }
   }, []);
 
-  // Use CSS-based responsive sizing for SSR, only switch to JS-based after mount
-  // Note: Using 'svh' (small viewport height) on mobile instead of 'dvh' to prevent
-  // height changes when the navigation header hides/shows on scroll
-  const sectionStyle = isMounted
-    ? {
-        height: isMobile ? "85svh" : "82vh",
-        minHeight: isMobile ? "600px" : "500px",
-      }
-    : {
-        height: "82vh",
-        minHeight: "500px",
-      };
-
+  // Height is now driven by responsive CSS so SSR and mobile clients agree —
+  // eliminates the hydration-swap CLS the old `isMounted ? ... : ...` had.
+  // Using 'svh' on mobile (not 'dvh') so URL/nav bar show/hide doesn't resize
+  // the hero on every scroll.
   return (
     <section
       ref={sectionRef}
-      className="hero-section relative flex flex-col bg-black"
-      style={{ ...sectionStyle, overflow: "visible", zIndex: 10 }}
+      className="hero-section relative flex flex-col bg-black h-[85svh] min-h-[600px] md:h-[82vh] md:min-h-[500px]"
+      style={{ overflow: "visible", zIndex: 10 }}
     >
-      {/* MOBILE LAYOUT */}
-      {isMounted && isMobile && (
+      {/* MOBILE LAYOUT — rendered always, hidden on md+ via CSS. Avoids the
+          SSR/hydration layout swap that previously caused mobile CLS. */}
+      <div className="contents md:hidden">
         <>
-          {/* Background - Mobile background image */}
-          <div ref={gradientRef} className="absolute inset-0 overflow-hidden">
-            {/* Mobile background image - decorative */}
+          {/* Background - Mobile background image (decorative, not LCP) */}
+          <div className="absolute inset-0 overflow-hidden">
             <Image
               src={ASSETS.heroMobileBg}
               alt=""
               fill
               sizes="100vw"
               className="object-cover object-center pointer-events-none"
-              priority
+              fetchPriority="high"
             />
             {/* Leaves video overlay - subtle effect (deferred to idle so LCP isn't blocked).
                 WebM (VP9) is ~50% smaller than MP4 for this leafy content; MP4 is the
@@ -320,14 +321,12 @@ export function HeroSection({
 
           {/* Content Container - normal flow layout */}
           <div
-            ref={contentRef}
             className="relative z-10 flex flex-col items-center h-full px-5 sm:px-6 overflow-visible"
             style={{ willChange: "transform, opacity", paddingTop: "20vh" }}
           >
             {/* Headline + Badges */}
             <div className="flex flex-col items-center text-center">
               <h1
-                ref={headlineRef}
                 className="hero-headline hero-headline-size"
                 style={{ perspective: "1000px" }}
               >
@@ -339,10 +338,7 @@ export function HeroSection({
                 </span>
               </h1>
 
-              <div
-                ref={badgesRef}
-                className="flex items-center justify-center gap-4 mt-6"
-              >
+              <div className="js-hero-badges flex items-center justify-center gap-4 mt-6">
                 {badges && badges.length > 0 ? (
                   badges.map((badge, i) => (
                     <div key={i} className="contents">
@@ -354,7 +350,7 @@ export function HeroSection({
                           width={40}
                           height={36}
                           className="w-10 h-9 object-contain flex-shrink-0"
-                          priority
+                          loading="eager"
                           unoptimized
                         />
                         <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
@@ -372,7 +368,7 @@ export function HeroSection({
                         width={36}
                         height={36}
                         className="w-9 h-9 flex-shrink-0"
-                        priority
+                        loading="eager"
                       />
                       <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
                         Proven Cooling
@@ -388,7 +384,7 @@ export function HeroSection({
                         width={44}
                         height={36}
                         className="w-10 h-9 object-contain flex-shrink-0"
-                        priority
+                        loading="eager"
                       />
                       <span className="hero-badge-title text-start text-optimist-cream leading-[1.3]">
                         India&apos;s #1 Energy
@@ -409,13 +405,12 @@ export function HeroSection({
               className="flex justify-center w-full pointer-events-none overflow-visible"
               style={{ zIndex: 30 }}
             >
-              <HeroACImage isMobile={isMobile} />
+              <HeroACImage variant="mobile" />
             </div>
 
             {/* Buy Now CTA */}
             <div
-              ref={mobileButtonsRef}
-              className="flex justify-center mt-4 pb-12"
+              className="js-hero-mobile-buttons flex justify-center mt-4 pb-12"
               style={{ zIndex: 31 }}
             >
               <button
@@ -427,30 +422,29 @@ export function HeroSection({
             </div>
           </div>
         </>
-      )}
+      </div>
 
-      {/* DESKTOP LAYOUT - Normal section matching Figma design */}
-      {/* Render desktop layout on server (default) and when mounted and not mobile */}
-      {(!isMounted || !isMobile) && (
+      {/* DESKTOP LAYOUT — rendered always, hidden below md via CSS. Uses
+          `md:contents` so the inner parallax wrapper still inherits the
+          section's positioning context (no extra box in the layout tree). */}
+      <div className="hidden md:contents">
         <div
           ref={parallaxContainerRef}
           className="relative w-full h-full flex flex-col"
           style={{ overflow: "visible" }}
         >
-          {/* Background - Desktop background image - clipped to section bounds */}
+          {/* Background - Desktop background image (decorative, not LCP) */}
           <div
-            ref={gradientRef}
             className="absolute inset-0 overflow-hidden"
             style={{ borderRadius: "0 0 0 0" }}
           >
-            {/* Desktop background image - decorative */}
             <Image
               src={ASSETS.heroDesktopBg}
               alt=""
               fill
               sizes="100vw"
               className="object-cover object-center pointer-events-none"
-              priority
+              fetchPriority="high"
             />
             {/* Leaves video overlay - subtle effect (deferred to idle so LCP isn't blocked) */}
             {showLeafVideo && (
@@ -487,7 +481,6 @@ export function HeroSection({
           >
             {/* Content Container - centered with max-width */}
             <div
-              ref={contentRef}
               className="flex flex-col justify-start w-full max-w-[1360px] mx-auto px-10 lg:px-16"
               style={{ paddingTop: "24vh" }}
             >
@@ -497,7 +490,6 @@ export function HeroSection({
                 <div className="flex flex-col gap-4">
                   {/* Headline */}
                   <h1
-                    ref={headlineRef}
                     className="hero-headline hero-headline-size"
                     style={{ perspective: "1000px" }}
                   >
@@ -510,7 +502,7 @@ export function HeroSection({
                   </h1>
 
                   {/* Badges Row */}
-                  <div ref={badgesRef} className="flex items-center gap-6 mt-6">
+                  <div className="js-hero-badges flex items-center gap-6 mt-6">
                     {badges && badges.length > 0 ? (
                       badges.map((badge, i) => (
                         <div key={i} className="contents">
@@ -522,7 +514,7 @@ export function HeroSection({
                               width={48}
                               height={44}
                               className="w-12 h-11 object-contain"
-                              priority
+                              loading="eager"
                               unoptimized
                             />
                             <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
@@ -540,7 +532,7 @@ export function HeroSection({
                             width={44}
                             height={44}
                             className="w-11 h-11"
-                            priority
+                            loading="eager"
                           />
                           <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
                             Proven Cooling at 50°C
@@ -554,7 +546,7 @@ export function HeroSection({
                             width={56}
                             height={44}
                             className="w-14 h-11 object-contain"
-                            priority
+                            loading="eager"
                           />
                           <span className="hero-badge-title text-optimist-cream leading-[1.2] text-[20px]">
                             India&apos;s #1 Energy Efficient AC
@@ -566,13 +558,7 @@ export function HeroSection({
                 </div>
 
                 {/* Right Content - Desktop CTA Buttons */}
-                <div ref={buttonsRef} className="flex items-center gap-4 mt-20">
-                  {/* <button
-                    onClick={() => scrollToSection("benefits")}
-                    className="btn-why-optimist hero-btn-desktop text-optimist-cream flex items-center justify-center"
-                  >
-                    Why Optimist ?
-                  </button> */}
+                <div className="js-hero-desktop-buttons flex items-center gap-4 mt-20">
                   <button
                     onClick={() => router.push("/products")}
                     className="btn-buy-now-hero hero-btn-desktop text-[#1265FF] flex items-center justify-center"
@@ -593,13 +579,13 @@ export function HeroSection({
                 zIndex: 30,
               }}
             >
-              <div ref={imageRef}>
-                <HeroACImage isMobile={false} />
+              <div className="js-hero-image-wrapper">
+                <HeroACImage variant="desktop" />
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </section>
   );
 }

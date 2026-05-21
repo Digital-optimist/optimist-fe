@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { useRouter } from "next/navigation";
 import {
