@@ -3,7 +3,7 @@
 import { ReactNode, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Menu, X, UserCircle, MapPin, Package } from "lucide-react";
 import { useState } from "react";
 import AccountSidebar from "./AccountSidebar";

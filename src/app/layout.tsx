@@ -128,10 +128,16 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
-        {/* Google Tag Manager — loaded after the page is interactive so it doesn't block first paint. */}
+        {/* Google Tag Manager — pushed to `lazyOnload` (matches GA4 below) so
+            it runs during browser idle time instead of immediately after
+            interactive. GTM was costing 50-150 ms of TBT on the main thread;
+            this trades ~1-2 s of analytics-attribution accuracy for a
+            noticeably cleaner main thread on first paint. Site events still
+            fire correctly because GTM's `dataLayer.push` calls queue until
+            the snippet loads. */}
         <Script
           id="gtm-script"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

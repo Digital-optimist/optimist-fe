@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { viewportOnce } from "@/lib/motion-variants";
 

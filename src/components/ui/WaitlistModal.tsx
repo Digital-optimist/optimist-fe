@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { X, Check } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m as motion } from "framer-motion";
 import { useWaitlist } from "@/contexts/WaitlistContext";
 
 // =============================================================================

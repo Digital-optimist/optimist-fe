@@ -52,6 +52,29 @@
   --font-display: var(--font-abc-solar-display);
 }
 
+/* Hero AC image entrance — replaces framer-motion's initial/animate on the
+   LCP element. Plain CSS lets the image paint immediately at its final
+   position (zero LCP delay) while the visual matches the original timing. */
+@keyframes hero-ac-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+.hero-ac-enter {
+  animation: hero-ac-enter 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-ac-enter {
+    animation: none;
+  }
+}
+
 /* Hover/active scale utility — replaces framer-motion's whileHover/whileTap
    on the products page CTAs. Disabled below the reduced-motion threshold. */
 .btn-scale {

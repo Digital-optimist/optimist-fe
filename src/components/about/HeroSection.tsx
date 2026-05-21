@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { ASSETS } from "@/lib/assets";
 import { staggerParent, viewportOnce } from "@/lib/motion-variants";
 

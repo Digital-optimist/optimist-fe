@@ -7,7 +7,7 @@ import {
   getSavedPincode,
 } from "@/hooks/usePincodeCheck";
 import { MapPin, Truck, AlertCircle, Loader2, X } from "lucide-react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface PincodeModalProps {

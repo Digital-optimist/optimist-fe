@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { fadeUp, viewportOnce } from "@/lib/motion-variants";
 
 interface BlogCategoryTabsProps {

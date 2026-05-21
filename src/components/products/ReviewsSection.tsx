@@ -2,7 +2,7 @@
 
 import { memo, useRef, useEffect, useState, useCallback } from "react";
 import Image from "next/image";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { m as motion, useInView, AnimatePresence } from "framer-motion";
 import { Star, X, Loader2, Paperclip } from "lucide-react";
 import {
   fetchReviewsSummary,

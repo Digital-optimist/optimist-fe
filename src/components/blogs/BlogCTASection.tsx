@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ASSETS } from "@/lib/assets";

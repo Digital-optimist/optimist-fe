@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import ASSETS from "@/lib/assets";
 import { useRouter } from "next/navigation";

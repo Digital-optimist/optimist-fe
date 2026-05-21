@@ -2,7 +2,7 @@
 
 import { memo, type ReactNode } from "react";
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { SnowflakeIcon } from "@/components/icons/ProductIcons";
 import type { ResultSectionItem } from "@/lib/shopify";
 import { viewportOnce } from "@/lib/motion-variants";

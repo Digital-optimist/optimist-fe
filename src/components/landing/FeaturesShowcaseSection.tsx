@@ -127,6 +127,22 @@ export function FeaturesShowcaseSection() {
     ) => {
       if (!video || initializedRef.current) return;
 
+      // Video has already moved past frame 0 — scrubbing is live, don't reset.
+      if (video.currentTime > 0.05) {
+        initializedRef.current = true;
+        return;
+      }
+
+      // A scrub loop is in flight — re-initializing now would paint frame 0
+      // mid-scroll and look like a flicker.
+      if (
+        mobileScrubState.current.rafId != null ||
+        desktopScrubState.current.rafId != null
+      ) {
+        initializedRef.current = true;
+        return;
+      }
+
       try {
         video.muted = true;
         // Brief play to force iOS to load video data
@@ -178,22 +194,31 @@ export function FeaturesShowcaseSection() {
     }
   }, [isLargeScreen, initializeVideo]);
 
-  // Handle video metadata loaded
-  const handleVideoLoaded = useCallback(() => {
+  // Metadata-only handler: bound to onLoadedMetadata. Init runs exactly once
+  // here. canplay/canplaythrough re-fire after seeks on iOS Safari, so we
+  // must NOT call initializeVideo from those events — its play→pause→reset
+  // sequence would paint frame 0 mid-scrub and look like a flicker.
+  const handleVideoMetadata = useCallback(() => {
     setVideoReady(true);
-    // Try to initialize on metadata load
     if (videoRef.current && !videoInitializedRef.current) {
       initializeVideo(videoRef.current, videoInitializedRef);
     }
   }, [initializeVideo]);
 
-  const handleMobileVideoLoaded = useCallback(() => {
+  const handleVideoReady = useCallback(() => {
+    setVideoReady(true);
+  }, []);
+
+  const handleMobileVideoMetadata = useCallback(() => {
     setMobileVideoReady(true);
-    // Try to initialize on metadata load
     if (mobileVideoRef.current && !mobileVideoInitializedRef.current) {
       initializeVideo(mobileVideoRef.current, mobileVideoInitializedRef);
     }
   }, [initializeVideo]);
+
+  const handleMobileVideoReady = useCallback(() => {
+    setMobileVideoReady(true);
+  }, []);
 
   // Desktop video scrubbing — drive video.currentTime from vertical scroll
   // progress through the section. The lerp + rAF loop smooths the seeks so we
@@ -315,7 +340,12 @@ export function FeaturesShowcaseSection() {
     const seekThrottleMs = 16;
 
     const updateVideoTime = () => {
-      if (video.readyState < 2 || !Number.isFinite(video.duration)) return;
+      // Decoder briefly below HAVE_CURRENT_DATA — keep the loop alive without
+      // seeking so we don't drop the pending target and jump on the next event.
+      if (video.readyState < 2 || !Number.isFinite(video.duration)) {
+        state.rafId = requestAnimationFrame(updateVideoTime);
+        return;
+      }
 
       const now = performance.now();
       const diff = state.targetTime - state.currentTime;
@@ -336,15 +366,10 @@ export function FeaturesShowcaseSection() {
       if (shouldSeek && !isThrottled) {
         state.lastSeekTime = now;
         try {
-          if (
-            !isReverse &&
-            "fastSeek" in video &&
-            typeof video.fastSeek === "function"
-          ) {
-            video.fastSeek(state.currentTime);
-          } else {
-            video.currentTime = state.currentTime;
-          }
+          // iOS Safari's fastSeek snaps to the nearest keyframe — with sparse
+          // keyframes that reads as stepping/flicker. Use plain currentTime
+          // on mobile; desktop keeps fastSeek where it works fine.
+          video.currentTime = state.currentTime;
         } catch {
           // ignore seeking errors
         }
@@ -365,7 +390,8 @@ export function FeaturesShowcaseSection() {
       if (progress >= featureBreakpoints[i]) newActiveFeature = i;
       else break;
     }
-    setActiveFeature(Math.min(newActiveFeature, features.length - 1));
+    const nextActiveFeature = Math.min(newActiveFeature, features.length - 1);
+    setActiveFeature((prev) => (prev === nextActiveFeature ? prev : nextActiveFeature));
   });
 
   return (
@@ -423,22 +449,21 @@ export function FeaturesShowcaseSection() {
               <video
                 ref={mobileVideoRef}
                 src={`${ASSETS.videos.pointersAnimationMobile}`}
-                className="h-[100%] w-auto max-w-none object-cover translate-x-[5%]"
+                className="h-[100%] w-auto max-w-none object-cover"
                 muted
                 playsInline
                 preload="auto"
-                onLoadedMetadata={handleMobileVideoLoaded}
-                onCanPlay={handleMobileVideoLoaded}
-                onCanPlayThrough={handleMobileVideoLoaded}
+                onLoadedMetadata={handleMobileVideoMetadata}
+                onCanPlay={handleMobileVideoReady}
+                onCanPlayThrough={handleMobileVideoReady}
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
                 style={{
                   WebkitTransform: "translateZ(0) translateX(25%)",
                   transform: "translateZ(0) translateX(25%)",
-                  willChange: "contents",
+                  willChange: "transform",
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
-                  contain: "layout style paint",
                 }}
               />
             </div>
@@ -589,9 +614,9 @@ export function FeaturesShowcaseSection() {
                 playsInline
                 autoPlay={false}
                 preload="auto"
-                onLoadedMetadata={handleVideoLoaded}
-                onCanPlay={handleVideoLoaded}
-                onCanPlayThrough={handleVideoLoaded}
+                onLoadedMetadata={handleVideoMetadata}
+                onCanPlay={handleVideoReady}
+                onCanPlayThrough={handleVideoReady}
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
                 style={{ WebkitTransform: "translateZ(0)" }}

@@ -3,7 +3,7 @@
 import { memo, useRef, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import {
-  motion,
+  m as motion,
   useAnimationControls,
   useInView,
   type Variants,
