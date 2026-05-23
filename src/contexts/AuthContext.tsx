@@ -32,17 +32,22 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+  login: (
+    email: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => Promise<void>;
   logout: () => Promise<void>;
   register: (
     email: string,
     password: string,
     firstName?: string,
     lastName?: string,
-  ) => Promise<void>;
+  ) => Promise<{ verificationRequired: boolean }>;
   recoverPassword: (email: string) => Promise<void>;
   refreshCustomer: () => Promise<void>;
   updateProfile: (data: CustomerUpdateInput) => Promise<void>;
+  setAuthFromToken: (token: CustomerAccessToken) => Promise<void>;
 }
 
 // =============================================================================
@@ -73,11 +78,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!accessToken && !!customer;
 
-  // Load auth from localStorage on mount
+  // Load auth from storage on mount. Checks localStorage first (persistent,
+  // "remember me" enabled) then sessionStorage (session-only).
   useEffect(() => {
     const loadStoredAuth = async () => {
       try {
-        const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+        const stored =
+          localStorage.getItem(AUTH_STORAGE_KEY) ??
+          sessionStorage.getItem(AUTH_STORAGE_KEY);
         if (stored) {
           const { accessToken: storedToken, expiresAt }: StoredAuth =
             JSON.parse(stored);
@@ -93,15 +101,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             } else {
               // Token is invalid, clear storage
               localStorage.removeItem(AUTH_STORAGE_KEY);
+              sessionStorage.removeItem(AUTH_STORAGE_KEY);
               setAccessToken(null);
             }
           } else {
             // Token is expired, clear storage
             localStorage.removeItem(AUTH_STORAGE_KEY);
+            sessionStorage.removeItem(AUTH_STORAGE_KEY);
           }
         }
       } catch (error) {
         localStorage.removeItem(AUTH_STORAGE_KEY);
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
       } finally {
         setIsLoading(false);
       }
@@ -110,42 +121,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadStoredAuth();
   }, []);
 
-  // Save auth to localStorage
-  const saveAuth = useCallback((token: CustomerAccessToken) => {
-    const stored: StoredAuth = {
-      accessToken: token.accessToken,
-      expiresAt: token.expiresAt,
-    };
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(stored));
-    setAccessToken(token.accessToken);
-  }, []);
+  // Save auth to storage. rememberMe=true → localStorage (persists across
+  // browser restarts); rememberMe=false → sessionStorage (cleared on close).
+  const saveAuth = useCallback(
+    (token: CustomerAccessToken, rememberMe: boolean = true) => {
+      const stored: StoredAuth = {
+        accessToken: token.accessToken,
+        expiresAt: token.expiresAt,
+      };
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      sessionStorage.removeItem(AUTH_STORAGE_KEY);
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem(AUTH_STORAGE_KEY, JSON.stringify(stored));
+      setAccessToken(token.accessToken);
+    },
+    [],
+  );
 
-  // Clear auth from localStorage
+  // Clear auth from both storages
   const clearAuth = useCallback(() => {
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
     setAccessToken(null);
     setCustomer(null);
   }, []);
 
-  // Login
+  // Login. isLoading is intentionally NOT toggled here — that flag drives the
+  // app-wide initial loading screen and toggling it mid-submit would unmount
+  // the login form.
   const login = useCallback(
-    async (email: string, password: string) => {
-      setIsLoading(true);
-      try {
-        const token = await customerAccessTokenCreate(email, password);
-        saveAuth(token);
+    async (email: string, password: string, rememberMe: boolean = true) => {
+      const token = await customerAccessTokenCreate(email, password);
+      saveAuth(token, rememberMe);
 
+      try {
         const customerData = await getCustomer(token.accessToken);
         if (customerData) {
           setCustomer(customerData);
         } else {
           throw new Error("Failed to fetch customer data");
         }
-      } finally {
-        setIsLoading(false);
+      } catch (error) {
+        clearAuth();
+        throw error;
       }
     },
-    [saveAuth],
+    [saveAuth, clearAuth],
   );
 
   // Logout
@@ -153,28 +174,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (accessToken) {
       try {
         await customerAccessTokenDelete(accessToken);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Failed to delete Shopify access token:", error);
+      }
     }
     clearAuth();
   }, [accessToken, clearAuth]);
 
-  // Register
+  // Register. Returns verificationRequired:true when the store has email
+  // verification enabled — the customer is created but auto-login fails until
+  // the user clicks the activation link.
   const register = useCallback(
     async (
       email: string,
       password: string,
       firstName?: string,
       lastName?: string,
-    ) => {
-      setIsLoading(true);
-      try {
-        const { customer: newCustomer, customerAccessToken } =
-          await customerCreate(email, password, firstName, lastName);
-        saveAuth(customerAccessToken);
-        setCustomer(newCustomer);
-      } finally {
-        setIsLoading(false);
+    ): Promise<{ verificationRequired: boolean }> => {
+      const { customer: newCustomer, customerAccessToken } =
+        await customerCreate(email, password, firstName, lastName);
+
+      if (!customerAccessToken) {
+        return { verificationRequired: true };
       }
+
+      saveAuth(customerAccessToken);
+      setCustomer(newCustomer);
+      return { verificationRequired: false };
     },
     [saveAuth],
   );
@@ -193,8 +219,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (customerData) {
         setCustomer(customerData);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Failed to refresh customer:", error);
+    }
   }, [accessToken]);
+
+  // Set auth from an externally-obtained access token (e.g. after a successful
+  // password reset). Persists to localStorage so the session sticks.
+  const setAuthFromToken = useCallback(
+    async (token: CustomerAccessToken) => {
+      saveAuth(token);
+      const customerData = await getCustomer(token.accessToken);
+      if (customerData) {
+        setCustomer(customerData);
+      }
+    },
+    [saveAuth],
+  );
 
   // Update Profile
   const updateProfile = useCallback(
@@ -222,6 +263,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         recoverPassword,
         refreshCustomer,
         updateProfile,
+        setAuthFromToken,
       }}
     >
       {children}

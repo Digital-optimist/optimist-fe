@@ -234,6 +234,18 @@ export interface CustomerAccessToken {
   expiresAt: string;
 }
 
+// Carries Shopify's customerUserErrors[].code alongside the message so callers
+// can branch on specific error states (e.g. UNIDENTIFIED_CUSTOMER → offer the
+// activation-email flow instead of just showing a generic failure).
+export class ShopifyCustomerError extends Error {
+  code: string;
+  constructor(message: string, code: string) {
+    super(message);
+    this.code = code;
+    this.name = "ShopifyCustomerError";
+  }
+}
+
 // =============================================================================
 // GraphQL Client
 // =============================================================================
@@ -802,7 +814,10 @@ export async function customerCreate(
   password: string,
   firstName?: string,
   lastName?: string,
-): Promise<{ customer: Customer; customerAccessToken: CustomerAccessToken }> {
+): Promise<{
+  customer: Customer;
+  customerAccessToken: CustomerAccessToken | null;
+}> {
   const query = `
     ${IMAGE_FRAGMENT}
     ${ADDRESS_FRAGMENT}
@@ -847,12 +862,20 @@ export async function customerCreate(
     throw new Error("Failed to create customer");
   }
 
-  // Auto-login after registration
-  const tokenData = await customerAccessTokenCreate(email, password);
+  // Attempt auto-login. When the store requires email verification the
+  // customer is created in a disabled state and token creation will fail —
+  // return null so callers can show the "check your email" state instead of
+  // surfacing a cryptic "Unidentified customer" error.
+  let customerAccessToken: CustomerAccessToken | null = null;
+  try {
+    customerAccessToken = await customerAccessTokenCreate(email, password);
+  } catch {
+    customerAccessToken = null;
+  }
 
   return {
     customer: createData.customerCreate.customer,
-    customerAccessToken: tokenData,
+    customerAccessToken,
   };
 }
 
@@ -889,13 +912,24 @@ export async function customerAccessTokenCreate(
   });
 
   if (data.customerAccessTokenCreate.customerUserErrors.length > 0) {
-    throw new Error(
-      data.customerAccessTokenCreate.customerUserErrors[0].message,
-    );
+    const error = data.customerAccessTokenCreate.customerUserErrors[0];
+    // UNIDENTIFIED_CUSTOMER is Shopify's catch-all for "wrong password OR no
+    // password set yet." Legacy/guest-checkout customers fall into the second
+    // bucket — they need the activation flow via customerRecover.
+    if (error.code === "UNIDENTIFIED_CUSTOMER") {
+      throw new ShopifyCustomerError(
+        'Incorrect email or password. If you\'ve ordered with us before but never set a password, click "Forgot Password?" below to activate your account.',
+        error.code,
+      );
+    }
+    throw new ShopifyCustomerError(error.message, error.code);
   }
 
   if (!data.customerAccessTokenCreate.customerAccessToken) {
-    throw new Error("Invalid email or password");
+    throw new ShopifyCustomerError(
+      "Invalid email or password",
+      "UNIDENTIFIED_CUSTOMER",
+    );
   }
 
   return data.customerAccessTokenCreate.customerAccessToken;
@@ -951,8 +985,13 @@ export async function customerRecover(email: string): Promise<boolean> {
     variables: { email },
   });
 
+  // Suppress customer-level errors (e.g. "email not found") to prevent
+  // account enumeration. Network/server errors still throw from shopifyFetch.
   if (data.customerRecover.customerUserErrors.length > 0) {
-    throw new Error(data.customerRecover.customerUserErrors[0].message);
+    console.warn(
+      "customerRecover user errors suppressed:",
+      data.customerRecover.customerUserErrors,
+    );
   }
 
   return true;
@@ -1010,6 +1049,68 @@ export async function customerResetByUrl(
   }
 
   return data.customerResetByUrl.customerAccessToken;
+}
+
+export async function customerActivateByUrl(
+  activationUrl: string,
+  password: string,
+): Promise<CustomerAccessToken> {
+  const query = `
+    mutation customerActivateByUrl($activationUrl: URL!, $password: String!) {
+      customerActivateByUrl(activationUrl: $activationUrl, password: $password) {
+        customer {
+          id
+          email
+        }
+        customerAccessToken {
+          accessToken
+          expiresAt
+        }
+        customerUserErrors {
+          field
+          message
+          code
+        }
+      }
+    }
+  `;
+
+  const data = await shopifyFetch<{
+    customerActivateByUrl: {
+      customer: { id: string; email: string } | null;
+      customerAccessToken: CustomerAccessToken | null;
+      customerUserErrors: { field: string[]; message: string; code: string }[];
+    };
+  }>({
+    query,
+    variables: { activationUrl, password },
+  });
+
+  if (data.customerActivateByUrl.customerUserErrors.length > 0) {
+    const error = data.customerActivateByUrl.customerUserErrors[0];
+    if (error.code === "TOKEN_INVALID") {
+      throw new Error(
+        "This activation link is invalid. Please request a new one.",
+      );
+    }
+    if (error.code === "TOKEN_EXPIRED") {
+      throw new Error(
+        "This activation link has expired. Please request a new one.",
+      );
+    }
+    if (error.code === "ALREADY_ENABLED") {
+      throw new Error(
+        "Your account is already activated. Please sign in with your password.",
+      );
+    }
+    throw new Error(error.message);
+  }
+
+  if (!data.customerActivateByUrl.customerAccessToken) {
+    throw new Error("Failed to activate account. Please try again.");
+  }
+
+  return data.customerActivateByUrl.customerAccessToken;
 }
 
 export async function getCustomer(

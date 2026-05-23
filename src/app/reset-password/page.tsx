@@ -16,7 +16,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import ASSETS from "@/lib/assets";
-import { customerResetByUrl } from "@/lib/shopify";
+import { customerActivateByUrl, customerResetByUrl } from "@/lib/shopify";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Animation variants
 const fadeInUp = {
@@ -65,9 +66,16 @@ function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useToast();
+  const { setAuthFromToken } = useAuth();
 
-  // Get the reset URL from query params
-  const resetUrl = searchParams.get("reset_url");
+  // Get the reset/activation URL from query params. We accept both because
+  // the activation-email and password-reset-email templates can pass either —
+  // we detect which mutation to call based on the URL path.
+  const resetUrl =
+    searchParams.get("reset_url") ?? searchParams.get("activation_url");
+  const isActivation = resetUrl
+    ? decodeURIComponent(resetUrl).includes("/account/activate/")
+    : false;
 
   // Form state
   const [password, setPassword] = useState("");
@@ -96,8 +104,8 @@ function ResetPasswordContent() {
 
     if (!password) {
       newErrors.password = "Password is required";
-    } else if (password.length < 5) {
-      newErrors.password = "Password must be at least 5 characters";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
     }
 
     if (!confirmPassword) {
@@ -119,13 +127,30 @@ function ResetPasswordContent() {
     setErrors({});
 
     try {
-      // Call Shopify's customerResetByUrl mutation
-      await customerResetByUrl(decodeURIComponent(resetUrl), password);
+      const decodedUrl = decodeURIComponent(resetUrl);
+      const token = isActivation
+        ? await customerActivateByUrl(decodedUrl, password)
+        : await customerResetByUrl(decodedUrl, password);
+      // Auto-login with the returned access token so the user lands signed in.
+      try {
+        await setAuthFromToken(token);
+      } catch (authError) {
+        console.error("Auto-login after activation/reset failed:", authError);
+      }
       setIsSuccess(true);
-      showToast("Password reset successfully!", "success");
+      showToast(
+        isActivation
+          ? "Account activated successfully!"
+          : "Password reset successfully!",
+        "success",
+      );
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to reset password";
+        error instanceof Error
+          ? error.message
+          : isActivation
+            ? "Failed to activate account"
+            : "Failed to reset password";
       setErrors({ general: message });
       showToast(message, "error");
     } finally {
@@ -634,10 +659,12 @@ function ResetPasswordContent() {
             {/* Title */}
             <div className="absolute top-[129px] left-1/2 -translate-x-1/2 text-center w-full px-4">
               <h1 className="font-display font-semibold text-[32px] text-[#FFFCDC] leading-[1.25] tracking-[-0.64px]">
-                Reset Password
+                {isActivation ? "Activate Account" : "Reset Password"}
               </h1>
               <p className="font-display text-[16px] text-[#FFFCDC]/60 leading-[1.5] tracking-[0.32px] mt-1">
-                Create your new password
+                {isActivation
+                  ? "Set a password for your account"
+                  : "Create your new password"}
               </p>
             </div>
           </div>
@@ -724,13 +751,24 @@ function ResetPasswordContent() {
                 className="font-semibold text-[32px] leading-[1.25] tracking-[-0.64px]"
                 style={{ color: "#0A0A0A" }}
               >
-                Reset <span style={{ color: "#3478F6" }}>Password</span>
+                {isActivation ? (
+                  <>
+                    Activate{" "}
+                    <span style={{ color: "#3478F6" }}>Account</span>
+                  </>
+                ) : (
+                  <>
+                    Reset <span style={{ color: "#3478F6" }}>Password</span>
+                  </>
+                )}
               </h1>
               <p
                 className="text-[16px] leading-[1.5] tracking-[0.32px] mt-4"
                 style={{ color: "#737373" }}
               >
-                Create your new password
+                {isActivation
+                  ? "Set a password to finish activating your account"
+                  : "Create your new password"}
               </p>
             </motion.div>
 
@@ -887,6 +925,8 @@ function ResetPasswordContent() {
                   >
                     {isSubmitting ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : isActivation ? (
+                      "Activate Account"
                     ) : (
                       "Reset Password"
                     )}
@@ -922,20 +962,24 @@ function ResetPasswordContent() {
                       className="font-semibold text-[24px] leading-[1.25] tracking-[-0.48px]"
                       style={{ color: "#0A0A0A" }}
                     >
-                      Password Reset Successful
+                      {isActivation
+                        ? "Account Activated"
+                        : "Password Reset Successful"}
                     </h2>
                     <p
                       className="text-[16px] leading-[1.5] tracking-[0.32px] mt-2"
                       style={{ color: "#737373" }}
                     >
-                      Your password has been reset successfully.
+                      {isActivation
+                        ? "Your account is ready to go."
+                        : "Your password has been reset successfully."}
                       <br />
-                      You can now sign in with your new password.
+                      You&apos;re now signed in to your account.
                     </p>
                   </div>
 
                   <motion.button
-                    onClick={() => router.push("/login")}
+                    onClick={() => router.push("/account")}
                     whileHover={{
                       scale: 1.02,
                       boxShadow: "0 10px 30px -10px rgba(52, 120, 246, 0.5)",
@@ -948,7 +992,7 @@ function ResetPasswordContent() {
                       boxShadow: "inset 0px 2px 12.5px 2px #003FB2",
                     }}
                   >
-                    Sign in to your account
+                    Go to your account
                   </motion.button>
                 </motion.div>
               )}

@@ -77,14 +77,6 @@ export default function SignUpPage() {
     general?: string;
   }>({});
 
-  const isVerificationEmailMessage = (message: string) => {
-    const normalizedMessage = message.toLowerCase();
-    return (
-      normalizedMessage.includes("sent an email") &&
-      normalizedMessage.includes("verify")
-    );
-  };
-
   // Redirect if already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
@@ -135,18 +127,24 @@ export default function SignUpPage() {
     setErrors({});
 
     try {
-      await register(email, password, firstName.trim(), lastName.trim());
+      const result = await register(
+        email,
+        password,
+        firstName.trim(),
+        lastName.trim(),
+      );
+      if (result.verificationRequired) {
+        const message =
+          "We've sent you a verification email. Please check your inbox to activate your account before signing in.";
+        setSuccessMessage(message);
+        showToast(message, "success");
+        return;
+      }
       showToast("Account created successfully!", "success");
       router.push("/account");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Registration failed";
-      if (isVerificationEmailMessage(message)) {
-        setSuccessMessage(message);
-        showToast(message, "success");
-        return;
-      }
-
       setErrors({ general: message });
       showToast(message, "error");
     } finally {

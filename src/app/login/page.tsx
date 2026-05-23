@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/Toast";
 import { Loader2, Mail, Lock, Eye, EyeOff, Check } from "lucide-react";
 import ASSETS from "@/lib/assets";
+import { ShopifyCustomerError, customerRecover } from "@/lib/shopify";
 
 // Animation variants
 const fadeInUp = {
@@ -85,6 +86,9 @@ export default function LoginPage() {
     password?: string;
     general?: string;
   }>({});
+  const [showActivationPrompt, setShowActivationPrompt] = useState(false);
+  const [sendingActivation, setSendingActivation] = useState(false);
+  const [activationSent, setActivationSent] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -117,17 +121,43 @@ export default function LoginPage() {
 
     setIsSubmitting(true);
     setErrors({});
+    setShowActivationPrompt(false);
+    setActivationSent(false);
 
     try {
-      await login(email, password);
+      await login(email, password, rememberMe);
       showToast("Welcome back!", "success");
       router.push("/account");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed";
       setErrors({ general: message });
       showToast(message, "error");
+      if (
+        error instanceof ShopifyCustomerError &&
+        error.code === "UNIDENTIFIED_CUSTOMER"
+      ) {
+        setShowActivationPrompt(true);
+      }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleSendActivation = async () => {
+    if (!email) return;
+    setSendingActivation(true);
+    try {
+      // Shopify auto-sends an activation email (rather than a reset email) for
+      // disabled customers, so this single call covers both flows.
+      await customerRecover(email);
+      setActivationSent(true);
+      showToast("Check your email for instructions.", "success");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Could not send email";
+      showToast(message, "error");
+    } finally {
+      setSendingActivation(false);
     }
   };
 
@@ -441,9 +471,39 @@ export default function LoginPage() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.3 }}
-                    className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm"
+                    className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm space-y-3"
                   >
-                    {errors.general}
+                    <p>{errors.general}</p>
+                    {showActivationPrompt && !activationSent && (
+                      <button
+                        type="button"
+                        onClick={handleSendActivation}
+                        disabled={sendingActivation || !email}
+                        className="inline-flex items-center gap-2 font-semibold underline decoration-solid hover:opacity-80 transition-opacity disabled:opacity-50"
+                      >
+                        {sendingActivation ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Sending…
+                          </>
+                        ) : (
+                          "Send me an activation email"
+                        )}
+                      </button>
+                    )}
+                  </motion.div>
+                )}
+                {activationSent && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm"
+                  >
+                    We&apos;ve sent instructions to <strong>{email}</strong>.
+                    Open the link in your inbox to set a password, then come
+                    back here to sign in.
                   </motion.div>
                 )}
               </AnimatePresence>

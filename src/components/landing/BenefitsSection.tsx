@@ -49,7 +49,7 @@ const benefits = [
 // Card 0 Component - 50°C Tested
 function BenefitCard0({ benefit }: { benefit: (typeof benefits)[0] }) {
   return (
-    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12] [transform:translateZ(0)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
       <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] flex flex-col">
         {/* Blue Background - Top portion with text */}
@@ -115,7 +115,7 @@ function BenefitCard0({ benefit }: { benefit: (typeof benefits)[0] }) {
 // Card 1 Component - Energy Efficient
 function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
   return (
-    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12] [transform:translateZ(0)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
       <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] bg-[rgba(52,120,246,0.08)] rounded-[20px]">
         {/* Text Content - Top */}
@@ -180,7 +180,7 @@ function BenefitCard1({ benefit }: { benefit: (typeof benefits)[0] }) {
 // Card 2 Component - 50°C Tested
 function BenefitCard2({ benefit }: { benefit: (typeof benefits)[2] }) {
   return (
-    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12] [transform:translateZ(0)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
       <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] flex flex-col">
         {/* Blue Background - Top portion with text */}
@@ -246,7 +246,7 @@ function BenefitCard2({ benefit }: { benefit: (typeof benefits)[2] }) {
 // Card 3 Component - Gas Level Indicator
 function BenefitCard3({ benefit }: { benefit: (typeof benefits)[3] }) {
   return (
-    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12]">
+    <div className="benefit-card flex-shrink-0 w-[85vw] max-w-[326px] md:w-[85dvw] lg:w-[80dvw] xl:w-[75dvw] md:max-w-[1200px] relative rounded-[24px] overflow-hidden border border-black/[0.12] [transform:translateZ(0)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
       {/* Mobile Layout - using svh to prevent resize when iOS Safari address bar shows/hides */}
       <div className="md:hidden relative h-[70svh] min-h-[500px] max-h-[600px] bg-[rgba(52,120,246,0.08)]">
         {/* Text Content - Top */}
@@ -482,8 +482,8 @@ export function BenefitsSection() {
 
             <motion.div
               ref={carouselRef}
-              className="flex gap-4 md:gap-6 overflow-visible pb-4 md:pb-0 will-change-transform"
-              style={{ x }}
+              className="flex gap-4 md:gap-6 overflow-visible pb-4 md:pb-0 will-change-transform [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
+              style={{ x, z: 0 }}
             >
               {benefits.map((benefit, index) => (
                 <div key={benefit.id}>
