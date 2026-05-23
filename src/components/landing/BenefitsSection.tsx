@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useLayoutEffect } from "react";
-import { m as motion, useScroll, useTransform } from "framer-motion";
+import { m as motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Image from "next/image";
 import { ASSETS } from "@/lib/assets";
 
@@ -346,7 +346,12 @@ export function BenefitsSection() {
       const containerWidth =
         carousel.parentElement?.getBoundingClientRect().width ||
         window.innerWidth;
-      setScrollDistance(Math.max(totalWidth - containerWidth + 48, 0));
+      // Round to integer pixels and only commit when the change is >= 1px.
+      // Safari emits sub-pixel ResizeObserver entries during scroll (font
+      // metrics, layout recalcs) which would otherwise re-render this
+      // component and shift the carousel mid-scroll — visible as vibration.
+      const next = Math.round(Math.max(totalWidth - containerWidth + 48, 0));
+      setScrollDistance((prev) => (Math.abs(prev - next) < 1 ? prev : next));
     };
 
     updateMetrics();
@@ -375,7 +380,19 @@ export function BenefitsSection() {
     target: triggerRef,
     offset: ["start start", "end end"],
   });
-  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
+  const rawX = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
+  // Smooth the scroll-driven x value through a spring. Safari's scroll-event
+  // cadence is out of sync with its compositor frame timing, which makes
+  // `scrollYProgress` step in tiny noisy increments — the carousel
+  // visibly vibrates as it tracks them. A tightly-tuned spring (high
+  // stiffness, low mass) filters out that high-frequency noise without
+  // adding perceptible lag relative to the scroll position.
+  const x = useSpring(rawX, {
+    stiffness: 500,
+    damping: 50,
+    mass: 0.2,
+    restDelta: 0.5,
+  });
 
   // Header fade-in on desktop only (mobile shows it immediately on mount).
   useEffect(() => {
