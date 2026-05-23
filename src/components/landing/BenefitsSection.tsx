@@ -381,18 +381,29 @@ export function BenefitsSection() {
     offset: ["start start", "end end"],
   });
   const rawX = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
-  // Smooth the scroll-driven x value through a spring. Safari's scroll-event
-  // cadence is out of sync with its compositor frame timing, which makes
-  // `scrollYProgress` step in tiny noisy increments — the carousel
-  // visibly vibrates as it tracks them. A tightly-tuned spring (high
-  // stiffness, low mass) filters out that high-frequency noise without
-  // adding perceptible lag relative to the scroll position.
-  const x = useSpring(rawX, {
-    stiffness: 500,
-    damping: 50,
-    mass: 0.2,
+  // Heavy over-damped spring to filter iOS Safari's scroll noise.
+  //
+  // On iPhone Safari `scrollYProgress` does NOT advance monotonically with
+  // touch input: (a) scroll events fire sparsely during momentum, arriving
+  // in noisy chunks, and (b) the address bar micro-collapses during scroll
+  // cause `getBoundingClientRect().top` on the trigger to jump, which makes
+  // `scrollYProgress` briefly tick backward then forward. The previous tight
+  // spring (stiffness 500, mass 0.2) tracked these oscillations almost
+  // verbatim, so the vibration still showed through. These values are
+  // intentionally over-damped (damping ≫ 2·√(stiffness·mass)) so the spring
+  // absorbs high-frequency noise without overshoot — at the cost of ~150ms
+  // of catch-up lag, which reads as smooth scrubbing rather than jitter.
+  const springX = useSpring(rawX, {
+    stiffness: 120,
+    damping: 30,
+    mass: 0.6,
     restDelta: 0.5,
   });
+  // Round to whole pixels: Safari re-rasterises a translated layer whenever
+  // its transform value crosses a sub-pixel boundary. By quantising x to
+  // integers, the layer's texture is reused across frames whenever the
+  // rounded value is unchanged, eliminating residual sub-pixel shimmer.
+  const x = useTransform(springX, (v) => Math.round(v));
 
   // Header fade-in on desktop only (mobile shows it immediately on mount).
   useEffect(() => {
@@ -442,22 +453,34 @@ export function BenefitsSection() {
           measurement of scrollDistance arrives. The exact `height` is then
           set from the measured scrollDistance for precise alignment.
 
+          NOTE: `svh` (small viewport height) is used instead of `vh` here
+          and on the sticky child below. On iPhone Safari, `vh` resolves
+          to `lvh` (largest viewport height — address bar hidden), which
+          means the trigger and the sticky are sized for the
+          address-bar-collapsed viewport. When the user first reaches the
+          section with the address bar visible, and then scrolls, the
+          address bar collapses; the page reflows; the trigger's bounding
+          rect shifts; `scrollYProgress` ticks non-monotonically — the
+          carousel vibrates. `svh` is the smallest viewport height and is
+          a fixed value that never changes with address bar state, so the
+          pinning math stops moving under the scroll calculation.
+
           ~325vw covers: 4 cards × ~80vw width + 3 × 24px gaps - 100vw
-          container = ~220vw of horizontal travel, plus 100vh for the
-          pinned viewport — total ≈ 100vh + 220vw. Padding the estimate to
-          325vw is safe and never under-sizes the trigger. */}
+          container = ~220vw of horizontal travel, plus 100svh for the
+          pinned viewport — total ≈ 100svh + 220vw. Padding the estimate
+          to 325vw is safe and never under-sizes the trigger. */}
       <div
         ref={triggerRef}
         className="relative"
         style={{
           height:
             scrollDistance > 0
-              ? `calc(100vh + ${scrollDistance}px)`
+              ? `calc(100svh + ${scrollDistance}px)`
               : undefined,
-          minHeight: "calc(100vh + 240vw)",
+          minHeight: "calc(100svh + 240vw)",
         }}
       >
-        <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+        <div className="sticky top-0 h-[100svh] flex flex-col justify-center overflow-hidden">
           <div className="mx-auto px-4 md:px-6 lg:px-8 max-w-[1400px] md:max-w-none w-full">
             <div
               ref={headerRef}
