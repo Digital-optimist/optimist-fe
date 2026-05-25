@@ -836,6 +836,29 @@ function ProductsPageInner({
                     </div>
                   ))}
                 </div>
+                <div className="mt-3 w-full overflow-hidden rounded-xl bg-[#F8F8F8]">
+                  <div className="px-4 py-4 md:px-5 md:py-5">
+                    <div className="flex flex-col gap-3">
+                      <div className="flex flex-row flex-wrap items-center justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-[#111827] leading-6">
+                            Installation & Demo
+                          </p>
+                          <p className="mt-1 text-sm text-[#333333] leading-6">
+                            Brand-authorised installation by verified Optimist
+                            experts.
+                          </p>
+                        </div>
+                        <p className="text-sm font-semibold text-[#111827] leading-6 shrink-0">
+                          ₹1,499 + GST
+                        </p>
+                      </div>
+                      <p className="text-sm text-[#4B5563] leading-6">
+                        Additional accessories/materials chargeable if required.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Divider */}
