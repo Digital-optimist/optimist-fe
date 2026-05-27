@@ -17,7 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AccountLayout } from "@/components/account";
 import { getCustomerOrders, formatPrice, type Order } from "@/lib/shopify";
 import {
-  getInvoiceByOrder,
+  // getInvoiceByOrder, // Zoho invoicing disabled
   getOrderAttribute,
   isBusinessOrder,
   type InvoiceLookupResult,
@@ -114,22 +114,24 @@ function OrderDetailContent() {
   }, [accessToken, orderNumber]);
 
   // Fetch GST invoice details for business orders
-  useEffect(() => {
-    if (!order) return;
-    if (!isBusinessOrder(order.customAttributes)) return;
-
-    let cancelled = false;
-    setIsInvoiceLoading(true);
-    getInvoiceByOrder(order.id).then((result) => {
-      if (!cancelled) {
-        setInvoice(result);
-        setIsInvoiceLoading(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [order]);
+  // Zoho invoicing disabled — see CartContext note_attributes (CustomerGSTIN)
+  // for the downstream system that now generates invoices.
+  // useEffect(() => {
+  //   if (!order) return;
+  //   if (!isBusinessOrder(order.customAttributes)) return;
+  //
+  //   let cancelled = false;
+  //   setIsInvoiceLoading(true);
+  //   getInvoiceByOrder(order.id).then((result) => {
+  //     if (!cancelled) {
+  //       setInvoice(result);
+  //       setIsInvoiceLoading(false);
+  //     }
+  //   });
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [order]);
 
   if (isAuthLoading || isLoading) {
     return <LoadingSpinner />;
