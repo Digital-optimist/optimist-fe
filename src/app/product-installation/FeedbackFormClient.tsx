@@ -3,10 +3,7 @@
 import { useId, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Loader2, Check } from "lucide-react";
-import {
-  submitFeedbackForm,
-  type FeedbackFormRatings,
-} from "@/lib/shopify";
+import { submitFeedbackForm, type FeedbackFormRatings } from "@/lib/shopify";
 import { useToast } from "@/components/ui/Toast";
 import { StarRating } from "./StarRating";
 
@@ -41,8 +38,14 @@ const DELIVERY_QUESTIONS: {
   label: string;
 }[] = [
   { key: "deliveryOnTime", label: "Your AC was delivered on time." },
-  { key: "packagingCondition", label: "The AC packaging was in good condition." },
-  { key: "deliveryOverall", label: "How was your overall delivery experience?" },
+  {
+    key: "packagingCondition",
+    label: "The AC packaging was in good condition.",
+  },
+  {
+    key: "deliveryOverall",
+    label: "How was your overall delivery experience?",
+  },
 ];
 
 const INSTALLATION_QUESTIONS: {
@@ -107,7 +110,9 @@ export default function FeedbackFormClient() {
     e.preventDefault();
     const clean = phone.trim();
     if (!PHONE_REGEX.test(clean)) {
-      setErrors({ phone: "Please enter a valid 10-digit Indian mobile number" });
+      setErrors({
+        phone: "Please enter a valid 10-digit Indian mobile number",
+      });
       return;
     }
     setErrors({});
@@ -151,7 +156,8 @@ export default function FeedbackFormClient() {
       }
       setCurrentStep("success");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
       setErrors({ general: message });
       showToast(message, "error");
     } finally {
@@ -168,286 +174,287 @@ export default function FeedbackFormClient() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
       {/* Back link (hidden on intro + success) */}
-        <AnimatePresence>
-          {currentStep !== "intro" && currentStep !== "success" && (
-            <motion.button
-              type="button"
-              onClick={handleBack}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0 }}
-              className="inline-flex items-center gap-2 text-[14px] text-[#737373] hover:text-[#0A0A0A] transition-colors mb-6"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </motion.button>
-          )}
-        </AnimatePresence>
+      <AnimatePresence>
+        {currentStep !== "intro" && currentStep !== "success" && (
+          <motion.button
+            type="button"
+            onClick={handleBack}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            className="inline-flex items-center gap-2 text-[14px] text-[#737373] hover:text-[#0A0A0A] transition-colors mb-6"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-        <AnimatePresence mode="wait">
-          {currentStep === "intro" && (
-            <motion.section
-              key="intro"
-              variants={stepTransition}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.35, ease: "easeOut" }}
+      <AnimatePresence mode="wait">
+        {currentStep === "intro" && (
+          <motion.section
+            key="intro"
+            variants={stepTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.35, ease: "easeOut" }}
+          >
+            <h1
+              className="font-display font-bold text-[28px] sm:text-[36px] lg:text-[40px] leading-[1.15] tracking-[-0.5px]"
+              style={{ color: "#0A0A0A" }}
             >
-              <h1
-                className="font-display font-bold text-[28px] sm:text-[36px] lg:text-[40px] leading-[1.15] tracking-[-0.5px]"
-                style={{ color: "#0A0A0A" }}
+              Thank you for choosing{" "}
+              <span style={{ color: "#3478F6" }}>Optimist.</span>
+            </h1>
+            <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.6] text-[#525252] max-w-xl">
+              We&apos;d love your feedback on the delivery and installation
+              experience so we can do better. This form takes about 2 minutes.
+            </p>
+
+            <form onSubmit={handleStart} className="mt-8 space-y-2 max-w-md">
+              <label
+                htmlFor="phone"
+                className="block text-[14px] font-medium text-[#525252] tracking-[0.28px]"
               >
-                Thank you for choosing{" "}
-                <span style={{ color: "#3478F6" }}>Optimist.</span>
-              </h1>
-              <p className="mt-4 text-[15px] sm:text-[16px] leading-[1.6] text-[#525252] max-w-xl">
-                We&apos;d love your feedback on the delivery and installation
-                experience so we can do better. This form takes about 2 minutes.
-              </p>
-
-              <form onSubmit={handleStart} className="mt-8 space-y-2 max-w-md">
-                <label
-                  htmlFor="phone"
-                  className="block text-[14px] font-medium text-[#525252] tracking-[0.28px]"
-                >
-                  Your phone number<span className="text-[#3478F6]"> *</span>
-                </label>
-                <div
-                  className={`flex items-center h-[52px] rounded-[10px] border transition-all duration-200 bg-white ${
-                    errors.phone
-                      ? "border-red-500"
-                      : "border-[#E5E5E5] hover:border-[#A3A3A3] focus-within:border-[#3478F6] focus-within:shadow-[0_4px_20px_-5px_rgba(52,120,246,0.25)]"
-                  }`}
-                >
-                  <span className="pl-4 pr-2 text-[15px] text-[#737373] border-r border-[#E5E5E5] mr-3 h-full flex items-center">
-                    +91
-                  </span>
-                  <input
-                    id="phone"
-                    type="tel"
-                    inputMode="numeric"
-                    maxLength={10}
-                    value={phone}
-                    onChange={(e) => {
-                      setPhone(e.target.value.replace(/\D/g, ""));
-                      if (errors.phone) setErrors({});
-                    }}
-                    placeholder="9876543210"
-                    autoComplete="tel-national"
-                    className="flex-1 h-full text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] bg-transparent outline-none pr-4"
-                  />
-                </div>
-                <AnimatePresence>
-                  {errors.phone && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="text-[13px] text-red-500"
-                    >
-                      {errors.phone}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-
-                <div className="pt-4">
-                  <PrimaryButton type="submit">
-                    Start
-                    <ArrowRight className="w-4 h-4" />
-                  </PrimaryButton>
-                </div>
-              </form>
-            </motion.section>
-          )}
-
-          {currentStep === "delivery" && (
-            <motion.section
-              key="delivery"
-              variants={stepTransition}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              <h2
-                className="font-display font-bold text-[24px] sm:text-[30px] leading-[1.2] tracking-[-0.3px]"
-                style={{ color: "#0A0A0A" }}
+                Your registered phone number
+                <span className="text-[#3478F6]"> *</span>
+              </label>
+              <div
+                className={`flex items-center h-[52px] rounded-[10px] border transition-all duration-200 bg-white ${
+                  errors.phone
+                    ? "border-red-500"
+                    : "border-[#E5E5E5] hover:border-[#A3A3A3] focus-within:border-[#3478F6] focus-within:shadow-[0_4px_20px_-5px_rgba(52,120,246,0.25)]"
+                }`}
               >
-                Delivery{" "}
-                <span className="text-[#737373] font-normal text-[13px] sm:text-[14px]">
-                  (Page 1/2)
+                <span className="pl-4 pr-2 text-[15px] text-[#737373] border-r border-[#E5E5E5] mr-3 h-full flex items-center">
+                  +91
                 </span>
-              </h2>
-
-              <div className="mt-8 space-y-8">
-                {DELIVERY_QUESTIONS.map((q) => (
-                  <Question
-                    key={q.key}
-                    label={q.label}
-                    value={ratings[q.key]}
-                    onChange={(v) => setRating(q.key, v)}
-                    disabled={isSubmitting}
-                  />
-                ))}
+                <input
+                  id="phone"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value.replace(/\D/g, ""));
+                    if (errors.phone) setErrors({});
+                  }}
+                  placeholder="9876543210"
+                  autoComplete="tel-national"
+                  className="flex-1 h-full text-[16px] text-[#0A0A0A] placeholder-[#A3A3A3] bg-transparent outline-none pr-4"
+                />
               </div>
-
-              <CommentsField
-                value={deliveryComments}
-                onChange={setDeliveryComments}
-                disabled={isSubmitting}
-              />
-
               <AnimatePresence>
-                {errors.delivery && (
+                {errors.phone && (
                   <motion.p
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="mt-6 text-[13px] text-red-500"
+                    className="text-[13px] text-red-500"
                   >
-                    {errors.delivery}
+                    {errors.phone}
                   </motion.p>
                 )}
               </AnimatePresence>
 
-              <div className="mt-10">
-                <PrimaryButton
-                  type="button"
-                  onClick={handleDeliveryNext}
-                  disabled={!deliveryComplete}
-                >
-                  Next
+              <div className="pt-4">
+                <PrimaryButton type="submit">
+                  Start
                   <ArrowRight className="w-4 h-4" />
                 </PrimaryButton>
               </div>
-            </motion.section>
-          )}
+            </form>
+          </motion.section>
+        )}
 
-          {currentStep === "installation" && (
-            <motion.section
-              key="installation"
-              variants={stepTransition}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.35, ease: "easeOut" }}
+        {currentStep === "delivery" && (
+          <motion.section
+            key="delivery"
+            variants={stepTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.35, ease: "easeOut" }}
+          >
+            <h2
+              className="font-display font-bold text-[24px] sm:text-[30px] leading-[1.2] tracking-[-0.3px]"
+              style={{ color: "#0A0A0A" }}
             >
-              <h2
-                className="font-display font-bold text-[24px] sm:text-[30px] leading-[1.2] tracking-[-0.3px]"
-                style={{ color: "#0A0A0A" }}
-              >
-                Installation{" "}
-                <span className="text-[#737373] font-normal text-[13px] sm:text-[14px]">
-                  (Page 2/2)
-                </span>
-              </h2>
+              Delivery{" "}
+              <span className="text-[#737373] font-normal text-[13px] sm:text-[14px]">
+                (Page 1/2)
+              </span>
+            </h2>
 
-              <div className="mt-8 space-y-8">
-                {INSTALLATION_QUESTIONS.map((q) => (
-                  <Question
-                    key={q.key}
-                    label={q.label}
-                    value={ratings[q.key]}
-                    onChange={(v) => setRating(q.key, v)}
-                    disabled={isSubmitting}
-                  />
-                ))}
-              </div>
-
-              <CommentsField
-                value={installationComments}
-                onChange={setInstallationComments}
-                disabled={isSubmitting}
-              />
-
-              <AnimatePresence>
-                {errors.installation && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="mt-6 text-[13px] text-red-500"
-                  >
-                    {errors.installation}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-
-              <AnimatePresence>
-                {errors.general && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="mt-4 text-[13px] text-red-500"
-                  >
-                    {errors.general}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-
-              <div className="mt-10">
-                <PrimaryButton
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting || !installationComplete}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      Submit
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </PrimaryButton>
-              </div>
-            </motion.section>
-          )}
-
-          {currentStep === "success" && (
-            <motion.section
-              key="success"
-              variants={stepTransition}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="flex flex-col items-start"
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 20,
-                  delay: 0.1,
-                }}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#3478F6] flex items-center justify-center mb-6"
-              >
-                <Check
-                  className="w-8 h-8 sm:w-10 sm:h-10 text-white"
-                  strokeWidth={3}
+            <div className="mt-8 space-y-8">
+              {DELIVERY_QUESTIONS.map((q) => (
+                <Question
+                  key={q.key}
+                  label={q.label}
+                  value={ratings[q.key]}
+                  onChange={(v) => setRating(q.key, v)}
+                  disabled={isSubmitting}
                 />
-              </motion.div>
-              <h2
-                className="font-display font-bold text-[26px] sm:text-[32px] leading-[1.2] tracking-[-0.4px]"
-                style={{ color: "#0A0A0A" }}
+              ))}
+            </div>
+
+            <CommentsField
+              value={deliveryComments}
+              onChange={setDeliveryComments}
+              disabled={isSubmitting}
+            />
+
+            <AnimatePresence>
+              {errors.delivery && (
+                <motion.p
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-6 text-[13px] text-red-500"
+                >
+                  {errors.delivery}
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            <div className="mt-10">
+              <PrimaryButton
+                type="button"
+                onClick={handleDeliveryNext}
+                disabled={!deliveryComplete}
               >
-                Your response has been recorded.
-              </h2>
-              <p className="mt-3 text-[15px] sm:text-[16px] leading-[1.6] text-[#525252] max-w-xl">
-                Our team reviews every delivery and installation experience
-                carefully so we can keep improving Optimist service.
-              </p>
-            </motion.section>
-          )}
-        </AnimatePresence>
+                Next
+                <ArrowRight className="w-4 h-4" />
+              </PrimaryButton>
+            </div>
+          </motion.section>
+        )}
+
+        {currentStep === "installation" && (
+          <motion.section
+            key="installation"
+            variants={stepTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.35, ease: "easeOut" }}
+          >
+            <h2
+              className="font-display font-bold text-[24px] sm:text-[30px] leading-[1.2] tracking-[-0.3px]"
+              style={{ color: "#0A0A0A" }}
+            >
+              Installation{" "}
+              <span className="text-[#737373] font-normal text-[13px] sm:text-[14px]">
+                (Page 2/2)
+              </span>
+            </h2>
+
+            <div className="mt-8 space-y-8">
+              {INSTALLATION_QUESTIONS.map((q) => (
+                <Question
+                  key={q.key}
+                  label={q.label}
+                  value={ratings[q.key]}
+                  onChange={(v) => setRating(q.key, v)}
+                  disabled={isSubmitting}
+                />
+              ))}
+            </div>
+
+            <CommentsField
+              value={installationComments}
+              onChange={setInstallationComments}
+              disabled={isSubmitting}
+            />
+
+            <AnimatePresence>
+              {errors.installation && (
+                <motion.p
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-6 text-[13px] text-red-500"
+                >
+                  {errors.installation}
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {errors.general && (
+                <motion.p
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mt-4 text-[13px] text-red-500"
+                >
+                  {errors.general}
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            <div className="mt-10">
+              <PrimaryButton
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting || !installationComplete}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    Submit
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </PrimaryButton>
+            </div>
+          </motion.section>
+        )}
+
+        {currentStep === "success" && (
+          <motion.section
+            key="success"
+            variants={stepTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="flex flex-col items-start"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                delay: 0.1,
+              }}
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#3478F6] flex items-center justify-center mb-6"
+            >
+              <Check
+                className="w-8 h-8 sm:w-10 sm:h-10 text-white"
+                strokeWidth={3}
+              />
+            </motion.div>
+            <h2
+              className="font-display font-bold text-[26px] sm:text-[32px] leading-[1.2] tracking-[-0.4px]"
+              style={{ color: "#0A0A0A" }}
+            >
+              Your response has been recorded.
+            </h2>
+            <p className="mt-3 text-[15px] sm:text-[16px] leading-[1.6] text-[#525252] max-w-xl">
+              Our team reviews every delivery and installation experience
+              carefully so we can keep improving Optimist service.
+            </p>
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

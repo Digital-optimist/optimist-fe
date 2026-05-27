@@ -72,6 +72,7 @@ export function buildBusinessCartAttributes(
     { key: "Business Purchase", value: "Yes" },
     { key: "Company Name", value: details.companyName },
     { key: "GSTIN", value: details.gstin },
+    { key: "CustomerGSTIN", value: details.gstin },
     { key: "Trade Name", value: details.tradeName },
     { key: "GST State", value: cleanStateName(details.state) },
   ];

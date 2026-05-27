@@ -854,7 +854,16 @@ function ProductsPageInner({
                         </p>
                       </div>
                       <p className="text-sm text-[#4B5563] leading-6">
-                        Additional accessories/materials chargeable if required.
+                        Additional accessories/materials chargeable as per{" "}
+                        <a
+                          href="/assets/rate-card-optimist.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-[#3478F6] underline underline-offset-2 hover:text-[#1e5bd6]"
+                        >
+                          rate card
+                        </a>
+                        .
                       </p>
                     </div>
                   </div>
