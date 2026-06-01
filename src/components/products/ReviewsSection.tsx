@@ -175,7 +175,6 @@ const ReviewMedia = memo(function ReviewMedia({
   picture?: string;
   video?: string;
 }) {
-  console.log(picture);
   if (!picture && !video) return null;
 
   return (
@@ -209,7 +208,6 @@ const ReviewCard = memo(function ReviewCard({
   review: JudgeMeReview;
 }) {
   const relativeTime = useRelativeTime(review.date);
-  console.log("rr", review);
   const picture = review.pictures[0];
   const video = review.videos[0];
 
@@ -808,8 +806,7 @@ export const ReviewsSection = memo(function ReviewsSection({
     Promise.all([fetchReviewsSummary(), fetchFeaturedReviews()])
       .then(([summary, featured]) => {
         if (cancelled) return;
-        const reviews =
-          summary.reviews.length > 0 ? summary.reviews : featured;
+        const reviews = summary.reviews.length > 0 ? summary.reviews : featured;
         setReviewsData({ ...summary, reviews });
       })
       .catch(() => {})

@@ -1638,8 +1638,7 @@ export interface FeedbackFormData {
   comments: string;
 }
 
-const FEEDBACK_WEBHOOK_URL =
-  process.env.NEXT_PUBLIC_FEEDBACK_WEBHOOK_URL || "";
+const FEEDBACK_WEBHOOK_URL = process.env.NEXT_PUBLIC_FEEDBACK_WEBHOOK_URL || "";
 
 // Format a Date as IST in "YYYY-MM-DD HH:mm:ss" — Sheets auto-parses this as a
 // datetime cell, and it's sortable lexicographically.
@@ -1654,8 +1653,7 @@ function formatIST(date: Date): string {
     second: "2-digit",
     hour12: false,
   }).formatToParts(date);
-  const get = (type: string) =>
-    parts.find((p) => p.type === type)?.value ?? "";
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
   return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get(
     "minute",
   )}:${get("second")}`;

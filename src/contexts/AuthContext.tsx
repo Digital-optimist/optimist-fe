@@ -174,9 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (accessToken) {
       try {
         await customerAccessTokenDelete(accessToken);
-      } catch (error) {
-        console.error("Failed to delete Shopify access token:", error);
-      }
+      } catch (error) {}
     }
     clearAuth();
   }, [accessToken, clearAuth]);
@@ -219,9 +217,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (customerData) {
         setCustomer(customerData);
       }
-    } catch (error) {
-      console.error("Failed to refresh customer:", error);
-    }
+    } catch (error) {}
   }, [accessToken]);
 
   // Set auth from an externally-obtained access token (e.g. after a successful

@@ -134,9 +134,7 @@ function ResetPasswordContent() {
       // Auto-login with the returned access token so the user lands signed in.
       try {
         await setAuthFromToken(token);
-      } catch (authError) {
-        console.error("Auto-login after activation/reset failed:", authError);
-      }
+      } catch (authError) {}
       setIsSuccess(true);
       showToast(
         isActivation
@@ -753,8 +751,7 @@ function ResetPasswordContent() {
               >
                 {isActivation ? (
                   <>
-                    Activate{" "}
-                    <span style={{ color: "#3478F6" }}>Account</span>
+                    Activate <span style={{ color: "#3478F6" }}>Account</span>
                   </>
                 ) : (
                   <>
