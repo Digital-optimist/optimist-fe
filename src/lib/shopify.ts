@@ -985,8 +985,6 @@ export async function customerRecover(email: string): Promise<boolean> {
     variables: { email },
   });
 
-  // Suppress customer-level errors (e.g. "email not found") to prevent
-  // account enumeration. Network/server errors still throw from shopifyFetch.
   if (data.customerRecover.customerUserErrors.length > 0) {
     console.warn(
       "customerRecover user errors suppressed:",
