@@ -138,6 +138,41 @@ async function mockVerify(gstin: string): Promise<GSTVerificationResult> {
   };
 }
 
+// The Lambda proxy may return Surepass's raw field names (snake_case) rather
+// than our camelCase shape. Map both so `companyName` (legal name) is always
+// populated before it flows into cart creation.
+function normalizeVerificationResult(raw: unknown): GSTVerificationResult {
+  const r = raw as Record<string, unknown>;
+  if (!r || r.success !== true || !r.data) {
+    return {
+      success: false,
+      error: typeof r?.error === "string" ? r.error : "Unable to verify GSTIN. Please try again.",
+    };
+  }
+
+  const d = r.data as Record<string, unknown>;
+  const pick = (...keys: string[]): string => {
+    for (const k of keys) {
+      if (typeof d[k] === "string" && d[k]) return d[k] as string;
+    }
+    return "";
+  };
+
+  return {
+    success: true,
+    data: {
+      gstin: pick("gstin", "gst_in", "gstin_number"),
+      legalName: pick("legalName", "legal_name", "business_name", "lgnm"),
+      tradeName: pick("tradeName", "trade_name", "tradeNam"),
+      status: (pick("status", "gstin_status", "sts") ||
+        "Active") as NonNullable<GSTVerificationResult["data"]>["status"],
+      state: pick("state", "state_jurisdiction", "stj"),
+      businessType: pick("businessType", "constitution_of_business", "taxpayer_type"),
+      dateOfRegistration: pick("dateOfRegistration", "date_of_registration", "rgdt"),
+    },
+  };
+}
+
 /**
  * Verify a GSTIN against the GST verification service.
  *
@@ -180,7 +215,7 @@ export async function verifyGSTIN(
       };
     }
 
-    return await response.json();
+    return normalizeVerificationResult(await response.json());
   } catch {
     return {
       success: false,
