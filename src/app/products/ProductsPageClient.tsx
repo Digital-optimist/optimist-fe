@@ -7,7 +7,11 @@ import {
   ShoppingBagIcon,
   WarrantyIcon,
 } from "@/components/icons/ProductIcons";
-import { ImageGallery, QuantityDropdown } from "@/components/products";
+import {
+  CustomerVideosSection,
+  ImageGallery,
+  QuantityDropdown,
+} from "@/components/products";
 import { useToast } from "@/components/ui/Toast";
 import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
 import {
@@ -992,15 +996,12 @@ function ProductsPageInner({
         </div>
       </div>
 
-      {/* Below-the-fold sections.
-          The motion.div whileInView wrappers that used to sit here were
-          removed — each section already runs its own scroll-in animation
-          (GSAP / CSS), so the outer wrappers added framer-motion to the
-          initial bundle without adding any visual effect. */}
       <ComparisonSection />
 
       {/* Expert Testimonials Section */}
       <ExpertTestimonialsSection experts={pageContent?.expertTestimonials} />
+
+      <CustomerVideosSection customers={pageContent?.customerReviews} />
 
       <InsideOptimistSection />
 
