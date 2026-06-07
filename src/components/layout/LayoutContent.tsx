@@ -12,10 +12,13 @@ const NO_FOOTER_ROUTES = [
   "/forgot-password",
   "/reset-password",
   "/product-installation",
+  // /home ships its own footer (HomeFooter), so the global Footer is hidden.
+  "/home",
 ];
 
 // Routes that should not have the top Navigation
-const NO_NAV_ROUTES = ["/product-installation"];
+// /home ships its own blur header (HomeHeader), so the global nav is hidden.
+const NO_NAV_ROUTES = ["/product-installation", "/home"];
 
 interface LayoutContentProps {
   children: React.ReactNode;

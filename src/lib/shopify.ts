@@ -2286,6 +2286,373 @@ export async function getLandingPageContent(): Promise<LandingPageContent | null
 }
 
 // =============================================================================
+// Home Page (/home) Metaobject — "hp_herosection"
+// =============================================================================
+//
+// Schema (verified against the Storefront API):
+//   hp_herosection (handle: "say-hello-to-your")
+//     heading_line_1  single_line_text_field
+//     heading_line_2  single_line_text_field
+//     title           multi_line_text_field
+//     subtitle        multi_line_text_field
+//     features        list.metaobject_reference -> title_subtitle_image[]
+//                       image     file_reference (MediaImage)  — the card icon
+//                       title     multi_line_text_field
+//                       subtitle  multi_line_text_field
+//
+// NOTE: this is fetched at build time (static export), so editing the
+// metaobject in Shopify admin requires a rebuild to appear on /home.
+
+export interface HomeFeatureCard {
+  /** Icon image (served from Shopify CDN). For the "Lower bills" card this is
+   *  the "25–35%" graphic rather than a glyph. */
+  iconUrl: string | null;
+  iconAlt: string | null;
+  title: string;
+  subtitle: string;
+}
+
+export interface HomeHeroContent {
+  headingLine1: string;
+  headingLine2: string;
+  title: string;
+  subtitle: string;
+  features: HomeFeatureCard[];
+}
+
+export interface HomeProductDisplayContent {
+  title: string;
+  subtitle: string;
+  features: HomeFeatureCard[];
+}
+
+export interface HomeInsideTechContent {
+  title: string;
+  subtitle: string;
+  // Each card reuses the title_subtitle_image shape: iconUrl = card background
+  // photo, title = headline, subtitle = the on-hover description.
+  cards: HomeFeatureCard[];
+}
+
+export interface HomeAppFeaturesContent {
+  title: string;
+  subtitle: string;
+  description: string;
+  mainImageUrl: string | null;
+  mainImageAlt: string | null;
+  features: HomeFeatureCard[];
+}
+
+export interface HomeComparisonRow {
+  iconUrl: string | null;
+  iconAlt: string | null;
+  feature: string;
+  // Value shown in the "Other AC's" column / value shown in the "optimist"
+  // column. NOTE: the metaobject's field keys are swapped relative to their
+  // names (see parseComparisonRows).
+  otherAc: string;
+  optimist: string;
+}
+
+export interface HomeComparisonContent {
+  titleLine1: string;
+  titleLine2: string;
+  subtitle: string;
+  rows: HomeComparisonRow[];
+}
+
+export interface HomeReviewVideo {
+  posterUrl: string | null;
+  mp4Url: string | null;
+  hlsUrl: string | null;
+}
+
+export interface HomeReviewsContent {
+  subtitle: string;
+  title: string;
+  mainLine: string;
+  earlyUsers: number;
+  unitsSold: number;
+  videos: HomeReviewVideo[];
+}
+
+export interface HomePageContent {
+  hero: HomeHeroContent | null;
+  productDisplay: HomeProductDisplayContent | null;
+  insideTech: HomeInsideTechContent | null;
+  appFeatures: HomeAppFeaturesContent | null;
+  comparison: HomeComparisonContent | null;
+  reviews: HomeReviewsContent | null;
+}
+
+const HOME_HERO_QUERY = `
+  query GetHomeHeroContent($handle: MetaobjectHandleInput!) {
+    metaobject(handle: $handle) {
+      handle
+      type
+      fields {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image { url altText }
+          }
+        }
+        references(first: 10) {
+          nodes {
+            ... on Metaobject {
+              handle
+              type
+              fields {
+                key
+                value
+                type
+                reference {
+                  ... on MediaImage {
+                    image { url altText }
+                  }
+                }
+              }
+            }
+            ... on MediaImage {
+              image { url altText }
+            }
+            ... on Video {
+              sources { url mimeType format }
+              previewImage { url }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+// Parse a list field (list.metaobject_reference -> title_subtitle_image) into
+// HomeFeatureCard[]. Shared by the hero, product-display and inside-tech
+// sections. `listKey` is the field holding the references ("features" / "content").
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseHomeFeatureCards(fields: any[], listKey = "features"): HomeFeatureCard[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const featureNodes = getFieldReferences(fields, listKey) as any[];
+  return featureNodes.map((node) => {
+    const f = node.fields ?? [];
+    const imageRef = getFieldReference(f, "image") as {
+      image?: { url: string; altText: string | null };
+    } | null;
+    return {
+      iconUrl: imageRef?.image?.url ?? null,
+      iconAlt: imageRef?.image?.altText ?? null,
+      title: getFieldValue(f, "title") ?? "",
+      subtitle: getFieldValue(f, "subtitle") ?? "",
+    };
+  });
+}
+
+// Parse the comparison section's feature rows (list.metaobject_reference ->
+// ac_compariosn_item). Each item has `feature`, `image`, and two value fields.
+// IMPORTANT: the metaobject's keys are swapped vs their names — the value the
+// design renders under "Other AC's" is stored in `optimist_ac_comparison`, and
+// the value rendered under the "optimist" column is in `other_ac_comparison`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseComparisonRows(fields: any[], listKey = "features"): HomeComparisonRow[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const nodes = getFieldReferences(fields, listKey) as any[];
+  return nodes.map((node) => {
+    const f = node.fields ?? [];
+    const imageRef = getFieldReference(f, "image") as {
+      image?: { url: string; altText: string | null };
+    } | null;
+    return {
+      iconUrl: imageRef?.image?.url ?? null,
+      iconAlt: imageRef?.image?.altText ?? null,
+      feature: getFieldValue(f, "feature") ?? "",
+      otherAc: getFieldValue(f, "optimist_ac_comparison") ?? "",
+      optimist: getFieldValue(f, "other_ac_comparison") ?? "",
+    };
+  });
+}
+
+// Parse the reviews section's `videos` list (list.file_reference -> Video). Each
+// node is a Shopify-hosted Video with multiple mp4 renditions + a posterImage.
+// We prefer the 720p mp4 (good quality, modest size) for the modal player.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseReviewVideos(fields: any[], listKey = "videos"): HomeReviewVideo[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const nodes = getFieldReferences(fields, listKey) as any[];
+  return nodes.map((node) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sources: any[] = node.sources ?? [];
+    const mp4s = sources.filter((s) => s.format === "mp4");
+    const mp4 =
+      mp4s.find((s) => typeof s.url === "string" && s.url.includes("720p")) ??
+      mp4s[0] ??
+      null;
+    const hls = sources.find((s) => s.format === "m3u8") ?? null;
+    return {
+      posterUrl: node.previewImage?.url ?? null,
+      mp4Url: mp4?.url ?? null,
+      hlsUrl: hls?.url ?? null,
+    };
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function fetchHomeMetaobject(handle: string, type: string): Promise<any | null> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = await shopifyFetch<any>({
+      query: HOME_HERO_QUERY,
+      variables: { handle: { handle, type } },
+    });
+    return data?.metaobject ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getHomePageContent(): Promise<HomePageContent | null> {
+  try {
+    const [
+      heroObj,
+      productObj,
+      insideTechObj,
+      appFeaturesObj,
+      comparisonObj,
+      reviewsObj,
+    ] = await Promise.all([
+        fetchHomeMetaobject("say-hello-to-your", "hp_herosection"),
+        fetchHomeMetaobject(
+          "designed-right-for-india-cools-120-to-300-sq-ft-rooms",
+          "hp_product_display",
+        ),
+        fetchHomeMetaobject(
+          "good-engineering-is-invisible-until-you-feel-it",
+          "hp_inside_tech",
+        ),
+        fetchHomeMetaobject(
+          "the-perfect-companion-for-control",
+          "hp_ac_mobile_features",
+        ),
+        fetchHomeMetaobject("here-is-why-we-built", "hp_ac_comparison"),
+        fetchHomeMetaobject(
+          "we-could-tell-you-how-good-it-is-but-theyll-do-it-better",
+          "hp_reviews_section",
+        ),
+      ]);
+
+    const hero: HomeHeroContent | null = heroObj
+      ? {
+          headingLine1:
+            getFieldValue(heroObj.fields, "heading_line_1") ??
+            "Say hello to your",
+          headingLine2:
+            getFieldValue(heroObj.fields, "heading_line_2") ?? "optimist",
+          title:
+            getFieldValue(heroObj.fields, "title") ??
+            "Built for 50°C summers, not 24°C showrooms.",
+          subtitle: getFieldValue(heroObj.fields, "subtitle") ?? "",
+          features: parseHomeFeatureCards(heroObj.fields ?? []),
+        }
+      : null;
+
+    const productDisplay: HomeProductDisplayContent | null = productObj
+      ? {
+          title: getFieldValue(productObj.fields, "title") ?? "Buy your Optimist",
+          subtitle: getFieldValue(productObj.fields, "subtitle") ?? "",
+          features: parseHomeFeatureCards(productObj.fields ?? []),
+        }
+      : null;
+
+    const insideTech: HomeInsideTechContent | null = insideTechObj
+      ? {
+          title:
+            getFieldValue(insideTechObj.fields, "title") ??
+            "Good engineering is invisible. Until you feel it.",
+          subtitle:
+            getFieldValue(insideTechObj.fields, "subtitle") ??
+            "What’s under the hood?",
+          cards: parseHomeFeatureCards(insideTechObj.fields ?? [], "content"),
+        }
+      : null;
+
+    const mainImageRef = appFeaturesObj
+      ? (getFieldReference(appFeaturesObj.fields, "main_image") as {
+          image?: { url: string; altText: string | null };
+        } | null)
+      : null;
+
+    const appFeatures: HomeAppFeaturesContent | null = appFeaturesObj
+      ? {
+          title:
+            getFieldValue(appFeaturesObj.fields, "title") ??
+            "The perfect companion for control",
+          subtitle:
+            getFieldValue(appFeaturesObj.fields, "subtitle") ??
+            "All controls in your hand",
+          description: getFieldValue(appFeaturesObj.fields, "description") ?? "",
+          mainImageUrl: mainImageRef?.image?.url ?? null,
+          mainImageAlt: mainImageRef?.image?.altText ?? null,
+          features: parseHomeFeatureCards(appFeaturesObj.fields ?? []),
+        }
+      : null;
+
+    const comparison: HomeComparisonContent | null = comparisonObj
+      ? {
+          titleLine1:
+            getFieldValue(comparisonObj.fields, "title_line_1") ??
+            "Here is why we built",
+          titleLine2:
+            getFieldValue(comparisonObj.fields, "title_line_2") ??
+            "Optimist for you",
+          subtitle:
+            getFieldValue(comparisonObj.fields, "subtitle") ?? "Why Optimist?",
+          rows: parseComparisonRows(comparisonObj.fields ?? []),
+        }
+      : null;
+
+    const reviews: HomeReviewsContent | null = reviewsObj
+      ? {
+          subtitle:
+            getFieldValue(reviewsObj.fields, "subtitle") ??
+            "Real People. Real Summers.",
+          title:
+            getFieldValue(reviewsObj.fields, "title") ??
+            "We could tell you how good it is. But they'll do it better.",
+          mainLine: getFieldValue(reviewsObj.fields, "main_line") ?? "",
+          earlyUsers: Number(
+            getFieldValue(reviewsObj.fields, "early_users") ?? 0,
+          ),
+          unitsSold: Number(getFieldValue(reviewsObj.fields, "units_sold") ?? 0),
+          videos: parseReviewVideos(reviewsObj.fields ?? []),
+        }
+      : null;
+
+    if (
+      !hero &&
+      !productDisplay &&
+      !insideTech &&
+      !appFeatures &&
+      !comparison &&
+      !reviews
+    )
+      return null;
+
+    return {
+      hero,
+      productDisplay,
+      insideTech,
+      appFeatures,
+      comparison,
+      reviews,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// =============================================================================
 // Utility Functions
 // =============================================================================
 
