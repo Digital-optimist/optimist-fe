@@ -1,85 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-
-const SALEASSIST_WIDGET_ID = "b64c75ac-d186-4979-a841-1572d8d9614b";
-const SALEASSIST_SCRIPT_SRC = "https://static.saleassist.ai/widgets/widget.js";
-const SALEASSIST_SCRIPT_ID = "saleassist-widget-script";
-
-type SaleAssist = {
-  mountWidget?: (opts: { id: string }) => void;
-};
-
-declare global {
-  interface Window {
-    saleassist?: SaleAssist;
-  }
-}
+import { useCallback, useState } from "react";
+import { openSaleAssist } from "@/lib/saleassist";
 
 export default function SaleAssistButton() {
   // Click-to-load: the widget script (164 KiB + pulls Google Fonts Inter)
   // does not load until the user actually clicks Live Demo.
-  const scriptStateRef = useRef<"idle" | "loading" | "ready">("idle");
-  const followUpMountTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
   const [busy, setBusy] = useState(false);
 
-  const mountWidget = useCallback(() => {
-    window.saleassist?.mountWidget?.({ id: SALEASSIST_WIDGET_ID });
-
-    // SaleAssist cold start may need a second mount call before it opens.
-    if (followUpMountTimerRef.current) {
-      clearTimeout(followUpMountTimerRef.current);
-    }
-    followUpMountTimerRef.current = setTimeout(() => {
-      window.saleassist?.mountWidget?.({ id: SALEASSIST_WIDGET_ID });
-    }, 700);
-  }, []);
-
-  const loadScript = useCallback((): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (document.getElementById(SALEASSIST_SCRIPT_ID)) {
-        resolve();
-        return;
-      }
-      const s = document.createElement("script");
-      s.id = SALEASSIST_SCRIPT_ID;
-      s.async = true;
-      s.src = SALEASSIST_SCRIPT_SRC;
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error("SaleAssist script failed to load"));
-      document.body.appendChild(s);
-    });
-  }, []);
-
   const openWidget = useCallback(async () => {
-    if (scriptStateRef.current === "ready") {
-      mountWidget();
-      return;
-    }
-    if (scriptStateRef.current === "loading") {
-      return;
-    }
-    scriptStateRef.current = "loading";
     setBusy(true);
     try {
-      await loadScript();
-      scriptStateRef.current = "ready";
-      mountWidget();
-    } catch {
-      scriptStateRef.current = "idle";
+      await openSaleAssist();
     } finally {
       setBusy(false);
     }
-  }, [loadScript, mountWidget]);
-
-  useEffect(() => {
-    return () => {
-      if (followUpMountTimerRef.current) {
-        clearTimeout(followUpMountTimerRef.current);
-      }
-    };
   }, []);
 
   return (

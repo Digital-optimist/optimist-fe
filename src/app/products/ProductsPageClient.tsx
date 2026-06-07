@@ -26,6 +26,7 @@ import {
   type VariantRichText,
 } from "@/lib/shopify";
 import { redirectWithAnalytics } from "@/lib/analytics";
+import { openSaleAssist } from "@/lib/saleassist";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import PincodeModal from "@/components/ui/PincodeModal";
 import Link from "next/link";
@@ -786,9 +787,7 @@ function ProductsPageInner({
                 </div>
                 <button
                   onClick={() => {
-                    (window as any).saleassist?.mountWidget({
-                      id: "b64c75ac-d186-4979-a841-1572d8d9614b",
-                    });
+                    openSaleAssist();
                   }}
                   className="btn-scale w-full flex items-center justify-center gap-2 md:gap-2.5 px-4 md:px-6 py-3 md:py-4 border border-[rgba(0,0,0,0.12)] rounded-full font-medium text-sm md:text-base text-black hover:border-[rgba(0,0,0,0.24)] transition-all"
                 >

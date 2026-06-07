@@ -1,4 +1,24 @@
-@import "tailwindcss";
+/*
+ * Scope Tailwind's source scanning to code files only.
+ *
+ * With bare `@import "tailwindcss"`, the @tailwindcss/oxide v4.3.0 native
+ * scanner auto-detects sources by walking the whole project and opening every
+ * non-gitignored file — including binary ones (e.g. `src/.DS_Store`, the
+ * `.woff2` fonts, images, and the pincode `.csv` data). Reading binary bytes
+ * into the scanner's candidate buffer intermittently corrupts the class
+ * candidates extracted from *other* files, e.g. it merged the adjacent
+ * `leading-[1.5]` and `tracking-[0.32px]` utilities on the auth pages into one
+ * garbage class `.leading-[1.5\f \2 \!ck\f <bad-bytes>\4 0.32px]`, which fails
+ * the CSS parse ("Parsing CSS source code failed ... Unexpected token '!'").
+ *
+ * `source(none)` disables the broad auto-detection; the explicit `@source`
+ * below restricts scanning to `.ts`/`.tsx` under `src/` (the only place this
+ * app uses Tailwind classes). The scanner therefore never reads a binary file,
+ * which makes the build deterministic. If a new code file type is added
+ * outside src/ (e.g. .mdx, or a UI dir elsewhere), add it to the glob below.
+ */
+@import "tailwindcss" source(none);
+@source "../**/*.{ts,tsx}";
 
 /* Optimist Brand Color System */
 :root {
