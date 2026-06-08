@@ -8,7 +8,7 @@ const SaleAssistButton = dynamic(() => import("./SaleAssistButton"), {
   ssr: false,
 });
 
-const SALEASSIST_ROUTES = ["/", "/products", "/cart", "/contact-us"];
+const SALEASSIST_ROUTES = ["/", "/home", "/products", "/cart", "/contact-us"];
 
 // Defer SaleAssist until either the user interacts with the page or 5s have elapsed.
 // Keeps the chat widget out of the critical path entirely.

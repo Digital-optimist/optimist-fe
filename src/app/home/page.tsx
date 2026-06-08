@@ -4,12 +4,12 @@ import { Poppins } from "next/font/google";
 import { getArticles, getHomePageContent, getProducts } from "@/lib/shopify";
 import HomePageClient from "./HomePageClient";
 
-// Poppins drives every text element on the /home route (per design). It is
-// scoped to this page: the wrapper below re-points the font CSS variables that
-// the home sections resolve through (`font-display`/`font-sans` utilities), so
-// the rest of the site keeps the ABC Solar family from the root layout. The
-// full weight range is loaded so headlines stay bold while body/meta text
-// renders at lighter weights, matching the design.
+// Poppins drives body/UI text on the /home route (per design). Titles and big
+// display text keep ABC Solar Display. Scoped to this page: the wrapper below
+// re-points only the body font CSS variables (`font-sans`/`--font-abc-solar`)
+// to Poppins, while the display variables are left untouched so they inherit
+// ABC Solar Display from the root layout. The full weight range is loaded so
+// body/meta text renders at the right weights, matching the design.
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -17,14 +17,17 @@ const poppins = Poppins({
   display: "swap",
 });
 
-// Override the theme + raw font variables on the home subtree so both the
-// Tailwind font utilities and any direct `var(--font-abc-solar*)` usage fall
-// back to Poppins.
+// Force Poppins for body/UI text on the home subtree. `fontFamily` is set
+// directly (not just via variables) because unclassed text inherits the
+// already-computed family from <body> — redefining `--font-abc-solar` alone
+// wouldn't override that inherited value. `--font-sans`/`--font-abc-solar` are
+// also re-pointed so the `font-sans` utility resolves to Poppins. The display
+// variables are left untouched so `font-display` headlines stay ABC Solar
+// Display (the `.font-display` rule wins via its own font-family declaration).
 const HOME_FONT_VARS = {
+  fontFamily: "var(--font-poppins), system-ui, sans-serif",
   "--font-sans": "var(--font-poppins)",
-  "--font-display": "var(--font-poppins)",
   "--font-abc-solar": "var(--font-poppins)",
-  "--font-abc-solar-display": "var(--font-poppins)",
 } as CSSProperties;
 
 export const metadata: Metadata = {

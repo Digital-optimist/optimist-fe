@@ -71,7 +71,7 @@ export function HomeFooter() {
 
           <m.h2
             variants={fadeUp}
-            className="mt-10 leading-[64px] text-[64px] font-[500] text-[#212121]"
+            className="mt-10 font-display leading-[64px] text-[64px] font-[500] text-[#212121]"
           >
             Be the coolest
             <br />

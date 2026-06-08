@@ -26,8 +26,8 @@ export function PalmLogo({ className }: { className?: string }) {
 }
 
 const NAV_LINKS = [
+  { label: "Product", href: "/products" },
   { label: "About Us", href: "/about" },
-  { label: "Careers", href: "/careers" },
 ];
 
 export function HomeHeader() {
@@ -41,52 +41,52 @@ export function HomeHeader() {
 
   return (
     <>
-    <m.header
-      initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-x-0 top-0 z-50"
-    >
-      {/* Floating, centered pill that hovers over the hero */}
-      <div className="mx-auto max-w-[1360px] px-4 pt-4 sm:px-6 sm:pt-5">
-        <nav className="relative flex h-[76px] items-center justify-between rounded-[32px] border border-white/70 bg-white/70 px-6 shadow-[0_18px_50px_-22px_rgba(15,23,42,0.28)] backdrop-blur-xl backdrop-saturate-150 sm:px-8">
-          {/* Left: primary links */}
-          <ul className="flex items-center gap-7">
-            {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.href}
-                  className="text-[16px] font-medium text-optimist-black/85 transition-colors hover:text-optimist-black"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <m.header
+        initial={{ y: -24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed inset-x-0 top-0 z-50"
+      >
+        {/* Floating, centered pill that hovers over the hero */}
+        <div className="mx-auto max-w-[1360px] px-4 pt-4 sm:px-6 sm:pt-5">
+          <nav className="relative flex h-[76px] items-center justify-between rounded-[32px] border border-white/70 bg-white/70 px-6 shadow-[0_18px_50px_-22px_rgba(15,23,42,0.28)] backdrop-blur-xl backdrop-saturate-150 sm:px-8">
+            {/* Left: primary links */}
+            <ul className="flex items-center gap-7">
+              {NAV_LINKS.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-[16px] font-medium text-optimist-black/85 transition-colors hover:text-optimist-black"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-          {/* Center: palm logo */}
-          <Link
-            href="/home"
-            aria-label="Optimist home"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          >
-            <PalmLogo className="h-[42px] w-auto" />
-          </Link>
+            {/* Center: palm logo */}
+            <Link
+              href="/home"
+              aria-label="Optimist home"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            >
+              <PalmLogo className="h-[42px] w-auto" />
+            </Link>
 
-          {/* Right: primary CTA */}
-          <button
-            type="button"
-            onClick={handleGetItNow}
-            className="rounded-full px-7 py-3 text-[16px] font-semibold text-white shadow-[0_6px_18px_rgba(52,120,246,0.4)] transition-transform duration-200 hover:-translate-y-0.5"
-            style={{
-              background: "linear-gradient(180deg, #5B93FF 0%, #2F6FE8 100%)",
-            }}
-          >
-            Get it now
-          </button>
-        </nav>
-      </div>
-    </m.header>
+            {/* Right: primary CTA */}
+            <button
+              type="button"
+              onClick={handleGetItNow}
+              className="rounded-full px-7 py-3 text-[16px] font-semibold text-white shadow-[0_6px_18px_rgba(52,120,246,0.4)] transition-transform duration-200 hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(180deg, #5B93FF 0%, #2F6FE8 100%)",
+              }}
+            >
+              Get it now
+            </button>
+          </nav>
+        </div>
+      </m.header>
 
       <PincodeModal
         isOpen={showPincodeModal}
