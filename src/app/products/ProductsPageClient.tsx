@@ -559,7 +559,16 @@ function ProductsPageInner({
                   {selectedVariant?.productTitle || initialTitle}
                 </h1>
                 {judgeCount > 0 && (
-                  <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document
+                        .getElementById("reviews")
+                        ?.scrollIntoView({ behavior: "smooth" })
+                    }
+                    aria-label={`${new Intl.NumberFormat("en-IN").format(judgeCount)} reviews, jump to reviews`}
+                    className="flex items-center gap-1.5 cursor-pointer w-fit"
+                  >
                     <div className="flex items-center">
                       {[1, 2, 3, 4, 5].map((star) => {
                         const filled = judgeRating >= star;
@@ -596,7 +605,7 @@ function ProductsPageInner({
                     <span className="text-sm md:text-base text-[#6c6a6a]">
                       ({new Intl.NumberFormat("en-IN").format(judgeCount)})
                     </span>
-                  </div>
+                  </button>
                 )}
               </div>
 
