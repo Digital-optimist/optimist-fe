@@ -18,11 +18,11 @@ const coverageRows = [
     period: "5 Years",
     covered: "Parts and labour at ₹0",
   },
-  {
-    component: "Refrigerant Gas",
-    period: "5 Years",
-    covered: "Refill and repair at ₹0 in all cases",
-  },
+  // {
+  //   component: "Refrigerant Gas",
+  //   period: "5 Years",
+  //   covered: "Refill and repair at ₹0 in all cases",
+  // },
   {
     component: "Remote Control",
     period: "5 Years",

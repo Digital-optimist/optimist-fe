@@ -202,9 +202,6 @@ Display
 Swing motor
 Evaporator coil / heat exchanger
 
-Refrigerant Gas
-Covered for 5 years, including refill charges when required under warranty conditions.
-
 Remote
 Covered for 5 years
 
@@ -234,7 +231,7 @@ const ANSWER_SECTION_HEADINGS = new Set([
   "The Optimist 5-Year Warranty Promise",
   "Outdoor Unit",
   "Indoor Unit",
-  "Refrigerant Gas",
+  // "Refrigerant Gas",
   "Remote",
   "What's not covered",
   "How warranty stays active",
