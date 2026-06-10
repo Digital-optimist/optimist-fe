@@ -128,6 +128,11 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
+        {/* Shopflo checkout bridge */}
+        <Script
+          src="https://bridge.shopflo.com/js/shopflo.bundle.js"
+          strategy="afterInteractive"
+        />
         {/* Google Tag Manager — pushed to `lazyOnload` (matches GA4 below) so
             it runs during browser idle time instead of immediately after
             interactive. GTM was costing 50-150 ms of TBT on the main thread;

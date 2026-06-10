@@ -1869,6 +1869,11 @@ export interface RichTextNode {
   value?: string;
   level?: number;
   listType?: string;
+  bold?: boolean;
+  italic?: boolean;
+  url?: string;
+  title?: string;
+  target?: string;
   children?: RichTextNode[];
 }
 

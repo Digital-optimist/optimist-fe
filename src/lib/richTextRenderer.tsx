@@ -2,7 +2,20 @@ import type { RichTextNode } from "./shopify";
 
 function renderNode(node: RichTextNode, index: number): React.ReactNode {
   if (node.type === "text") {
-    return node.value ?? "";
+    let content: React.ReactNode = node.value ?? "";
+    if (node.bold) {
+      content = (
+        <strong key={index} className="font-semibold text-black">
+          {content}
+        </strong>
+      );
+    }
+    if (node.italic) {
+      content = (
+        <em key={index}>{content}</em>
+      );
+    }
+    return content;
   }
 
   const children = node.children?.map((child, i) => renderNode(child, i));
@@ -61,9 +74,10 @@ function renderNode(node: RichTextNode, index: number): React.ReactNode {
       return (
         <a
           key={index}
-          href={node.value ?? "#"}
+          href={node.url ?? "#"}
+          title={node.title}
           className="underline text-blue-600"
-          target="_blank"
+          target={node.target ?? "_blank"}
           rel="noopener noreferrer"
         >
           {children}
@@ -78,7 +92,7 @@ function renderNode(node: RichTextNode, index: number): React.ReactNode {
 export function RichTextContent({ node }: { node: RichTextNode | null }) {
   if (!node) return null;
   return (
-    <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4">
+    <div className="pt-2 pb-4 text-[#6c6a6a] text-sm md:text-base font-light leading-relaxed space-y-4 whitespace-pre-line">
       {node.children?.map((child, i) => renderNode(child, i))}
     </div>
   );
