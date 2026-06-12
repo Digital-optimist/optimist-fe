@@ -53,54 +53,67 @@ export function HomeHeader() {
       >
         {/* Floating, centered pill that hovers over the hero */}
         <div className="mx-auto max-w-[1360px] px-3 pt-3 sm:px-6 sm:pt-5">
-          <nav className="relative flex h-[60px] items-center justify-between rounded-[24px] border border-white/70 bg-white/70 px-4 shadow-[0_18px_50px_-22px_rgba(15,23,42,0.28)] backdrop-blur-xl backdrop-saturate-150 sm:h-[68px] sm:rounded-[28px] sm:px-6 md:h-[76px] md:rounded-[32px] md:px-8">
-            {/* Left: hamburger (mobile) + primary links (sm+) */}
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-optimist-black/85 transition-colors hover:bg-black/5 sm:hidden"
-            >
-              {menuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-            </button>
-            <ul className="hidden items-center gap-7 sm:flex">
-              {NAV_LINKS.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-[16px] font-medium text-optimist-black/85 transition-colors hover:text-optimist-black"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <nav className="relative flex h-[60px] items-center justify-between rounded-[24px] border border-black/[0.07] bg-white/90 px-4 shadow-[0_20px_50px_-20px_rgba(15,23,42,0.35)] backdrop-blur-xl backdrop-saturate-150 sm:h-[68px] sm:rounded-[28px] sm:px-6 md:h-[76px] md:rounded-[32px] md:px-8">
+            {/* Left: palm logo (mobile) + primary links (sm+) */}
+            <div className="flex items-center gap-7">
+              {/* Mobile: logo anchors the left edge for balance */}
+              <Link
+                href="/home"
+                aria-label="Optimist home"
+                className="flex items-center sm:hidden"
+              >
+                <PalmLogo className="h-[32px] w-auto" />
+              </Link>
+              <ul className="hidden items-center gap-7 sm:flex">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-[16px] font-medium text-optimist-black/85 transition-colors hover:text-optimist-black"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            {/* Center: palm logo */}
+            {/* Center: palm logo — desktop only */}
             <Link
               href="/home"
               aria-label="Optimist home"
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 sm:block"
             >
-              <PalmLogo className="h-[32px] w-auto sm:h-[38px] md:h-[42px]" />
+              <PalmLogo className="h-[38px] w-auto md:h-[42px]" />
             </Link>
 
-            {/* Right: primary CTA */}
-            <button
-              type="button"
-              onClick={handleGetItNow}
-              className="rounded-full px-4 py-2 text-[14px] font-semibold text-white shadow-[0_6px_18px_rgba(52,120,246,0.4)] transition-transform duration-200 hover:-translate-y-0.5 sm:px-7 sm:py-3 sm:text-[16px]"
-              style={{
-                background: "linear-gradient(180deg, #5B93FF 0%, #2F6FE8 100%)",
-              }}
-            >
-              Get it now
-            </button>
+            {/* Right: menu (mobile) + primary CTA, grouped */}
+            <div className="flex items-center gap-2 sm:gap-0">
+              <button
+                type="button"
+                onClick={handleGetItNow}
+                className="rounded-full px-4 py-2 text-[14px] font-semibold text-white shadow-[0_6px_18px_rgba(52,120,246,0.4)] transition-transform duration-200 hover:-translate-y-0.5 sm:px-7 sm:py-3 sm:text-[16px]"
+                style={{
+                  background:
+                    "linear-gradient(180deg, #5B93FF 0%, #2F6FE8 100%)",
+                }}
+              >
+                Get it now
+              </button>
+              <button
+                type="button"
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-optimist-black/85 transition-colors hover:bg-black/5 sm:hidden"
+              >
+                {menuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </nav>
 
           {/* Mobile dropdown menu */}

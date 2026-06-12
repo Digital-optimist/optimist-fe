@@ -32,7 +32,7 @@ function TechCard({ card }: { card: HomeFeatureCard }) {
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent transition-colors duration-300 group-hover:from-black/90 group-hover:via-black/75 group-hover:to-black/55" />
 
       <div className="absolute inset-x-0 bottom-0 flex flex-col p-7">
-        <h3 className="font-display text-[24px] font-semibold leading-[1.2] text-white">
+        <h3 className="font-display text-[24px] font-medium leading-[1.2] text-white">
           {card.title}
         </h3>
         {/* grid-rows 0fr -> 1fr animates the description height open on hover. */}

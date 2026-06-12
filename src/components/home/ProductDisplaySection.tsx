@@ -85,7 +85,7 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
             <div className="relative z-10 grid grid-cols-1 items-end gap-8 lg:grid-cols-2">
               {/* Tonnage */}
               <m.div variants={fadeUp}>
-                <p className="font-display font-semibold leading-none text-optimist-black">
+                <p className="font-display font-medium leading-none text-optimist-black">
                   <span className="text-[56px] sm:text-[76px]">{tonValue}</span>{" "}
                   <span className="text-[26px] sm:text-[32px]">{tonUnit}</span>
                 </p>
@@ -96,7 +96,7 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
 
               {/* Price + CTA */}
               <m.div variants={fadeUp} className="lg:text-right">
-                <p className="font-display text-[30px] font-semibold leading-none text-optimist-black">
+                <p className="font-display text-[30px] font-medium leading-none text-optimist-black">
                   From {formatPrice(String(emiMonthly))}/mo
                 </p>
                 <p className="mt-2 text-[15px] text-black/55">

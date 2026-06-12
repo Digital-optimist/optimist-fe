@@ -32,7 +32,7 @@ function FeatureCard({ card }: { card: HomeFeatureCard }) {
         />
       ) : null}
       <div>
-        <h3 className="font-display text-[18px] font-semibold leading-[1.25] text-optimist-black">
+        <h3 className="font-display text-[18px] font-medium leading-[1.25] text-optimist-black">
           {line1}
           {line2 ? (
             <>

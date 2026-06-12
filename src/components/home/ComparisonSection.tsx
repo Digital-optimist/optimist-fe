@@ -60,13 +60,13 @@ export function ComparisonSection({ content }: ComparisonSectionProps) {
               Features
             </div>
             <div className="flex items-end justify-center px-1 pb-3 pt-5 sm:px-2 sm:pb-5 sm:pt-7">
-              <span className="font-display text-[14px] font-semibold text-optimist-black sm:text-[18px]">
+              <span className="font-display text-[14px] font-medium text-optimist-black sm:text-[18px]">
                 Other AC&rsquo;s
               </span>
             </div>
             <div className="flex items-end justify-center gap-1 px-1 pb-3 pt-5 sm:gap-1.5 sm:px-2 sm:pb-5 sm:pt-7">
               <PalmLogo className="h-[16px] w-auto sm:h-[22px]" />
-              <span className="font-display text-[15px] font-semibold text-optimist-blue-hero sm:text-[20px]">
+              <span className="font-display text-[15px] font-medium text-optimist-blue-hero sm:text-[20px]">
                 optimist
               </span>
             </div>
@@ -85,7 +85,7 @@ export function ComparisonSection({ content }: ComparisonSectionProps) {
                       className="h-5 w-5 flex-shrink-0 object-contain sm:h-7 sm:w-7"
                     />
                   ) : null}
-                  <span className="font-display text-[14px] font-semibold leading-tight text-optimist-black sm:text-[18px]">
+                  <span className="font-display text-[14px] font-medium leading-tight text-optimist-black sm:text-[18px]">
                     {row.feature}
                   </span>
                 </div>

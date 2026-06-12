@@ -69,10 +69,10 @@ function FeatureCard({ features }: { features: HomeHeroContent["features"] }) {
                 alt={feature.iconAlt ?? feature.title}
                 width={160}
                 height={44}
-                className="h-[40px] w-auto object-contain object-left"
+                className="h-[38px] w-[104px] object-contain object-left"
               />
             ) : (
-              <div className="h-[40px]" />
+              <div className="h-[38px]" />
             )}
             <h3 className="mt-3 text-[17px] font-semibold leading-tight text-optimist-black sm:text-[19px]">
               {feature.title}
@@ -84,6 +84,21 @@ function FeatureCard({ features }: { features: HomeHeroContent["features"] }) {
         ))}
       </div>
     </m.div>
+  );
+}
+
+// Accent the "50°C" hot-summer figure in brand blue so it pops, mirroring the
+// same treatment in the benefits section. Falls back to plain text if the
+// metaobject copy doesn't contain "50°C".
+function titleWithTempAccent(title: string) {
+  return title.split(/(50°C)/g).map((part, i) =>
+    part === "50°C" ? (
+      <span key={i} className="text-optimist-blue-hero">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
   );
 }
 
@@ -125,7 +140,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: HEADLINE_DELAYS.line1 }}
-            className="font-display font-semibold leading-[1.02] text-optimist-black text-[clamp(40px,5vw,72px)]"
+            className="font-display font-medium leading-[1.02] text-optimist-black text-[clamp(40px,5vw,72px)]"
           >
             {headingLine1}
           </m.h1>
@@ -133,7 +148,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: HEADLINE_DELAYS.line2 }}
-            className="font-display font-semibold leading-[0.95] text-optimist-blue-hero text-[clamp(56px,7.2vw,104px)]"
+            className="font-display font-medium leading-[0.95] text-optimist-blue-hero text-[clamp(56px,7.2vw,104px)]"
           >
             {headingLine2}
           </m.p>
@@ -175,8 +190,8 @@ export function HeroSection({ hero }: HeroSectionProps) {
         className="relative z-10 mx-auto grid max-w-[1280px] grid-cols-1 items-start gap-8 px-6 pb-16 pt-10 sm:gap-10 lg:grid-cols-[460px_1fr] lg:gap-16 lg:px-10 lg:pb-[110px] lg:pt-[56px]"
       >
         <m.div variants={fadeUp}>
-          <h2 className="font-display text-[clamp(28px,2.9vw,40px)] font-semibold leading-[1.16] text-optimist-black">
-            {title}
+          <h2 className="font-display text-[clamp(28px,2.9vw,40px)] font-medium leading-[1.16] text-optimist-black">
+            {titleWithTempAccent(title)}
           </h2>
           {subtitle ? (
             <p className="mt-5 max-w-[440px] text-[18px] leading-[1.6] text-black/55">

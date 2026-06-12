@@ -60,13 +60,13 @@ function LabCard({ article, index }: { article: BlogArticle; index: number }) {
       </div>
 
       {/* Title */}
-      <h3 className="mt-6 line-clamp-4 font-display text-[22px] font-semibold leading-[1.32] text-optimist-black transition-colors duration-300 group-hover:text-optimist-blue-hero">
+      <h3 className="mt-6 line-clamp-4 font-display text-[22px] font-medium leading-[1.32] text-optimist-black transition-colors duration-300 group-hover:text-optimist-blue-hero">
         {article.title}
       </h3>
 
       {/* Author + meta pinned to the bottom */}
       <div className="mt-auto pt-8">
-        <p className="font-display text-[16px] font-semibold text-optimist-black">
+        <p className="font-display text-[16px] font-medium text-optimist-black">
           {article.author?.name || "Optimist Team"}
         </p>
         <p className="mt-1 text-[14px] text-black/50">
