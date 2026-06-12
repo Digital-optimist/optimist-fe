@@ -57,13 +57,13 @@ export function BenefitsSection() {
                 className="object-cover object-top"
               />
               <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="font-display text-[26px] font-semibold leading-[1.18] text-optimist-black">
+                <p className="font-display text-[26px] font-medium leading-[1.18] text-optimist-black">
                   Still cooling
                   <br />
                   when India hits
                 </p>
                 <div className="mt-1 flex items-end gap-3">
-                  <span className="font-display text-[36px] font-semibold leading-none text-optimist-black">
+                  <span className="font-display text-[36px] font-medium leading-none text-optimist-blue-hero">
                     50°C.
                   </span>
                   <span className="pb-1 text-[13px] text-black/45">
@@ -76,7 +76,7 @@ export function BenefitsSection() {
             {/* ₹18,000 saved chart */}
             <m.div variants={fadeUp} className={`${CARD} min-h-[380px]`}>
               <div className="flex h-full flex-col p-8">
-                <p className="font-display text-[28px] font-semibold leading-[1.15]">
+                <p className="font-display text-[28px] font-medium leading-[1.15]">
                   <span className="text-[#16A34A]">₹18,000</span>{" "}
                   <span className="text-optimist-black">saved</span>
                   <br />
@@ -157,7 +157,7 @@ export function BenefitsSection() {
                   height={40}
                   className="h-9 w-9"
                 />
-                <h3 className="mt-4 font-display text-[24px] font-semibold leading-tight text-optimist-blue-hero sm:text-[28px]">
+                <h3 className="mt-4 font-display text-[24px] font-medium leading-tight text-optimist-blue-hero sm:text-[28px]">
                   Turbo+ Cooling
                 </h3>
                 <p className="mt-1 text-[18px] leading-snug text-optimist-black sm:text-[20px]">
@@ -183,7 +183,7 @@ export function BenefitsSection() {
                   height={150}
                   className="h-auto w-[78%] self-center"
                 />
-                <p className="mt-5 font-display text-[24px] font-semibold leading-tight">
+                <p className="mt-5 font-display text-[24px] font-medium leading-tight">
                   <span className="text-optimist-blue-hero">Gas levels</span>
                   <br />
                   <span className="text-optimist-black">Always in check.</span>
@@ -205,7 +205,7 @@ export function BenefitsSection() {
                 className="absolute right-0 top-0 h-auto w-[82%] object-contain"
               />
               <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="font-display text-[24px] font-semibold leading-[1.2] text-optimist-black">
+                <p className="font-display text-[24px] font-medium leading-[1.2] text-optimist-black">
                   Less buttons.
                   <br />
                   Zero confusion.
@@ -217,12 +217,13 @@ export function BenefitsSection() {
               </div>
             </m.div>
 
-            {/* Middle column: WiFi + Warranty stacked */}
-            <div className="flex flex-col gap-5">
+            {/* Middle column: WiFi + Warranty — side-by-side on mobile to keep
+                the stack short, stacked on desktop to fill the bento column */}
+            <div className="grid grid-cols-2 gap-5 lg:flex lg:flex-col">
               {/* WiFi & Smart Home */}
               <m.div
                 variants={fadeUp}
-                className="relative flex flex-1 flex-col overflow-hidden rounded-[24px] bg-[#FBF6DB] p-7"
+                className="relative flex flex-1 flex-col overflow-hidden rounded-[24px] bg-[#FBF6DB] p-5 lg:p-7"
               >
                 <Image
                   src={WIFI}
@@ -232,7 +233,7 @@ export function BenefitsSection() {
                   height={40}
                   className="h-9 w-auto self-start object-contain"
                 />
-                <h4 className="mt-4 font-display text-[20px] font-semibold leading-tight text-optimist-black">
+                <h4 className="mt-4 font-display text-[20px] font-medium leading-tight text-optimist-black">
                   WiFi &amp; Smart
                   <br />
                   Home Ready
@@ -261,7 +262,7 @@ export function BenefitsSection() {
                     className="h-[92px] w-auto opacity-95"
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center pt-1 text-center">
-                    <span className="font-display text-[22px] font-semibold leading-none">
+                    <span className="font-display text-[22px] font-medium leading-none">
                       <span className="text-[34px]">5</span> Year
                     </span>
                     <span className="mt-1 text-[11px] font-medium leading-tight">
@@ -304,7 +305,7 @@ export function BenefitsSection() {
                 className="absolute -bottom-2 right-3 h-auto w-[72%] object-contain sm:right-5 sm:w-[58%]"
               />
               <div className="absolute inset-x-0 top-0 p-7">
-                <p className="font-display text-[24px] font-semibold leading-[1.2]">
+                <p className="font-display text-[24px] font-medium leading-[1.2]">
                   <span className="text-optimist-blue-hero">One tap away</span>
                   <br />
                   <span className="text-optimist-black">

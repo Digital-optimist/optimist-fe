@@ -8,7 +8,7 @@ import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 
 const MADE_IN_INDIA = "/newHomepage/Frame%201437256413.webp";
 const FACTORY_BG = "/newHomepage/Frame%201437256414.webp";
-const OPTIMIST_LOCKUP = "/newHomepage/Blue_Vertical%20Lockup%20+%20R%201.webp";
+const OPTIMIST_LOCKUP = "/newHomepage/Blue_Vertical.webp";
 const TEAM_PHOTO = "/newHomepage/future-team%201.webp";
 
 export function MeetFamilySection() {
@@ -62,7 +62,7 @@ export function MeetFamilySection() {
               className="h-auto w-[140px] flex-shrink-0 object-contain sm:w-[210px]"
             />
             <div className="text-right">
-              <p className="font-display text-[24px] font-semibold leading-none text-optimist-black sm:text-[30px]">
+              <p className="font-display text-[24px] font-medium leading-none text-optimist-black sm:text-[30px]">
                 7+ Years
               </p>
               <p className="ml-auto mt-2 max-w-[190px] text-[15px] leading-[1.4] text-black/55">
@@ -82,7 +82,7 @@ export function MeetFamilySection() {
         >
           {/* The goal */}
           <div className="flex flex-col bg-[#FBF6DB] p-8">
-            <p className="flex items-center gap-2 font-display text-[18px] font-semibold text-optimist-black">
+            <p className="flex items-center gap-2 font-display text-[18px] font-medium text-optimist-black">
               <span aria-hidden="true">🎯</span> The goal
             </p>
             <p className="mt-4 text-[20px] font-medium leading-[1.4] text-optimist-black">

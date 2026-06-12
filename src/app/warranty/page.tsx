@@ -199,9 +199,9 @@ export default function WarrantyPage() {
             <div className="bg-optimist-blue-primary/5 rounded-2xl p-6 border border-optimist-blue-primary/20">
               <p className="text-gray-700 leading-relaxed">
                 All covered repairs and replacements are carried out at{" "}
-                <strong>₹0 to the customer</strong>. No labour charges, gas
-                refill charges, or part replacement charges are payable for
-                faults covered under this warranty.
+                <strong>₹0 to the customer</strong>. No labour charges, or part
+                replacement charges are payable for faults covered under this
+                warranty.
               </p>
             </div>
           </PolicySection>

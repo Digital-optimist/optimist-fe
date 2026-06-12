@@ -198,7 +198,7 @@ function ReviewCard({ review }: { review: JudgeMeReview }) {
         </span>
       </div>
       {review.title ? (
-        <p className="font-display text-[15px] font-medium leading-[1.3] text-optimist-black sm:text-[18px] sm:font-semibold">
+        <p className="font-display text-[15px] font-medium leading-[1.3] text-optimist-black sm:text-[18px] sm:font-medium">
           {review.title}
         </p>
       ) : null}
@@ -301,7 +301,7 @@ function RatedCard() {
       />
       <div className="relative z-10">
         <p className="text-[14px] text-white/55">Rated by Early users</p>
-        <p className="mt-2 font-display font-semibold leading-none">
+        <p className="mt-2 font-display font-medium leading-none">
           <span className="text-[64px]">4.8</span>
           <span className="text-[28px] text-white/45">/5</span>
         </p>
@@ -383,7 +383,7 @@ export function SocialProofSection({ content }: SocialProofSectionProps) {
             ) : null}
             <m.div variants={fadeUp} className="mt-6 flex gap-8 sm:gap-12">
               <div>
-                <p className="font-display text-[28px] font-semibold leading-none text-optimist-blue-hero sm:text-[36px]">
+                <p className="font-display text-[28px] font-medium leading-none text-optimist-blue-hero sm:text-[36px]">
                   {earlyUsers}+
                 </p>
                 <p className="mt-1 text-[15px] text-black/55">
@@ -391,7 +391,7 @@ export function SocialProofSection({ content }: SocialProofSectionProps) {
                 </p>
               </div>
               <div>
-                <p className="font-display text-[28px] font-semibold leading-none text-optimist-blue-hero sm:text-[36px]">
+                <p className="font-display text-[28px] font-medium leading-none text-optimist-blue-hero sm:text-[36px]">
                   {unitsSold}
                 </p>
                 <p className="mt-1 text-[15px] text-black/55">AC Units sold</p>
