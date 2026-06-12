@@ -313,13 +313,23 @@ export function BusinessPurchaseSection() {
                           </span>
                         </div>
                       )}
-                    {businessDetails.state && (
+                    {/* {businessDetails.state && (
                       <div className="flex items-baseline gap-2">
                         <span className="text-[11px] uppercase tracking-wide text-[#9CA3AF] flex-shrink-0 w-16">
                           State
                         </span>
                         <span className="text-[13px] text-[#1F2937]">
                           {businessDetails.state}
+                        </span>
+                      </div>
+                    )} */}
+                    {businessDetails.billingAddress?.full && (
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-[11px] uppercase tracking-wide text-[#9CA3AF] flex-shrink-0 w-16">
+                          Address
+                        </span>
+                        <span className="text-[13px] text-[#1F2937]">
+                          {businessDetails.billingAddress.full}
                         </span>
                       </div>
                     )}

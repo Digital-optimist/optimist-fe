@@ -2,6 +2,16 @@
 // Currently uses a mock implementation for testing.
 // Replace with real Surepass API proxy call when Lambda is deployed.
 
+export interface GSTBillingAddress {
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+  full: string;
+}
+
 export interface GSTVerificationResult {
   success: boolean;
   data?: {
@@ -12,6 +22,8 @@ export interface GSTVerificationResult {
     state: string;
     businessType: string;
     dateOfRegistration: string;
+    // Registered principal place of business — used as the GST billing address.
+    address: GSTBillingAddress;
   };
   error?: string;
 }
@@ -28,6 +40,15 @@ const MOCK_DATABASE: Record<string, GSTVerificationResult["data"]> = {
     state: "Karnataka",
     businessType: "Private Limited Company",
     dateOfRegistration: "2018-07-01",
+    address: {
+      line1: "12, 2nd Floor",
+      line2: "MG Road, Ashok Nagar",
+      city: "Bengaluru",
+      state: "Karnataka",
+      pincode: "560001",
+      country: "India",
+      full: "12, 2nd Floor, MG Road, Ashok Nagar, Bengaluru, Karnataka, 560001",
+    },
   },
   "27AABCU9603R1ZM": {
     gstin: "27AABCU9603R1ZM",
@@ -37,6 +58,15 @@ const MOCK_DATABASE: Record<string, GSTVerificationResult["data"]> = {
     state: "Maharashtra",
     businessType: "Public Limited Company",
     dateOfRegistration: "2017-07-01",
+    address: {
+      line1: "3rd Floor, Maker Chambers IV",
+      line2: "222, Nariman Point",
+      city: "Mumbai",
+      state: "Maharashtra",
+      pincode: "400021",
+      country: "India",
+      full: "3rd Floor, Maker Chambers IV, 222, Nariman Point, Mumbai, Maharashtra, 400021",
+    },
   },
   "07AAACW8569R1ZE": {
     gstin: "07AAACW8569R1ZE",
@@ -46,6 +76,15 @@ const MOCK_DATABASE: Record<string, GSTVerificationResult["data"]> = {
     state: "Delhi",
     businessType: "Public Limited Company",
     dateOfRegistration: "2017-07-01",
+    address: {
+      line1: "Plot No. 5, Sector 18",
+      line2: "Dwarka",
+      city: "New Delhi",
+      state: "Delhi",
+      pincode: "110075",
+      country: "India",
+      full: "Plot No. 5, Sector 18, Dwarka, New Delhi, Delhi, 110075",
+    },
   },
   "33AABCT1332L1ZB": {
     gstin: "33AABCT1332L1ZB",
@@ -55,6 +94,15 @@ const MOCK_DATABASE: Record<string, GSTVerificationResult["data"]> = {
     state: "Tamil Nadu",
     businessType: "Public Limited Company",
     dateOfRegistration: "2017-07-01",
+    address: {
+      line1: "No. 1, Software Park",
+      line2: "Siruseri SIPCOT IT Park",
+      city: "Chennai",
+      state: "Tamil Nadu",
+      pincode: "603103",
+      country: "India",
+      full: "No. 1, Software Park, Siruseri SIPCOT IT Park, Chennai, Tamil Nadu, 603103",
+    },
   },
 };
 
@@ -134,14 +182,139 @@ async function mockVerify(gstin: string): Promise<GSTVerificationResult> {
       state,
       businessType: "Private Limited Company",
       dateOfRegistration: "2020-01-01",
+      address: {
+        line1: "100, Commercial Complex",
+        line2: "Main Road",
+        city: "",
+        state,
+        pincode: "",
+        country: "India",
+        full: composeFullAddress({
+          line1: "100, Commercial Complex",
+          line2: "Main Road",
+          city: "",
+          state,
+          pincode: "",
+          country: "India",
+        }),
+      },
     },
   };
+}
+
+// Compose a single-line address string from structured parts.
+function composeFullAddress(a: Omit<GSTBillingAddress, "full">): string {
+  return [a.line1, a.line2, a.city, a.state, a.pincode]
+    .map((p) => (p || "").trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
+// Surepass's `corporate/gstin` plan returns no structured address breakdown —
+// only a flat comma-joined string, e.g.
+//   "Plot 82, Udyog Vihar, Phase-4, Gurugram, Gurugram, Gurugram, Haryana, 122015".
+// Recover usable fields: the trailing tokens are reliably `…, <state>,
+// <pincode>`, and Surepass repeats the location/city/district, so collapse the
+// duplicates and treat the leftmost token as line 1.
+function parseFlatAddress(
+  full: string,
+  fallbackState: string,
+): Omit<GSTBillingAddress, "full" | "country"> {
+  const tokens = full
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  let pincode = "";
+  if (tokens.length && /^\d{6}$/.test(tokens[tokens.length - 1])) {
+    pincode = tokens.pop() as string;
+  }
+  const state = tokens.length ? (tokens.pop() as string) : fallbackState;
+  const city = tokens.length ? (tokens.pop() as string) : "";
+
+  const rest: string[] = [];
+  for (const t of tokens) if (rest[rest.length - 1] !== t) rest.push(t);
+  while (rest.length && rest[rest.length - 1] === city) rest.pop();
+
+  return {
+    line1: rest.length ? rest[0] : "",
+    line2: rest.slice(1).join(", "),
+    city,
+    state,
+    pincode,
+  };
+}
+
+// Surepass returns the registered "principal place of business" address under
+// varying shapes depending on API version: `principal_address.address` (+ a
+// `full_address` string), the raw GSTN `pradr.addr` (+ `adr`), or a flat
+// `address`. The Lambda proxy may also pre-normalize it into our own shape
+// (`{ line1, line2, ..., full }`). Pull a normalized billing address out of
+// whichever shape exists — idempotent, so an already-normalized address passes
+// through unchanged.
+function extractAddress(
+  d: Record<string, unknown>,
+  fallbackState: string,
+): GSTBillingAddress {
+  const asObj = (v: unknown): Record<string, unknown> =>
+    v && typeof v === "object" ? (v as Record<string, unknown>) : {};
+
+  const pa = asObj(d.principal_address ?? d.pradr ?? d.address);
+  const addr = asObj(pa.address ?? pa.addr ?? pa);
+
+  const s = (obj: Record<string, unknown>, ...keys: string[]): string => {
+    for (const k of keys) {
+      const v = obj[k];
+      if (typeof v === "string" && v.trim()) return v.trim();
+    }
+    return "";
+  };
+
+  const building = s(addr, "building_number", "bno", "door_number");
+  const buildingName = s(addr, "building_name", "bnm");
+  const floor = s(addr, "floor", "flno", "floor_number");
+  const street = s(addr, "street", "st");
+  const location = s(addr, "location", "loc", "landmark");
+
+  const line1 =
+    [building, buildingName, floor].filter(Boolean).join(", ") ||
+    s(addr, "line1");
+  const line2 =
+    [street, location].filter(Boolean).join(", ") || s(addr, "line2");
+  const city = s(addr, "city", "district", "dst");
+  const state = s(addr, "state") || fallbackState;
+  const pincode = s(addr, "pincode", "pncd", "pin", "zip");
+
+  const base = {
+    line1,
+    line2,
+    city,
+    state,
+    pincode,
+    country: s(addr, "country") || "India",
+  };
+  // A flat string under `address` (raw Surepass) or `full` is the only address
+  // some plans return. Use it for `full`, and when no structured fields came
+  // through, parse it so the billing fields still populate.
+  const flatString = typeof d.address === "string" ? d.address.trim() : "";
+  const rawFull = s(pa, "full_address", "adr") || s(addr, "full") || flatString;
+  const full = rawFull || composeFullAddress(base);
+
+  if (!base.line1 && !base.city && !base.pincode && rawFull) {
+    return {
+      ...parseFlatAddress(rawFull, fallbackState),
+      country: base.country,
+      full,
+    };
+  }
+
+  return { ...base, full };
 }
 
 // The Lambda proxy may return Surepass's raw field names (snake_case) rather
 // than our camelCase shape. Map both so `companyName` (legal name) is always
 // populated before it flows into cart creation.
-function normalizeVerificationResult(raw: unknown): GSTVerificationResult {
+export function normalizeVerificationResult(raw: unknown): GSTVerificationResult {
   const r = raw as Record<string, unknown>;
   if (!r || r.success !== true || !r.data) {
     return {
@@ -158,6 +331,8 @@ function normalizeVerificationResult(raw: unknown): GSTVerificationResult {
     return "";
   };
 
+  const state = pick("state", "state_jurisdiction", "stj");
+
   return {
     success: true,
     data: {
@@ -166,9 +341,10 @@ function normalizeVerificationResult(raw: unknown): GSTVerificationResult {
       tradeName: pick("tradeName", "trade_name", "tradeNam"),
       status: (pick("status", "gstin_status", "sts") ||
         "Active") as NonNullable<GSTVerificationResult["data"]>["status"],
-      state: pick("state", "state_jurisdiction", "stj"),
+      state,
       businessType: pick("businessType", "constitution_of_business", "taxpayer_type"),
       dateOfRegistration: pick("dateOfRegistration", "date_of_registration", "rgdt"),
+      address: extractAddress(d, state),
     },
   };
 }

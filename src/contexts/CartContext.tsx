@@ -20,11 +20,24 @@ import {
   type CartLine,
 } from "@/lib/shopify";
 import { useAuth } from "./AuthContext";
-import type { GSTVerificationResult } from "@/lib/gst-verification";
+import type {
+  GSTVerificationResult,
+  GSTBillingAddress,
+} from "@/lib/gst-verification";
 
 // =============================================================================
 // Types
 // =============================================================================
+
+const EMPTY_BILLING_ADDRESS: GSTBillingAddress = {
+  line1: "",
+  line2: "",
+  city: "",
+  state: "",
+  pincode: "",
+  country: "",
+  full: "",
+};
 
 export interface BusinessDetails {
   isBusinessPurchase: boolean;
@@ -34,6 +47,7 @@ export interface BusinessDetails {
   state: string;
   status: string;
   verified: boolean;
+  billingAddress: GSTBillingAddress;
 }
 
 const EMPTY_BUSINESS_DETAILS: BusinessDetails = {
@@ -44,6 +58,7 @@ const EMPTY_BUSINESS_DETAILS: BusinessDetails = {
   state: "",
   status: "",
   verified: false,
+  billingAddress: EMPTY_BILLING_ADDRESS,
 };
 
 // Zoho's billing_address.state field rejects values > 100 chars.
@@ -68,6 +83,7 @@ function cleanStateName(stateRaw: string): string {
 export function buildBusinessCartAttributes(
   details: BusinessDetails,
 ): { key: string; value: string }[] {
+  const billing = details.billingAddress ?? EMPTY_BILLING_ADDRESS;
   return [
     { key: "Business Purchase", value: "Yes" },
     { key: "Company Name", value: details.companyName },
@@ -75,6 +91,16 @@ export function buildBusinessCartAttributes(
     { key: "CustomerGSTIN", value: details.gstin },
     { key: "Trade Name", value: details.tradeName },
     { key: "GST State", value: cleanStateName(details.state) },
+    { key: "Billing Firm Name", value: details.companyName },
+    { key: "Billing Address Line 1", value: billing.line1 },
+    { key: "Billing Address Line 2", value: billing.line2 },
+    { key: "Billing City", value: billing.city },
+    {
+      key: "Billing State",
+      value: cleanStateName(billing.state) || cleanStateName(details.state),
+    },
+    { key: "Billing Pincode", value: billing.pincode },
+    { key: "Billing Country", value: billing.country || "India" },
   ];
 }
 
@@ -122,8 +148,17 @@ function loadStoredBusinessDetails(): BusinessDetails {
   try {
     const stored = localStorage.getItem(BUSINESS_DETAILS_KEY);
     if (stored) {
-      const parsed = JSON.parse(stored) as BusinessDetails;
-      if (parsed.gstin && parsed.companyName) return parsed;
+      const parsed = JSON.parse(stored) as Partial<BusinessDetails>;
+      if (parsed.gstin && parsed.companyName) {
+        return {
+          ...EMPTY_BUSINESS_DETAILS,
+          ...parsed,
+          billingAddress: {
+            ...EMPTY_BILLING_ADDRESS,
+            ...(parsed.billingAddress ?? {}),
+          },
+        };
+      }
     }
   } catch {
     // Ignore parse errors
@@ -310,6 +345,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           state: result.data.state,
           status: result.data.status,
           verified: true,
+          billingAddress: result.data.address ?? EMPTY_BILLING_ADDRESS,
         };
         setBusinessDetailsState(updated);
         localStorage.setItem(BUSINESS_DETAILS_KEY, JSON.stringify(updated));
