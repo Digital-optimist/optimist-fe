@@ -6,17 +6,17 @@ import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 import { SectionHeader } from "@/components/home/SectionHeader";
 
 // Design assets (public/newHomepage). Spaces percent-encoded for valid srcset.
-const ROOM_AC = "/newHomepage/Group%204.webp";
+const ROOM_AC = "/newHomepage/Group%204.png";
 const CHART_CURVES = "/newHomepage/Group%201437256195.webp";
 const CHART_GRID_V = "/newHomepage/Frame%201437256345.webp";
 const CHART_GRID_H = "/newHomepage/Frame%201437256346.webp";
 const SNOWFLAKE = "/newHomepage/5VQXQI.webp";
-const AC_AIRFLOW = "/newHomepage/image%201179.webp";
+const AC_AIRFLOW = "/newHomepage/image%201179.png";
 const GAS_GAUGE = "/newHomepage/image%201190.webp";
-const REMOTE = "/newHomepage/remote%201.webp";
+const REMOTE = "/newHomepage/remote%201.png";
 const WIFI = "/newHomepage/Vector%20(20).webp";
 const SHIELD = "/newHomepage/Vector%20(21).webp";
-const PHONE = "/newHomepage/Untitled%202%201.webp";
+const PHONE = "/newHomepage/Untitled%202%201.png";
 const BEDSHEET = "/newHomepage/image%201181.webp";
 
 const CARD = "relative overflow-hidden rounded-[24px] bg-[#F4F5F7]";
@@ -146,7 +146,7 @@ export function BenefitsSection() {
                 width={690}
                 height={360}
                 sizes="(min-width: 1024px) 460px, 60vw"
-                className="absolute right-0 top-1/2 w-[46%] -translate-y-1/2 object-contain sm:w-[58%]"
+                className="absolute right-0 top-1/2 w-[66%] -translate-y-1/2 object-contain sm:w-[72%]"
               />
               <div className="relative flex h-full flex-col p-6 sm:p-8">
                 <Image
@@ -302,7 +302,7 @@ export function BenefitsSection() {
                 width={400}
                 height={420}
                 sizes="(min-width: 1024px) 260px, 60vw"
-                className="absolute -bottom-2 right-3 h-auto w-[72%] object-contain sm:right-5 sm:w-[58%]"
+                className="absolute -bottom-2 right-3 h-auto w-[78%] object-contain sm:right-5 md:w-[82%]"
               />
               <div className="absolute inset-x-0 top-0 p-7">
                 <p className="font-display text-[24px] font-medium leading-[1.2]">
