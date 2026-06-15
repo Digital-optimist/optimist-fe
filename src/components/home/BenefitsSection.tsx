@@ -1,322 +1,239 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import { m } from "framer-motion";
+
+import SavingsGraph from "@/components/figma/savings-graph";
+import Card from "@/components/home/ui/card";
+import { SectionTitle } from "@/components/home/ui/section-title";
+import { useApp } from "@/components/home/useApp";
+import { cn } from "@/lib/cn";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
-import { SectionHeader } from "@/components/home/SectionHeader";
 
-// Design assets (public/newHomepage). Spaces percent-encoded for valid srcset.
-const ROOM_AC = "/newHomepage/Group%204.png";
-const CHART_CURVES = "/newHomepage/Group%201437256195.webp";
-const CHART_GRID_V = "/newHomepage/Frame%201437256345.webp";
-const CHART_GRID_H = "/newHomepage/Frame%201437256346.webp";
-const SNOWFLAKE = "/newHomepage/5VQXQI.webp";
-const AC_AIRFLOW = "/newHomepage/image%201179.png";
-const GAS_GAUGE = "/newHomepage/image%201190.webp";
-const REMOTE = "/newHomepage/remote%201.png";
-const WIFI = "/newHomepage/Vector%20(20).webp";
-const SHIELD = "/newHomepage/Vector%20(21).webp";
-const PHONE = "/newHomepage/Untitled%202%201.png";
-const BEDSHEET = "/newHomepage/image%201181.webp";
+const horizontalDottedLines = "/figma/horizontal-dotted-lines.svg";
+const verticalDottedLines = "/figma/vertical-dotted-lines.svg";
+const gasLevelIndicator = "/figma/gas-level-indicator.svg";
+const modes = "/figma/modes.svg";
+const iconWifi = "/figma/icon-wifi.svg";
+const acInHall = "/figma/ac-in-hall.svg";
+const acFlow = "/figma/ac-flow.svg";
+const remote = "/figma/remote.svg";
+const phoneApp = "/figma/phone-app.svg";
+const phoneAppBg = "/figma/phone-app-bg.svg";
+const warrantyMark = "/newHomepage/Vector (21).webp";
 
-const CARD = "relative overflow-hidden rounded-[24px] bg-[#F4F5F7]";
-
+// Ported verbatim from optimist-website's BENEFITS bento grid.
 export function BenefitsSection() {
+  const { isMobile } = useApp();
+
   return (
-    <section className="relative bg-white py-14 sm:py-20 lg:py-[88px]">
-      <div className="mx-auto max-w-[1100px] px-6">
-        {/* Header */}
-        <SectionHeader
-          eyebrow="Multiple benefits to multiply your savings"
-          title={
-            <>
-              Built for India.
-              <br />
-              Designed for efficiency
-            </>
-          }
+    <section className="mx-auto w-full max-w-[1440px] px-5 pt-20 md:pt-50">
+      <div className="mx-auto max-w-[1080px]">
+        <SectionTitle
+          eyebrow="For a country whose energy bills go as high as its temperatures."
+          title={`Built for Indian heat.\nDesigned for real savings.`}
         />
 
-        {/* Bento grid */}
         <m.div
+          className="mt-8 md:mt-14 w-full grid auto-rows-auto gap-6 md:gap-10 grid-cols-2 md:grid-cols-12"
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          variants={staggerParent(0.08)}
-          className="mt-12 flex flex-col gap-5"
+          variants={staggerParent(0.07)}
         >
-          {/* ---- Row 1 ---- */}
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            {/* Still cooling at 50°C */}
-            <m.div variants={fadeUp} className={`${CARD} min-h-[380px]`}>
-              <Image
-                src={ROOM_AC}
-                alt="Optimist AC mounted on a wall, cooling a living room"
-                fill
-                sizes="(min-width: 1024px) 540px, 100vw"
-                className="object-cover object-top"
-              />
-              <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="font-display text-[26px] font-medium leading-[1.18] text-optimist-black">
-                  Still cooling
-                  <br />
-                  when India hits
+          <Card
+            variants={fadeUp}
+            className="col-span-2 md:col-span-6 relative h-[320px] sm:h-[400px] md:h-[480px]"
+          >
+            <img
+              src={acInHall}
+              alt="Optimist AC cooling a living room"
+              className="size-full object-cover scale-115 md:scale-100"
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 md:p-10 font-solar font-medium">
+              <p className="text-[28px] md:text-[32px] leading-[120%] whitespace-pre-line">{`Promises cooling.\nDelivers it. Even at`}</p>
+              <div className="flex items-end justify-between mt-2">
+                <p className="text-[28px] sm:text-[36px] md:text-[40px] leading-none text-[#3478F6]">
+                  50°C.
                 </p>
-                <div className="mt-1 flex items-end gap-3">
-                  <span className="font-display text-[36px] font-medium leading-none text-optimist-blue-hero">
-                    50°C.
-                  </span>
-                  <span className="pb-1 text-[13px] text-black/45">
-                    Tested at Government Approved Lab
-                  </span>
-                </div>
-              </div>
-            </m.div>
-
-            {/* ₹18,000 saved chart */}
-            <m.div variants={fadeUp} className={`${CARD} min-h-[380px]`}>
-              <div className="flex h-full flex-col p-8">
-                <p className="font-display text-[28px] font-medium leading-[1.15]">
-                  <span className="text-[#16A34A]">₹18,000</span>{" "}
-                  <span className="text-optimist-black">saved</span>
-                  <br />
-                  <span className="text-optimist-black">
-                    in a single season.
-                  </span>
-                </p>
-                <p className="mt-3 text-[16px]">
-                  <span className="font-semibold text-optimist-blue-hero">
-                    35% Lower
-                  </span>{" "}
-                  <span className="text-black/55">electricity bills</span>
-                </p>
-
-                {/* Chart */}
-                <div className="relative mt-auto w-full">
-                  <Image
-                    src={CHART_GRID_V}
-                    alt=""
-                    aria-hidden="true"
-                    width={445}
-                    height={250}
-                    className="absolute inset-0 h-full w-full opacity-70"
-                  />
-                  <Image
-                    src={CHART_GRID_H}
-                    alt=""
-                    aria-hidden="true"
-                    width={445}
-                    height={250}
-                    className="absolute inset-0 h-full w-full opacity-70"
-                  />
-                  <Image
-                    src={CHART_CURVES}
-                    alt="Cumulative savings: Optimist vs a typical 5-star AC"
-                    width={445}
-                    height={250}
-                    className="relative h-auto w-full"
-                  />
-                </div>
-
-                {/* Legend */}
-                <div className="mt-4 flex items-center gap-6 text-[13px]">
-                  <span className="flex items-center gap-2 font-semibold text-optimist-black">
-                    <span className="inline-block h-[3px] w-4 rounded-full bg-optimist-blue-hero" />
-                    Optimist
-                  </span>
-                  <span className="flex items-center gap-2 text-black/45">
-                    <span className="inline-block h-[3px] w-4 rounded-full bg-black/20" />
-                    Typical 5 Star AC
-                  </span>
-                </div>
-              </div>
-            </m.div>
-          </div>
-
-          {/* ---- Row 2 ---- */}
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[3.3fr_1fr]">
-            {/* Turbo+ Cooling */}
-            <m.div
-              variants={fadeUp}
-              className={`relative overflow-hidden rounded-[24px] min-h-[290px] bg-[#EBEBEB]`}
-            >
-              <Image
-                src={AC_AIRFLOW}
-                alt="Optimist AC pushing a strong stream of cool air"
-                width={690}
-                height={360}
-                sizes="(min-width: 1024px) 460px, 60vw"
-                className="absolute right-0 top-1/2 w-[66%] -translate-y-1/2 object-contain sm:w-[72%]"
-              />
-              <div className="relative flex h-full flex-col p-6 sm:p-8">
-                <Image
-                  src={SNOWFLAKE}
-                  alt=""
-                  aria-hidden="true"
-                  width={40}
-                  height={40}
-                  className="h-9 w-9"
-                />
-                <h3 className="mt-4 font-display text-[24px] font-medium leading-tight text-optimist-blue-hero sm:text-[28px]">
-                  Turbo+ Cooling
-                </h3>
-                <p className="mt-1 text-[18px] leading-snug text-optimist-black sm:text-[20px]">
-                  2 Ton cooling from
-                  <br />a 1.5 Ton AC.
-                </p>
-                <p className="mt-auto text-[15px]">
-                  <span className="font-semibold text-optimist-blue-hero">
-                    135%
-                  </span>{" "}
-                  <span className="text-black/55">capacity boost</span>
+                <p className="text-right text-xs sm:text-sm leading-[120%] font-poppins font-light text-[#999999]">
+                  Tested at Government approved labs.
                 </p>
               </div>
-            </m.div>
-
-            {/* Gas levels */}
-            <m.div variants={fadeUp} className={`${CARD} min-h-[290px]`}>
-              <div className="flex h-full flex-col justify-center p-7">
-                <Image
-                  src={GAS_GAUGE}
-                  alt="Gas level indicator gauge"
-                  width={220}
-                  height={150}
-                  className="h-auto w-[78%] self-center"
-                />
-                <p className="mt-5 font-display text-[24px] font-medium leading-tight">
-                  <span className="text-optimist-blue-hero">Gas levels</span>
-                  <br />
-                  <span className="text-optimist-black">Always in check.</span>
-                </p>
-              </div>
-            </m.div>
-          </div>
-
-          {/* ---- Row 3 ---- */}
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[4fr_3fr_5fr]">
-            {/* Remote — Total control */}
-            <m.div variants={fadeUp} className={`${CARD} min-h-[390px]`}>
-              <Image
-                src={REMOTE}
-                alt="Optimist AC remote with minimal buttons"
-                width={420}
-                height={460}
-                sizes="(min-width: 1024px) 300px, 80vw"
-                className="absolute right-0 top-0 h-auto w-[82%] object-contain"
-              />
-              <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="font-display text-[24px] font-medium leading-[1.2] text-optimist-black">
-                  Less buttons.
-                  <br />
-                  Zero confusion.
-                  <br />
-                  <span className="text-optimist-blue-hero">
-                    Total control.
-                  </span>
-                </p>
-              </div>
-            </m.div>
-
-            {/* Middle column: WiFi + Warranty — side-by-side on mobile to keep
-                the stack short, stacked on desktop to fill the bento column */}
-            <div className="grid grid-cols-2 gap-5 lg:flex lg:flex-col">
-              {/* WiFi & Smart Home */}
-              <m.div
-                variants={fadeUp}
-                className="relative flex flex-1 flex-col overflow-hidden rounded-[24px] bg-[#FBF6DB] p-5 lg:p-7"
-              >
-                <Image
-                  src={WIFI}
-                  alt=""
-                  aria-hidden="true"
-                  width={51}
-                  height={40}
-                  className="h-9 w-auto self-start object-contain"
-                />
-                <h4 className="mt-4 font-display text-[20px] font-medium leading-tight text-optimist-black">
-                  WiFi &amp; Smart
-                  <br />
-                  Home Ready
-                </h4>
-                <p className="mt-1 text-[14px] text-black/45">
-                  Alexa &amp; Google
-                </p>
-              </m.div>
-
-              {/* 5 Year Warranty */}
-              <m.div
-                variants={fadeUp}
-                className="relative flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-[24px] p-6 text-white"
-                style={{
-                  background:
-                    "linear-gradient(180deg, #56A8FF 0%, #2F6FE8 55%, #1768F0 100%)",
-                }}
-              >
-                <div className="relative flex w-full flex-col items-center">
-                  <Image
-                    src={SHIELD}
-                    alt=""
-                    aria-hidden="true"
-                    width={110}
-                    height={130}
-                    className="h-[92px] w-auto opacity-95"
-                  />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pt-1 text-center">
-                    <span className="font-display text-[22px] font-medium leading-none">
-                      <span className="text-[34px]">5</span> Year
-                    </span>
-                    <span className="mt-1 text-[11px] font-medium leading-tight">
-                      Comprehensive
-                      <br />
-                      Warranty
-                    </span>
-                  </div>
-                </div>
-                <div className="w-full rounded-[14px] bg-white px-3 py-2.5 text-center text-optimist-black">
-                  <span className="block text-[15px] font-semibold leading-none">
-                    10 years
-                  </span>
-                  <span className="block text-[12px] text-black/50">
-                    Compressor Warranty
-                  </span>
-                </div>
-              </m.div>
             </div>
+          </Card>
 
-            {/* One tap away — app */}
-            <m.div
-              variants={fadeUp}
-              className={`${CARD} min-h-[320px] sm:min-h-[390px]`}
-            >
-              <Image
-                src={BEDSHEET}
+          <Card
+            variants={fadeUp}
+            className="col-span-2 md:col-span-6 relative flex h-[340px] sm:h-[400px] md:h-[480px] flex-col p-5 sm:p-8 md:p-10"
+          >
+            <p className="font-solar font-medium">
+              <span className="text-[28px] sm:text-[36px] md:text-[40px] leading-none text-[#08A22C]">
+                ₹8,000 saved
+              </span>
+              <br />
+              <span className="text-[28px] md:text-[32px] leading-[120%]">
+                in a single season.
+              </span>
+            </p>
+            <div className="mt-3.5 relative flex-1">
+              <img
+                src={horizontalDottedLines}
                 alt=""
-                aria-hidden="true"
-                width={430}
-                height={300}
-                className="pointer-events-none absolute bottom-0 left-0 h-auto w-full object-contain"
+                className="inset-0 left-0"
               />
-              <Image
-                src={PHONE}
-                alt="Optimist app controlling the AC from a phone"
-                width={400}
-                height={420}
-                sizes="(min-width: 1024px) 260px, 60vw"
-                className="absolute -bottom-2 right-3 h-auto w-[78%] object-contain sm:right-5 md:w-[82%]"
+              <img
+                src={verticalDottedLines}
+                alt=""
+                className="absolute inset-0 left-0"
               />
-              <div className="absolute inset-x-0 top-0 p-7">
-                <p className="font-display text-[24px] font-medium leading-[1.2]">
-                  <span className="text-optimist-blue-hero">One tap away</span>
-                  <br />
-                  <span className="text-optimist-black">
-                    Always in your
-                    <br />
-                    pocket.
-                  </span>
+              <p className="absolute top-4 text-base sm:text-lg md:text-xl font-light">
+                <span className="text-[#3478F6] font-bold">35% Lower</span>{" "}
+                electricity bills
+              </p>
+              <SavingsGraph className="absolute top-4 sm:top-5.5 left-0 w-full h-full z-10" />
+            </div>
+            <div className="mt-4 sm:mt-5 flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-1 rounded-[20px] bg-[#3478F6]" />
+                <span className="text-xs sm:text-sm leading-[140%] font-semibold text-[#212121]">
+                  Optimist
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-1 rounded-[20px] bg-[#E9E9E9]" />
+                <span className="text-xs sm:text-sm leading-[140%] text-[#212121]">
+                  Typical 5 Star AC
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          <Card
+            variants={fadeUp}
+            className="col-span-2 md:col-span-9 relative p-5 sm:p-8 md:p-10 pb-5 sm:pb-7 md:pb-8.5 flex h-[280px] sm:h-[320px] md:h-[350px] flex-col bg-[#EBEBEB]"
+          >
+            <img
+              src={acFlow}
+              alt=""
+              aria-hidden
+              className="absolute md:top-0 md:right-0 size-full md:w-auto object-contain opacity-50 md:opacity-100"
+            />
+            <div className="relative h-full flex flex-col justify-between">
+              <div className="flex flex-col gap-3 sm:gap-4 md:gap-5">
+                <img
+                  src={modes}
+                  alt="modes"
+                  className="h-10 sm:h-12 md:h-15 w-fit"
+                />
+                <div className="flex flex-col font-solar font-medium">
+                  <p className="text-[24px] sm:text-[32px] md:text-[40px] leading-[120%] text-[#3478F6]">
+                    Cold, fast.
+                  </p>
+                  <p className="text-[28px] md:text-[32px] leading-[120%] whitespace-pre-line">{`1.9 ton cooling from\na 1.4 ton AC.`}</p>
+                </div>
+              </div>
+              <p className="text-base sm:text-lg md:text-xl font-light">
+                <span className="text-[#3478F6] font-bold">135%</span> capacity
+                boost
+              </p>
+            </div>
+          </Card>
+
+          <Card
+            variants={fadeUp}
+            className="col-span-2 md:col-span-3 relative h-[240px] md:h-[350px]"
+          >
+            <img
+              src={gasLevelIndicator}
+              alt=""
+              className="absolute left-[calc(50%-5px)] -translate-x-1/2"
+            />
+            <div className="mt-[162px] md:mt-[157px] mx-5 md:ml-[30px] flex flex-col items-center md:items-start justify-center gap-x-2 font-solar font-medium">
+              <p className="text-[24px] sm:text-[32px] md:text-[40px] leading-[120%] text-[#3478F6] md:whitespace-pre-line">{`Gas-level\nindicator.`}</p>
+              <p className="text-[24px] md:text-[32px] leading-[120%] md:whitespace-pre-line">{`1st time in an\nAC. Ever.`}</p>
+            </div>
+          </Card>
+
+          <Card variants={fadeUp} className="col-span-2 md:col-span-4">
+            <div className="relative h-[300px] sm:h-[400px] md:h-[480px]">
+              <img
+                src={remote}
+                alt="Optimist AC remote with minimal buttons"
+                className="size-full object-contain"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 md:p-10 font-solar font-medium">
+                <p className="text-[24px] md:text-[32px] leading-[120%] whitespace-pre-line">{`No unnecessary\nbuttons.`}</p>
+                <p className="text-[24px] md:text-[40px] leading-[120%] text-[#3478F6]">
+                  All the control.
                 </p>
               </div>
-            </m.div>
-          </div>
+            </div>
+          </Card>
+
+          <m.div
+            variants={fadeUp}
+            className={cn(
+              isMobile
+                ? "col-span-2 grid grid-cols-2 gap-x-6"
+                : "md:col-span-3 md:space-y-10",
+            )}
+          >
+            <Card className="md:h-60 p-5 sm:p-8 md:p-[30px] bg-[#FFFCDC]">
+              <img src={iconWifi} alt="" aria-hidden className="h-10 w-auto" />
+              <div className="mt-[30px]">
+                <p className="text-[20px] sm:text-[24px] md:text-[27px] leading-[120%] font-solar font-medium">{`WiFi & Smart home ready.`}</p>
+              </div>
+            </Card>
+
+            <Card className="relative pt-5 sm:pt-[20px] md:pt-[25px] pb-2.5 text-center text-white bg-[linear-gradient(44.96deg,#1265FF_30.07%,#69CDEB_99.77%,#4466FF_136.67%)]">
+              <img
+                src={warrantyMark}
+                alt=""
+                aria-hidden
+                className="absolute top-2 sm:top-3 md:top-4 left-1/2 -translate-x-1/2 h-[80px] sm:h-[90px] md:h-[106px]"
+              />
+              <div className="relative">
+                <p className="text-3xl sm:text-4xl md:text-5xl leading-[120%] font-solar font-bold">
+                  5 Year
+                </p>
+                <p className="-mt-px text-sm sm:text-base leading-[120%] font-medium whitespace-pre-line">{`Comprehensive\nwarranty.`}</p>
+              </div>
+
+              <Card className="mx-2.5 mt-[20px] sm:mt-[25px] pt-[11px] pb-[7px] text-center">
+                <p className="text-lg sm:text-[20px] leading-none font-solar font-bold text-[#212121]">
+                  10 year
+                </p>
+                <p className="font-poppins text-sm sm:text-base font-normal text-[#6A6A6A]">
+                  Compressor warranty.
+                </p>
+              </Card>
+            </Card>
+          </m.div>
+
+          <Card
+            variants={fadeUp}
+            className="col-span-2 md:col-span-5 relative p-5 sm:p-8 md:p-10 h-[280px] sm:h-[320px] md:h-auto"
+          >
+            <img
+              src={phoneAppBg}
+              alt=""
+              aria-hidden
+              className="absolute bottom-0 left-0 w-full h-full object-cover"
+            />
+            <img
+              src={phoneApp}
+              alt="Optimist app controlling the AC from a phone"
+              className="absolute bottom-0 left-1/2 -translate-x-1/3 md:left-0 md:translate-x-1/5 h-[90%] md:h-auto"
+            />
+            <div className="font-solar font-medium relative z-10">
+              <p className="text-[24px] md:text-[40px] leading-none text-[#3478F6]">
+                One power app.
+              </p>
+              <p className="text-[24px] md:text-[32px] leading-[120%] whitespace-pre-line">{`Keep check, in\none tap.`}</p>
+            </div>
+          </Card>
         </m.div>
       </div>
     </section>

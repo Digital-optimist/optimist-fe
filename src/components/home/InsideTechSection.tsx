@@ -1,46 +1,86 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
 import { m } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/home/ui/button";
+import { SectionTitle } from "@/components/home/ui/section-title";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
-import { SectionHeader } from "@/components/home/SectionHeader";
-import type { HomeInsideTechContent, HomeFeatureCard } from "@/lib/shopify";
+import type { HomeInsideTechContent } from "@/lib/shopify";
 
-// White heat-exchanger texture that sits faintly behind the section.
-const BG_TEXTURE = "/newHomepage/image%201181%20(1).webp";
+const underHoodBg = "/figma/under-hood-bg.svg";
+const underhoodHeatExchanger = "/figma/underhood-heat-exchanger.png";
+const underhoodFlowPaths = "/figma/underhood-flow-paths.png";
+const underhoodTested = "/figma/underhood-tested.png";
 
-function TechCard({ card }: { card: HomeFeatureCard }) {
+interface TechCardData {
+  title: string;
+  body?: string;
+  img: string;
+}
+
+const underHoodCards: TechCardData[] = [
+  {
+    title: "Cools 4x faster than anything else in its class.",
+    body: "Our micro-channel heat exchanger transfers heat at 4x the speed of a conventional AC. That's not a small tweak — that's why your room feels different within minutes of switching it on.",
+    img: underhoodHeatExchanger,
+  },
+  {
+    title: "1,180 flow paths. Every single one working for you.",
+    body: "Each path is precision-engineered to move refrigerant exactly where it's needed — so cooling is even, fast and efficient across the whole room.",
+    img: underhoodFlowPaths,
+  },
+  {
+    title: "Tested 15x harder than the industry standard. On purpose.",
+    body: "We put every unit through 15x the standard stress cycles, so it keeps performing through years of brutal Indian summers.",
+    img: underhoodTested,
+  },
+  {
+    title: "Cools 4x faster than anything else in its class.",
+    body: "Our micro-channel heat exchanger transfers heat at 4x the speed of a conventional AC. That's not a small tweak — that's why your room feels different within minutes of switching it on.",
+    img: underhoodHeatExchanger,
+  },
+  {
+    title: "1,180 flow paths. Every single one working for you.",
+    body: "Each path is precision-engineered to move refrigerant exactly where it's needed — so cooling is even, fast and efficient across the whole room.",
+    img: underhoodFlowPaths,
+  },
+  {
+    title: "Tested 15x harder than the industry standard. On purpose.",
+    body: "We put every unit through 15x the standard stress cycles, so it keeps performing through years of brutal Indian summers.",
+    img: underhoodTested,
+  },
+];
+
+// Card keeps the optimist-website visual (black card, full-bleed photo, ABC Solar
+// title) but uses the previous mechanism: the description stays hidden and
+// reveals on hover (grid-rows 0fr → 1fr).
+function TechCard({ card }: { card: TechCardData }) {
   return (
     <m.article
       variants={fadeUp}
-      className="group relative h-[392px] w-[300px] flex-shrink-0 overflow-hidden rounded-[20px] bg-neutral-900 sm:w-[368px]"
+      className="group relative h-[360px] sm:h-[400px] md:h-[440px] w-[280px] sm:w-[340px] md:w-[427px] shrink-0 flex flex-col justify-end overflow-hidden rounded-[16px] sm:rounded-[20px] md:rounded-[24px] bg-black text-white"
     >
-      {card.iconUrl ? (
-        <Image
-          src={card.iconUrl}
-          alt={card.iconAlt ?? card.title}
-          fill
-          sizes="368px"
-          className="object-cover transition-transform duration-[600ms] ease-out group-hover:scale-105"
-        />
-      ) : null}
-
-      {/* Base gradient for legibility; darkens further on hover. */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent transition-colors duration-300 group-hover:from-black/90 group-hover:via-black/75 group-hover:to-black/55" />
-
-      <div className="absolute inset-x-0 bottom-0 flex flex-col p-7">
-        <h3 className="font-display text-[24px] font-medium leading-[1.2] text-white">
+      <img
+        src={card.img}
+        alt=""
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-[600ms] ease-out group-hover:scale-105"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(218deg,rgba(97,97,97,0)_26%,rgba(0,0,0,0.9)_80%)]" />
+      <div className="relative p-6 sm:p-10 md:p-15 flex flex-col">
+        <p className="text-[20px] sm:text-[28px] md:text-[32px] leading-[120%] font-solar font-medium">
           {card.title}
-        </h3>
-        {/* grid-rows 0fr -> 1fr animates the description height open on hover. */}
-        <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-out group-hover:mt-3 group-hover:grid-rows-[1fr] group-hover:opacity-100">
-          <p className="overflow-hidden text-[15px] leading-[1.5] text-white/75">
-            {card.subtitle}
-          </p>
-        </div>
+        </p>
+        {card.body ? (
+          <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-out group-hover:mt-3 sm:group-hover:mt-4 group-hover:grid-rows-[1fr] group-hover:opacity-100">
+            <p className="overflow-hidden text-sm sm:text-base leading-[160%] font-light text-[#BABABA]">
+              {card.body}
+            </p>
+          </div>
+        ) : null}
       </div>
     </m.article>
   );
@@ -50,11 +90,16 @@ interface InsideTechSectionProps {
   content: HomeInsideTechContent | null;
 }
 
+// Ported back to the previous mechanism: embla drag carousel + a bottom
+// scroll-progress track + hover-to-reveal descriptions.
 export function InsideTechSection({ content }: InsideTechSectionProps) {
-  const subtitle = content?.subtitle ?? "What’s under the hood?";
-  const title =
-    content?.title ?? "Good engineering is invisible. Until you feel it.";
-  const cards = content?.cards ?? [];
+  const cards: TechCardData[] = content?.cards?.length
+    ? content.cards.map((c) => ({
+        title: c.title,
+        body: c.subtitle,
+        img: c.iconUrl ?? "",
+      }))
+    : underHoodCards;
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -85,8 +130,6 @@ export function InsideTechSection({ content }: InsideTechSectionProps) {
     if (!emblaApi) return;
     emblaApi.on("scroll", onUpdate);
     emblaApi.on("reInit", onUpdate);
-    // Defer the first sync a frame so it reads settled layout (and to avoid a
-    // synchronous setState in the effect body).
     const raf = requestAnimationFrame(onUpdate);
     return () => {
       cancelAnimationFrame(raf);
@@ -95,71 +138,59 @@ export function InsideTechSection({ content }: InsideTechSectionProps) {
     };
   }, [emblaApi, onUpdate]);
 
-  if (!cards.length) return null;
-
   return (
-    <section className="relative overflow-hidden bg-white py-14 sm:py-20 lg:py-[88px]">
-      {/* Faint heat-exchanger texture behind the cards */}
-      <Image
-        src={BG_TEXTURE}
-        alt=""
-        aria-hidden="true"
-        width={1200}
-        height={760}
-        className="pointer-events-none absolute right-0 top-1/2 z-0 h-auto w-[70%] max-w-[900px] -translate-y-1/2 select-none opacity-60 blur-[3px]"
-      />
-
-      {/* Heading + carousel controls */}
-      <div className="relative z-10 mx-auto max-w-[1100px] px-6">
-        <div className="flex items-end justify-between gap-6">
-          <SectionHeader
-            align="left"
-            eyebrow={subtitle}
-            title={title}
-            className="max-w-[560px]"
+    <section className="relative w-full pt-20 md:pt-50">
+      <div className="relative mx-auto max-w-[1440px] px-5">
+        <img src={underHoodBg} alt="" className="absolute hidden md:block" />
+        <div className="mx-auto max-w-[1080px] flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+          <SectionTitle
+            className="text-start [&>h2]:mt-2.5"
+            eyebrow={content?.subtitle ?? "What's under the hood?"}
+            title={
+              content?.title ??
+              `Good engineering is invisible.\nUntil you feel it.`
+            }
           />
 
-          <div className="hidden flex-shrink-0 gap-3 sm:flex">
-            <button
-              type="button"
+          <div className="hidden relative mb-1 md:flex gap-2">
+            <Button
               onClick={() => emblaApi?.scrollPrev()}
               disabled={!canPrev}
-              aria-label="Previous"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-black/15 text-optimist-black transition-colors hover:bg-black/5 disabled:opacity-30"
+              aria-label="Previous slide"
+              className="size-8 sm:size-9 flex items-center justify-center text-[#212121] disabled:text-[#BABABA] rounded-full border border-[#4D4D4D] disabled:border-[#BABABA] bg-white hover:bg-gray-50 transition-colors cursor-pointer"
             >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
+              <ChevronLeft className="size-5 sm:size-6" />
+            </Button>
+            <Button
               onClick={() => emblaApi?.scrollNext()}
               disabled={!canNext}
-              aria-label="Next"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-black/15 text-optimist-black transition-colors hover:bg-black/5 disabled:opacity-30"
+              aria-label="Next slide"
+              className="size-8 sm:size-9 flex items-center justify-center text-[#212121] disabled:text-[#BABABA] rounded-full border border-[#4D4D4D] disabled:border-[#BABABA] bg-white hover:bg-gray-50 transition-colors cursor-pointer"
             >
-              <ChevronRight className="h-5 w-5" />
-            </button>
+              <ChevronRight className="size-5 sm:size-6" />
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Carousel: aligned to content on the left, bleeds off the right edge */}
+      {/* Carousel: aligned to the 1080 content on the left, bleeds off the right */}
       <m.div
         initial="hidden"
         whileInView="visible"
         viewport={viewportOnce}
-        variants={staggerParent(0.12)}
-        className="relative z-10 mt-10 overflow-hidden"
+        variants={staggerParent(0.1)}
+        className="relative z-10 mt-8 md:mt-15 overflow-hidden"
         ref={emblaRef}
       >
-        <div className="flex gap-5 pl-[max(1.5rem,calc((100vw-1100px)/2+1.5rem))] pr-6">
+        <div className="flex gap-5 sm:gap-6 md:gap-10 pl-[max(1.25rem,calc((100vw-1080px)/2+1.25rem))] pr-5">
           {cards.map((card, i) => (
             <TechCard key={i} card={card} />
           ))}
         </div>
       </m.div>
 
-      {/* Scroll-progress track */}
-      <div className="relative z-10 mx-auto mt-8 max-w-[1100px] px-6">
+      {/* Scroll-progress track (as before) */}
+      <div className="relative z-10 mx-auto mt-8 max-w-[1080px] px-5">
         <div className="relative h-[3px] w-full overflow-hidden rounded-full bg-black/10">
           <div
             className="absolute inset-y-0 rounded-full bg-black/70 transition-[left] duration-150 ease-out"
