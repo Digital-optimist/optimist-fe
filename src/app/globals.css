@@ -727,3 +727,33 @@ body {
 @keyframes sa-pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(2);opacity:0}}
 .sa-shop{font-size:12px;font-weight:600;color:#333;line-height:1.2}
 .sa-live{color:green;font-size:12px;font-weight:700;line-height:1.2}
+
+/* =============================================================================
+   /home (pixel port of optimist-website) — font-family utilities & helpers
+   These classes are referenced only by the /home route components. They are
+   additive and namespaced so they never affect the production landing page.
+   ============================================================================= */
+
+/* Font-family helpers matching optimist-website's `font-solar` / `font-poppins`
+   theme tokens. `font-solar` → ABC Solar Display (already loaded in the root
+   layout); `font-poppins` → Poppins (loaded by the /home page wrapper). */
+.font-solar {
+  font-family: var(--font-abc-solar-display), serif;
+}
+.font-poppins {
+  font-family: var(--font-poppins), system-ui, sans-serif;
+}
+
+/* Poppins weight helpers ported from optimist-website's fonts.css. */
+.poppins-thin { font-family: var(--font-poppins), sans-serif; font-weight: 100; font-style: normal; }
+.poppins-extralight { font-family: var(--font-poppins), sans-serif; font-weight: 200; font-style: normal; }
+.poppins-light { font-family: var(--font-poppins), sans-serif; font-weight: 300; font-style: normal; }
+.poppins-regular { font-family: var(--font-poppins), sans-serif; font-weight: 400; font-style: normal; }
+.poppins-medium { font-family: var(--font-poppins), sans-serif; font-weight: 500; font-style: normal; }
+.poppins-semibold { font-family: var(--font-poppins), sans-serif; font-weight: 600; font-style: normal; }
+.poppins-bold { font-family: var(--font-poppins), sans-serif; font-weight: 700; font-style: normal; }
+
+/* Horizontal carousel scrollers on /home (mobile). Scrollbars are already
+   hidden globally; this keeps parity with the reference's `hide-scrollbar`. */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

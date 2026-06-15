@@ -1,134 +1,128 @@
 "use client";
 
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import { m } from "framer-motion";
-import { Instagram, Linkedin, Youtube } from "lucide-react";
+import Instagram from "@/components/figma/instagram-icon";
+import Twitter from "@/components/figma/twitter-icon";
+import Youtube from "@/components/figma/youtube-icon";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 
-const NAV_LINKS = [
-  { href: "/about", label: "About Us" },
-  { href: "/contact-us", label: "Contact Sales" },
-  { href: "/contact-us", label: "Support / Feedback" },
+const footerBg = "/figma/footer-bg.svg";
+const logoMark = "/figma/optimist-mark.svg";
+const heroDecor = "/figma/hero-decor.svg";
+
+const footerNavItems = [
+  { id: "about", title: "About Us", href: "/about" },
+  { id: "contact", title: "Contact Sales", href: "/contact-us" },
+  { id: "support-feedback", title: "Support / Feedback", href: "/contact-us" },
 ];
 
-const POLICY_LINKS = [
-  { href: "/privacy-policy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms & Conditions" },
+const policyItems = [
+  { id: "privacy", title: "Privacy Policy", href: "/privacy-policy" },
+  { id: "terms", title: "Terms & Conditions", href: "/terms" },
 ];
 
-// Same social URLs the global site footer uses. Design shows an X icon in the
-// third slot; per product decision we keep LinkedIn (the real account).
-const SOCIAL_LINKS = [
+const socials = [
   {
-    href: "http://www.youtube.com/@optimistAC",
-    icon: Youtube,
-    label: "YouTube",
+    id: "youtube",
+    icon: <Youtube />,
+    href: "https://www.youtube.com/@optimistAC",
   },
   {
-    href: "https://www.instagram.com/ac.optimist/",
-    icon: Instagram,
-    label: "Instagram",
+    id: "instagram",
+    icon: <Instagram />,
+    href: "https://www.instagram.com/optimist.ac/",
   },
-  {
-    href: "https://www.linkedin.com/company/optimist-ac/",
-    icon: Linkedin,
-    label: "LinkedIn",
-  },
+  { id: "twitter", icon: <Twitter />, href: "https://twitter.com/optimist_AC" },
 ];
 
+// Ported from optimist-website's FOOTER, with the previous build's navigation
+// actions restored: nav + policy links point at real routes.
 export function HomeFooter() {
   return (
-    <footer className="relative overflow-hidden">
-      {/* Soft pastel gradient: blue tint left, green tint right, white middle. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(115deg, rgba(176,212,238,0.6) 0%, rgba(255,255,255,0) 34%, rgba(255,255,255,0) 60%, rgba(197,233,210,0.6) 100%), #ffffff",
-        }}
-      />
-
-      <m.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={viewportOnce}
-        variants={staggerParent(0.08)}
-        className="relative z-10 mx-auto flex max-w-[1400px] flex-col gap-12 px-6 pb-10 pt-20 sm:pt-[120px] md:flex-row md:justify-between md:gap-10 md:px-12"
-      >
-        {/* Left: logo + headline + socials + copyright */}
-        <div className="flex flex-col">
-          <m.div variants={fadeUp}>
-            <Image
-              src="/icons/logo-nav.svg"
-              alt="Optimist"
-              width={180}
-              height={36}
-              className="h-auto w-[170px]"
+    <footer id="about" className="relative">
+      <img src={footerBg} alt="bg" className="absolute bottom-0 w-full" />
+      <div className="relative max-w-[1440px] mx-auto pb-8 sm:pb-12 md:pb-16 px-4">
+        <m.div
+          className="mx-auto h-fit w-full max-w-[1080px]"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={staggerParent(0.08)}
+        >
+          <m.div variants={fadeUp} className="flex items-center gap-1.5">
+            <img
+              src={logoMark}
+              alt="logo"
+              aria-hidden
+              className="h-10 sm:h-12 md:h-15 w-auto"
+            />
+            <img
+              src={heroDecor}
+              alt="optimist"
+              aria-hidden
+              className="h-9 sm:h-[42px] md:h-[49px] w-auto"
             />
           </m.div>
 
-          <m.h2
+          <m.div
             variants={fadeUp}
-            className="mt-10 font-display text-[clamp(34px,8vw,64px)] font-[500] leading-[1.05] text-[#212121]"
+            className="mt-6 sm:mt-8 md:mt-10 w-full flex flex-col md:flex-row justify-between md:items-end gap-y-8"
           >
-            Be the coolest
-            <br />
-            home on the block
-          </m.h2>
+            <p className="text-[32px] sm:text-[48px] md:text-[64px] leading-none font-solar font-medium whitespace-pre-line">{`Be the coolest\nhome on the block`}</p>
 
-          <m.div variants={fadeUp} className="mt-auto pt-16">
-            <div className="flex items-center gap-3">
-              {SOCIAL_LINKS.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-optimist-blue-hero shadow-[0_8px_20px_-12px_rgba(15,23,42,0.4)] transition-transform hover:-translate-y-0.5"
+            <div className="flex items-start gap-4 md:flex-col md:items-end md:justify-end">
+              {footerNavItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="text-sm sm:text-base md:text-[21px] leading-none hover:text-[#3478F6] transition-colors"
                 >
-                  <social.icon className="h-[18px] w-[18px]" />
-                </a>
+                  {item.title}
+                </Link>
               ))}
             </div>
-            <p className="mt-5 text-[16px] text-black/40">
-              © 2026 Optimist. All Rights Reserved
-            </p>
           </m.div>
-        </div>
 
-        {/* Right: nav links (top) + policy links (bottom), right-aligned */}
-        <m.div
-          variants={fadeUp}
-          className="flex flex-col justify-between gap-8 text-left md:gap-16 md:text-right"
-        >
-          <nav className="flex flex-col gap-3">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-[20px] font-[400] text-[#212121] transition-opacity hover:opacity-60 md:text-[21px]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <m.div
+            variants={fadeUp}
+            className="mt-8 sm:mt-10 md:mt-15 w-full flex flex-col-reverse md:flex-row justify-between md:items-end gap-y-8"
+          >
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <ul className="flex gap-2">
+                {socials.map((s) => (
+                  <a
+                    key={s.id}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="size-9 sm:size-10 flex items-center justify-center bg-white hover:bg-gray-50 border border-[#E9E9E9] rounded-full shadow-[0_2px_8px_0_#0000001A] cursor-pointer"
+                  >
+                    {s.icon}
+                  </a>
+                ))}
+              </ul>
+              <p className="text-sm sm:text-base leading-none font-light text-[#999999]">
+                © 2026 Optimist. All Rights Reserved
+              </p>
+            </div>
 
-          <div className="flex flex-col gap-3">
-            {POLICY_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-[18px] text-black/40 transition-colors hover:text-black/70"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+            <div className="flex items-start gap-4 md:flex-col md:items-end">
+              {policyItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="font-[Poppins] text-sm sm:text-base leading-[1.5em] text-[#6A6A6A] transition-colors hover:text-[#212121]"
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+          </m.div>
         </m.div>
-      </m.div>
+      </div>
     </footer>
   );
 }

@@ -1,27 +1,26 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import { m, AnimatePresence } from "framer-motion";
 import { Play, Star, X } from "lucide-react";
-import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
-import { SectionHeader } from "@/components/home/SectionHeader";
+import { SectionTitle } from "@/components/home/ui/section-title";
+import { fadeUp, viewportOnce } from "@/lib/motion-variants";
 import {
-  fetchReviewsSummary,
   fetchFeaturedReviews,
+  fetchReviewsSummary,
   type JudgeMeReview,
 } from "@/lib/judgeme";
 import type { HomeReviewsContent, HomeReviewVideo } from "@/lib/shopify";
 
-const CARD_BG = "/newHomepage/Vector%20(22).webp";
+const optimistTreeVector = "/figma/optimist-tree-vector.svg";
 
 // Continuous auto-scroll speeds (px per animation frame).
 const VIDEO_SCROLL_SPEED = 0.5;
 const REVIEW_SCROLL_SPEED = 0.4;
 
-// =============================================================================
-// Video thumbnail row + modal player
-// =============================================================================
+// ============================ Video row + modal =============================
 
 function VideoThumb({
   video,
@@ -35,29 +34,26 @@ function VideoThumb({
     <button
       type="button"
       onClick={onOpen}
-      className="group relative aspect-[3/4] w-[150px] flex-shrink-0 overflow-hidden rounded-[18px] bg-neutral-900 sm:w-[170px]"
+      className="group relative aspect-[3/4] w-[150px] sm:w-[170px] flex-shrink-0 overflow-hidden rounded-[18px] bg-neutral-900"
       aria-label="Play video"
     >
       {video.posterUrl ? (
-        <Image
+        <img
           src={video.posterUrl}
           alt=""
-          fill
-          sizes="170px"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : null}
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-      <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-optimist-black shadow-lg transition-transform duration-200 group-hover:scale-110">
+      <span className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#212121] shadow-lg transition-transform duration-200 group-hover:scale-110">
         <Play className="ml-0.5 h-5 w-5 fill-current" />
       </span>
     </button>
   );
 }
 
-// Horizontal auto-scrolling video row. Content is duplicated so the translateX
-// loop is seamless; hovering pauses it (via a ref, so the rAF loop never tears
-// down) and individual thumbs stay clickable.
+// Horizontal auto-scrolling video row; content duplicated for a seamless loop,
+// hover pauses it (via a ref so the rAF loop never tears down).
 function VideoMarquee({
   videos,
   onOpen,
@@ -169,9 +165,7 @@ function VideoModal({
   );
 }
 
-// =============================================================================
-// Auto-scrolling reviews (mirrors products/ReviewsSection behavior)
-// =============================================================================
+// ===================== Judge.me review cards (as before) ====================
 
 function ReviewCard({ review }: { review: JudgeMeReview }) {
   const picture = review.pictures[0];
@@ -179,13 +173,11 @@ function ReviewCard({ review }: { review: JudgeMeReview }) {
     <div className="overflow-hidden rounded-[20px] border border-black/[0.08] bg-white p-5">
       {picture ? (
         <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-[14px] bg-black/[0.04]">
-          <Image
+          <img
             src={picture}
             alt=""
-            fill
             loading="lazy"
-            sizes="(max-width: 1024px) 50vw, 280px"
-            className="object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
       ) : null}
@@ -193,12 +185,12 @@ function ReviewCard({ review }: { review: JudgeMeReview }) {
         <span className="inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[13px] font-semibold text-[#15803D]">
           {review.rating.toFixed(1)}
         </span>
-        <span className="min-w-0 truncate text-[14px] font-semibold text-optimist-black">
+        <span className="min-w-0 truncate text-[14px] font-semibold text-[#212121]">
           {review.author}
         </span>
       </div>
       {review.title ? (
-        <p className="font-display text-[15px] font-medium leading-[1.3] text-optimist-black sm:text-[18px] sm:font-medium">
+        <p className="font-solar text-[15px] font-medium leading-[1.3] text-[#212121] sm:text-[18px]">
           {review.title}
         </p>
       ) : null}
@@ -284,61 +276,19 @@ function AutoScrollReviews({ reviews }: { reviews: JudgeMeReview[] }) {
   );
 }
 
-// =============================================================================
-// Static "rated by early users" card
-// =============================================================================
-
-function RatedCard() {
-  return (
-    <div className="relative flex h-full min-h-[520px] flex-col justify-between overflow-hidden rounded-[28px] bg-neutral-950 p-8 text-white">
-      <Image
-        src={CARD_BG}
-        alt=""
-        aria-hidden="true"
-        fill
-        sizes="380px"
-        className="pointer-events-none select-none object-cover opacity-40"
-      />
-      <div className="relative z-10">
-        <p className="text-[14px] text-white/55">Rated by Early users</p>
-        <p className="mt-2 font-display font-medium leading-none">
-          <span className="text-[64px]">4.8</span>
-          <span className="text-[28px] text-white/45">/5</span>
-        </p>
-        <p className="mt-6 max-w-[280px] text-[20px] font-medium leading-[1.4] text-white/90">
-          Already cooling homes in 20+ cities across India, with bills that
-          speak louder than any ad ever could.
-        </p>
-      </div>
-      <div className="relative z-10">
-        <div className="mb-3 flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((s) => (
-            <Star
-              key={s}
-              className="h-6 w-6 fill-[#34D399] text-[#34D399]"
-            />
-          ))}
-        </div>
-        <p className="text-[16px] font-semibold leading-[1.3]">
-          Trusted by 2500+ customers
-          <br />
-          from all over India
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// =============================================================================
-// Section
-// =============================================================================
+// ================================ Section ===================================
 
 interface SocialProofSectionProps {
   content: HomeReviewsContent | null;
 }
 
+// optimist-website "Real people, real summers" header + dark rating card, with
+// the PREVIOUS review mechanisms restored: a video marquee (modal player) and
+// the auto-scrolling Judge.me review cards.
 export function SocialProofSection({ content }: SocialProofSectionProps) {
   const [reviews, setReviews] = useState<JudgeMeReview[]>([]);
+  const [avgRating, setAvgRating] = useState<number | null>(null);
+  const [activeVideo, setActiveVideo] = useState<HomeReviewVideo | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -346,6 +296,7 @@ export function SocialProofSection({ content }: SocialProofSectionProps) {
       .then(([summary, featured]) => {
         if (cancelled) return;
         setReviews(summary.reviews.length > 0 ? summary.reviews : featured);
+        if (summary.averageRating) setAvgRating(summary.averageRating);
       })
       .catch(() => {});
     return () => {
@@ -353,68 +304,83 @@ export function SocialProofSection({ content }: SocialProofSectionProps) {
     };
   }, []);
 
-  const [activeVideo, setActiveVideo] = useState<HomeReviewVideo | null>(null);
-
-  if (!content) return null;
-
-  const { subtitle, title, mainLine, earlyUsers, unitsSold, videos } = content;
+  const eyebrow = content?.subtitle ?? "There’s much to feel optimistic about.";
+  const title = content?.title ?? "Hear it from the ones\nwho love living with it.";
+  const mainLine =
+    content?.mainLine ??
+    "Across home in Delhi NCR, Jaipur, Bangalore, Hyderabad, here's what life with Optimist actually feels like.";
+  const earlyUsers = content?.earlyUsers ?? 200;
+  const ratingValue = (avgRating ?? 4.8).toFixed(1);
+  const videos = content?.videos ?? [];
 
   return (
-    <section className="relative overflow-hidden bg-white py-14 sm:py-20 lg:py-[88px]">
-      <div className="mx-auto max-w-[1100px] px-6">
-        {/* Header: title (left) + main line & stats (right) */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-          <SectionHeader align="left" eyebrow={subtitle} title={title} />
+    <section className="mx-auto w-full max-w-[1440px] px-5 pt-20 md:pt-50">
+      <div className="mx-auto max-w-[1080px]">
+        <p className="text-base sm:text-lg md:text-[20px] leading-[160%] font-poppins font-normal text-[#3478F6]">
+          {eyebrow}
+        </p>
+
+        <div className="mt-5 flex flex-col lg:flex-row justify-between gap-x-6 gap-y-2 lg:gap-0">
+          <SectionTitle title={title} className="text-start w-full [&>h2]:mt-0" />
+          <div className="flex flex-col gap-4 md:gap-y-[23px]">
+            <p className="text-sm sm:text-base leading-[160%] font-light text-[#6A6A6A]">
+              {mainLine}
+            </p>
+            <div className="flex flex-col">
+              <p className="text-2xl sm:text-3xl md:text-4xl leading-[140%] font-solar font-bold text-[#3478F6]">
+                {earlyUsers}+
+              </p>
+              <p className="text-sm sm:text-base leading-[140%] font-light">
+                happy early users
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 md:mt-12 lg:mt-19 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
+          <div className="lg:col-span-8 space-y-6 md:space-y-8">
+            <VideoMarquee videos={videos} onOpen={setActiveVideo} />
+            <AutoScrollReviews reviews={reviews} />
+          </div>
 
           <m.div
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
-            variants={staggerParent(0.1)}
-            className="lg:pt-2"
+            variants={fadeUp}
+            className="relative lg:col-span-4 min-h-[320px] p-6 sm:p-8 md:p-10 pr-5 sm:pr-6 md:pr-[30px] flex flex-col justify-between bg-[#0E0E0E] text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px]"
           >
-            {mainLine ? (
-              <m.p
-                variants={fadeUp}
-                className="max-w-[420px] text-[16px] leading-[1.5] text-black/50"
-              >
-                {mainLine}
-              </m.p>
-            ) : null}
-            <m.div variants={fadeUp} className="mt-6 flex gap-8 sm:gap-12">
-              <div>
-                <p className="font-display text-[28px] font-medium leading-none text-optimist-blue-hero sm:text-[36px]">
-                  {earlyUsers}+
-                </p>
-                <p className="mt-1 text-[15px] text-black/55">
-                  happy early users
-                </p>
-              </div>
-              <div>
-                <p className="font-display text-[28px] font-medium leading-none text-optimist-blue-hero sm:text-[36px]">
-                  {unitsSold}
-                </p>
-                <p className="mt-1 text-[15px] text-black/55">AC Units sold</p>
-              </div>
-            </m.div>
-          </m.div>
-        </div>
-
-        {/* Body: videos + reviews (left), rated card (right). Fixed
-            proportions; `min-w-0` lets the video row scroll horizontally
-            instead of stretching the column and pushing the card off-screen. */}
-        <div className="mt-12 flex flex-col gap-6 lg:flex-row lg:items-stretch">
-          <div className="min-w-0 lg:w-[63%]">
-            <VideoMarquee videos={videos} onOpen={setActiveVideo} />
-
-            <div className="mt-6">
-              <AutoScrollReviews reviews={reviews} />
+            <img
+              src={optimistTreeVector}
+              alt=""
+              className="absolute inset-0 scale-110 md:scale-none opacity-50 md:opacity-100"
+            />
+            <div className="relative z-10">
+              <p className="text-sm sm:text-base leading-[140%] font-light">
+                Rated by Early users
+              </p>
+              <p className="mt-2 font-solar">
+                <span className="text-[48px] sm:text-[56px] md:text-[67px] leading-none font-medium">
+                  {ratingValue}
+                </span>
+                <span className="text-2xl sm:text-3xl md:text-4xl leading-[140%] font-medium text-[#6A6A6A]">
+                  /5
+                </span>
+              </p>
+              <p className="mt-2.5 pr-2.5 text-base sm:text-lg md:text-[21px] leading-[140%] font-light whitespace-pre-line">{`Already cooling homes in 5+ cities across India, with bills that speak louder than any ad ever could.`}</p>
             </div>
-          </div>
-
-          <div className="flex-shrink-0 lg:w-[34%]">
-            <RatedCard />
-          </div>
+            <div className="flex flex-col gap-2 relative z-10 mt-6">
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star
+                    key={index}
+                    className="size-5 sm:size-6 fill-[#AEFFD8] stroke-[#AEFFD8]"
+                  />
+                ))}
+              </div>
+              <p className="text-base sm:text-lg md:text-[21px] leading-[120%] font-solar font-medium whitespace-pre-line">{`Trusted by ${earlyUsers}+ customers\nfrom all over India`}</p>
+            </div>
+          </m.div>
         </div>
       </div>
 
