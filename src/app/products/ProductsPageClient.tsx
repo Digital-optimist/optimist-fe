@@ -10,6 +10,7 @@ import {
 import {
   CustomerVideosSection,
   ImageGallery,
+  PromoUrgencyBanner,
   QuantityDropdown,
 } from "@/components/products";
 import { useToast } from "@/components/ui/Toast";
@@ -623,7 +624,7 @@ function ProductsPageInner({
               </div>
 
               {/* Total/Price */}
-              <div ref={priceRef} className="flex flex-col gap-1.5">
+              <div ref={priceRef} className="flex flex-col gap-1.5 promo-price-block">
                 <div className="flex flex-wrap items-baseline gap-2">
                   <span className="text-2xl md:text-3xl font-semibold text-black">
                     Rs {formatPrice(selectedVariant?.price || 0)}.00
@@ -656,8 +657,18 @@ function ProductsPageInner({
                 )}
               </div>
 
+              {/* Limited-time coupon + countdown. Placed after the price block:
+                  the Snapmint EMI widget injects itself into the price block, so
+                  the visual order is Price → EMI → this banner. A direct child of
+                  the space-y column, so its spacing matches the other blocks. */}
+              {selectedVariant &&
+                selectedVariant.price > 0 &&
+                !selectedVariantOutOfStock && (
+                  <PromoUrgencyBanner price={selectedVariant.price} />
+                )}
+
               {/* Quantity */}
-              <div className="md:mt-[-20px] mt-[-12px]">
+              <div>
                 <QuantityDropdown
                   quantity={quantity}
                   onQuantityChange={handleQuantityChange}

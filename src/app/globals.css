@@ -756,4 +756,11 @@ body {
 /* Horizontal carousel scrollers on /home (mobile). Scrollbars are already
    hidden globally; this keeps parity with the reference's `hide-scrollbar`. */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+/* The Snapmint EMI script anchors to the price and injects its widget inside
+   the price block (a tight `gap-1.5` flex column). Give the injected widget
+   some top spacing so it reads as a distinct buy-box block, with spacing closer
+   to the other blocks (which use the column's space-y). Scoped to the price
+   block so other Snapmint placements (cart, sticky bar) are unaffected. */
+.promo-price-block .snap_emi_txt_wrapper { margin-top: 0.625rem; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
