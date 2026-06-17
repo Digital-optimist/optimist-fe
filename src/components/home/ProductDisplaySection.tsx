@@ -83,7 +83,7 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
                   {tonUnit}
                 </p>
                 <p className="text-[17px] sm:text-[19px] md:text-[21px] leading-[140%] font-light text-[#6A6A6A]">
-                  Cools upto 200 sq. ft.
+                  5 Star Inverter Split AC
                 </p>
               </m.div>
 

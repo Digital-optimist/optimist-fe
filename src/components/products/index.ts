@@ -2,6 +2,7 @@ export { ImageGallery } from "./ImageGallery";
 export { VariantCard } from "./VariantCard";
 export { QuantityDropdown } from "./QuantityDropdown";
 export { PromoUrgencyBanner } from "./PromoUrgencyBanner";
+export { SocialProofLine } from "./SocialProofLine";
 export { ComparisonSection } from "./ComparisonSection";
 export { ResultSection } from "./ResultSection";
 export { WarrantySection } from "./WarrantySection";

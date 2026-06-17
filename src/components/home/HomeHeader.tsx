@@ -11,7 +11,7 @@ import { cn } from "@/lib/cn";
 const LOGO_MARK = "/figma/optimist-mark.svg";
 
 const navItems = [
-  { id: "product", href: "/products", title: "Product" },
+  // { id: "product", href: "/products", title: "Product" },
   { id: "about-us", href: "/about", title: "About Us" },
 ];
 

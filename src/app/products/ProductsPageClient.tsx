@@ -12,6 +12,7 @@ import {
   ImageGallery,
   PromoUrgencyBanner,
   QuantityDropdown,
+  SocialProofLine,
 } from "@/components/products";
 import { useToast } from "@/components/ui/Toast";
 import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
@@ -624,7 +625,12 @@ function ProductsPageInner({
               </div>
 
               {/* Total/Price */}
-              <div ref={priceRef} className="flex flex-col gap-1.5 promo-price-block">
+              <div ref={priceRef} className="flex flex-col gap-1.5">
+                {/* Social proof — shown just above the price */}
+                <SocialProofLine
+                  className="text-sm text-[#3a3a3a]"
+                  iconClassName="text-amber-500"
+                />
                 <div className="flex flex-wrap items-baseline gap-2">
                   <span className="text-2xl md:text-3xl font-semibold text-black">
                     Rs {formatPrice(selectedVariant?.price || 0)}.00
@@ -659,12 +665,16 @@ function ProductsPageInner({
 
               {/* Limited-time coupon + countdown. Placed after the price block:
                   the Snapmint EMI widget injects itself into the price block, so
-                  the visual order is Price → EMI → this banner. A direct child of
-                  the space-y column, so its spacing matches the other blocks. */}
+                  the visual order is Price → EMI → this banner. The
+                  `promo-urgency-banner` marker drives the Snapmint spacing rules
+                  in globals.css (the widget injects with extra bottom spacing). */}
               {selectedVariant &&
                 selectedVariant.price > 0 &&
                 !selectedVariantOutOfStock && (
-                  <PromoUrgencyBanner price={selectedVariant.price} />
+                  <PromoUrgencyBanner
+                    price={selectedVariant.price}
+                    className="promo-urgency-banner"
+                  />
                 )}
 
               {/* Quantity */}
@@ -1071,23 +1081,11 @@ function ProductsPageInner({
                     : "Add to Cart"}
               </span>
             </button>
-            <button
-              onClick={handleBuyNow}
-              disabled={isCartLoading || !canAddToCart}
-              className={`btn-scale flex-1 px-4 py-3 rounded-full font-medium text-sm text-center transition-all ${
-                buttonState === "loading"
-                  ? "bg-gray-400 text-gray-600"
-                  : buttonState === "outOfStock"
-                    ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                    : "btn-buy-now text-[#FFFCDC]"
-              }`}
-            >
-              {buttonState === "loading"
-                ? "Loading..."
-                : buttonState === "outOfStock"
-                  ? "Unavailable"
-                  : "Buy Now"}
-            </button>
+            {/* Social proof — replaces the Buy Now CTA in the sticky footer */}
+            <SocialProofLine
+              className="flex-1 justify-center text-xs leading-tight text-[#FFFCDC]"
+              iconClassName="text-amber-400"
+            />
           </div>
         </div>
       </div>

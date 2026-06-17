@@ -756,11 +756,25 @@ body {
 /* Horizontal carousel scrollers on /home (mobile). Scrollbars are already
    hidden globally; this keeps parity with the reference's `hide-scrollbar`. */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
-
-/* The Snapmint EMI script anchors to the price and injects its widget inside
-   the price block (a tight `gap-1.5` flex column). Give the injected widget
-   some top spacing so it reads as a distinct buy-box block, with spacing closer
-   to the other blocks (which use the column's space-y). Scoped to the price
-   block so other Snapmint placements (cart, sticky bar) are unaffected. */
-.promo-price-block .snap_emi_txt_wrapper { margin-top: 0.625rem; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Snapmint EMI widget spacing in the product buy-box.
+   The widget injects itself into the price block (above the promo banner) with a
+   fixed ~15px bottom margin, and on every loadOnPage() it re-injects empty
+   `.cashback_text_widget` nodes — each picks up the price block's flex `gap`, so
+   the dead space below the EMI badge grows on variant switches. Both are
+   third-party injected DOM we can't style at the source (its margin is inline).
+   Scoped to the buy-box column (the one holding `.promo-urgency-banner`): hide
+   the empty cashback artifacts, and pull the banner up by the widget's own margin
+   so the EMI→banner gap matches the rest of the section.
+   The :has() guard applies the pull only when the EMI widget actually rendered —
+   if Snapmint is blocked/fails, the banner keeps its normal spacing and never
+   overlaps the price. (:has() is unsupported on Firefox <121, which simply keeps
+   the original spacing — a graceful no-op.) */
+div:has(> .promo-urgency-banner) .cashback_text_widget {
+  display: none !important; /* override Snapmint's injected inline/!important display */
+}
+div:has(> .promo-urgency-banner):has(.snap_emi_txt_wrapper)
+  > .promo-urgency-banner {
+  margin-top: -15px;
+}
