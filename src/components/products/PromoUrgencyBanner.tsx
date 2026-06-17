@@ -3,6 +3,7 @@
 import { memo, useCallback, useEffect, useState } from "react";
 import { Check, Clock, Copy } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
+import { cn } from "@/lib/cn";
 
 // =============================================================================
 // Types
@@ -10,8 +11,8 @@ import { useToast } from "@/components/ui/Toast";
 
 /**
  * How the "with code" price is derived from the variant's current price.
- *  - percent: `value`% off (e.g. EXTRACOOL5 = 5% off), floored to a whole rupee
- *  - flat:    `value` rupees off (e.g. ₹2,000 off)
+ *  - percent: `value`% off, floored to a whole rupee
+ *  - flat:    `value` rupees off (e.g. COOL1000 = ₹1,000 off)
  *  - fixed:   hardcoded final `price`, ignores the variant price
  */
 type Discount =
@@ -30,16 +31,18 @@ interface PromoUrgencyBannerProps {
   discount?: Discount;
   /** Fine-print line below the offer (delivery / order-by deadline). */
   deadlineText?: string;
+  /** Extra classes for the root (e.g. spacing overrides at the call site). */
+  className?: string;
 }
 
 // =============================================================================
 // Campaign defaults — edit these to change the live promo
 // =============================================================================
 
-const DEFAULT_CODE = "EXTRACOOL5";
+const DEFAULT_CODE = "COOL1000";
 const DEFAULT_HEADLINE = "Pre-monsoon price ends in";
-const DEFAULT_DISCOUNT: Discount = { type: "percent", value: 5 };
-const DEFAULT_DEADLINE_TEXT = "Order by 2 PM for 48-hour delivery & install";
+const DEFAULT_DISCOUNT: Discount = { type: "flat", value: 1000 };
+const DEFAULT_DEADLINE_TEXT = "Order by 2 PM for 24 hour delivery & install*";
 
 // IANA zone the countdown is anchored to, so every shopper sees the same clock
 // regardless of their device timezone. The deal resets at this zone's midnight.
@@ -121,8 +124,8 @@ async function copyToClipboard(text: string): Promise<boolean> {
 
 function TimeBox({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex min-w-[3.25rem] flex-1 flex-col items-center rounded-lg border border-red-200 bg-white px-2 py-1.5 sm:flex-none">
-      <span className="font-display text-lg font-bold leading-none tabular-nums text-red-700 md:text-xl">
+    <div className="flex min-w-[3.25rem] flex-1 flex-col items-center rounded-lg border border-[#CDDEFB] bg-white px-2 py-1.5 sm:flex-none">
+      <span className="font-display text-lg font-bold leading-none tabular-nums text-[#3478F6] md:text-xl">
         {value}
       </span>
       <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#6c6a6a]">
@@ -142,6 +145,7 @@ function PromoUrgencyBannerImpl({
   headline = DEFAULT_HEADLINE,
   discount = DEFAULT_DISCOUNT,
   deadlineText = DEFAULT_DEADLINE_TEXT,
+  className,
 }: PromoUrgencyBannerProps) {
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -179,12 +183,17 @@ function PromoUrgencyBannerImpl({
   const ss = remaining === null ? "--" : pad2(remaining % 60);
 
   return (
-    <div className="rounded-xl border border-red-200 bg-gradient-to-b from-red-50 to-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+    <div
+      className={cn(
+        "rounded-xl border border-[#CDDEFB] bg-gradient-to-b from-[#EEF4FF] to-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]",
+        className,
+      )}
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         {/* Offer copy */}
         <div className="flex min-w-0 flex-col gap-1.5">
           <div className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4 shrink-0 text-red-600" />
+            <Clock className="h-4 w-4 shrink-0 text-[#3478F6]" />
             <h3 className="font-display text-base font-bold leading-tight text-[#0a0a0a] md:text-lg">
               {headline}
             </h3>
@@ -197,7 +206,7 @@ function PromoUrgencyBannerImpl({
                 ₹{formatRupees(price)}
               </span>
             )}{" "}
-            <span className="font-semibold text-red-700">
+            <span className="font-semibold text-[#3478F6]">
               ₹{formatRupees(hasDiscount ? finalPrice : price)}
             </span>{" "}
             with code{" "}
@@ -206,7 +215,7 @@ function PromoUrgencyBannerImpl({
               onClick={handleCopy}
               title="Click to copy"
               aria-label={`Copy code ${code}`}
-              className="btn-scale inline-flex items-center gap-1.5 rounded-md border border-dashed border-red-300 bg-white px-2 py-0.5 align-middle font-semibold tracking-wide text-red-700 transition-colors hover:bg-red-50"
+              className="btn-scale inline-flex items-center gap-1.5 rounded-md border border-dashed border-[#9FBEF6] bg-white px-2 py-0.5 align-middle font-semibold tracking-wide text-[#3478F6] transition-colors hover:bg-[#EEF4FF]"
             >
               {code}
               {copied ? (
