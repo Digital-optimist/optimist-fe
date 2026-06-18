@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import HomePageClient from "./HomePageClient";
-import { LimeChatWidget } from "@/components/LimeChatWidget";
 import { getLandingPageContent } from "@/lib/shopify";
 
 export const metadata: Metadata = {
@@ -16,7 +15,6 @@ export default async function HomePage() {
   return (
     <>
       <HomePageClient initialContent={landingContent} />
-      <LimeChatWidget />
     </>
   );
 }

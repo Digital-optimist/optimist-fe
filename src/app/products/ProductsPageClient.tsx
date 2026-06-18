@@ -1061,6 +1061,19 @@ function ProductsPageInner({
       >
         <div className="px-4 py-3">
           <div className="flex items-center gap-3">
+            {/* Product price — left */}
+            <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-1.5 text-[#FFFCDC]">
+              <span className="text-base font-semibold leading-tight">
+                Rs {formatPrice(selectedVariant?.price || 0)}.00
+              </span>
+              {selectedVariant?.compareAtPrice &&
+                selectedVariant.compareAtPrice > selectedVariant.price && (
+                  <span className="text-xs leading-tight text-[#FFFCDC]/60 line-through">
+                    Rs {formatPrice(selectedVariant.compareAtPrice)}
+                  </span>
+                )}
+            </div>
+            {/* Add to Cart — right */}
             <button
               onClick={handleAddToCart}
               disabled={isCartLoading || !canAddToCart}
@@ -1081,11 +1094,6 @@ function ProductsPageInner({
                     : "Add to Cart"}
               </span>
             </button>
-            {/* Social proof — replaces the Buy Now CTA in the sticky footer */}
-            <SocialProofLine
-              className="flex-1 justify-center text-xs leading-tight text-[#FFFCDC]"
-              iconClassName="text-amber-400"
-            />
           </div>
         </div>
       </div>
