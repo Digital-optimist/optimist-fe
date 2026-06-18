@@ -1,8 +1,7 @@
-import type { CSSProperties } from "react";
+import { getArticles, getHomePageContent, getProducts } from "@/lib/shopify";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { getArticles, getHomePageContent, getProducts } from "@/lib/shopify";
-import { LimeChatWidget } from "@/components/LimeChatWidget";
+import type { CSSProperties } from "react";
 import HomePageClient from "./HomePageClient";
 
 // Poppins drives body/UI text on the /home route (per design). Titles and big
@@ -53,7 +52,6 @@ export default async function NewHomePage() {
         products={products}
         articles={articlesResult.articles}
       />
-      <LimeChatWidget />
     </div>
   );
 }

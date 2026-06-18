@@ -20,7 +20,7 @@ export function SocialProofLine({
     <div className={cn("flex items-center gap-1.5", className)}>
       <Flame className={cn("h-4 w-4 shrink-0", iconClassName)} />
       <span>
-        <span className="font-semibold">5K+</span> people bought in last 7 days
+        <span className="font-semibold">200+</span> people bought in last 7 days
       </span>
     </div>
   );

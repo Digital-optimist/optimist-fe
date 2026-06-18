@@ -194,7 +194,7 @@ function PromoUrgencyBannerImpl({
         <div className="flex min-w-0 flex-col gap-1.5">
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 shrink-0 text-[#3478F6]" />
-            <h3 className="font-display text-base font-bold leading-tight text-[#0a0a0a] md:text-lg">
+            <h3 className=" text-base font-[600] leading-[24px] letter-spacing-[4px] text-[#0a0a0a] md:text-lg">
               {headline}
             </h3>
           </div>

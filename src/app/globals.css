@@ -778,3 +778,19 @@ div:has(> .promo-urgency-banner):has(.snap_emi_txt_wrapper)
   > .promo-urgency-banner {
   margin-top: -15px;
 }
+
+/* LimeChat WhatsApp widget — lift it above the mobile sticky footer.
+   The widget (src/components/LimeChatWidget.tsx) renders a fixed
+   `.WhatsAppButton__root` button whose bottom/right offsets come from
+   LimeChat's remote config (an inline style — `bottom: 24px` on mobile). The
+   products page's `md:hidden` "Add to Cart" bar (ProductsPageClient.tsx) is
+   also pinned to bottom-0 and is ~69px tall, so the widget lands right on top
+   of it. Raise the button above the bar on mobile only — desktop keeps the
+   remote-config position (48px). `max-width: 767.98px` mirrors the bar's
+   `md:hidden` breakpoint (Tailwind v4 md = 768px); `!important` beats the
+   widget's inline style. */
+@media (max-width: 767.98px) {
+  .WhatsAppButton__root {
+    bottom: 76px !important;
+  }
+}
