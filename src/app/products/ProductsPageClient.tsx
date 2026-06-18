@@ -8,6 +8,7 @@ import {
   WarrantyIcon,
 } from "@/components/icons/ProductIcons";
 import {
+  CityStockBanner,
   CustomerVideosSection,
   ImageGallery,
   PromoUrgencyBanner,
@@ -671,10 +672,18 @@ function ProductsPageInner({
               {selectedVariant &&
                 selectedVariant.price > 0 &&
                 !selectedVariantOutOfStock && (
-                  <PromoUrgencyBanner
-                    price={selectedVariant.price}
-                    className="promo-urgency-banner"
-                  />
+                  <>
+                    <PromoUrgencyBanner
+                      price={selectedVariant.price}
+                      className="promo-urgency-banner"
+                    />
+                    {/* City-gated scarcity line — renders only for shoppers
+                        the IP lookup places in a serviceable metro. Kept a
+                        direct sibling (not wrapped) so the `:has(>
+                        .promo-urgency-banner)` Snapmint rules in globals.css
+                        still resolve to the buy-box column. */}
+                    <CityStockBanner />
+                  </>
                 )}
 
               {/* Quantity */}
