@@ -74,10 +74,14 @@ export function resolveServiceableCity(
 // IP lookup — cached per session, deduped per page
 // ---------------------------------------------------------------------------
 
-// Free, keyless, HTTPS + CORS geo-IP endpoint. Swap for a keyed provider (or
-// your own edge function) if you outgrow its rate limits — only the parsing of
-// `city` / `region` below depends on the response shape.
-const GEO_ENDPOINT = "https://ipwho.is/";
+// Free, keyless, HTTPS geo-IP endpoint that returns `Access-Control-Allow-
+// Origin: *` AND serves browser requests carrying our production Origin header.
+// NOTE: ipwho.is was rejected — it 403s any request with an `Origin` header
+// (which the browser always sends cross-origin), and its free tier is
+// non-commercial. Swap for a keyed provider or a first-party edge endpoint if
+// you outgrow geojs's limits — only the `city` / `region` parsing below depends
+// on the response shape.
+const GEO_ENDPOINT = "https://get.geojs.io/v1/ip/geo.json";
 const REQUEST_TIMEOUT_MS = 6000;
 const SESSION_KEY = "optimist_geo_city";
 
@@ -122,14 +126,7 @@ export async function detectCity(): Promise<ServiceableCity | null> {
       const res = await fetch(GEO_ENDPOINT, { signal: controller.signal });
       if (!res.ok) return null;
 
-      const data = (await res.json()) as {
-        success?: boolean;
-        city?: string;
-        region?: string;
-      };
-      // ipwho.is signals lookup failures with `success: false`.
-      if (data.success === false) return null;
-
+      const data = (await res.json()) as { city?: string; region?: string };
       const resolved = resolveServiceableCity(data.city, data.region);
       writeSession(resolved); // cache deterministic outcomes (incl. "not serviceable")
       return resolved;
