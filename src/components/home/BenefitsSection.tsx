@@ -157,11 +157,11 @@ export function BenefitsSection() {
           </Card>
 
           <Card variants={fadeUp} className="col-span-2 md:col-span-4">
-            <div className="relative h-[300px] sm:h-[400px] md:h-[480px]">
+            <div className="relative  h-[300px] sm:h-[400px] md:h-[480px]">
               <img
                 src={remote}
                 alt="Optimist AC remote with minimal buttons"
-                className="size-full object-contain"
+                className="size-full object-contain object-right md:object-center"
               />
               <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 md:p-10 font-solar font-medium">
                 <p className="text-[24px] md:text-[32px] leading-[120%] whitespace-pre-line">{`No unnecessary\nbuttons.`}</p>

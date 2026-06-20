@@ -182,6 +182,8 @@ function PromoUrgencyBannerImpl({
     remaining === null ? "--" : pad2(Math.floor((remaining % 3600) / 60));
   const ss = remaining === null ? "--" : pad2(remaining % 60);
 
+  return <div className={className}></div>;
+
   return (
     <div
       className={cn(

@@ -1696,6 +1696,71 @@ export async function submitFeedbackForm(
 }
 
 // =============================================================================
+// Lead Capture — Homepage Discount Popup (separate Google Sheet)
+// =============================================================================
+
+/** Discount code revealed after a successful lead-capture submission. */
+export const LEAD_CAPTURE_COUPON = "EXTRACOOL5";
+
+const LEAD_CAPTURE_WEBHOOK_URL =
+  process.env.NEXT_PUBLIC_LEAD_CAPTURE_WEBHOOK_URL || "";
+
+export interface LeadCaptureResult {
+  success: boolean;
+  /** False when the webhook isn't configured — the visitor still gets the code. */
+  stored: boolean;
+  error?: string;
+}
+
+/**
+ * Stores a phone number captured by the homepage discount popup into the leads
+ * Google Sheet. Uses the same no-cors + text/plain trick as submitContactForm
+ * to avoid GAS's CORS preflight and its 302 redirect (response is opaque, so we
+ * assume success if there's no network error).
+ *
+ * If NEXT_PUBLIC_LEAD_CAPTURE_WEBHOOK_URL is unset we don't block the visitor
+ * from receiving their coupon — we log a warning so the misconfig is visible.
+ */
+export async function submitLeadCapture(
+  phone: string,
+): Promise<LeadCaptureResult> {
+  const digits = phone.replace(/\D/g, "").slice(-10);
+
+  const payload = {
+    source: "Homepage Discount Popup",
+    offer: LEAD_CAPTURE_COUPON,
+    mobileNumber: `+91${digits}`,
+    submittedAt: formatIST(new Date()),
+  };
+
+  if (!LEAD_CAPTURE_WEBHOOK_URL) {
+    console.warn(
+      "[LeadCapture] NEXT_PUBLIC_LEAD_CAPTURE_WEBHOOK_URL is not set — lead was not stored.",
+    );
+    return { success: true, stored: false };
+  }
+
+  try {
+    await fetch(LEAD_CAPTURE_WEBHOOK_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    return { success: true, stored: true };
+  } catch (error) {
+    return {
+      success: false,
+      stored: false,
+      error: error instanceof Error ? error.message : "Failed to submit",
+    };
+  }
+}
+
+// =============================================================================
 // Blog Types
 // =============================================================================
 

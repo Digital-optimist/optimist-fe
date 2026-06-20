@@ -15,25 +15,26 @@ import {
   QuantityDropdown,
   SocialProofLine,
 } from "@/components/products";
+import PincodeModal from "@/components/ui/PincodeModal";
 import { useToast } from "@/components/ui/Toast";
-import { useCart, buildBusinessCartAttributes } from "@/contexts/CartContext";
+import { buildBusinessCartAttributes, useCart } from "@/contexts/CartContext";
 import {
-  useProducts,
   ProductsProvider,
+  useProducts,
   type DisplayVariant,
 } from "@/contexts/ProductsContext";
+import { redirectWithAnalytics } from "@/lib/analytics";
 import { useJudgeMeRating } from "@/lib/judgeme";
+import { RichTextContent } from "@/lib/richTextRenderer";
+import { openSaleAssist } from "@/lib/saleassist";
 import {
   type Product,
   type ProductPageContent,
   type VariantRichText,
 } from "@/lib/shopify";
-import { redirectWithAnalytics } from "@/lib/analytics";
-import { openSaleAssist } from "@/lib/saleassist";
-import { RichTextContent } from "@/lib/richTextRenderer";
-import PincodeModal from "@/components/ui/PincodeModal";
-import Link from "next/link";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Below-the-fold sections — split into their own chunks to shrink the main
 // hydration bundle. SSR is preserved (default) so SEO-relevant copy still
@@ -92,7 +93,6 @@ const BuiltForSection = dynamic(() =>
     default: m.BuiltForSection,
   })),
 );
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // NOTE: framer-motion was removed from this file (see PageSpeed pass).
 // The outer page wrapper used to be a <motion.div> with initial={opacity:0}
@@ -1070,19 +1070,6 @@ function ProductsPageInner({
       >
         <div className="px-4 py-3">
           <div className="flex items-center gap-3">
-            {/* Product price — left */}
-            <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-1.5 text-[#FFFCDC]">
-              <span className="text-base font-semibold leading-tight">
-                Rs {formatPrice(selectedVariant?.price || 0)}.00
-              </span>
-              {selectedVariant?.compareAtPrice &&
-                selectedVariant.compareAtPrice > selectedVariant.price && (
-                  <span className="text-xs leading-tight text-[#FFFCDC]/60 line-through">
-                    Rs {formatPrice(selectedVariant.compareAtPrice)}
-                  </span>
-                )}
-            </div>
-            {/* Add to Cart — right */}
             <button
               onClick={handleAddToCart}
               disabled={isCartLoading || !canAddToCart}
@@ -1102,6 +1089,23 @@ function ProductsPageInner({
                     ? "Out of Stock"
                     : "Add to Cart"}
               </span>
+            </button>
+            <button
+              onClick={handleBuyNow}
+              disabled={isCartLoading || !canAddToCart}
+              className={`btn-scale flex-1 px-4 py-3 rounded-full font-medium text-sm text-center transition-all ${
+                buttonState === "loading"
+                  ? "bg-gray-400 text-gray-600"
+                  : buttonState === "outOfStock"
+                    ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                    : "btn-buy-now text-[#FFFCDC]"
+              }`}
+            >
+              {buttonState === "loading"
+                ? "Loading..."
+                : buttonState === "outOfStock"
+                  ? "Unavailable"
+                  : "Buy Now"}
             </button>
           </div>
         </div>

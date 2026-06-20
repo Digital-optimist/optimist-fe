@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import Script from "next/script";
-import "./globals.css";
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
 import SnapmintLoader from "@/components/SnapmintLoader";
-import { WebVitals } from "./_components/WebVitals";
 import { getLandingPageContent } from "@/lib/shopify";
-import { LimeChatWidget } from "@/components/LimeChatWidget";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import Script from "next/script";
+import { WebVitals } from "./_components/WebVitals";
+import "./globals.css";
 
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
@@ -175,7 +174,7 @@ export default async function RootLayout({
             `,
           }}
         />
-        <LimeChatWidget />
+        {/* <LimeChatWidget /> */}
       </head>
       <body
         className={`${abcSolar.variable} ${abcSolarDisplay.variable} antialiased bg-white text-optimist-cream`}
