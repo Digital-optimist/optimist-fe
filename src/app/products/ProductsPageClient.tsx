@@ -682,7 +682,7 @@ function ProductsPageInner({
                         direct sibling (not wrapped) so the `:has(>
                         .promo-urgency-banner)` Snapmint rules in globals.css
                         still resolve to the buy-box column. */}
-                    <CityStockBanner />
+                    {/* <CityStockBanner /> */}
                   </>
                 )}
 
