@@ -6,8 +6,9 @@ import { AnimatePresence, m as motion } from "framer-motion";
 import { useLeadCapture } from "@/contexts/LeadCaptureContext";
 import { LEAD_CAPTURE_COUPON } from "@/lib/shopify";
 
-// Deep navy used for the modal header band (matches the offer mock).
-const NAVY = "#0a2342";
+// Optimist brand-blue gradient for the modal header band (blue-deep → blue-primary).
+const HEADER_GRADIENT =
+  "linear-gradient(135deg, var(--optimist-blue-deep) 0%, var(--optimist-blue-primary) 100%)";
 
 // =============================================================================
 // Helpers
@@ -38,7 +39,7 @@ function HeaderBand({
   return (
     <div
       className="relative px-6 pt-7 pb-6 text-center"
-      style={{ backgroundColor: NAVY }}
+      style={{ backgroundImage: HEADER_GRADIENT }}
     >
       <button
         type="button"
@@ -48,7 +49,7 @@ function HeaderBand({
       >
         <X className="h-4 w-4 text-white" />
       </button>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#69CDEB]">
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-optimist-blue-glow">
         {eyebrow}
       </p>
       <h2 className="font-display text-[22px] font-bold leading-tight text-white sm:text-[26px]">
@@ -109,7 +110,7 @@ function PhoneView() {
           className={`flex h-[52px] items-center overflow-hidden rounded-xl border bg-[#f8f9fb] transition-all ${
             displayError
               ? "border-red-300 bg-red-50/40"
-              : "border-[#dcdfe6] focus-within:border-[#3478F6] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(52,120,246,0.1)]"
+              : "border-[#dcdfe6] focus-within:border-optimist-blue-hero focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(52,120,246,0.1)]"
           }`}
         >
           <span className="select-none pl-4 pr-3 text-[15px] font-medium text-[#0d0f1a]">
@@ -140,7 +141,7 @@ function PhoneView() {
         <button
           type="submit"
           disabled={isLoading}
-          className="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-[#3478F6] text-[15px] font-semibold text-white shadow-[0_2px_12px_rgba(52,120,246,0.25)] transition-all hover:bg-[#2c6ae0] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-optimist-blue-hero text-[15px] font-semibold text-white shadow-[0_2px_12px_rgba(52,120,246,0.25)] transition-all hover:bg-optimist-blue-primary active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isLoading ? (
             <>
@@ -195,14 +196,14 @@ function CouponView() {
           type="button"
           onClick={handleCopy}
           aria-label={`Copy discount code ${LEAD_CAPTURE_COUPON}`}
-          className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-dashed border-[#3478F6]/40 bg-[#3478F6]/[0.06] px-5 py-4 transition-colors hover:bg-[#3478F6]/[0.1]"
+          className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-dashed border-optimist-blue-hero/40 bg-optimist-blue-hero/[0.06] px-5 py-4 transition-colors hover:bg-optimist-blue-hero/[0.1]"
         >
           <span className="font-mono text-[22px] font-bold tracking-[0.12em] text-[#0d0f1a] sm:text-[24px]">
             {LEAD_CAPTURE_COUPON}
           </span>
           <span
             className={`flex items-center gap-1.5 text-[13px] font-semibold transition-colors ${
-              copied ? "text-emerald-600" : "text-[#3478F6]"
+              copied ? "text-emerald-600" : "text-optimist-blue-hero"
             }`}
           >
             {copied ? (
@@ -220,7 +221,7 @@ function CouponView() {
         <button
           type="button"
           onClick={closeModal}
-          className="mt-5 h-[52px] w-full rounded-xl bg-[#3478F6] text-[15px] font-semibold text-white shadow-[0_2px_12px_rgba(52,120,246,0.25)] transition-all hover:bg-[#2c6ae0] active:scale-[0.99]"
+          className="mt-5 h-[52px] w-full rounded-xl bg-optimist-blue-hero text-[15px] font-semibold text-white shadow-[0_2px_12px_rgba(52,120,246,0.25)] transition-all hover:bg-optimist-blue-primary active:scale-[0.99]"
         >
           Start shopping
         </button>

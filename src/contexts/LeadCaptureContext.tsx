@@ -19,7 +19,7 @@ import { submitLeadCapture } from "@/lib/shopify";
 const STORAGE_KEY = "optimist_lead_capture_v1";
 
 /** Delay before the popup auto-opens after the visitor lands (ms). */
-const AUTO_OPEN_DELAY = 2000;
+const AUTO_OPEN_DELAY = 10000;
 
 type ModalView = "phone" | "coupon";
 
