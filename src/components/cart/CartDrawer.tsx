@@ -8,7 +8,7 @@ import { useCart, getCartLines } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/shopify";
 import { CartItem } from "./CartItem";
 import PincodeModal from "@/components/ui/PincodeModal";
-import { redirectWithAnalytics } from "@/lib/analytics";
+import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
 
 const overlayVariants = {
   hidden: { opacity: 0 },
@@ -21,25 +21,24 @@ const panelVariants = {
 };
 
 export function CartDrawer() {
-  const { cart, isCartOpen, closeCart, totalQuantity, isLoading, businessDetails, saveBusinessDetailsToCart } = useCart();
+  const { cart, isCartOpen, closeCart, totalQuantity, isLoading, businessDetails } = useCart();
+  const { startCheckout, isPreparing } = useMagicCheckout();
   const [showPincodeModal, setShowPincodeModal] = useState(false);
 
   const cartLines = getCartLines(cart);
   const subtotal = cart?.cost.subtotalAmount;
-  const checkoutUrl = cart?.checkoutUrl;
 
   const handleCheckoutClick = useCallback(() => {
-    if (!checkoutUrl || isLoading) return;
+    if (!cart || cartLines.length === 0 || isLoading) return;
     setShowPincodeModal(true);
-  }, [checkoutUrl, isLoading]);
+  }, [cart, cartLines.length, isLoading]);
 
   const handleCheckoutConfirmed = useCallback(async () => {
-    if (!checkoutUrl) return;
-    if (businessDetails.isBusinessPurchase && businessDetails.verified) {
-      await saveBusinessDetailsToCart();
-    }
-    redirectWithAnalytics(checkoutUrl);
-  }, [checkoutUrl, businessDetails, saveBusinessDetailsToCart]);
+    if (!cart) return;
+    const ok = await startCheckout(cart);
+    setShowPincodeModal(false);
+    if (ok) closeCart();
+  }, [cart, startCheckout, closeCart]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -178,7 +177,7 @@ export function CartDrawer() {
                   <button
                     type="button"
                     onClick={handleCheckoutClick}
-                    disabled={!checkoutUrl || isLoading}
+                    disabled={!cart || isLoading || isPreparing}
                     className="btn-buy-now flex items-center justify-center gap-2 w-full py-3 rounded-full text-[#FFFCDC] font-medium border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? (
@@ -210,7 +209,8 @@ export function CartDrawer() {
       onClose={() => setShowPincodeModal(false)}
       onConfirm={handleCheckoutConfirmed}
       confirmLabel="Proceed to Checkout →"
-      loadingLabel="Redirecting…"
+      loadingLabel="Starting checkout…"
+      isConfirmLoading={isPreparing}
     />
   </>
   );
