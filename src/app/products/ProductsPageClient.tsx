@@ -17,13 +17,13 @@ import {
 } from "@/components/products";
 import PincodeModal from "@/components/ui/PincodeModal";
 import { useToast } from "@/components/ui/Toast";
-import { buildBusinessCartAttributes, useCart } from "@/contexts/CartContext";
+import { useCart } from "@/contexts/CartContext";
 import {
   ProductsProvider,
   useProducts,
   type DisplayVariant,
 } from "@/contexts/ProductsContext";
-import { redirectWithAnalytics } from "@/lib/analytics";
+import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
 import { useJudgeMeRating } from "@/lib/judgeme";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { openSaleAssist } from "@/lib/saleassist";
@@ -175,12 +175,8 @@ function ProductsPageInner({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isQuantityOpen, setIsQuantityOpen] = useState(false);
-  const {
-    addToCart,
-    buyNow,
-    isLoading: isCartLoading,
-    businessDetails,
-  } = useCart();
+  const { addToCart, buyNow, isLoading: isCartLoading } = useCart();
+  const { startCheckout } = useMagicCheckout();
   const { showToast } = useToast();
   const {
     products: shopProducts,
@@ -472,27 +468,21 @@ function ProductsPageInner({
     if (!selectedVariant || !selectedVariant.variantId) return;
     setIsBuyNowLoading(true);
     try {
-      const attributes =
-        businessDetails.isBusinessPurchase && businessDetails.verified
-          ? buildBusinessCartAttributes(businessDetails)
-          : undefined;
-
-      const checkoutUrl = await buyNow(
-        selectedVariant.variantId,
-        quantity,
-        attributes,
-      );
-      if (checkoutUrl) {
-        redirectWithAnalytics(checkoutUrl);
+      // Business GST attributes are attached inside startCheckout (Step 1), so a
+      // throwaway "Buy Now" cart is all we need here.
+      const cart = await buyNow(selectedVariant.variantId, quantity);
+      if (cart) {
+        await startCheckout(cart);
       } else {
         showToast("Failed to initiate checkout", "error");
-        setIsBuyNowLoading(false);
       }
     } catch {
       showToast("Failed to proceed to checkout", "error");
+    } finally {
       setIsBuyNowLoading(false);
+      setShowPincodeModal(false);
     }
-  }, [selectedVariant, quantity, buyNow, showToast, businessDetails]);
+  }, [selectedVariant, quantity, buyNow, startCheckout, showToast]);
 
   if (isProductUnavailable) {
     return (
