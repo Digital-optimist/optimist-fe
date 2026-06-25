@@ -9,7 +9,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { submitLeadCapture } from "@/lib/shopify";
+import { submitLeadCapture, LEAD_CAPTURE_COUPON } from "@/lib/shopify";
+import { setClaimedCoupon } from "@/lib/coupon";
 
 // =============================================================================
 // Config
@@ -112,6 +113,9 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
     if (result.success) {
       markLeadCaptureSeen("submitted");
+      // The visitor just earned the coupon — remember it so Magic Checkout
+      // auto-applies it via prefill.coupon_code at checkout.
+      setClaimedCoupon(LEAD_CAPTURE_COUPON);
       setModalView("coupon");
     } else {
       setError(result.error || "Something went wrong. Please try again.");
