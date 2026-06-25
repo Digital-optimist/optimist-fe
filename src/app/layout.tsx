@@ -128,10 +128,14 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
-        {/* Shopflo checkout bridge */}
+        {/* Razorpay Magic Checkout SDK — preloaded during idle so the in-page
+            payment modal is ready by the time the shopper reaches checkout.
+            loadRazorpay.ts reuses this same tag (matching id) and guarantees
+            readiness on demand. Replaces the old Shopflo checkout bridge. */}
         <Script
-          src="https://bridge.shopflo.com/js/shopflo.bundle.js"
-          strategy="afterInteractive"
+          id="razorpay-magic-sdk"
+          src="https://checkout.razorpay.com/v1/magic-checkout.js"
+          strategy="lazyOnload"
         />
         {/* Google Tag Manager — pushed to `lazyOnload` (matches GA4 below) so
             it runs during browser idle time instead of immediately after

@@ -115,7 +115,7 @@ interface CartContextType {
     variantId: string,
     quantity?: number,
     attributes?: { key: string; value: string }[],
-  ) => Promise<string | null>;
+  ) => Promise<Cart | null>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeFromCart: (lineId: string) => Promise<void>;
   openCart: () => void;
@@ -125,6 +125,7 @@ interface CartContextType {
   applyVerificationResult: (result: GSTVerificationResult) => void;
   saveBusinessDetailsToCart: (cartIdOverride?: string) => Promise<void>;
   clearBusinessDetails: () => void;
+  clearCheckoutCart: () => void;
 }
 
 // =============================================================================
@@ -270,13 +271,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       variantId: string,
       quantity: number = 1,
       attributes?: { key: string; value: string }[],
-    ): Promise<string | null> => {
+    ): Promise<Cart | null> => {
       try {
         const tempCart = await createCart(
           [{ merchandiseId: variantId, quantity }],
           attributes,
         );
-        return tempCart.checkoutUrl || null;
+        return tempCart;
       } catch {
         return null;
       }
@@ -378,6 +379,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(BUSINESS_DETAILS_KEY);
   }, []);
 
+  // Clear the persistent cart after a completed order so the shopper starts
+  // fresh — Magic Checkout's Complete already consumed the Shopify-side cart.
+  const clearCheckoutCart = useCallback(() => {
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch {
+      /* noop */
+    }
+    setCart(null);
+    setIsCartOpen(false);
+  }, []);
+
   return (
     <CartContext.Provider
       value={{
@@ -397,6 +410,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         applyVerificationResult,
         saveBusinessDetailsToCart,
         clearBusinessDetails,
+        clearCheckoutCart,
       }}
     >
       {children}

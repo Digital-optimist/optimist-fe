@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/Toast";
-import { redirectWithAnalytics } from "@/lib/analytics";
+import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
 
 // Shared "Get it now" → pincode-gate → buyNow flow. Used by both the home
 // product section and the sticky header CTA so the two entry points resolve the
@@ -12,6 +12,7 @@ import { redirectWithAnalytics } from "@/lib/analytics";
 export function useGetItNow() {
   const { combinedProduct, getVariantByTonnage } = useProducts();
   const { buyNow } = useCart();
+  const { startCheckout } = useMagicCheckout();
   const { showToast } = useToast();
 
   const [showPincodeModal, setShowPincodeModal] = useState(false);
@@ -45,16 +46,17 @@ export function useGetItNow() {
     if (!variant?.variantId) return;
     setIsBuyNowLoading(true);
     try {
-      const checkoutUrl = await buyNow(variant.variantId, 1);
-      if (checkoutUrl) {
-        redirectWithAnalytics(checkoutUrl);
+      const cart = await buyNow(variant.variantId, 1);
+      if (cart) {
+        await startCheckout(cart);
       } else {
         showToast("Failed to initiate checkout", "error");
-        setIsBuyNowLoading(false);
       }
     } catch {
       showToast("Failed to proceed to checkout", "error");
+    } finally {
       setIsBuyNowLoading(false);
+      setShowPincodeModal(false);
     }
   };
 
