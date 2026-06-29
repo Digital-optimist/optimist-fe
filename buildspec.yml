@@ -20,6 +20,11 @@ env:
     # Swap the key to a test key for staging. See docs/razorpay-magic-checkout-runbook.md.
     NEXT_PUBLIC_RAZORPAY_KEY_ID: rzp_live_T5PNDj8ic9WazV
     NEXT_PUBLIC_RAZORPAY_PROXY_URL: https://vytsjfjfb8.execute-api.ap-south-1.amazonaws.com
+    # Meta (Facebook) Pixel ID for Magic Checkout conversion tracking. Leave empty
+    # to disable (no Pixel base code is injected). Set to your numeric Pixel ID to
+    # activate the client-side funnel + purchase events AND the server-side
+    # fb_analytics attribution, which depends on the _fbp cookie the Pixel sets.
+    NEXT_PUBLIC_META_PIXEL_ID: 955863743676970
 
 phases:
   install:

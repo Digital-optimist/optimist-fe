@@ -17,6 +17,42 @@ interface RazorpaySuccessResponse {
   razorpay_signature: string;
 }
 
+/** A line item inside a Magic Checkout `mx-analytics` event payload. */
+interface MagicAnalyticsLineItem {
+  sku?: string;
+  name?: string;
+  type?: string;
+  price?: number; // paise
+  weight?: number;
+  quantity?: number;
+  image_url?: string;
+  variant_id?: number | string;
+  description?: string;
+  offer_price?: number; // paise
+  product_url?: string;
+}
+
+/**
+ * Payload delivered to the `mx-analytics` event for each step of the Magic
+ * Checkout funnel — `initiate`, `coupon_applied`/`coupon_failed`,
+ * `otp_initiated`/`otp_submitted`, `shipping_selected`, `payment_initiated`,
+ * `payment_failed`, `user_data`. Monetary amounts are in paise.
+ */
+interface MagicAnalyticsEvent {
+  event: string;
+  paymentMode?: string;
+  lineItems?: MagicAnalyticsLineItem[];
+  totalAmount?: number;
+  latestTotal?: number;
+  currency?: string;
+  couponCode?: string;
+  couponDiscountValue?: number;
+  shippingAmount?: number;
+  paymentMethod?: string;
+  errorMsg?: string;
+  [key: string]: unknown;
+}
+
 /** Payload passed to the `payment.failed` event handler. */
 interface RazorpayFailedResponse {
   error: {
@@ -64,6 +100,11 @@ interface RazorpayInstance {
   on(
     event: "payment.failed",
     handler: (response: RazorpayFailedResponse) => void,
+  ): void;
+  /** Magic Checkout funnel analytics — emits one event per checkout step. */
+  on(
+    event: "mx-analytics",
+    handler: (data: MagicAnalyticsEvent) => void,
   ): void;
   on(event: string, handler: (response: unknown) => void): void;
 }

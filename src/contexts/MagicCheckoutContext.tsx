@@ -24,6 +24,7 @@ import {
   MagicCheckoutError,
 } from "@/lib/razorpay-magic";
 import { captureUtmOnce, getCheckoutAnalytics } from "@/lib/analytics";
+import { trackMagicCheckoutEvent, trackPurchase } from "@/lib/analytics-events";
 import { getClaimedCoupon } from "@/lib/coupon";
 import {
   savePendingOrder,
@@ -93,6 +94,9 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
     )
       .then((result) => {
         saveLastOrder(result);
+        // Recovered a payment that wasn't finalized last session — the purchase
+        // conversion never fired, so fire it now (deduped by order id).
+        trackPurchase(result);
         clearPendingOrder();
       })
       .catch(() => {
@@ -131,6 +135,10 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
       try {
         const result = await completeMagicCheckoutWithRetry(paymentId, orderId);
         saveLastOrder(result);
+        // Fire the purchase conversion here (not on the confirmation page): the
+        // amount/currency are known, the page is fully loaded so gtag/fbq are
+        // ready, and it can't double-count on a confirmation-page refresh.
+        trackPurchase(result);
         clearPendingOrder();
         // Only the persistent shopping cart needs clearing; "Buy Now" uses a
         // throwaway cart that was never persisted.
@@ -178,6 +186,13 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
             setPhase("idle");
           },
         },
+      });
+      // Forward Magic Checkout's funnel analytics (initiate, otp_*,
+      // shipping_selected, payment_initiated, …) to GA4 + Meta. Without this
+      // listener none of the in-checkout events ever leave the SDK, which is why
+      // the funnel was invisible in both dashboards. (integration doc: "mx-analytics")
+      rzp.on("mx-analytics", (data) => {
+        trackMagicCheckoutEvent(data);
       });
       // Magic Checkout keeps the modal open on a failed attempt so the shopper
       // can retry, and shows its own inline error — so we only log here and let
@@ -257,6 +272,7 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         pending.razorpay_order_id,
       );
       saveLastOrder(result);
+      trackPurchase(result);
       clearPendingOrder();
       if (persistentCart && persistentCart.id === pending.cartId) {
         clearCheckoutCart();

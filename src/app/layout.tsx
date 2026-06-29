@@ -11,6 +11,10 @@ import "./globals.css";
 
 const GTM_ID = "GTM-KNHD6RHP";
 const GA4_ID = "G-FMPV82QJV9";
+// Meta (Facebook) Pixel — wired via env so it can be set per-environment. Empty
+// (the default) injects no base code, so `fbq` stays undefined and every Meta
+// call no-ops safely until a real Pixel ID is provided.
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
 
 // ABC Solar Display - For headlines.
 const abcSolarDisplay = localFont({
@@ -178,6 +182,32 @@ export default async function RootLayout({
             `,
           }}
         />
+        {/* Meta (Facebook) Pixel base code. Loaded `afterInteractive` (a touch
+            earlier than GA4's lazyOnload) so the `_fbp` cookie is set before the
+            shopper reaches checkout — the server-side fb_analytics attribution
+            in lib/analytics.ts only emits its block when `_fbp` exists. Only
+            injected when a Pixel ID is configured; otherwise `fbq` is undefined
+            and the forwarding helpers no-op. */}
+        {META_PIXEL_ID && (
+          <Script
+            id="meta-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window,document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${META_PIXEL_ID}');
+                fbq('track', 'PageView');
+              `,
+            }}
+          />
+        )}
         {/* <LimeChatWidget /> */}
       </head>
       <body
@@ -192,6 +222,19 @@ export default async function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        {/* Meta Pixel (noscript) */}
+        {META_PIXEL_ID && (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+              alt=""
+            />
+          </noscript>
+        )}
         <Providers>
           <LayoutContent footerImageSrc={footerImageSrc}>
             {children}

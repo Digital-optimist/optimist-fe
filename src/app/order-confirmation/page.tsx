@@ -23,19 +23,13 @@ export default function OrderConfirmationPage() {
   useEffect(() => {
     // One-time read of client-only sessionStorage after mount (it's empty during
     // the static prerender), so a single post-mount setState is correct here.
+    // NOTE: the GA4 + Meta `purchase` conversion is fired once at order
+    // completion in MagicCheckoutContext — NOT here. Firing on this page raced
+    // GA4's lazy-loaded gtag (often dropping the event) and double-counted on
+    // refresh, and never reached Meta at all.
     const result = getLastOrder();
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setState({ order: result, loaded: true });
-
-    // Fire a GA4 purchase event on our own domain — with Magic Checkout we no
-    // longer hard-redirect to Shopify's order_status_url, where this used to fire.
-    if (result && typeof window !== "undefined" && window.gtag) {
-      window.gtag("event", "purchase", {
-        transaction_id: result.order_id,
-        value: result.total_amount / 100,
-        currency: result.payment_currency || "INR",
-      });
-    }
   }, []);
 
   return (
