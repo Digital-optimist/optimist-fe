@@ -40,12 +40,12 @@ const CONFIRMATION_PATH = "/order-confirmation/";
 
 /**
  * Razorpay's checkout snapshots `document.body`'s scroll styles when it opens
- * and re-applies them when it closes. We always launch checkout from inside the
- * PincodeModal / CartDrawer, which lock body scroll (`overflow: hidden`) — so
- * Razorpay captures "hidden" and restores it on dismiss/success, leaving the
- * page permanently unscrollable. Normalising the body (and html) to the
- * unlocked state both before opening (clean snapshot) and after closing
- * (defensive backstop) guarantees scrolling is restored once Razorpay is gone.
+ * and re-applies them when it closes. Checkout can launch from inside the cart
+ * drawer, which locks body scroll (`overflow: hidden`) — so Razorpay captures
+ * "hidden" and restores it on dismiss/success, leaving the page permanently
+ * unscrollable. Normalising the body (and html) to the unlocked state both
+ * before opening (clean snapshot) and after closing (defensive backstop)
+ * guarantees scrolling is restored once Razorpay is gone.
  */
 function releaseBodyScrollLock(): void {
   if (typeof document === "undefined") return;
@@ -226,9 +226,9 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
       rzp.on("payment.failed", (response) => {
         console.warn("Razorpay payment failed", response?.error);
       });
-      // Clear any body scroll lock (set by PincodeModal/CartDrawer) BEFORE
-      // opening, so Razorpay snapshots the unlocked state and restores it — not
-      // "hidden" — when the modal closes. This is the core scroll-stuck fix.
+      // Clear any body scroll lock (set by the cart drawer) BEFORE opening, so
+      // Razorpay snapshots the unlocked state and restores it — not "hidden" —
+      // when the modal closes. This is the core scroll-stuck fix.
       releaseBodyScrollLock();
       rzp.open();
     },

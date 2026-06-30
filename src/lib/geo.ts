@@ -2,7 +2,7 @@
 // IP-based city detection
 //
 // Optimist currently ships to three metros only — Delhi NCR, Bangalore and
-// Hyderabad (the same zones as `usePincodeCheck`). This module resolves a
+// Hyderabad. This module resolves a
 // visitor's approximate city from their IP (no permission prompt) so the PDP
 // can show a city-specific scarcity line to serviceable shoppers.
 //

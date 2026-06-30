@@ -6,16 +6,15 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/Toast";
 import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
 
-// Shared "Get it now" → pincode-gate → buyNow flow. Used by both the home
-// product section and the sticky header CTA so the two entry points resolve the
-// same variant and behave identically.
+// Shared "Get it now" → buyNow → Razorpay flow. Used by both the home product
+// section and the sticky header CTA so the two entry points resolve the same
+// variant and behave identically.
 export function useGetItNow() {
   const { combinedProduct, getVariantByTonnage } = useProducts();
   const { buyNow } = useCart();
   const { startCheckout } = useMagicCheckout();
   const { showToast } = useToast();
 
-  const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
   // The store currently sells a single 1.4-ton AC. Resolve it by tonnage, and
@@ -30,7 +29,7 @@ export function useGetItNow() {
     );
   }, [getVariantByTonnage, combinedProduct]);
 
-  const handleGetItNow = () => {
+  const handleGetItNow = async () => {
     if (!variant?.variantId) {
       showToast("Product is currently unavailable", "error");
       return;
@@ -39,11 +38,8 @@ export function useGetItNow() {
       showToast("This AC is out of stock", "error");
       return;
     }
-    setShowPincodeModal(true);
-  };
-
-  const handleConfirmed = async () => {
-    if (!variant?.variantId) return;
+    // Pincode serviceability is handled inside Razorpay Magic Checkout now, so
+    // "Get it now" goes straight to the SDK (no pre-checkout pincode gate).
     setIsBuyNowLoading(true);
     try {
       const cart = await buyNow(variant.variantId, 1);
@@ -56,21 +52,12 @@ export function useGetItNow() {
       showToast("Failed to proceed to checkout", "error");
     } finally {
       setIsBuyNowLoading(false);
-      setShowPincodeModal(false);
     }
-  };
-
-  const closeModal = () => {
-    setShowPincodeModal(false);
-    setIsBuyNowLoading(false);
   };
 
   return {
     variant,
-    showPincodeModal,
     isBuyNowLoading,
     handleGetItNow,
-    handleConfirmed,
-    closeModal,
   };
 }
