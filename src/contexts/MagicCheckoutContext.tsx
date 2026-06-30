@@ -38,6 +38,26 @@ const STORE_NAME = "Optimist";
 const THEME_COLOR = "#0A0A0A";
 const CONFIRMATION_PATH = "/order-confirmation/";
 
+/**
+ * Razorpay's checkout snapshots `document.body`'s scroll styles when it opens
+ * and re-applies them when it closes. We always launch checkout from inside the
+ * PincodeModal / CartDrawer, which lock body scroll (`overflow: hidden`) — so
+ * Razorpay captures "hidden" and restores it on dismiss/success, leaving the
+ * page permanently unscrollable. Normalising the body (and html) to the
+ * unlocked state both before opening (clean snapshot) and after closing
+ * (defensive backstop) guarantees scrolling is restored once Razorpay is gone.
+ */
+function releaseBodyScrollLock(): void {
+  if (typeof document === "undefined") return;
+  const { body } = document;
+  const html = document.documentElement;
+  body.style.overflow = "";
+  body.style.position = "";
+  body.style.top = "";
+  body.style.width = "";
+  html.style.overflow = "";
+}
+
 type Phase = "idle" | "preparing" | "completing" | "completeError";
 
 interface MagicCheckoutContextType {
@@ -169,6 +189,9 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         theme: { color: THEME_COLOR },
         handler: (response) => {
           succeededRef.current = true;
+          // Razorpay's modal is closing — make sure the scroll lock it captured
+          // on open is released (the completeError overlay keeps us on this page).
+          releaseBodyScrollLock();
           void finalizeOrder(
             response.razorpay_payment_id,
             response.razorpay_order_id,
@@ -184,6 +207,9 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
             if (succeededRef.current) return;
             inFlightRef.current = false;
             setPhase("idle");
+            // Restore scrolling on the next frame, after Razorpay's own teardown
+            // (which would otherwise re-apply the locked body styles it snapshotted).
+            requestAnimationFrame(releaseBodyScrollLock);
           },
         },
       });
@@ -200,6 +226,10 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
       rzp.on("payment.failed", (response) => {
         console.warn("Razorpay payment failed", response?.error);
       });
+      // Clear any body scroll lock (set by PincodeModal/CartDrawer) BEFORE
+      // opening, so Razorpay snapshots the unlocked state and restores it — not
+      // "hidden" — when the modal closes. This is the core scroll-stuck fix.
+      releaseBodyScrollLock();
       rzp.open();
     },
     [buildPrefill, finalizeOrder],
