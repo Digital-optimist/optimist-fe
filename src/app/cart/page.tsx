@@ -6,9 +6,8 @@ import { m as motion } from "framer-motion";
 import { ShoppingBag, ArrowRight, ArrowLeft, Minus, Plus, Trash2, Package } from "lucide-react";
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/shopify";
-import PincodeModal from "@/components/ui/PincodeModal";
 import { BusinessPurchaseSection } from "@/components/products/BusinessPurchaseSection";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
 
 const fadeInUp = {
@@ -29,22 +28,17 @@ export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, isLoading, totalQuantity } =
     useCart();
   const { startCheckout, isPreparing } = useMagicCheckout();
-  const [showPincodeModal, setShowPincodeModal] = useState(false);
 
   const cartLines = getCartLines(cart);
   const subtotal = cart?.cost.subtotalAmount;
   const total = cart?.cost.totalAmount;
 
-  const handleCheckoutClick = useCallback(() => {
+  const handleCheckout = useCallback(async () => {
     if (!cart || cartLines.length === 0 || isLoading) return;
-    setShowPincodeModal(true);
-  }, [cart, cartLines.length, isLoading]);
-
-  const handleCheckoutConfirmed = useCallback(async () => {
-    if (!cart) return;
+    // Pincode serviceability is now handled inside Razorpay Magic Checkout, so
+    // we go straight to the SDK — no pre-checkout pincode gate.
     await startCheckout(cart);
-    setShowPincodeModal(false);
-  }, [cart, startCheckout]);
+  }, [cart, cartLines.length, isLoading, startCheckout]);
 
   return (
     <div className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
@@ -259,7 +253,7 @@ export default function CartPage() {
 
                 <button
                   type="button"
-                  onClick={handleCheckoutClick}
+                  onClick={handleCheckout}
                   disabled={!cart || isLoading || isPreparing}
                   className={`flex items-center justify-center gap-2 w-full py-4 rounded-full text-white font-semibold bg-[#0A0A0A] hover:enabled:bg-[#1a1a1a] transition-colors border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
@@ -282,14 +276,6 @@ export default function CartPage() {
         )}
       </motion.div>
 
-      <PincodeModal
-        isOpen={showPincodeModal}
-        onClose={() => setShowPincodeModal(false)}
-        onConfirm={handleCheckoutConfirmed}
-        confirmLabel="Proceed to Checkout →"
-        loadingLabel="Starting checkout…"
-        isConfirmLoading={isPreparing}
-      />
     </div>
   );
 }

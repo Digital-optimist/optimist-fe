@@ -35,7 +35,7 @@ interface LeadCaptureContextType {
 }
 
 // =============================================================================
-// Persistence helpers (SSR-safe — mirrors the getSavedPincode pattern)
+// Persistence helpers (SSR-safe)
 // =============================================================================
 
 function hasSeenLeadCapture(): boolean {

@@ -15,7 +15,6 @@ import {
   QuantityDropdown,
   SocialProofLine,
 } from "@/components/products";
-import PincodeModal from "@/components/ui/PincodeModal";
 import { useToast } from "@/components/ui/Toast";
 import { useCart } from "@/contexts/CartContext";
 import {
@@ -168,7 +167,6 @@ function ProductsPageInner({
   const priceRef = useRef<HTMLDivElement>(null);
   const mobileGalleryRef = useRef<HTMLDivElement>(null);
   const [showMobileFooter, setShowMobileFooter] = useState(false);
-  const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -452,7 +450,7 @@ function ProductsPageInner({
     }
   }, [selectedVariant, quantity, addToCart, showToast]);
 
-  const handleBuyNow = useCallback(() => {
+  const handleBuyNow = useCallback(async () => {
     if (!selectedVariant || !selectedVariant.variantId) {
       showToast("Please select a variant", "error");
       return;
@@ -461,15 +459,11 @@ function ProductsPageInner({
       showToast("This variant is out of stock", "error");
       return;
     }
-    setShowPincodeModal(true);
-  }, [selectedVariant, showToast]);
-
-  const handleBuyNowConfirmed = useCallback(async () => {
-    if (!selectedVariant || !selectedVariant.variantId) return;
+    // Pincode serviceability is handled inside Razorpay Magic Checkout now, so
+    // Buy Now goes straight to the SDK. Business GST attributes are attached
+    // inside startCheckout (Step 1), so a throwaway "Buy Now" cart is all we need.
     setIsBuyNowLoading(true);
     try {
-      // Business GST attributes are attached inside startCheckout (Step 1), so a
-      // throwaway "Buy Now" cart is all we need here.
       const cart = await buyNow(selectedVariant.variantId, quantity);
       if (cart) {
         await startCheckout(cart);
@@ -480,7 +474,6 @@ function ProductsPageInner({
       showToast("Failed to proceed to checkout", "error");
     } finally {
       setIsBuyNowLoading(false);
-      setShowPincodeModal(false);
     }
   }, [selectedVariant, quantity, buyNow, startCheckout, showToast]);
 
@@ -795,7 +788,7 @@ function ProductsPageInner({
                   </button>
                   <button
                     onClick={handleBuyNow}
-                    disabled={isCartLoading || !canAddToCart}
+                    disabled={isCartLoading || !canAddToCart || isBuyNowLoading}
                     className={`btn-scale flex-1 px-4 md:px-6 py-3 md:py-4 rounded-full font-medium text-sm md:text-base text-center transition-all ${
                       buttonState === "loading"
                         ? "bg-gray-300 text-gray-500"
@@ -1082,7 +1075,7 @@ function ProductsPageInner({
             </button>
             <button
               onClick={handleBuyNow}
-              disabled={isCartLoading || !canAddToCart}
+              disabled={isCartLoading || !canAddToCart || isBuyNowLoading}
               className={`btn-scale flex-1 px-4 py-3 rounded-full font-medium text-sm text-center transition-all ${
                 buttonState === "loading"
                   ? "bg-gray-400 text-gray-600"
@@ -1101,18 +1094,6 @@ function ProductsPageInner({
         </div>
       </div>
 
-      {/* Pincode Check Modal — opens on Buy Now */}
-      <PincodeModal
-        isOpen={showPincodeModal}
-        onClose={() => {
-          setShowPincodeModal(false);
-          setIsBuyNowLoading(false);
-        }}
-        onConfirm={handleBuyNowConfirmed}
-        confirmLabel="Proceed to Checkout →"
-        loadingLabel="Opening checkout…"
-        isConfirmLoading={isBuyNowLoading}
-      />
     </div>
   );
 }

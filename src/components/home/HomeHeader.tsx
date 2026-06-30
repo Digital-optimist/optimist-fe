@@ -5,7 +5,6 @@ import { m } from "framer-motion";
 import { GradientButton } from "@/components/home/ui/gradient-button";
 import { useApp } from "@/components/home/useApp";
 import { useGetItNow } from "@/components/home/useGetItNow";
-import PincodeModal from "@/components/ui/PincodeModal";
 import { cn } from "@/lib/cn";
 
 const LOGO_MARK = "/figma/optimist-mark.svg";
@@ -20,13 +19,7 @@ const navItems = [
 // routes, logo → /home, and "Get it now" → the shared pincode → buyNow flow.
 export function HomeHeader() {
   const { isScrollHead } = useApp();
-  const {
-    showPincodeModal,
-    isBuyNowLoading,
-    handleGetItNow,
-    handleConfirmed,
-    closeModal,
-  } = useGetItNow();
+  const { isBuyNowLoading, handleGetItNow } = useGetItNow();
 
   return (
     <>
@@ -96,15 +89,6 @@ export function HomeHeader() {
           </GradientButton>
         </m.div>
       </header>
-
-      <PincodeModal
-        isOpen={showPincodeModal}
-        onClose={closeModal}
-        onConfirm={handleConfirmed}
-        confirmLabel="Proceed to Checkout →"
-        loadingLabel="Opening checkout…"
-        isConfirmLoading={isBuyNowLoading}
-      />
     </>
   );
 }

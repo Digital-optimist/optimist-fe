@@ -21,7 +21,6 @@ import { useToast } from "@/components/ui/Toast";
 import { ASSETS } from "@/lib/assets";
 import { useJudgeMeRating } from "@/lib/judgeme";
 import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
-import PincodeModal from "@/components/ui/PincodeModal";
 
 // Static copy keyed by variant ID — used for headline/tagline/features
 const VARIANT_COPY: Record<
@@ -118,7 +117,6 @@ export function ProductPickerSection() {
   const { combinedProduct, isLoading: isPriceLoading } = useProducts();
   const { buyNow, isLoading: isCartLoading } = useCart();
   const { startCheckout } = useMagicCheckout();
-  const [showPincodeModal, setShowPincodeModal] = useState(false);
   const [isBuyNowLoading, setIsBuyNowLoading] = useState(false);
 
   // Get AC-only variants (same filter as products page — excludes Inner Circle)
@@ -184,7 +182,7 @@ export function ProductPickerSection() {
     }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!activeVariant || !activeVariant.variantId) {
       showToast("Please select a variant", "error");
       return;
@@ -193,11 +191,7 @@ export function ProductPickerSection() {
       showToast("This variant is out of stock", "error");
       return;
     }
-    setShowPincodeModal(true);
-  };
-
-  const handleBuyNowConfirmed = async () => {
-    if (!activeVariant || !activeVariant.variantId) return;
+    // Pincode serviceability is handled inside Razorpay Magic Checkout now.
     setIsBuyNowLoading(true);
     try {
       const cart = await buyNow(activeVariant.variantId, 1);
@@ -210,7 +204,6 @@ export function ProductPickerSection() {
       showToast("Failed to proceed to checkout", "error");
     } finally {
       setIsBuyNowLoading(false);
-      setShowPincodeModal(false);
     }
   };
 
@@ -432,7 +425,8 @@ export function ProductPickerSection() {
                       isCartLoading ||
                       isPriceLoading ||
                       !activeVariant?.variantId ||
-                      !activeVariant?.available
+                      !activeVariant?.available ||
+                      isBuyNowLoading
                     }
                     className="btn-buy-now min-w-[90px] inline-flex items-center justify-center px-4 md:px-10 py-3 md:py-3.5 rounded-full text-[#FFFCDC] font-semibold text-sm md:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -469,17 +463,6 @@ export function ProductPickerSection() {
         </motion.div>
       </div>
 
-      <PincodeModal
-        isOpen={showPincodeModal}
-        onClose={() => {
-          setShowPincodeModal(false);
-          setIsBuyNowLoading(false);
-        }}
-        onConfirm={handleBuyNowConfirmed}
-        confirmLabel="Proceed to Checkout →"
-        loadingLabel="Opening checkout…"
-        isConfirmLoading={isBuyNowLoading}
-      />
     </motion.section>
   );
 }

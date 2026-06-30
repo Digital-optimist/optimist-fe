@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import Link from "next/link";
 import { X, ShoppingBag, ArrowRight, Building2 } from "lucide-react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { useCart, getCartLines } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/shopify";
 import { CartItem } from "./CartItem";
-import PincodeModal from "@/components/ui/PincodeModal";
 import { useMagicCheckout } from "@/contexts/MagicCheckoutContext";
 
 const overlayVariants = {
@@ -23,22 +22,16 @@ const panelVariants = {
 export function CartDrawer() {
   const { cart, isCartOpen, closeCart, totalQuantity, isLoading, businessDetails } = useCart();
   const { startCheckout, isPreparing } = useMagicCheckout();
-  const [showPincodeModal, setShowPincodeModal] = useState(false);
 
   const cartLines = getCartLines(cart);
   const subtotal = cart?.cost.subtotalAmount;
 
-  const handleCheckoutClick = useCallback(() => {
+  const handleCheckout = useCallback(async () => {
     if (!cart || cartLines.length === 0 || isLoading) return;
-    setShowPincodeModal(true);
-  }, [cart, cartLines.length, isLoading]);
-
-  const handleCheckoutConfirmed = useCallback(async () => {
-    if (!cart) return;
+    // Pincode serviceability is handled inside Razorpay now — go straight to it.
     const ok = await startCheckout(cart);
-    setShowPincodeModal(false);
     if (ok) closeCart();
-  }, [cart, startCheckout, closeCart]);
+  }, [cart, cartLines.length, isLoading, startCheckout, closeCart]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -64,7 +57,6 @@ export function CartDrawer() {
   }, [isCartOpen]);
 
   return (
-  <>
     <AnimatePresence>
       {isCartOpen && (
         <div
@@ -176,7 +168,7 @@ export function CartDrawer() {
                 <div className="space-y-3">
                   <button
                     type="button"
-                    onClick={handleCheckoutClick}
+                    onClick={handleCheckout}
                     disabled={!cart || isLoading || isPreparing}
                     className="btn-buy-now flex items-center justify-center gap-2 w-full py-3 rounded-full text-[#FFFCDC] font-medium border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -203,15 +195,5 @@ export function CartDrawer() {
         </div>
       )}
     </AnimatePresence>
-
-    <PincodeModal
-      isOpen={showPincodeModal}
-      onClose={() => setShowPincodeModal(false)}
-      onConfirm={handleCheckoutConfirmed}
-      confirmLabel="Proceed to Checkout →"
-      loadingLabel="Starting checkout…"
-      isConfirmLoading={isPreparing}
-    />
-  </>
   );
 }

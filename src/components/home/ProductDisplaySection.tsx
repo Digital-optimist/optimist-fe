@@ -6,7 +6,6 @@ import { m } from "framer-motion";
 import { GradientButton } from "@/components/home/ui/gradient-button";
 import { SectionTitle } from "@/components/home/ui/section-title";
 import { useGetItNow } from "@/components/home/useGetItNow";
-import PincodeModal from "@/components/ui/PincodeModal";
 import { ASSETS } from "@/lib/assets";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 import { cn } from "@/lib/cn";
@@ -30,14 +29,7 @@ interface ProductDisplaySectionProps {
 // overlapping the price card; tonnage from `variant.name`, live price/EMI from
 // Shopify, and the shared pincode → buyNow CTA.
 export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
-  const {
-    variant,
-    showPincodeModal,
-    isBuyNowLoading,
-    handleGetItNow,
-    handleConfirmed,
-    closeModal,
-  } = useGetItNow();
+  const { variant, isBuyNowLoading, handleGetItNow } = useGetItNow();
 
   const price = variant?.price ?? 40000;
   const emiMonthly = Math.round(price / EMI_TENURE_MONTHS);
@@ -164,14 +156,6 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
         </div>
       </div>
 
-      <PincodeModal
-        isOpen={showPincodeModal}
-        onClose={closeModal}
-        onConfirm={handleConfirmed}
-        confirmLabel="Proceed to Checkout →"
-        loadingLabel="Opening checkout…"
-        isConfirmLoading={isBuyNowLoading}
-      />
     </section>
   );
 }
