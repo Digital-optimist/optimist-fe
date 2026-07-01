@@ -7,7 +7,7 @@ const stagger = staggerParent(0.2);
 
 export function BlogHeroSection() {
   return (
-    <section className="bg-white pt-24 sm:pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12 lg:pb-16">
+    <section className="bg-white pb-8 md:pb-12 lg:pb-16">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-[40px]">
         <motion.div
           className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 lg:gap-8"

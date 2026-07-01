@@ -1,6 +1,6 @@
 export default function TermsLoading() {
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
+    <div className="min-h-screen bg-white pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 animate-pulse">
         <div className="text-center mb-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gray-200" />

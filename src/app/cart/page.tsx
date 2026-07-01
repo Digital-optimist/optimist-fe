@@ -41,7 +41,7 @@ export default function CartPage() {
   }, [cart, cartLines.length, isLoading, startCheckout]);
 
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
+    <div className="min-h-screen bg-white pb-16">
       <motion.div
         variants={staggerContainer}
         initial="initial"

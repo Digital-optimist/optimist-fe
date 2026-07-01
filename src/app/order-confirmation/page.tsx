@@ -33,7 +33,7 @@ export default function OrderConfirmationPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
+    <div className="min-h-screen bg-white pb-16">
       <div className="max-w-[640px] mx-auto px-6 lg:px-12 text-center">
         <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-50 flex items-center justify-center">
           <CheckCircle2 className="w-9 h-9 text-emerald-500" />

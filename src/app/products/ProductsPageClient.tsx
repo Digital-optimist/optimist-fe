@@ -479,7 +479,7 @@ function ProductsPageInner({
 
   if (isProductUnavailable) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 pt-24">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4">
         <div className="max-w-md text-center space-y-4">
           <h1 className="text-xl md:text-2xl font-semibold text-[#0A0A0A]">
             Product unavailable
@@ -505,7 +505,7 @@ function ProductsPageInner({
       className="min-h-screen bg-white md:pb-0 overflow-x-clip"
     >
       {/* Product Detail Section */}
-      <div ref={heroRef} className="pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-16">
+      <div ref={heroRef} className="pb-8 md:pb-16">
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16">
             {/* Left Column - Image Gallery

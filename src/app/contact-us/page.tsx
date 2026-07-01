@@ -766,7 +766,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pt-24 md:pt-28 lg:pt-32 pb-16 px-2 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f5f5f5] pb-16 px-2 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Main white container card */}
         <div className="bg-white rounded-[32px] p-8 px-4 md:p-12 lg:p-16">

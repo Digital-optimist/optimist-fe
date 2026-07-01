@@ -74,23 +74,27 @@ export function HomeHeader() {
   return (
     <header
       className={cn(
-        "relative",
+        // Fade the frosted-pill background/shadow in as it appears on scroll.
+        "relative transition-[background-color,box-shadow] duration-300 ease-out",
         // Lift the whole header above the hero (which is `relative z-10`) while
         // the mobile menu is open, so the dropdown isn't painted underneath it.
         isMenuOpen && "z-50",
         isScrollHead &&
           "max-w-[1160px] mx-2.5 md:mx-auto sticky top-2.5 z-50 bg-white/70 shadow-[0px_4px_16px_rgba(0,0,0,0.1)] backdrop-blur-lg rounded-3xl",
       )}
-      style={
-        isScrollHead
+      // Poppins is pinned here so the navbar reads identically on every route
+      // (the /home page is already Poppins; other pages default to ABC Solar).
+      style={{
+        fontFamily: "var(--font-poppins), system-ui, sans-serif",
+        ...(isScrollHead
           ? {
               border: "0px solid",
               borderImageSource:
                 "linear-gradient(90.56deg, #ffffff -0.15%, rgba(255, 255, 255, 0) 17.81%, rgba(255, 255, 255, 0) 22.75%, rgba(255, 255, 255, 0) 86.13%, #ffffff 100.15%)",
               borderImageSlice: 1,
             }
-          : undefined
-      }
+          : {}),
+      }}
     >
       <m.div
         initial={{ opacity: 0, y: -12 }}
@@ -117,7 +121,13 @@ export function HomeHeader() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="text-sm sm:text-base font-light text-[#6A6A6A] transition-colors hover:text-[#212121]"
+                aria-current={isActive(item.href) ? "page" : undefined}
+                className={cn(
+                  "text-sm sm:text-base transition-colors",
+                  isActive(item.href)
+                    ? "font-medium text-[#212121]"
+                    : "font-light text-[#6A6A6A] hover:text-[#212121]",
+                )}
               >
                 {item.title}
               </Link>
@@ -175,7 +185,7 @@ export function HomeHeader() {
             // Sized to sit inside the bar/pill (the old md:h-22 overflowed the
             // frosted pill on scroll).
             className={cn(
-              "w-fit cursor-pointer",
+              "w-fit cursor-pointer transition-[height] duration-300 ease-out",
               isScrollHead ? "h-9 md:h-10" : "h-10 md:h-16",
             )}
           />
