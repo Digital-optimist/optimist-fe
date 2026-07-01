@@ -137,3 +137,27 @@ export function getCheckoutAnalytics(): Record<string, unknown> {
   payload.analytics = analytics;
   return payload;
 }
+
+/**
+ * Best-effort wait for GA4's `_ga` cookie before checkout snapshots attribution.
+ * GA4 loads asynchronously, so a very fast click (e.g. an above-the-fold CTA on
+ * a landing page) can beat it. Resolves the instant `_ga` appears, or after
+ * `timeoutMs` regardless — bounded and never rejecting, so checkout is never
+ * blocked or broken. If GA is blocked entirely we just proceed without it.
+ */
+export function waitForAnalyticsCookies(timeoutMs = 1200): Promise<void> {
+  if (typeof document === "undefined" || getCookie("_ga")) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    const start = Date.now();
+    const tick = () => {
+      if (getCookie("_ga") || Date.now() - start >= timeoutMs) {
+        resolve();
+      } else {
+        setTimeout(tick, 80);
+      }
+    };
+    setTimeout(tick, 80);
+  });
+}

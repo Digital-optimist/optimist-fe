@@ -23,7 +23,11 @@ import {
   completeMagicCheckoutWithRetry,
   MagicCheckoutError,
 } from "@/lib/razorpay-magic";
-import { captureUtmOnce, getCheckoutAnalytics } from "@/lib/analytics";
+import {
+  captureUtmOnce,
+  getCheckoutAnalytics,
+  waitForAnalyticsCookies,
+} from "@/lib/analytics";
 import { trackMagicCheckoutEvent, trackPurchase } from "@/lib/analytics-events";
 import { getClaimedCoupon } from "@/lib/coupon";
 import {
@@ -251,6 +255,11 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
       succeededRef.current = false;
       setPhase("preparing");
       try {
+        // GA4/Meta load asynchronously — start waiting for their cookies now so
+        // an early click on an above-the-fold CTA (e.g. /home's "Get it now")
+        // still captures attribution. Runs concurrently with the SDK load +
+        // Step 1, so it adds no delay in the common case (and is bounded).
+        const analyticsReady = waitForAnalyticsCookies();
         await loadRazorpay();
 
         // Business GST details (when verified) flow to the Shopify order's
@@ -264,6 +273,7 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
           attributes,
         });
 
+        await analyticsReady;
         const { order_id } = await createMagicOrder(
           shopify_checkout_id,
           getCheckoutAnalytics(),

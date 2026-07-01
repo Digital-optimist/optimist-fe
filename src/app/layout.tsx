@@ -141,16 +141,16 @@ export default async function RootLayout({
           src="https://checkout.razorpay.com/v1/magic-checkout.js"
           strategy="lazyOnload"
         />
-        {/* Google Tag Manager — pushed to `lazyOnload` (matches GA4 below) so
-            it runs during browser idle time instead of immediately after
-            interactive. GTM was costing 50-150 ms of TBT on the main thread;
-            this trades ~1-2 s of analytics-attribution accuracy for a
-            noticeably cleaner main thread on first paint. Site events still
-            fire correctly because GTM's `dataLayer.push` calls queue until
-            the snippet loads. */}
+        {/* Google Tag Manager — `afterInteractive` so GTM + GA4 boot right after
+            hydration and set the `_ga`/session cookies BEFORE a shopper can tap
+            an above-the-fold CTA (e.g. /home's header "Get it now"). Under the
+            old `lazyOnload`, an early checkout click snapshotted empty
+            attribution because `_ga` wasn't set yet, so conversions from /home
+            went untracked. Costs ~50-150 ms of TBT — accepted for reliable
+            conversion tracking on landing pages. */}
         <Script
           id="gtm-script"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -161,14 +161,15 @@ export default async function RootLayout({
             `,
           }}
         />
-        {/* Google Analytics 4 — pushed to lazyOnload so it only fires when the browser is idle. */}
+        {/* Google Analytics 4 — `afterInteractive` (see GTM note) so `gtag` and
+            the `_ga` cookie are ready before checkout can start on any route. */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
-          strategy="lazyOnload"
+          strategy="afterInteractive"
         />
         <Script
           id="ga4-script"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
