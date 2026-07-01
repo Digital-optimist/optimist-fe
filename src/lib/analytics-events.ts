@@ -138,18 +138,43 @@ const firedPurchases = new Set<string>();
  * NOT from the confirmation page, which would race gtag and double-count on
  * refresh.
  */
-export function trackPurchase(order: CompleteCheckoutResponse): void {
-  if (!order?.order_id) return;
-  if (firedPurchases.has(order.order_id)) return;
+export function trackPurchase(
+  order: CompleteCheckoutResponse,
+  onComplete?: () => void,
+): void {
+  // Still run onComplete (usually a redirect) even when we skip firing, so the
+  // caller never stalls on a deduped/invalid order.
+  if (!order?.order_id || firedPurchases.has(order.order_id)) {
+    onComplete?.();
+    return;
+  }
   firedPurchases.add(order.order_id);
 
   const value = toAmount(order.total_amount);
   const currency = order.payment_currency || "INR";
 
+  // Callers usually redirect to the confirmation page right after this. Meta's
+  // `fbq` sends a synchronous beacon that survives the redirect, but GA4's
+  // `gtag` batches its hit and would be cut off — so when a redirect is pending
+  // (`onComplete` provided) we force `transport_type: "beacon"` and proceed only
+  // once GA4's `event_callback` fires, with a timeout fallback so navigation
+  // never hangs (e.g. if analytics are blocked).
+  let settled = false;
+  const settle = () => {
+    if (settled) return;
+    settled = true;
+    onComplete?.();
+  };
+
   ga("purchase", {
     transaction_id: order.order_id,
     value,
     currency,
+    ...(onComplete
+      ? { transport_type: "beacon", event_callback: settle }
+      : {}),
   });
   meta("Purchase", { value, currency }, true);
+
+  if (onComplete) setTimeout(settle, 1000);
 }

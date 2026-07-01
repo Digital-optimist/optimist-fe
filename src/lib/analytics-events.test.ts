@@ -164,4 +164,46 @@ describe("trackPurchase", () => {
     expect(gtag.mock.calls.filter((c) => c[1] === "purchase")).toHaveLength(1);
     expect(fbq.mock.calls.filter((c) => c[1] === "Purchase")).toHaveLength(1);
   });
+
+  it("uses beacon transport + timeout fallback when a redirect follows", () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    trackPurchase(make("#C-3003"), onComplete);
+    expect(gtag).toHaveBeenCalledWith(
+      "event",
+      "purchase",
+      expect.objectContaining({
+        transaction_id: "#C-3003",
+        transport_type: "beacon",
+        event_callback: expect.any(Function),
+      }),
+    );
+    // Redirect must still fire even if GA never calls back (blocked/slow).
+    expect(onComplete).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1000);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
+
+  it("redirects via GA4's event_callback without double-firing onComplete", () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    // Simulate gtag invoking the event_callback once the hit is dispatched.
+    gtag.mockImplementationOnce((_evt, _name, params) => {
+      (params as { event_callback?: () => void })?.event_callback?.();
+    });
+    trackPurchase(make("#D-4004"), onComplete);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(2000); // fallback must not fire a second time
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
+
+  it("still runs onComplete when the purchase is deduped", () => {
+    const order = make("#E-5005");
+    trackPurchase(order); // first fire records the id
+    const onComplete = vi.fn();
+    trackPurchase(order, onComplete); // deduped — but redirect must not stall
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
 });
