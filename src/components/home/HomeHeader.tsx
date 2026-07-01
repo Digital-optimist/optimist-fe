@@ -101,7 +101,7 @@ export function HomeHeader() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className={cn(
-          "mx-auto w-full max-w-[1160px] flex items-center justify-between gap-3 sm:gap-6 md:gap-8",
+          "mx-auto w-full max-w-[1160px] flex items-center gap-3 sm:gap-6 md:gap-8",
           isScrollHead
             ? // Compact fixed-height pill on scroll.
               "h-15 sm:h-18 md:h-20 px-3 md:px-9.5"
@@ -110,12 +110,10 @@ export function HomeHeader() {
               "pt-[22px] md:pt-14 h-fit px-6 md:px-10",
         )}
       >
-        {/* Left: desktop nav links / mobile hamburger. On md+ both side groups
-            are flex-1 (logo viewport-centred); on mobile they size to content so
-            the parent's justify-between gives the logo equal gaps to the
-            hamburger and CTA — optically centred between two unequal-width
-            neighbours (the wide CTA would otherwise pull it right). */}
-        <div className="flex md:flex-1 items-center justify-start gap-6 md:gap-8">
+        {/* Left: desktop nav links / mobile hamburger. Both side groups are
+            flex-1 so they take equal width and the logo sits at the true
+            viewport centre on every breakpoint. */}
+        <div className="flex flex-1 items-center justify-start gap-6 md:gap-8">
           <nav className="hidden md:flex items-center gap-6 md:gap-8">
             {navItems.map((item) => (
               <Link
@@ -171,11 +169,13 @@ export function HomeHeader() {
           </button>
         </div>
 
-        {/* Center: logo (all breakpoints) */}
+        {/* Center: logo. On mobile the wide "Get it now" makes a viewport-centred
+            logo look pulled right, so it's nudged left a touch to sit at the
+            optical centre (desktop keeps the true flex centre). */}
         <Link
           href="/home"
           aria-label="Optimist home"
-          className="shrink-0"
+          className="shrink-0 -translate-x-6 md:translate-x-0"
           onClick={scrollToTop}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -193,7 +193,7 @@ export function HomeHeader() {
 
         {/* Right: "Get it now" CTA + (desktop) Login. Gap mirrors the left nav
             (`gap-6 md:gap-8`) so Login↔"Get it now" matches Product↔"About Us". */}
-        <div className="flex md:flex-1 items-center justify-end gap-6 md:gap-8">
+        <div className="flex flex-1 items-center justify-end gap-6 md:gap-8">
           <Link
             href={accountHref}
             className="hidden md:flex items-center gap-2 text-sm sm:text-base font-light text-[#212121] transition-colors hover:text-[#1265FF]"

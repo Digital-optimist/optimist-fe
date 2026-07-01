@@ -52,8 +52,8 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
   // gap below the header at the top. (Mobile shrink is ~2px, so it's constant.)
   const mainTopPad = usesGlobalHeader
     ? isScrollHead
-      ? "pt-8 md:pt-24"
-      : "pt-8 md:pt-14"
+      ? "pt-10 md:pt-24"
+      : "pt-10 md:pt-14"
     : undefined;
 
   return (

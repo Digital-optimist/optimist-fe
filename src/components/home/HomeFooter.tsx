@@ -79,7 +79,7 @@ export function HomeFooter() {
 
           <m.div
             variants={fadeUp}
-            className="mt-6 sm:mt-8 md:mt-10 w-full flex flex-col md:flex-row justify-between md:items-end gap-y-8"
+            className="mt-10 md:mt-10 w-full flex flex-col md:flex-row justify-between md:items-end gap-y-10"
           >
             <p className="text-[32px] sm:text-[48px] md:text-[64px] leading-none font-solar font-medium whitespace-pre-line">{`Be the coolest\nhome on the block`}</p>
 
@@ -98,7 +98,7 @@ export function HomeFooter() {
 
           <m.div
             variants={fadeUp}
-            className="mt-8 sm:mt-10 md:mt-15 w-full flex flex-col-reverse md:flex-row justify-between md:items-end gap-y-8"
+            className="mt-12 md:mt-15 w-full flex flex-col-reverse md:flex-row justify-between md:items-end gap-y-10"
           >
             <div className="flex flex-col gap-3 sm:gap-4">
               <ul className="flex gap-2">
