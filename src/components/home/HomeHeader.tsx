@@ -110,9 +110,10 @@ export function HomeHeader() {
               "pt-[22px] md:pt-14 h-fit px-6 md:px-10",
         )}
       >
-        {/* Left: desktop nav links / mobile hamburger. Both side groups are
-            flex-1 so they take equal width and the logo sits at the true
-            viewport centre on every breakpoint. */}
+        {/* Left: desktop nav links / mobile menu button. Both side groups are
+            equal-width flex-1 and the menu button is matched to the CTA width, so
+            the two sides are symmetric and the logo is genuinely centred with
+            equal gaps on every breakpoint. */}
         <div className="flex flex-1 items-center justify-start gap-6 md:gap-8">
           <nav className="hidden md:flex items-center gap-6 md:gap-8">
             {navItems.map((item) => (
@@ -132,14 +133,15 @@ export function HomeHeader() {
             ))}
           </nav>
 
-          {/* Mobile hamburger (left) — circular bordered button, matching the
-              / route */}
+          {/* Mobile menu button (left) — icon + "Menu" label, width matched to
+              the "Get it now" CTA (w-[102px]) so the two side groups are symmetric
+              and the flex-centred logo sits at the exact centre with equal gaps. */}
           <button
             type="button"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="md:hidden flex items-center justify-center rounded-full border border-black/[0.15] p-2.5 text-[#6A6A6A] transition-colors hover:bg-black/[0.04] hover:text-[#212121]"
+            className="md:hidden flex h-9 w-[102px] items-center justify-center gap-2 rounded-full border border-black/[0.15] text-sm font-light text-[#6A6A6A] transition-colors hover:bg-black/[0.04] hover:text-[#212121]"
           >
             <AnimatePresence mode="wait" initial={false}>
               {isMenuOpen ? (
@@ -166,16 +168,16 @@ export function HomeHeader() {
                 </m.span>
               )}
             </AnimatePresence>
+            <span className="leading-none">Menu</span>
           </button>
         </div>
 
-        {/* Center: logo. On mobile the wide "Get it now" makes a viewport-centred
-            logo look pulled right, so it's nudged left a touch to sit at the
-            optical centre (desktop keeps the true flex centre). */}
+        {/* Center: logo — at the true viewport centre on all breakpoints
+            (equal-width flex-1 side groups). */}
         <Link
           href="/home"
           aria-label="Optimist home"
-          className="shrink-0 -translate-x-6 md:translate-x-0"
+          className="shrink-0"
           onClick={scrollToTop}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
