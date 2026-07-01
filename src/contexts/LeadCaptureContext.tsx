@@ -131,7 +131,9 @@ export function LeadCaptureProvider({ children }: { children: ReactNode }) {
 
     const timer = setTimeout(() => {
       // Re-check in case a submission was recorded between scheduling and firing.
-      if (!hasSeenLeadCapture()) openModal();
+      // TEMPORARILY DISABLED: lead-capture popup auto-open is turned off.
+      // Uncomment the line below to re-enable the "Get ₹2,000 off" / coupon popups.
+      // if (!hasSeenLeadCapture()) openModal();
     }, AUTO_OPEN_DELAY);
 
     return () => clearTimeout(timer);
