@@ -159,17 +159,20 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
       try {
         const result = await completeMagicCheckoutWithRetry(paymentId, orderId);
         saveLastOrder(result);
-        // Fire the purchase conversion here (not on the confirmation page): the
-        // amount/currency are known, the page is fully loaded so gtag/fbq are
-        // ready, and it can't double-count on a confirmation-page refresh.
-        trackPurchase(result);
         clearPendingOrder();
         // Only the persistent shopping cart needs clearing; "Buy Now" uses a
         // throwaway cart that was never persisted.
         if (persistentCart && persistentCart.id === checkoutCart.id) {
           clearCheckoutCart();
         }
-        window.location.href = CONFIRMATION_PATH;
+        // Fire the purchase conversion here (not on the confirmation page): the
+        // amount/currency are known and it can't double-count on refresh. Then
+        // redirect once GA4 has actually dispatched the hit (trackPurchase uses
+        // a beacon + event_callback, with a timeout fallback) so the conversion
+        // isn't lost to the navigation.
+        trackPurchase(result, () => {
+          window.location.href = CONFIRMATION_PATH;
+        });
       } catch {
         setLastPaymentId(paymentId);
         setPhase("completeError");
@@ -312,12 +315,13 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         pending.razorpay_order_id,
       );
       saveLastOrder(result);
-      trackPurchase(result);
       clearPendingOrder();
       if (persistentCart && persistentCart.id === pending.cartId) {
         clearCheckoutCart();
       }
-      window.location.href = CONFIRMATION_PATH;
+      trackPurchase(result, () => {
+        window.location.href = CONFIRMATION_PATH;
+      });
     } catch {
       setPhase("completeError");
     }
