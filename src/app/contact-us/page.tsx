@@ -766,10 +766,11 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] pb-16 px-2 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white pb-16 px-2 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Main white container card */}
-        <div className="bg-white rounded-[32px] p-8 px-4 md:p-12 lg:p-16">
+        {/* Content card — grey panel on the white page (matches the /home
+            aesthetic and stays seamless with the in-flow header above). */}
+        <div className="bg-[#f5f5f5] rounded-[32px] p-8 px-4 md:p-12 lg:p-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
             <motion.div
               className="lg:sticky lg:top-32"

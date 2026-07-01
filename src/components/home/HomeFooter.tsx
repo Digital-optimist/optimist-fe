@@ -14,14 +14,16 @@ const logoMark = "/figma/optimist-mark.svg";
 const heroDecor = "/figma/hero-decor.svg";
 
 const footerNavItems = [
+  { id: "product", title: "Product", href: "/products" },
   { id: "about", title: "About Us", href: "/about" },
-  { id: "contact", title: "Contact Sales", href: "/contact-us" },
   { id: "support-feedback", title: "Support / Feedback", href: "/contact-us" },
 ];
 
 const policyItems = [
   { id: "privacy", title: "Privacy Policy", href: "/privacy-policy" },
   { id: "terms", title: "Terms & Conditions", href: "/terms" },
+  { id: "return", title: "Return Policy", href: "/return-policy" },
+  { id: "warranty", title: "Warranty", href: "/warranty" },
 ];
 
 const socials = [
@@ -117,7 +119,7 @@ export function HomeFooter() {
               </p>
             </div>
 
-            <div className="flex items-start gap-4 md:flex-col md:items-end">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8 md:justify-end">
               {policyItems.map((item) => (
                 <Link
                   key={item.id}
