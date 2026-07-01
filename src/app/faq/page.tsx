@@ -3,7 +3,7 @@ import { FadeInWrapper } from "@/components/ui/FadeInWrapper";
 
 export default function FAQPage() {
   return (
-    <FadeInWrapper className="min-h-[calc(100vh-5rem)] pt-24 md:pt-28 lg:pt-32 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+    <FadeInWrapper className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="text-center">
         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
           <HelpCircle className="w-10 h-10 text-white" />

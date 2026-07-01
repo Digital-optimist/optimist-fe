@@ -23,7 +23,7 @@ const cardReveal: Variants = {
 export function AboutHeroSection() {
   return (
     <motion.section
-      className="bg-white pt-24 pb-12 md:pb-16 lg:pb-20 overflow-hidden"
+      className="bg-white pb-12 md:pb-16 lg:pb-20 overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={viewportOnce}

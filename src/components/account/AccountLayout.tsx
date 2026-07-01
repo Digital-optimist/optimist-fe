@@ -73,7 +73,7 @@ export default function AccountLayout({
   }, [isMobileMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-white pt-24 lg:pt-28">
+    <div className="min-h-screen bg-white">
       {/* Header Banner - Full Width */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

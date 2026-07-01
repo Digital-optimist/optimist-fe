@@ -2,9 +2,10 @@ import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
 import SnapmintLoader from "@/components/SnapmintLoader";
-import { getLandingPageContent } from "@/lib/shopify";
+import { getLandingPageContent, getProducts } from "@/lib/shopify";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Poppins } from "next/font/google";
 import Script from "next/script";
 import { WebVitals } from "./_components/WebVitals";
 import "./globals.css";
@@ -74,6 +75,16 @@ const abcSolar = localFont({
   display: "swap",
 });
 
+// Poppins drives the site-wide header (HomeHeader) so the navbar reads
+// identically on every route. Loaded once here and exposed via --font-poppins;
+// the /home route reuses this same variable for its body copy.
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Optimist | Premium Air Conditioners",
@@ -105,7 +116,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const landingContent = await getLandingPageContent();
+  const [landingContent, products] = await Promise.all([
+    getLandingPageContent(),
+    getProducts(10),
+  ]);
   const footerImageSrc = landingContent?.footerImageUrl ?? null;
 
   return (
@@ -212,7 +226,7 @@ export default async function RootLayout({
         {/* <LimeChatWidget /> */}
       </head>
       <body
-        className={`${abcSolar.variable} ${abcSolarDisplay.variable} antialiased bg-white text-optimist-cream`}
+        className={`${abcSolar.variable} ${abcSolarDisplay.variable} ${poppins.variable} antialiased bg-white text-optimist-cream`}
       >
         {/* Google Tag Manager (noscript) */}
         <noscript>
@@ -236,7 +250,7 @@ export default async function RootLayout({
             />
           </noscript>
         )}
-        <Providers>
+        <Providers products={products}>
           <LayoutContent footerImageSrc={footerImageSrc}>
             {children}
           </LayoutContent>

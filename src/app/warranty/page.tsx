@@ -104,7 +104,7 @@ function CheckList({ items }: { items: string[] }) {
 
 export default function WarrantyPage() {
   return (
-    <FadeInWrapper className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16">
+    <FadeInWrapper className="min-h-screen bg-white pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

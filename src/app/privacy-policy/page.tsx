@@ -4,7 +4,7 @@ import { RestrictedContent } from "@/components/ui/RestrictedContent";
 
 export default function PrivacyPolicyPage() {
   return (
-    <RestrictedContent className="min-h-screen bg-white pt-24 md:pt-28 lg:pt-32 pb-16 select-none">
+    <RestrictedContent className="min-h-screen bg-white pb-16 select-none">
       <FadeInWrapper className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

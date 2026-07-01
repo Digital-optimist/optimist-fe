@@ -42,7 +42,15 @@ const socials = [
 // actions restored: nav + policy links point at real routes.
 export function HomeFooter() {
   return (
-    <footer id="about" className="relative">
+    <footer
+      id="about"
+      // `text-[#212121]` pins the base text colour (the headline + nav links have
+      // no explicit colour and would otherwise inherit the site's cream body text
+      // on non-/home routes). Poppins for the body so it reads identically to the
+      // /home footer everywhere (the `font-solar` headline keeps ABC Solar Display).
+      className="relative text-[#212121]"
+      style={{ fontFamily: "var(--font-poppins), system-ui, sans-serif" }}
+    >
       <img src={footerBg} alt="bg" className="absolute bottom-0 w-full" />
       <div className="relative max-w-[1440px] mx-auto pb-8 sm:pb-12 md:pb-16 px-4">
         <m.div

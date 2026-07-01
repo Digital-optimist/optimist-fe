@@ -1,20 +1,12 @@
 import { getArticles, getHomePageContent, getProducts } from "@/lib/shopify";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import type { CSSProperties } from "react";
 import HomePageClient from "./HomePageClient";
 
 // Poppins drives body/UI text on the /home route (per design). Titles and big
-// display text keep ABC Solar Display. Weight 300 is included because the design
-// uses `font-light` / `poppins-light` body copy heavily. Scoped to this page:
-// the wrapper below re-points only the body font CSS variables to Poppins, while
-// the display variables are left untouched so they inherit ABC Solar Display.
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-  display: "swap",
-});
+// display text keep ABC Solar Display. The font itself is loaded once in the
+// root layout (exposed as --font-poppins); the wrapper below just re-points the
+// body font variables to it for this subtree.
 
 // Force Poppins for body/UI text on the home subtree. `fontFamily` is set
 // directly (not just via variables) because unclassed text inherits the
@@ -46,7 +38,7 @@ export default async function NewHomePage() {
   ]);
 
   return (
-    <div className={poppins.variable} style={HOME_FONT_VARS}>
+    <div style={HOME_FONT_VARS}>
       <HomePageClient
         content={content}
         products={products}
