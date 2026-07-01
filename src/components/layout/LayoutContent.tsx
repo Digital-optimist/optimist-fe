@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
 import { HomeHeader } from "@/components/home/HomeHeader";
+import { HomeFooter } from "@/components/home/HomeFooter";
 import { useApp } from "@/components/home/useApp";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollResetOnRouteChange } from "@/components/layout/ScrollResetOnRouteChange";
@@ -60,7 +61,10 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
       <ScrollResetOnRouteChange />
       {!hideHeader && (isLanding ? <Navigation /> : <HomeHeader />)}
       <main className={mainTopPad}>{children}</main>
-      {!hideFooter && <Footer footerImageSrc={footerImageSrc} />}
+      {/* Landing (/) keeps the original Footer; every other route that shows a
+          footer uses the site-wide HomeFooter (mirrors the header treatment). */}
+      {!hideFooter &&
+        (isLanding ? <Footer footerImageSrc={footerImageSrc} /> : <HomeFooter />)}
     </>
   );
 }
