@@ -1,4 +1,11 @@
 export const SALEASSIST_WIDGET_ID = "b64c75ac-d186-4979-a841-1572d8d9614b";
+// Widget ids that conversion events are attributed to (the 3rd arg to
+// `saleassist.track`). The first is the live-demo widget mounted on click; the
+// second is the additional tracking widget SaleAssist provisioned for us.
+export const SALEASSIST_WIDGET_IDS = [
+  SALEASSIST_WIDGET_ID,
+  "240cd0df-b0f1-4d9f-b117-a2ed64e97708",
+];
 const SALEASSIST_SCRIPT_SRC = "https://static.saleassist.ai/widgets/widget.js";
 const SALEASSIST_SCRIPT_ID = "saleassist-widget-script";
 
@@ -19,6 +26,9 @@ const SOCKET_IO_SCRIPT_ID = "socketio-client-script";
 
 type SaleAssist = {
   mountWidget?: (opts: { id: string }) => void;
+  // Conversion/event tracking API, present once widget.js has loaded. Takes the
+  // event name, a data object, and the widget ids to attribute the event to.
+  track?: (eventName: string, data: unknown, widgetIds: string[]) => void;
 };
 
 declare global {
@@ -168,5 +178,64 @@ export async function openSaleAssist(): Promise<void> {
     await mountAndOpen();
   } catch {
     // Swallow load failures; nothing else we can do client-side.
+  }
+}
+
+// Poll a predicate until it's true or we time out. Used to wait for the widget
+// to attach its tracking API after the script (and, if needed, a mount) load.
+function waitForCondition(
+  predicate: () => boolean,
+  timeoutMs = 3000,
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (predicate()) {
+      resolve(true);
+      return;
+    }
+    const start = Date.now();
+    const timer = window.setInterval(() => {
+      if (predicate()) {
+        window.clearInterval(timer);
+        resolve(true);
+      } else if (Date.now() - start >= timeoutMs) {
+        window.clearInterval(timer);
+        resolve(false);
+      }
+    }, 80);
+  });
+}
+
+// Mount the widget exactly once (no open). The launcher is configured hidden so
+// this shows nothing; it's only a fallback to coax the widget into attaching
+// `saleassist.track` on builds that wire the API up at mount time.
+function mountWidgetOnce(): void {
+  if (document.querySelector(WIDGET_ROOT_SELECTOR)) return;
+  try {
+    window.saleassist?.mountWidget?.({ id: SALEASSIST_WIDGET_ID });
+  } catch {
+    /* mount is best-effort */
+  }
+}
+
+// Ensure widget.js is loaded and `saleassist.track` is callable — WITHOUT
+// opening the demo panel. Used by the conversion-tracking layer
+// (saleassist-events.ts) to bring the widget up lazily/deferred. Reuses the
+// same shared load promise as openSaleAssist(), so at most one script load
+// happens regardless of who triggers it first. Resolves false (never throws)
+// if the API can't be reached — tracking then just stays queued.
+export async function ensureSaleAssistLoaded(): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  try {
+    await loadScript();
+    if (typeof window.saleassist?.track === "function") return true;
+    // Fallback: some builds only attach `track` after the widget is mounted.
+    if (typeof window.saleassist?.mountWidget === "function") {
+      mountWidgetOnce();
+    }
+    return await waitForCondition(
+      () => typeof window.saleassist?.track === "function",
+    );
+  } catch {
+    return false;
   }
 }

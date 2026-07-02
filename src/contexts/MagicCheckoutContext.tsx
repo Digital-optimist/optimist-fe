@@ -29,6 +29,7 @@ import {
   waitForAnalyticsCookies,
 } from "@/lib/analytics";
 import { trackMagicCheckoutEvent, trackPurchase } from "@/lib/analytics-events";
+import { saCheckout, saPurchase } from "@/lib/saleassist-events";
 import { getClaimedCoupon } from "@/lib/coupon";
 import {
   savePendingOrder,
@@ -120,6 +121,7 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         saveLastOrder(result);
         // Recovered a payment that wasn't finalized last session — the purchase
         // conversion never fired, so fire it now (deduped by order id).
+        saPurchase(result);
         trackPurchase(result);
         clearPendingOrder();
       })
@@ -169,7 +171,9 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         // amount/currency are known and it can't double-count on refresh. Then
         // redirect once GA4 has actually dispatched the hit (trackPurchase uses
         // a beacon + event_callback, with a timeout fallback) so the conversion
-        // isn't lost to the navigation.
+        // isn't lost to the navigation. (SaleAssist purchase fires here too,
+        // with the checkout cart's line items; both dedupe by order id.)
+        saPurchase(result, checkoutCart);
         trackPurchase(result, () => {
           window.location.href = CONFIRMATION_PATH;
         });
@@ -254,6 +258,9 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
+      // SaleAssist: checkout initiated (covers Buy Now, "Get it now", and cart).
+      saCheckout(cart);
+
       inFlightRef.current = true;
       succeededRef.current = false;
       setPhase("preparing");
@@ -319,6 +326,7 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
       if (persistentCart && persistentCart.id === pending.cartId) {
         clearCheckoutCart();
       }
+      saPurchase(result);
       trackPurchase(result, () => {
         window.location.href = CONFIRMATION_PATH;
       });

@@ -1,6 +1,7 @@
 import { LayoutContent } from "@/components/layout/LayoutContent";
 import { Providers } from "@/components/providers/Providers";
 import SaleAssistLoader from "@/components/SaleAssistLoader";
+import SaleAssistTracker from "@/components/SaleAssistTracker";
 import SnapmintLoader from "@/components/SnapmintLoader";
 import { getLandingPageContent, getProducts } from "@/lib/shopify";
 import type { Metadata } from "next";
@@ -259,6 +260,7 @@ export default async function RootLayout({
         <WebVitals />
         <SnapmintLoader />
         <SaleAssistLoader />
+        <SaleAssistTracker />
       </body>
     </html>
   );
