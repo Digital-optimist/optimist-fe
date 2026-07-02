@@ -8,21 +8,20 @@ import { useApp } from "@/components/home/useApp";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollResetOnRouteChange } from "@/components/layout/ScrollResetOnRouteChange";
 
-// Routes that should not have Footer
+// Routes that should not have Footer. The main home (/) is handled separately
+// below — it ships its own HomeFooter.
 const NO_FOOTER_ROUTES = [
   "/login",
   "/sign-up",
   "/forgot-password",
   "/reset-password",
   "/product-installation",
-  // /home ships its own footer (HomeFooter), so the global Footer is hidden.
-  "/home",
 ];
 
 // Routes that render their own header (or none), so the layout adds no header:
-//   /home  → ships its own inline HomeHeader (keeps its hero/background detail)
 //   /product-installation → standalone noindex page with its own banner
-const NO_HEADER_ROUTES = ["/product-installation", "/home"];
+// The main home (/) is handled separately below (it ships its own HomeHeader).
+const NO_HEADER_ROUTES = ["/product-installation"];
 
 interface LayoutContentProps {
   children: React.ReactNode;
@@ -32,16 +31,21 @@ interface LayoutContentProps {
 export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) {
   const pathname = usePathname();
   const { isScrollHead } = useApp();
-  const hideFooter = NO_FOOTER_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
-  const hideHeader = NO_HEADER_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
-  // The landing page (/) keeps the original floating Navigation; every other
-  // route uses the site-wide HomeHeader (Poppins, scroll-to-frosted-pill).
-  const isLanding = pathname === "/";
-  const usesGlobalHeader = !hideHeader && !isLanding;
+
+  // The main home page (/) renders the optimist-styled homepage, which ships its
+  // OWN HomeHeader + HomeFooter — the layout must not add duplicates.
+  const isMainHome = pathname === "/";
+  // The previous landing page now lives at /home and keeps the original floating
+  // Navigation + Footer it was designed around.
+  const isLegacyLanding = pathname === "/home" || pathname === "/home/";
+
+  const hideFooter =
+    isMainHome || NO_FOOTER_ROUTES.some((route) => pathname.startsWith(route));
+  const hideHeader =
+    isMainHome || NO_HEADER_ROUTES.some((route) => pathname.startsWith(route));
+  // The legacy landing (/home) keeps the original floating Navigation; every
+  // other route uses the site-wide HomeHeader (Poppins, scroll-to-frosted-pill).
+  const usesGlobalHeader = !hideHeader && !isLegacyLanding;
 
   // The in-flow HomeHeader shrinks ~40px on desktop when it turns into the
   // scrolled pill (h-fit≈120px → h-20=80px). Left uncompensated, that height
@@ -59,12 +63,16 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
   return (
     <>
       <ScrollResetOnRouteChange />
-      {!hideHeader && (isLanding ? <Navigation /> : <HomeHeader />)}
+      {!hideHeader && (isLegacyLanding ? <Navigation /> : <HomeHeader />)}
       <main className={mainTopPad}>{children}</main>
-      {/* Landing (/) keeps the original Footer; every other route that shows a
-          footer uses the site-wide HomeFooter (mirrors the header treatment). */}
+      {/* Legacy landing (/home) keeps the original Footer; every other route that
+          shows a footer uses the site-wide HomeFooter (mirrors the header). */}
       {!hideFooter &&
-        (isLanding ? <Footer footerImageSrc={footerImageSrc} /> : <HomeFooter />)}
+        (isLegacyLanding ? (
+          <Footer footerImageSrc={footerImageSrc} />
+        ) : (
+          <HomeFooter />
+        ))}
     </>
   );
 }
