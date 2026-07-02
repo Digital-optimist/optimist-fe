@@ -101,7 +101,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
               src={tempFloatingIcon}
               alt=""
               aria-hidden
-              className="absolute -top-27 right-0 sm:-top-40 sm:right-20 md:-top-52 md:right-28 w-14 sm:w-20 md:w-auto"
+              className="absolute -top-27 -right-6 sm:-top-40 sm:right-20 md:-top-52 md:right-28 w-14 sm:w-20 md:w-auto"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

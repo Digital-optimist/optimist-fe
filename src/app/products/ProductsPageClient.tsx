@@ -27,6 +27,11 @@ import { useJudgeMeRating } from "@/lib/judgeme";
 import { RichTextContent } from "@/lib/richTextRenderer";
 import { openSaleAssist } from "@/lib/saleassist";
 import {
+  saAddToCart,
+  saProductClick,
+  saProductDetail,
+} from "@/lib/saleassist-events";
+import {
   type Product,
   type ProductPageContent,
   type VariantRichText,
@@ -237,6 +242,16 @@ function ProductsPageInner({
     setSelectedImageIndex(0);
   }, [selectedVariant?.id]);
 
+  // Fire the SaleAssist `productDetail` event once, when the default variant
+  // first resolves — the /products page is the product detail view.
+  const productDetailFiredRef = useRef(false);
+  useEffect(() => {
+    if (selectedVariant && !productDetailFiredRef.current) {
+      productDetailFiredRef.current = true;
+      saProductDetail(selectedVariant);
+    }
+  }, [selectedVariant]);
+
   // Re-init Snapmint EMI widget when the variant/price changes — the script
   // binds the EMI calculation to the price in `data-snapmint-price`, so a
   // variant switch needs `window.loadOnPage()` to re-read the new value.
@@ -359,6 +374,7 @@ function ProductsPageInner({
 
   const handleSelectVariant = useCallback((variant: DisplayVariant) => {
     setSelectedVariant(variant);
+    saProductClick(variant);
   }, []);
 
   const handleQuantityChange = useCallback((qty: number) => {
@@ -444,6 +460,7 @@ function ProductsPageInner({
 
     try {
       await addToCart(selectedVariant.variantId, quantity);
+      saAddToCart(selectedVariant, quantity);
       showToast("Added to cart", "success");
     } catch {
       showToast("Failed to add to cart", "error");
