@@ -1,66 +1,161 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { m as motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { LandingContentProvider } from "@/contexts/LandingContentContext";
 import { ProductsProvider } from "@/contexts/ProductsContext";
-import { HomeAppProvider } from "@/components/home/useApp";
-import { HomeHeader } from "@/components/home/HomeHeader";
-import { HeroSection } from "@/components/home/HeroSection";
-import { BenefitsSection } from "@/components/home/BenefitsSection";
-import { ProductDisplaySection } from "@/components/home/ProductDisplaySection";
-import { InsideTechSection } from "@/components/home/InsideTechSection";
-import { AppFeaturesSection } from "@/components/home/AppFeaturesSection";
-import { ComparisonSection } from "@/components/home/ComparisonSection";
-import { SocialProofSection } from "@/components/home/SocialProofSection";
-import { MeetFamilySection } from "@/components/home/MeetFamilySection";
-import { OptimistLabSection } from "@/components/home/OptimistLabSection";
-import { HomeFooter } from "@/components/home/HomeFooter";
-import type { BlogArticle, HomePageContent, Product } from "@/lib/shopify";
+import type { LandingPageContent } from "@/lib/shopify";
 
-// Faint background "checks" pattern bleeding from the top of the page.
-const CHECKS_BG = "/figma/hero-section-bg.svg";
+const BenefitsSection = dynamic(
+  () => import("@/components/landing/BenefitsSection").then((m) => ({ default: m.BenefitsSection })),
+);
+const FeaturesShowcaseSection = dynamic(
+  () => import("@/components/landing/FeaturesShowcaseSection").then((m) => ({ default: m.FeaturesShowcaseSection })),
+);
+const OptimistAppSection = dynamic(
+  () => import("@/components/landing/OptimistAppSection").then((m) => ({ default: m.OptimistAppSection })),
+);
+const MadeSimpleSection = dynamic(
+  () => import("@/components/landing/MadeSimpleSection").then((m) => ({ default: m.MadeSimpleSection })),
+);
+const EngineeredSection = dynamic(
+  () => import("@/components/landing/EngineeredSection").then((m) => ({ default: m.EngineeredSection })),
+);
+const TestimonialsSection = dynamic(
+  () => import("@/components/landing/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+);
+const ProductPickerSection = dynamic(
+  () => import("@/components/landing/ProductPickerSection").then((m) => ({ default: m.ProductPickerSection })),
+);
+const CTASection = dynamic(
+  () => import("@/components/landing/CTASection").then((m) => ({ default: m.CTASection })),
+);
+const IndiaFirstSection = dynamic(
+  () => import("@/components/landing/IndiaFirstSection").then((m) => ({ default: m.IndiaFirstSection })),
+);
+
+const easeOutExpo = "easeOut" as const;
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.6,
+      ease: easeOutExpo,
+    },
+  }),
+};
 
 interface HomePageClientProps {
-  content: HomePageContent | null;
-  products: Product[];
-  articles: BlogArticle[];
+  initialContent: LandingPageContent | null;
 }
 
-// optimist-website-styled homepage, driven by Shopify integrations. Dynamic
-// sections take their copy/data from metaobjects (hero, productDisplay,
-// insideTech, appFeatures, comparison, reviews), live products, and blog
-// articles; Benefits / MeetFamily / Footer stay static (as before). Each section
-// falls back to the reference's static content when its data is absent.
-export default function HomePageClient({
-  content,
-  products,
-  articles,
-}: HomePageClientProps) {
+export default function HomePageClient({ initialContent }: HomePageClientProps) {
+  const landingContent = initialContent;
+  // Fade the page in on mount via opacity transition on a plain <main>.
+  // We don't use a motion component here because Framer Motion adds
+  // `will-change: transform` to motion elements, and that on an ancestor
+  // breaks `position: fixed` / `position: sticky` descendants — which we
+  // need intact for BenefitsSection and FeaturesShowcaseSection scroll pins.
+  const [mainOpacity, setMainOpacity] = useState(0);
+  useEffect(() => {
+    setMainOpacity(1);
+  }, []);
+
   return (
-    <HomeAppProvider>
-      <ProductsProvider initialProducts={products}>
-        <div className="min-h-screen relative bg-white text-[#212121]">
-          <img
-            src={CHECKS_BG}
-            alt=""
-            aria-hidden
-            className="max-w-[1440px] absolute top-0 w-full left-1/2 -translate-x-[58.333%] md:-translate-x-1/2 opacity-80"
-          />
-          <HomeHeader />
-
-          <div className="overflow-hidden">
-            <HeroSection hero={content?.hero ?? null} />
-            <BenefitsSection />
-            <ProductDisplaySection content={content?.productDisplay ?? null} />
-            <InsideTechSection content={content?.insideTech ?? null} />
-            <AppFeaturesSection content={content?.appFeatures ?? null} />
-            <ComparisonSection content={content?.comparison ?? null} />
-            <SocialProofSection content={content?.reviews ?? null} />
-            <MeetFamilySection />
-            <OptimistLabSection articles={articles} />
-          </div>
-
-          <HomeFooter />
-        </div>
-      </ProductsProvider>
-    </HomeAppProvider>
+    <LandingContentProvider content={landingContent}>
+    <ProductsProvider>
+    <main
+      style={{
+        opacity: mainOpacity,
+        transition: "opacity 0.4s ease-out",
+      }}
+    >
+      <HeroSection
+        headingLine1={landingContent?.heroHeadingLine1}
+        headingLine2={landingContent?.heroHeadingLine2}
+        badges={landingContent?.heroBadges}
+      />
+      <BenefitsSection />
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={1}
+        variants={sectionVariants}
+      >
+        <FeaturesShowcaseSection />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={4}
+        variants={sectionVariants}
+      >
+        <OptimistAppSection />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={3}
+        variants={sectionVariants}
+      >
+        <MadeSimpleSection />
+      </motion.div>{" "}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={2}
+        variants={sectionVariants}
+      >
+        <EngineeredSection />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={5}
+        variants={sectionVariants}
+      >
+        <TestimonialsSection testimonials={landingContent?.testimonials} />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={6}
+        variants={sectionVariants}
+      >
+        <ProductPickerSection />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={7}
+        variants={sectionVariants}
+      >
+        <CTASection />
+      </motion.div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={8}
+        variants={sectionVariants}
+      >
+        <IndiaFirstSection />
+      </motion.div>
+    </main>
+    </ProductsProvider>
+    </LandingContentProvider>
   );
 }

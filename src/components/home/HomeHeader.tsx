@@ -21,9 +21,9 @@ const navItems = [
 ];
 
 // Mobile menu links — mirrors the global layout `Navigation` (Home / Product /
-// About Us) so /home's collapsed menu matches the rest of the site.
+// About Us) so the collapsed menu matches the rest of the site.
 const mobileNavItems = [
-  { id: "home", href: "/home", title: "Home" },
+  { id: "home", href: "/", title: "Home" },
   ...navItems,
 ];
 
@@ -175,7 +175,7 @@ export function HomeHeader() {
         {/* Center: logo — at the true viewport centre on all breakpoints
             (equal-width flex-1 side groups). */}
         <Link
-          href="/home"
+          href="/"
           aria-label="Optimist home"
           className="shrink-0"
           onClick={scrollToTop}
