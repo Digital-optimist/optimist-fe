@@ -7,6 +7,7 @@ import { HomeFooter } from "@/components/home/HomeFooter";
 import { useApp } from "@/components/home/useApp";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollResetOnRouteChange } from "@/components/layout/ScrollResetOnRouteChange";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 
 // Routes that should not have Footer. The main home (/) is handled separately
 // below — it ships its own HomeFooter.
@@ -47,6 +48,12 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
   // other route uses the site-wide HomeHeader (Poppins, scroll-to-frosted-pill).
   const usesGlobalHeader = !hideHeader && !isLegacyLanding;
 
+  // The announcement marquee shows site-wide EXCEPT the legacy landing (/home),
+  // whose Navigation is position:fixed and would overlap an in-flow bar, and the
+  // standalone /product-installation page.
+  const showAnnouncement =
+    !isLegacyLanding && !pathname.startsWith("/product-installation");
+
   // The in-flow HomeHeader shrinks ~40px on desktop when it turns into the
   // scrolled pill (h-fit≈120px → h-20=80px). Left uncompensated, that height
   // change fights the browser's scroll-anchoring near the threshold and makes
@@ -63,6 +70,7 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
   return (
     <>
       <ScrollResetOnRouteChange />
+      {showAnnouncement && <AnnouncementBar />}
       {!hideHeader && (isLegacyLanding ? <Navigation /> : <HomeHeader />)}
       <main className={mainTopPad}>{children}</main>
       {/* Legacy landing (/home) keeps the original Footer; every other route that
