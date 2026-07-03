@@ -22,6 +22,11 @@ export function BlogCard({ article, index = 0 }: BlogCardProps) {
   const readTime = calculateReadTime(article.content);
   const formattedDate = formatArticleDate(article.publishedAt);
   const tags = article.tags || [];
+  // The first grid card repeats the featured (wide banner) article. It fills the
+  // box like every other card, but crops from the LEFT (`object-left`) so the
+  // thumbnail shows the banner's title + feature icons cleanly, instead of an
+  // awkward mid-graphic slice.
+  const isFirst = index === 0;
 
   return (
     <Link
@@ -44,7 +49,9 @@ export function BlogCard({ article, index = 0 }: BlogCardProps) {
             src={article.image.url}
             alt={article.image.altText || article.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
+              isFirst ? "object-left" : ""
+            }`}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
