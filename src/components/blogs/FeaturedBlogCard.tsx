@@ -37,10 +37,10 @@ export function FeaturedBlogCard({ article }: FeaturedBlogCardProps) {
       >
         <Link
           href={`/blogs/${article.blog?.handle || "news"}/${article.handle}`}
-          className="group flex flex-col lg:flex-row gap-6 lg:gap-10"
+          className="group flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10"
         >
           {/* Image */}
-          <div className="relative w-full lg:w-1/2 aspect-[4/3] lg:aspect-[16/11] rounded-2xl overflow-hidden bg-gray-100">
+          <div className="relative w-full lg:w-1/2 aspect-[2.4/1] rounded-2xl overflow-hidden bg-gray-100">
             {article.image ? (
               <Image
                 src={article.image.url}
