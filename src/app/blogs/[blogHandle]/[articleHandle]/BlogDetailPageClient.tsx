@@ -99,8 +99,9 @@ export default function BlogDetailPageClient({
             <motion.div
               className="flex-1 max-w-full lg:max-w-[720px]"
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.05 }}
+              // Reveal on mount (not scroll): the article body is very tall, so a
+              // whileInView threshold fired unreliably and left it hidden.
+              animate="visible"
               custom={2}
               variants={sectionVariants}
             >

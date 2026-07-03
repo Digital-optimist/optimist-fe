@@ -67,7 +67,7 @@ export function BlogDetailImage({ article }: BlogDetailImageProps) {
         >
           {/* Featured Image */}
           <motion.div
-            className="relative w-full aspect-[16/9] md:aspect-[2.4/1] rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden bg-gray-100"
+            className="relative w-full aspect-[2.4/1] rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden bg-gray-100"
             variants={fadeScale}
           >
             {article.image ? (
