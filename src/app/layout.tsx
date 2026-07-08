@@ -224,6 +224,14 @@ export default async function RootLayout({
             }}
           />
         )}
+        {/* Shopflo bundle bridge — requested by the Shopflo integration team.
+            `afterInteractive` mirrors the snippet's `async` intent (loads right
+            after hydration, off the critical render path). */}
+        <Script
+          id="shopflo-bundle"
+          src="https://bridge.shopflo.com/js/shopflo.bundle.js"
+          strategy="afterInteractive"
+        />
         {/* <LimeChatWidget /> */}
       </head>
       <body

@@ -68,6 +68,39 @@ interface RazorpayFailedResponse {
   };
 }
 
+/**
+ * Per-method display overrides. `whitelabel` re-brands a provider on the EMI
+ * screens (e.g. shows Snapmint under a custom label). Optional — omit to keep
+ * the provider's own name.
+ */
+interface RazorpayMethodOptions {
+  snapmint?: {
+    whitelabel?: {
+      enabled?: boolean;
+      label?: string;
+      description?: string;
+    };
+  };
+}
+
+/** A custom tile on the L0 payment screen: a named, standalone block grouping
+ *  one or more instruments (payment methods). */
+interface RazorpayDisplayBlock {
+  name: string;
+  instruments: { method: string }[];
+  /** Render the block inline on L0 (vs. a nested/expandable section). */
+  inline?: boolean;
+}
+
+/** L0 payment-screen display customization (`config.display`). */
+interface RazorpayDisplayConfig {
+  blocks?: Record<string, RazorpayDisplayBlock>;
+  /** Order of tiles on L0 — method ids ("upi", "card", …) or "block.<key>".
+   *  Methods not listed still appear, after the sequenced ones. */
+  sequence?: string[];
+  hide?: { method: string }[];
+}
+
 interface RazorpayOptions {
   /** Public API Key ID from the Razorpay Dashboard (rzp_live_/rzp_test_). */
   key: string;
@@ -82,6 +115,10 @@ interface RazorpayOptions {
   prefill?: RazorpayPrefill;
   notes?: Record<string, string>;
   theme?: { color?: string };
+  /** Per-method display overrides (e.g. Snapmint whitelabel/rename). */
+  method?: RazorpayMethodOptions;
+  /** L0 display customization — custom blocks + method ordering. */
+  config?: { display?: RazorpayDisplayConfig };
   /** Called once on a successful, captured payment. */
   handler?: (response: RazorpaySuccessResponse) => void;
   modal?: {

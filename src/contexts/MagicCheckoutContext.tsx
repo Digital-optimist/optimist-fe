@@ -196,6 +196,31 @@ export function MagicCheckoutProvider({ children }: { children: ReactNode }) {
         name: STORE_NAME,
         order_id: orderId,
         show_coupons: true,
+        // Surface Snapmint as a standalone option on the primary (L0) payment
+        // screen instead of nested under EMI, per Razorpay's Snapmint doc.
+        // `method.snapmint.whitelabel` re-brands the method; `config.display`
+        // adds a standalone block and orders it on L0 (UPI · Card · Snapmint).
+        method: {
+          snapmint: {
+            whitelabel: {
+              enabled: true,
+              label: "Optimist EMI",
+              description: "India's Real AC",
+            },
+          },
+        },
+        config: {
+          display: {
+            blocks: {
+              snapmint: {
+                name: "Snapmint",
+                instruments: [{ method: "snapmint" }],
+                inline: true,
+              },
+            },
+            sequence: ["upi", "card", "block.snapmint"],
+          },
+        },
         prefill: buildPrefill(),
         theme: { color: THEME_COLOR },
         handler: (response) => {
