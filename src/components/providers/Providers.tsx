@@ -12,6 +12,7 @@ import { HomeAppProvider } from "@/components/home/useApp";
 import { ToastProvider } from "@/components/ui/Toast";
 import { WaitlistModal } from "@/components/ui/WaitlistModal";
 import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import type { Product } from "@/lib/shopify";
 
 interface ProvidersProps {
@@ -39,6 +40,9 @@ export function Providers({ children, products }: ProvidersProps) {
                   </ProductsProvider>
                   <WaitlistModal />
                   <LeadCaptureModal />
+                  {/* Global cart drawer — opens from any route's add-to-cart
+                      (addToCart → openCart), not just the legacy /home nav. */}
+                  <CartDrawer />
                 </LeadCaptureProvider>
               </WaitlistProvider>
             </MagicCheckoutProvider>

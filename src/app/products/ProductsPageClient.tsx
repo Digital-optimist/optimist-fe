@@ -461,7 +461,8 @@ function ProductsPageInner({
     try {
       await addToCart(selectedVariant.variantId, quantity);
       saAddToCart(selectedVariant, quantity);
-      showToast("Added to cart", "success");
+      // The cart drawer opens automatically (addToCart → openCart) as the
+      // add-to-cart confirmation, so no redundant success toast is shown here.
     } catch {
       showToast("Failed to add to cart", "error");
     }

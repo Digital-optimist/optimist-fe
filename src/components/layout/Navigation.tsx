@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
-import { CartDrawer } from "@/components/cart/CartDrawer";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -728,9 +727,7 @@ export function Navigation() {
           </AnimatePresence>
         </motion.nav>
       </motion.div>
-
-      {/* Cart Drawer */}
-      <CartDrawer />
+      {/* Cart drawer is mounted globally in Providers (works on every route). */}
     </>
   );
 }
