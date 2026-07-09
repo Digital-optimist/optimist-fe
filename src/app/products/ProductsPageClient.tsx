@@ -52,11 +52,6 @@ const ComparisonSection = dynamic(() =>
     default: m.ComparisonSection,
   })),
 );
-const BusinessPurchaseSection = dynamic(() =>
-  import("@/components/products/BusinessPurchaseSection").then((m) => ({
-    default: m.BusinessPurchaseSection,
-  })),
-);
 const ExpertTestimonialsSection = dynamic(() =>
   import("@/components/products/ExpertTestimonialsSection").then((m) => ({
     default: m.ExpertTestimonialsSection,
@@ -696,11 +691,6 @@ function ProductsPageInner({
                   onToggle={handleQuantityToggle}
                   options={QUANTITY_OPTIONS}
                 />
-              </div>
-
-              {/* Business Purchase (GST) */}
-              <div>
-                <BusinessPurchaseSection />
               </div>
 
               {/* Snapmint EMI Widget — the loader script (mounted globally in
