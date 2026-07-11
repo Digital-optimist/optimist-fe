@@ -83,7 +83,7 @@ export function HomeFooter() {
           >
             <p className="text-[32px] sm:text-[48px] md:text-[64px] leading-none font-solar font-medium whitespace-pre-line">{`Be the coolest\nhome on the block`}</p>
 
-            <div className="flex items-start gap-4 md:flex-col md:items-end md:justify-end">
+            <div className="flex flex-col items-start gap-3 md:gap-4 md:items-end md:justify-end">
               {footerNavItems.map((item) => (
                 <Link
                   key={item.id}
