@@ -97,7 +97,7 @@ export function HomeFooter() {
                   absolute URL, per the SEO/indexing request (links the Feeds
                   section from the site-wide footer so it isn't orphaned). */}
               <a
-                href="https://www.optimist.in/feeds"
+                href="https://feeds.optimist.in"
                 className="text-sm sm:text-base md:text-[21px] leading-none hover:text-[#3478F6] transition-colors"
               >
                 Resource Hub
