@@ -698,50 +698,67 @@ function ProductsPageInner({
                       currency: "INR",
                     })
                   }
-                  className="btn-scale mt-1.5 mb-4 flex w-full flex-col items-center justify-center gap-1 rounded-[4.536px] bg-[#f1f1f1] px-4 py-2.5 transition-colors hover:bg-[#e6e6e6] @min-[540px]:absolute @min-[540px]:bottom-[15px] @min-[540px]:left-[358px] @min-[540px]:right-0 @min-[540px]:mt-0 @min-[540px]:mb-0 @min-[540px]:h-[62px] @min-[540px]:w-auto @min-[540px]:gap-0.5 @min-[540px]:py-0"
+                  className="btn-scale group mt-1.5 mb-4 flex w-full flex-col items-center justify-center gap-2 rounded-[4.536px] bg-[#f1f1f1] px-4 py-3.5 transition-colors hover:bg-[#e6e6e6] @min-[540px]:absolute @min-[540px]:bottom-[15px] @min-[540px]:left-[358px] @min-[540px]:right-0 @min-[540px]:mt-0 @min-[540px]:mb-0 @min-[540px]:h-[62px] @min-[540px]:w-auto @min-[540px]:gap-1 @min-[540px]:py-0"
                 >
-                  <span className="text-xs font-light text-[#6c6a6a]">
+                  <span className="text-sm font-normal text-[#565959] @min-[540px]:text-[13px]">
                     Exclusively available on
                   </span>
-                  <svg
-                    viewBox="0 0 120 46"
-                    className="h-4 w-auto xl:h-[18px]"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <text
-                      x="2"
-                      y="29"
-                      fontFamily="Arial, 'Helvetica Neue', Helvetica, sans-serif"
-                      fontSize="32"
-                      fontWeight="700"
-                      letterSpacing="-2"
-                      fill="#131A22"
+                  <span className="flex items-center gap-2">
+                    <svg
+                      viewBox="0 0 120 46"
+                      className="h-8 w-auto @min-[540px]:h-6"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      amazon
-                    </text>
-                    <path
-                      d="M13 34 C 42 44, 80 44, 104 33"
+                      <text
+                        x="2"
+                        y="29"
+                        fontFamily="Arial, 'Helvetica Neue', Helvetica, sans-serif"
+                        fontSize="32"
+                        fontWeight="700"
+                        letterSpacing="-2"
+                        fill="#131A22"
+                      >
+                        amazon
+                      </text>
+                      <path
+                        d="M13 34 C 42 44, 80 44, 104 33"
+                        fill="none"
+                        stroke="#FF9900"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M104 33 l -8 -1.5"
+                        fill="none"
+                        stroke="#FF9900"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M104 33 l -2.5 7.5"
+                        fill="none"
+                        stroke="#FF9900"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    {/* Outbound cue — nudges right on hover so the card reads as
+                        a clickable CTA rather than a static "supplied" badge. */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4 shrink-0 text-[#232f3e] transition-transform duration-200 group-hover:translate-x-0.5"
                       fill="none"
-                      stroke="#FF9900"
-                      strokeWidth="4"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
                       strokeLinecap="round"
-                    />
-                    <path
-                      d="M104 33 l -8 -1.5"
-                      fill="none"
-                      stroke="#FF9900"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M104 33 l -2.5 7.5"
-                      fill="none"
-                      stroke="#FF9900"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
                 </a>
               </div>
 
