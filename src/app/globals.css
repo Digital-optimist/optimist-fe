@@ -118,6 +118,44 @@
   }
 }
 
+/* Shimmer sweep for the "Also available on Amazon" CTA card. A soft light gleam
+   crosses the card on a slow loop — sweeping in the first part of the cycle then
+   holding off-screen — to draw the eye and signal it's tappable. The card clips
+   the gleam (overflow-hidden) and it sits above the content (a shine passing over
+   the logo). Disabled under reduced-motion. */
+@keyframes amazon-shimmer {
+  0% {
+    transform: translateX(-140%) skewX(-20deg);
+  }
+  35%,
+  100% {
+    transform: translateX(340%) skewX(-20deg);
+  }
+}
+.amazon-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.85),
+    transparent
+  );
+  transform: translateX(-140%) skewX(-20deg);
+  animation: amazon-shimmer 4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .amazon-shimmer::after {
+    display: none;
+    animation: none;
+  }
+}
+
 /* Hover/active scale utility — replaces framer-motion's whileHover/whileTap
    on the products page CTAs. Disabled below the reduced-motion threshold. */
 .btn-scale {

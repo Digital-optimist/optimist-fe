@@ -698,7 +698,7 @@ function ProductsPageInner({
                       currency: "INR",
                     })
                   }
-                  className="btn-scale group mt-1.5 mb-4 flex w-full flex-col items-center justify-center gap-2 rounded-[4.536px] bg-[#f1f1f1] px-4 py-3.5 transition-colors hover:bg-[#e6e6e6] @min-[540px]:absolute @min-[540px]:bottom-[15px] @min-[540px]:left-[358px] @min-[540px]:right-0 @min-[540px]:mt-0 @min-[540px]:mb-0 @min-[540px]:h-[62px] @min-[540px]:w-auto @min-[540px]:gap-1 @min-[540px]:py-0"
+                  className="amazon-shimmer btn-scale group relative mt-1.5 mb-4 flex w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-[4.536px] bg-[#f1f1f1] px-4 py-3.5 transition-colors hover:bg-[#e6e6e6] @min-[540px]:absolute @min-[540px]:bottom-[15px] @min-[540px]:left-[358px] @min-[540px]:right-0 @min-[540px]:mt-0 @min-[540px]:mb-0 @min-[540px]:h-[62px] @min-[540px]:w-auto @min-[540px]:gap-1 @min-[540px]:py-0"
                 >
                   <span className="text-sm font-normal text-[#565959] @min-[540px]:text-[13px]">
                     Exclusively available on
