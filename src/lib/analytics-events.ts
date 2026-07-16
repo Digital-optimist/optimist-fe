@@ -36,6 +36,20 @@ function ga(event: string, params: Record<string, unknown>): void {
   }
 }
 
+/**
+ * Fire a standalone GA4 event outside the checkout funnel — e.g. an
+ * outbound-link or CTA click. Thin public wrapper over the internal `ga()`
+ * sender, so it inherits the same gtag→dataLayer fallback and never-throws
+ * safety. Use a GA4 recommended event name where one fits, otherwise a clear
+ * snake_case custom name.
+ */
+export function trackEvent(
+  event: string,
+  params: Record<string, unknown> = {},
+): void {
+  ga(event, params);
+}
+
 /** Send a Meta Pixel event — `track` for standard events, else `trackCustom`. */
 function meta(
   event: string,
