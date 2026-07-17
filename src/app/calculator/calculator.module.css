@@ -58,6 +58,8 @@
   color: var(--text);
   line-height: 1.55;
   font-size: 16px;
+  /* Breathing room before the site footer on both the form and results views. */
+  padding-bottom: 80px;
 }
 
 /* Full-viewport ambient gradient, sits behind the site chrome + content. */
@@ -77,22 +79,26 @@
   background: var(--blue);
   color: #fff;
 }
-.page img {
+/* Element resets scoped to the page but at ZERO specificity (:where) so any
+   component class — .calc-btn, .chip, .act, .back-btn, … — always wins. Without
+   :where(), `.page button` (0-1-1) would beat single-class button styles (0-1-0)
+   and strip their gradient/colour/border (the calc-btn rendered plain white). */
+:where(.page) img {
   max-width: 100%;
   display: block;
 }
-.page button {
+:where(.page) button {
   font-family: inherit;
   cursor: pointer;
   border: none;
   background: none;
   color: inherit;
 }
-.page input,
-.page select {
+:where(.page) input,
+:where(.page) select {
   font-family: inherit;
 }
-.page a {
+:where(.page) a {
   color: inherit;
   text-decoration: none;
 }
