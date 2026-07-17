@@ -622,144 +622,43 @@ function ProductsPageInner({
                 />
               </div>
 
-              {/* Total/Price — wrapped in a relative `@container` box so the
-                  Amazon card can sit BESIDE the Snapmint EMI badge WITHOUT being a
-                  child of the price block. Snapmint injects its widget INTO
-                  `priceRef`, and adding children (or a `position`) to that block
-                  disrupts the injection — so the price block below is kept exactly
-                  as-is, and the Amazon card is a *sibling* positioned against this
-                  wrapper (whose height tracks the price block). Making it a
-                  container lets the card respond to the buy-box column's real
-                  width rather than the viewport, so side-by-side vs stacked is
-                  decided by the space actually available (see the card below). */}
-              <div className="relative @container">
-                <div ref={priceRef} className="flex flex-col gap-1.5">
-                  {/* Social proof — shown just above the price */}
-                  <SocialProofLine
-                    className="text-sm text-[#3a3a3a]"
-                    iconClassName="text-amber-500"
-                  />
-                  <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="text-2xl md:text-3xl font-semibold text-black">
-                      Rs {formatPrice(selectedVariant?.price || 0)}.00
-                    </span>
-                    {selectedVariant?.compareAtPrice &&
-                      selectedVariant.compareAtPrice > selectedVariant.price && (
-                        <>
-                          <span className="text-base md:text-lg text-[#6c6a6a] line-through">
-                            Rs {formatPrice(selectedVariant.compareAtPrice)}
-                          </span>
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs md:text-sm font-medium bg-[#E8F5E9] text-[#2E7D32]">
-                            {Math.round(
-                              ((selectedVariant.compareAtPrice -
-                                selectedVariant.price) /
-                                selectedVariant.compareAtPrice) *
-                                100,
-                            )}
-                            % off
-                          </span>
-                        </>
-                      )}
-                  </div>
-                  <span className="text-[#6c6a6a] text-sm md:text-base font-light">
-                    (inclusive of all taxes)
+              {/* Total/Price */}
+              <div ref={priceRef} className="flex flex-col gap-1.5">
+                {/* Social proof — shown just above the price */}
+                <SocialProofLine
+                  className="text-sm text-[#3a3a3a]"
+                  iconClassName="text-amber-500"
+                />
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-2xl md:text-3xl font-semibold text-black">
+                    Rs {formatPrice(selectedVariant?.price || 0)}.00
                   </span>
-                  {selectedVariantOutOfStock && (
-                    <span className="text-red-500 text-sm font-medium">
-                      This variant is currently out of stock
-                    </span>
-                  )}
+                  {selectedVariant?.compareAtPrice &&
+                    selectedVariant.compareAtPrice > selectedVariant.price && (
+                      <>
+                        <span className="text-base md:text-lg text-[#6c6a6a] line-through">
+                          Rs {formatPrice(selectedVariant.compareAtPrice)}
+                        </span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs md:text-sm font-medium bg-[#E8F5E9] text-[#2E7D32]">
+                          {Math.round(
+                            ((selectedVariant.compareAtPrice -
+                              selectedVariant.price) /
+                              selectedVariant.compareAtPrice) *
+                              100,
+                          )}
+                          % off
+                        </span>
+                      </>
+                    )}
                 </div>
-
-                {/* Also available on Amazon — a SIBLING of the price block (never
-                    a child, so Snapmint's injection is untouched). Once the buy-box
-                    column is wide enough (@min-[540px]) the card goes absolute and
-                    pins to the wrapper's bottom-right, beside the Snapmint EMI card;
-                    on narrower columns it flows full-width underneath. When stacked
-                    it's `w-full`, and the Snapmint widget is forced to full width
-                    too (see the @container rule in globals.css) so the two cards —
-                    and the Quantity selector below — are all equal width at any
-                    viewport. Links to the Optimist listing on Amazon.in.
-                    `bottom-[15px]` cancels the 15px bottom margin Snapmint sets on
-                    its widget (margin: 10px 0 15px), baked into the wrapper height —
-                    without it the card sits 15px too low. */}
-                <a
-                  href="https://www.amazon.in/dp/B0GQ35RNHT"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Also available on Amazon"
-                  onClick={() =>
-                    trackEvent("amazon_click", {
-                      link_url: "https://www.amazon.in/dp/B0GQ35RNHT",
-                      link_location: "product_buy_box",
-                      item_id: selectedVariant?.variantId ?? "",
-                      item_name: selectedVariant?.productTitle ?? "Optimist AC",
-                      price: selectedVariant?.price,
-                      currency: "INR",
-                    })
-                  }
-                  className="amazon-shimmer btn-scale group relative mt-1.5 mb-4 flex w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-[4.536px] bg-[#f1f1f1] px-4 py-3.5 transition-colors hover:bg-[#e6e6e6] @min-[540px]:absolute @min-[540px]:bottom-[15px] @min-[540px]:left-[358px] @min-[540px]:right-0 @min-[540px]:mt-0 @min-[540px]:mb-0 @min-[540px]:h-[62px] @min-[540px]:w-auto @min-[540px]:gap-1 @min-[540px]:py-0"
-                >
-                  <span className="text-sm font-normal text-[#565959] @min-[540px]:text-[13px]">
-                    Exclusively available on
+                <span className="text-[#6c6a6a] text-sm md:text-base font-light">
+                  (inclusive of all taxes)
+                </span>
+                {selectedVariantOutOfStock && (
+                  <span className="text-red-500 text-sm font-medium">
+                    This variant is currently out of stock
                   </span>
-                  <span className="flex items-center gap-2">
-                    <svg
-                      viewBox="0 0 120 46"
-                      className="h-8 w-auto @min-[540px]:h-6"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <text
-                        x="2"
-                        y="29"
-                        fontFamily="Arial, 'Helvetica Neue', Helvetica, sans-serif"
-                        fontSize="32"
-                        fontWeight="700"
-                        letterSpacing="-2"
-                        fill="#131A22"
-                      >
-                        amazon
-                      </text>
-                      <path
-                        d="M13 34 C 42 44, 80 44, 104 33"
-                        fill="none"
-                        stroke="#FF9900"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M104 33 l -8 -1.5"
-                        fill="none"
-                        stroke="#FF9900"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M104 33 l -2.5 7.5"
-                        fill="none"
-                        stroke="#FF9900"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    {/* Outbound cue — nudges right on hover so the card reads as
-                        a clickable CTA rather than a static "supplied" badge. */}
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-4 w-4 shrink-0 text-[#232f3e] transition-transform duration-200 group-hover:translate-x-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 12h14M13 6l6 6-6 6" />
-                    </svg>
-                  </span>
-                </a>
+                )}
               </div>
 
               {/* Limited-time coupon + countdown. Placed after the price block:
@@ -939,6 +838,73 @@ function ProductsPageInner({
                   </span>
                 </button>
               </div>
+
+              {/* Exclusively Available On Amazon — client-specified block placed
+                  below the Live Demo CTA (not beside Snapmint). A dark card with a
+                  light-grey Amazon pill; the whole card links to the Optimist
+                  listing on Amazon.in. The pill carries the shimmer sweep. */}
+              <a
+                href="https://www.amazon.in/dp/B0GQ35RNHT"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Exclusively available on Amazon"
+                onClick={() =>
+                  trackEvent("amazon_click", {
+                    link_url: "https://www.amazon.in/dp/B0GQ35RNHT",
+                    link_location: "product_below_live_demo",
+                    item_id: selectedVariant?.variantId ?? "",
+                    item_name: selectedVariant?.productTitle ?? "Optimist AC",
+                    price: selectedVariant?.price,
+                    currency: "INR",
+                  })
+                }
+                className="group flex w-full flex-col items-center gap-2.5"
+              >
+                <span className="text-base font-medium tracking-[0.08em] text-[#212121]">
+                  Exclusively Available On
+                </span>
+                <span className="amazon-shimmer relative flex w-full items-center justify-center overflow-hidden rounded-full bg-[#f1f1f1] px-4 md:px-6 py-2 transition-transform duration-200 group-hover:scale-[1.02]">
+                  <svg
+                    viewBox="0 0 120 46"
+                    className="h-8 w-auto md:h-10"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <text
+                      x="2"
+                      y="29"
+                      fontFamily="Arial, 'Helvetica Neue', Helvetica, sans-serif"
+                      fontSize="32"
+                      fontWeight="700"
+                      letterSpacing="-2"
+                      fill="#131A22"
+                    >
+                      amazon
+                    </text>
+                    <path
+                      d="M13 34 C 42 44, 80 44, 104 33"
+                      fill="none"
+                      stroke="#FF9900"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M104 33 l -8 -1.5"
+                      fill="none"
+                      stroke="#FF9900"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M104 33 l -2.5 7.5"
+                      fill="none"
+                      stroke="#FF9900"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+              </a>
 
               {/* Feature Icons Row */}
               <div>

@@ -840,22 +840,6 @@ div:has(> .promo-urgency-banner):has(.snap_emi_txt_wrapper)
   margin-top: -15px;
 }
 
-/* Make the Snapmint EMI widget fill the column when the buy box is stacked
-   (mobile / narrow columns), so it matches the full-width Amazon "also available
-   on" card and the Quantity selector below it. Snapmint renders its widget at
-   `max-content` and its width scales with the viewport, so rather than tracking
-   it we force it to 100% — the Amazon card is already `w-full`, so all three end
-   up equal width at any size. Scoped to the price-block `@container` (see
-   ProductsPageClient) and only below the side-by-side threshold, so the desktop
-   layout keeps Snapmint at its natural width with the Amazon card beside it. The
-   widget's inner `.snap_flex_section` fills automatically, so the EMI content
-   simply spreads to the full width. */
-@container (max-width: 539.98px) {
-  .snap_emi_txt.snap_emi_txt_wrapper {
-    width: 100% !important;
-  }
-}
-
 /* LimeChat WhatsApp widget — lift it above the mobile sticky footer.
    The widget (src/components/LimeChatWidget.tsx) renders a fixed
    `.WhatsAppButton__root` button whose bottom/right offsets come from
