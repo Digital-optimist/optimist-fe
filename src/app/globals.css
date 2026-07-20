@@ -825,14 +825,16 @@ body {
    `.cashback_text_widget` nodes — each picks up the price block's flex `gap`, so
    the dead space below the EMI badge grows on variant switches. Both are
    third-party injected DOM we can't style at the source (its margin is inline).
-   Scoped to the buy-box column (the one holding `.promo-urgency-banner`): hide
-   the empty cashback artifacts, and pull the banner up by the widget's own margin
-   so the EMI→banner gap matches the rest of the section.
+   Hide the empty cashback artifacts (scoped via the injected `.snap_emi_txt_wrapper`
+   so they stay hidden even when the promo banner is absent — e.g. an out-of-stock
+   variant, which otherwise left ~3 empty spans piling up flex-gap dead space), and
+   pull the banner up by the widget's own margin so the EMI→banner gap matches the
+   rest of the section.
    The :has() guard applies the pull only when the EMI widget actually rendered —
    if Snapmint is blocked/fails, the banner keeps its normal spacing and never
    overlaps the price. (:has() is unsupported on Firefox <121, which simply keeps
    the original spacing — a graceful no-op.) */
-div:has(> .promo-urgency-banner) .cashback_text_widget {
+div:has(.snap_emi_txt_wrapper) .cashback_text_widget {
   display: none !important; /* override Snapmint's injected inline/!important display */
 }
 div:has(> .promo-urgency-banner):has(.snap_emi_txt_wrapper)

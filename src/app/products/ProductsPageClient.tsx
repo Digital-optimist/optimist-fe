@@ -714,25 +714,21 @@ function ProductsPageInner({
                           role="radio"
                           aria-checked={isSelected}
                           onClick={() => handleSelectVariant(v)}
-                          disabled={!v.available}
                           className={`btn-scale flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-3.5 text-center transition-all ${
                             isSelected
                               ? "border-[#3478F6] bg-[#EEF4FE]"
                               : "border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.24)]"
-                          } ${!v.available ? "cursor-not-allowed opacity-50" : ""}`}
+                          }`}
                         >
                           <span className="text-base font-semibold text-[#0A0A0A]">
                             {v.name}
                           </span>
-                          {/* Sample per-size info line (hardcoded for now). */}
+                          {/* Sample per-size info line (hardcoded for now). Always
+                              shown for 1.5; out-of-stock status is conveyed by the
+                              banner above the selector and the disabled CTAs. */}
                           {v.tonnage === "1.5" && (
                             <span className="text-xs text-[#6c6a6a]">
                               7 days delivery
-                            </span>
-                          )}
-                          {!v.available && (
-                            <span className="text-xs text-[#6c6a6a]">
-                              Out of stock
                             </span>
                           )}
                         </button>
