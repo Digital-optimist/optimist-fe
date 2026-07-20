@@ -42,6 +42,7 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
       key: v.tonnage,
       name: v.name,
       price: v.price,
+      available: v.available,
       onBuy: () => buyVariant(v),
     }));
 
@@ -109,10 +110,14 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
                         </p>
                         <GradientButton
                           onClick={card.onBuy}
-                          disabled={isBuyNowLoading}
+                          disabled={isBuyNowLoading || !card.available}
                           className="mt-4 md:mt-5 h-12 sm:h-14 md:h-15 w-full text-[17px] sm:text-[19px] md:text-[21px]"
                         >
-                          {isBuyNowLoading ? "Opening checkout…" : "Get it now"}
+                          {!card.available
+                            ? "Out of Stock"
+                            : isBuyNowLoading
+                              ? "Opening checkout…"
+                              : "Get it now"}
                         </GradientButton>
                       </div>
                     </m.div>
