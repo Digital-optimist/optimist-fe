@@ -1974,6 +1974,7 @@ export interface ResultSectionData {
 
 export interface VariantRichText {
   "1_0_ton": RichTextNode | null;
+  "1_4_ton": RichTextNode | null;
   "1_5_ton": RichTextNode | null;
   "2_0_ton": RichTextNode | null;
 }
@@ -2171,6 +2172,7 @@ function parseVariantRichText(
 ): VariantRichText {
   return {
     "1_0_ton": parseRichText(getFieldValue(fields, "1_0_ton")),
+    "1_4_ton": parseRichText(getFieldValue(fields, "1_4_ton")),
     "1_5_ton": parseRichText(getFieldValue(fields, "1_5_ton")),
     "2_0_ton": parseRichText(getFieldValue(fields, "2_0_ton")),
   };

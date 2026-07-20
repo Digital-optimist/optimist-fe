@@ -121,8 +121,14 @@ function getVariantRichText(
   tonnage: string,
 ) {
   if (!data) return null;
-  if (tonnage === "1" || tonnage === "1.0") return data["1_0_ton"];
+  // Live catalogue is 1.4 & 1.5 Ton. 1.4 prefers a dedicated `1_4_ton` block, but
+  // the metaobject has none yet and instead stores the 1.4-Ton spec sheet in the
+  // `1_0_ton` slot — so fall back to that (then 1.5). This shows 1.4's own specs
+  // today and auto-upgrades once a real `1_4_ton` field is added. Legacy 1.0/2.0
+  // keys are kept for older catalogues.
+  if (tonnage === "1.4") return data["1_4_ton"] ?? data["1_0_ton"] ?? data["1_5_ton"];
   if (tonnage === "1.5") return data["1_5_ton"];
+  if (tonnage === "1" || tonnage === "1.0") return data["1_0_ton"];
   if (tonnage === "2" || tonnage === "2.0") return data["2_0_ton"];
   return data["1_5_ton"];
 }
@@ -199,7 +205,7 @@ function ProductsPageInner({
     return combinedProduct !== null && combinedProduct.allVariants.length > 0;
   }, [combinedProduct]);
 
-  // Initialize selected variant - prefer 1.5 ton (middle), then first available
+  // Initialize selected variant - prefer the flagship 1.4 ton, then first available
   const [selectedVariant, setSelectedVariant] = useState<DisplayVariant | null>(
     null,
   );
@@ -216,9 +222,9 @@ function ProductsPageInner({
       !selectedVariant || (hasShopifyData && !initializedWithShopify);
 
     if (shouldUpdate) {
-      // Prefer 1.5 ton as default, then first available, then middle one
+      // Prefer the flagship 1.4 ton as default, then first available, then middle one
       const preferredVariant = variants.find(
-        (v) => v.tonnage === "1.5" && v.available,
+        (v) => v.tonnage === "1.4" && v.available,
       );
       const availableVariant = variants.find((v) => v.available);
       const defaultVariant =
@@ -682,6 +688,59 @@ function ProductsPageInner({
                     {/* <CityStockBanner /> */}
                   </>
                 )}
+
+              {/* Capacity selector — switch between AC sizes (e.g. 1.4 / 1.5
+                  Ton). Rendered from the live Shopify variants (Inner Circle is
+                  already filtered out of `variants`), so it auto-adapts to
+                  whatever tonnages exist. Picking one drives `selectedVariant`,
+                  which updates the whole PDP: title, price, EMI, images,
+                  description and specs. */}
+              {variants.length > 1 && (
+                <div className="flex flex-col gap-2.5">
+                  <h3 className="text-sm md:text-base font-medium text-[#0A0A0A]">
+                    Choose capacity
+                  </h3>
+                  <div
+                    className="grid grid-cols-2 gap-3"
+                    role="radiogroup"
+                    aria-label="AC capacity"
+                  >
+                    {variants.map((v) => {
+                      const isSelected = selectedVariant?.id === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={isSelected}
+                          onClick={() => handleSelectVariant(v)}
+                          disabled={!v.available}
+                          className={`btn-scale flex flex-col items-center justify-center gap-0.5 rounded-2xl border px-4 py-3.5 text-center transition-all ${
+                            isSelected
+                              ? "border-[#3478F6] bg-[#EEF4FE]"
+                              : "border-[rgba(0,0,0,0.12)] hover:border-[rgba(0,0,0,0.24)]"
+                          } ${!v.available ? "cursor-not-allowed opacity-50" : ""}`}
+                        >
+                          <span className="text-base font-semibold text-[#0A0A0A]">
+                            {v.name}
+                          </span>
+                          {/* Sample per-size info line (hardcoded for now). */}
+                          {v.tonnage === "1.5" && (
+                            <span className="text-xs text-[#6c6a6a]">
+                              7 days delivery
+                            </span>
+                          )}
+                          {!v.available && (
+                            <span className="text-xs text-[#6c6a6a]">
+                              Out of stock
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Quantity */}
               <div>

@@ -9,6 +9,7 @@ import { useGetItNow } from "@/components/home/useGetItNow";
 import { ASSETS } from "@/lib/assets";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 import { cn } from "@/lib/cn";
+import type { DisplayVariant } from "@/contexts/ProductsContext";
 import type { HomeProductDisplayContent } from "@/lib/shopify";
 
 const thermometer = "/figma/temp.svg";
@@ -24,16 +25,25 @@ interface ProductDisplaySectionProps {
 }
 
 // optimist-website "Buy your Optimist" section. Copy comes from the
-// `hp_product_display` metaobject. Per the catalogue we show ONLY the single
-// real 1.4-ton variant (as before): the AC product render sits on top,
-// overlapping the price card; tonnage from `variant.name`, live price/EMI from
-// Shopify, and the shared pincode → buyNow CTA.
+// `hp_product_display` metaobject. Shows the purchasable sizes (1.4 & 1.5 Ton)
+// as side-by-side cards: the AC product render sits on top, overlapping the
+// price card; tonnage from `variant.name`, live price/EMI from Shopify, and the
+// shared buyNow CTA.
 export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
-  const { variant, isBuyNowLoading, handleGetItNow } = useGetItNow();
+  const { variant, getVariantByTonnage, isBuyNowLoading, buyVariant } =
+    useGetItNow();
 
-  const price = variant?.price ?? 40000;
-  const emiMonthly = Math.round(price / EMI_TENURE_MONTHS);
-  const [tonValue, tonUnit = "Ton"] = (variant?.name ?? "1.4 Ton").split(/\s+/);
+  // Both sizes come straight from Shopify now (1.4 is the flagship `variant`;
+  // 1.5 resolves via getVariantByTonnage) — no hardcoded prices. Render a card
+  // per size that actually exists.
+  const cards = [getVariantByTonnage("1.4") ?? variant, getVariantByTonnage("1.5")]
+    .filter((v): v is DisplayVariant => Boolean(v))
+    .map((v) => ({
+      key: v.tonnage,
+      name: v.name,
+      price: v.price,
+      onBuy: () => buyVariant(v),
+    }));
 
   return (
     <section className="mx-auto w-full max-w-[1440px] px-5 pt-20 md:pt-50">
@@ -59,45 +69,56 @@ export function ProductDisplaySection({ content }: ProductDisplaySectionProps) {
               className="relative z-10 mx-auto block w-full max-w-[420px] sm:max-w-[540px] md:max-w-[620px] object-contain px-4"
             />
 
-            {/* Price card, tucked under the AC */}
+            {/* Price cards (two sizes), tucked under the AC */}
             <m.div
               initial="hidden"
               whileInView="visible"
               viewport={viewportOnce}
               variants={staggerParent(0.12)}
-              className="relative -mt-[40px] sm:-mt-[80px] md:-mt-[100px] overflow-hidden rounded-[24px] rounded-b-none border border-[#E9E9E9] bg-white px-6 sm:px-8 md:px-10 pt-[52px] sm:pt-[100px] md:pt-[124px] pb-6 sm:pb-8 md:pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-10"
+              className="relative -mt-[40px] sm:-mt-[80px] md:-mt-[100px] overflow-hidden rounded-[24px] rounded-b-none border border-[#E9E9E9] bg-white pt-[52px] sm:pt-[100px] md:pt-[124px] pb-6 sm:pb-8 md:pb-10"
             >
-              <m.div variants={fadeUp} className="flex flex-col gap-1">
-                <p className="text-[20px] sm:text-[24px] md:text-[28px] leading-none font-solar font-medium">
-                  <span className="text-[48px] sm:text-[64px] md:text-[80px]">
-                    {tonValue}{" "}
-                  </span>
-                  {tonUnit}
-                </p>
-                <p className="text-[17px] sm:text-[19px] md:text-[21px] leading-[140%] font-light text-[#6A6A6A]">
-                  5 Star Inverter Split AC
-                </p>
-              </m.div>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-0 md:divide-x divide-[#E9E9E9]">
+                {cards.map((card) => {
+                  const [tonValue, tonUnit = "Ton"] = card.name.split(/\s+/);
+                  const emiMonthly = Math.round(card.price / EMI_TENURE_MONTHS);
+                  return (
+                    <m.div
+                      key={card.key}
+                      variants={fadeUp}
+                      className="flex flex-col gap-5 px-6 sm:px-8 md:px-10"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <p className="text-[20px] sm:text-[24px] md:text-[28px] leading-none font-solar font-medium">
+                          <span className="text-[48px] sm:text-[64px] md:text-[80px]">
+                            {tonValue}{" "}
+                          </span>
+                          {tonUnit}
+                        </p>
+                        <p className="text-[17px] sm:text-[19px] md:text-[21px] leading-[140%] font-light text-[#6A6A6A]">
+                          5 Star Inverter Split AC
+                        </p>
+                      </div>
 
-              <m.div
-                variants={fadeUp}
-                className="w-full md:w-auto md:text-right"
-              >
-                <p className="text-[22px] sm:text-[25px] md:text-[27px] leading-none font-solar font-medium">
-                  From ₹{inr(emiMonthly)}/mo
-                </p>
-                <p className="mt-1 text-sm sm:text-base leading-[140%] font-light text-[#6A6A6A]">
-                  with no-cost EMI & instant savings or{" "}
-                  <span className="font-medium">₹{inr(price)}</span>
-                </p>
-                <GradientButton
-                  onClick={handleGetItNow}
-                  disabled={isBuyNowLoading}
-                  className="mt-4 md:mt-5 h-12 sm:h-14 md:h-15 w-full md:w-[320px] text-[17px] sm:text-[19px] md:text-[21px]"
-                >
-                  {isBuyNowLoading ? "Opening checkout…" : "Get it now"}
-                </GradientButton>
-              </m.div>
+                      <div>
+                        <p className="text-[22px] sm:text-[25px] md:text-[27px] leading-none font-solar font-medium">
+                          From ₹{inr(emiMonthly)}/mo
+                        </p>
+                        <p className="mt-1 text-sm sm:text-base leading-[140%] font-light text-[#6A6A6A]">
+                          with no-cost EMI & instant savings or{" "}
+                          <span className="font-medium">₹{inr(card.price)}</span>
+                        </p>
+                        <GradientButton
+                          onClick={card.onBuy}
+                          disabled={isBuyNowLoading}
+                          className="mt-4 md:mt-5 h-12 sm:h-14 md:h-15 w-full text-[17px] sm:text-[19px] md:text-[21px]"
+                        >
+                          {isBuyNowLoading ? "Opening checkout…" : "Get it now"}
+                        </GradientButton>
+                      </div>
+                    </m.div>
+                  );
+                })}
+              </div>
             </m.div>
           </div>
 
