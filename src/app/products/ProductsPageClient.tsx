@@ -868,7 +868,7 @@ function ProductsPageInner({
                     {buttonState === "loading"
                       ? "Loading..."
                       : buttonState === "outOfStock"
-                        ? "Unavailable"
+                        ? "Out of Stock"
                         : "Buy Now"}
                   </button>
                 </div>
@@ -1222,7 +1222,7 @@ function ProductsPageInner({
               {buttonState === "loading"
                 ? "Loading..."
                 : buttonState === "outOfStock"
-                  ? "Unavailable"
+                  ? "Out of Stock"
                   : "Buy Now"}
             </button>
           </div>
