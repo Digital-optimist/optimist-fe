@@ -170,7 +170,7 @@ export function BusinessHeader() {
               (Menu · logo · CTA) breathes instead of overflowing. */}
           <a
             href="#lead-form"
-            className={cn(CTA_GRADIENT, "h-9 sm:h-10 px-4 sm:px-6 text-sm sm:text-base")}
+            className={cn(CTA_GRADIENT, "h-9 sm:h-10 px-4 sm:px-6 text-xs sm:text-base")}
           >
             <span className="sm:hidden">Get proposal</span>
             <span className="hidden sm:inline">Request a proposal</span>

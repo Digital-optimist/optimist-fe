@@ -145,7 +145,8 @@ export function SavingsCalculatorSection() {
                 <legend className="font-solar text-[20px] font-medium leading-none text-[#212121]">
                   What kind of space are you cooling?
                 </legend>
-                <div className="mt-5 flex flex-wrap gap-2.5">
+                {/* 2×2 grid on phones; content-hugging wrap from sm up (design) */}
+                <div className="mt-5 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap">
                   {SPACE_TYPES.map((s) => (
                     <button
                       key={s.id}
@@ -153,7 +154,7 @@ export function SavingsCalculatorSection() {
                       aria-pressed={space === s.id}
                       onClick={() => setSpace(s.id)}
                       className={cn(
-                        "flex h-10 items-center rounded-[8px] border bg-white px-3 text-[14px] font-medium leading-[1.6] transition-colors",
+                        "flex min-h-10 items-center justify-center rounded-[8px] border bg-white px-3 py-1.5 text-center text-[14px] font-medium leading-[1.3] transition-colors sm:justify-start sm:py-0 sm:text-left sm:leading-[1.6]",
                         space === s.id
                           ? "border-[#3478F6] text-[#3478F6]"
                           : "border-[#E9E9E9] text-[#212121] hover:border-[#3478F6]/40",

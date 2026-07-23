@@ -249,7 +249,8 @@ export function LeadFormSection() {
                     <span className={cn(labelClass, "mb-3 block")}>
                       Project Type
                     </span>
-                    <div className="flex flex-wrap gap-2.5">
+                    {/* 2×2 grid on phones; content-hugging wrap from sm up */}
+                    <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap">
                       {PROJECT_TYPES.map((t) => (
                         <button
                           key={t}
@@ -257,7 +258,7 @@ export function LeadFormSection() {
                           aria-pressed={form.projectType === t}
                           onClick={() => set("projectType", t)}
                           className={cn(
-                            "flex h-10 items-center rounded-[8px] border bg-white px-3 text-[14px] font-medium leading-[1.6] transition-colors",
+                            "flex min-h-10 items-center justify-center rounded-[8px] border bg-white px-3 py-1.5 text-center text-[14px] font-medium leading-[1.3] transition-colors sm:justify-start sm:py-0 sm:text-left sm:leading-[1.6]",
                             form.projectType === t
                               ? "border-[#3478F6] text-[#3478F6]"
                               : "border-[#E9E9E9] text-[#212121] hover:border-[#3478F6]/40",
@@ -284,7 +285,7 @@ export function LeadFormSection() {
               type="submit"
               form={FORM_ID}
               disabled={submitted}
-              className="flex h-[60px] w-full items-center justify-center rounded-[50px] bg-[linear-gradient(44.96deg,#1265FF_30.07%,#69CDEB_99.77%,#4466FF_136.67%)] px-6 text-[16px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 lg:w-[480px]"
+              className="flex h-12 w-full items-center justify-center rounded-[50px] bg-[linear-gradient(44.96deg,#1265FF_30.07%,#69CDEB_99.77%,#4466FF_136.67%)] px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 lg:h-[60px] lg:w-[480px] lg:text-[16px]"
             >
               {submitted ? "Submitted — we'll be in touch" : "Get Commercial Proposal"}
             </button>

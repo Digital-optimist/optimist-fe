@@ -68,13 +68,13 @@ export function BusinessFooter() {
               src={logoMark}
               alt="logo"
               aria-hidden
-              className="h-10 sm:h-12 md:h-15 w-auto"
+              className="h-8 sm:h-12 md:h-15 w-auto"
             />
             <img
               src={heroDecor}
               alt="optimist"
               aria-hidden
-              className="h-9 sm:h-[42px] md:h-[49px] w-auto"
+              className="h-[26px] sm:h-[42px] md:h-[49px] w-auto"
             />
           </m.div>
 
