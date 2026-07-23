@@ -5,7 +5,7 @@ import { m } from "framer-motion";
 import { IndianRupee, Target } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
-import { Slider } from "./Slider";
+import { Slider, SliderValueBox } from "./Slider";
 
 // ---------------------------------------------------------------------------
 // PLACEHOLDER economics model, CALIBRATED TO THE FIGMA MOCK: at the design's
@@ -40,33 +40,44 @@ const inrBig = (n: number) =>
       ? `₹${(n / 1e5).toFixed(1)} lacs`
       : inr(n);
 
-// Question label + value box row shared by the three slider groups.
+// Question label + editable value box row shared by the three slider groups.
 // Figma: question ABC Solar Medium 20px; box h-40 rounded-8 #E9E9E9 border,
 // number Poppins SemiBold 20px #3478F6, unit Poppins SemiBold 12px #4D4D4D.
+// The number can be typed directly (clamped to the slider's range).
 function SliderHeader({
   question,
   value,
   unit,
+  prefix,
+  min,
+  max,
+  step,
+  onChange,
 }: {
   question: string;
-  value: string;
+  value: number;
   unit: string;
+  prefix?: string;
+  min: number;
+  max: number;
+  step?: number;
+  onChange: (v: number) => void;
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <p className="font-solar text-[18px] font-medium leading-[1.1] text-[#212121] md:text-[20px] md:leading-none">
         {question}
       </p>
-      <div className="flex h-10 shrink-0 items-center rounded-[8px] border border-[#E9E9E9] bg-white px-3">
-        <span className="flex items-baseline gap-1">
-          <span className="text-[20px] font-semibold leading-none text-[#3478F6]">
-            {value}
-          </span>
-          <span className="text-[12px] font-semibold leading-none text-[#4D4D4D]">
-            {unit}
-          </span>
-        </span>
-      </div>
+      <SliderValueBox
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        unit={unit}
+        prefix={prefix}
+        onChange={onChange}
+        ariaLabel={question}
+      />
     </div>
   );
 }
@@ -170,8 +181,11 @@ export function SavingsCalculatorSection() {
               <div>
                 <SliderHeader
                   question="How many AC units are currently installed?"
-                  value={String(units)}
+                  value={units}
                   unit="units"
+                  min={1}
+                  max={100}
+                  onChange={setUnits}
                 />
                 <Slider
                   className="mt-2"
@@ -188,8 +202,11 @@ export function SavingsCalculatorSection() {
               <div>
                 <SliderHeader
                   question="On average, how many hours a day do they run?"
-                  value={String(hours)}
+                  value={hours}
                   unit="hrs"
+                  min={1}
+                  max={20}
+                  onChange={setHours}
                 />
                 <Slider
                   className="mt-2"
@@ -206,14 +223,17 @@ export function SavingsCalculatorSection() {
               <div>
                 <SliderHeader
                   question="What's your current electricity tariff per unit?"
-                  value={`₹${tariff}`}
+                  value={tariff}
                   unit="/units"
+                  prefix="₹"
+                  min={4}
+                  max={12}
+                  onChange={setTariff}
                 />
                 <Slider
                   className="mt-2"
                   min={4}
                   max={12}
-                  step={0.5}
                   value={tariff}
                   onChange={setTariff}
                   ariaLabel="Electricity tariff per unit"

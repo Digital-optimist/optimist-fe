@@ -101,13 +101,20 @@ export function WhyOptimistSection() {
             </span>
           </div>
           {/* Real brand assets (palm mark + wordmark) — the Figma SVG export
-              outlines the wordmark with a fallback font, so it can't be used. */}
-          <div className="flex h-full items-center justify-center gap-1 rounded-t-[24px] bg-[#FFFCDC] px-2 md:px-10">
-            <img src={LOGO_MARK} alt="" aria-hidden className="h-6 w-auto md:h-8" />
+              outlines the wordmark with a fallback font, so it can't be used.
+              On phones the lockup is width-driven (shrinks with the narrow
+              column); from sm up it uses the design's fixed heights. */}
+          <div className="flex h-full min-w-0 items-center justify-center gap-1 rounded-t-[24px] bg-[#FFFCDC] px-2 md:px-10">
+            <img
+              src={LOGO_MARK}
+              alt=""
+              aria-hidden
+              className="h-4 w-auto shrink-0 sm:h-6 md:h-8"
+            />
             <img
               src={LOGO_WORDMARK}
               alt="Optimist"
-              className="h-5 w-auto md:h-[26px]"
+              className="h-auto w-full min-w-0 max-w-[90px] sm:h-5 sm:w-auto sm:max-w-none md:h-[26px]"
             />
           </div>
         </m.div>

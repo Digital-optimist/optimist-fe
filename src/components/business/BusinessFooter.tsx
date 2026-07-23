@@ -17,7 +17,7 @@ const heroDecor = "/figma/hero-decor.svg";
 // commercial-specific ones (Contact Sales / Support) reuse the contact page.
 const footerNavItems = [
   { id: "about", title: "About Us", href: "/about" },
-  { id: "contact-sales", title: "Contact Sales", href: "/contact-us" },
+  // { id: "contact-sales", title: "Contact Sales", href: "/contact-us" },
   { id: "support-feedback", title: "Support / Feedback", href: "/contact-us" },
 ];
 

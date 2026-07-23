@@ -7,52 +7,104 @@ import useEmblaCarousel from "embla-carousel-react";
 import { m } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { fadeUp, viewportOnce } from "@/lib/motion-variants";
+import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 
 const BG_TEXTURE = "/business/opportunity-bg.png";
 
-// Figma node 1:293 — "Efficiency is becoming a business opportunity".
-// Card 1 is a dark info card (photo under a blurred black/80 overlay, title +
-// body at the top); cards 2 and 3 are photo cards with a bottom-dark gradient
-// and a title anchored near the bottom (each at its own Figma offset).
-const cards = [
+// Same cards as the home page's "under the hood" carousel (InsideTechSection):
+// full-bleed photo, bottom-anchored title, description hidden until hover.
+// The set is doubled, exactly like home, so the rail scrolls further.
+interface TechCardData {
+  title: string;
+  body: string;
+  img: string;
+}
+
+const baseCards: TechCardData[] = [
   {
-    image: "/business/opportunity-card-1.jpg",
-    title: "Lower operating costs, building-wide",
+    title: "Cools 4x faster than anything else in its class.",
     body: "Our micro-channel heat exchanger transfers heat at 4x the speed of a conventional AC. That's not a small tweak — that's why your room feels different within minutes of switching it on.",
+    img: "/figma/underhood-heat-exchanger.png",
   },
   {
-    image: "/business/opportunity-card-2.jpg",
-    title: "High performance even during peak summer.",
-    titleBottom: "bottom-[22%]",
+    title: "1,180 flow paths. Every single one working for you.",
+    body: "Each path is precision-engineered to move refrigerant exactly where it's needed — so cooling is even, fast and efficient across the whole room.",
+    img: "/figma/underhood-flow-paths.png",
   },
   {
-    image: "/business/opportunity-card-3.jpg",
-    title: "Supports your growth building goals",
-    titleBottom: "bottom-[32%]",
+    title: "Tested 15x harder than the industry standard. On purpose.",
+    body: "We put every unit through 15x the standard stress cycles, so it keeps performing through years of brutal Indian summers.",
+    img: "/figma/underhood-tested.png",
   },
-] as const;
+];
+const cards = [...baseCards, ...baseCards];
+
+// Card — ported 1:1 from the home TechCard: black card, photo zooms on hover,
+// description reveals via grid-rows 0fr → 1fr.
+function TechCard({ card }: { card: TechCardData }) {
+  return (
+    <m.article
+      variants={fadeUp}
+      className="group relative flex h-[360px] w-[280px] shrink-0 flex-col justify-end overflow-hidden rounded-[16px] bg-black text-white sm:h-[400px] sm:w-[340px] sm:rounded-[20px] md:h-[440px] md:w-[427px] md:rounded-[24px]"
+    >
+      <img
+        src={card.img}
+        alt=""
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-[600ms] ease-out group-hover:scale-105"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(218deg,rgba(97,97,97,0)_26%,rgba(0,0,0,0.9)_80%)]" />
+      <div className="relative flex flex-col p-6 sm:p-10 md:p-15">
+        <p className="font-solar text-[20px] font-medium leading-[120%] sm:text-[28px] md:text-[32px]">
+          {card.title}
+        </p>
+        <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-out group-hover:mt-3 group-hover:grid-rows-[1fr] group-hover:opacity-100 sm:group-hover:mt-4">
+          <p className="overflow-hidden text-sm leading-[160%] font-light text-[#BABABA] sm:text-base">
+            {card.body}
+          </p>
+        </div>
+      </div>
+    </m.article>
+  );
+}
 
 export function BusinessOpportunitySection() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", loop: false });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true,
+  });
   const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
-  const [selected, setSelected] = useState(0);
-  const [snapCount, setSnapCount] = useState<number>(cards.length);
+  const [canNext, setCanNext] = useState(false);
+  const [progress, setProgress] = useState({ width: 30, left: 0 });
 
-  const onSelect = useCallback(() => {
+  // Continuous scroll-progress thumb, same mechanism as the home carousel.
+  const onUpdate = useCallback(() => {
     if (!emblaApi) return;
     setCanPrev(emblaApi.canScrollPrev());
     setCanNext(emblaApi.canScrollNext());
-    setSelected(emblaApi.selectedScrollSnap());
-    setSnapCount(emblaApi.scrollSnapList().length);
+
+    const viewport = emblaApi.rootNode();
+    const container = emblaApi.containerNode();
+    const visibleRatio = Math.min(
+      1,
+      viewport.clientWidth / container.scrollWidth,
+    );
+    const width = visibleRatio * 100;
+    const left = emblaApi.scrollProgress() * (100 - width);
+    setProgress({ width, left: Math.max(0, Math.min(100 - width, left)) });
   }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect).on("reInit", onSelect);
-  }, [emblaApi, onSelect]);
+    emblaApi.on("scroll", onUpdate);
+    emblaApi.on("reInit", onUpdate);
+    const raf = requestAnimationFrame(onUpdate);
+    return () => {
+      cancelAnimationFrame(raf);
+      emblaApi.off("scroll", onUpdate);
+      emblaApi.off("reInit", onUpdate);
+    };
+  }, [emblaApi, onUpdate]);
 
   // Round arrow button — Figma: 36px circle; gray/disabled vs dark/active.
   const arrowClass = (enabled: boolean) =>
@@ -65,8 +117,7 @@ export function BusinessOpportunitySection() {
 
   return (
     <section className="relative overflow-hidden bg-white py-14 md:py-[100px]">
-      {/* Crumpled-texture swoosh (Figma masked composite, full section width).
-          Kept near native scale so it doesn't squash on small screens. */}
+      {/* Crumpled-texture swoosh (Figma masked composite, full section width). */}
       <img
         src={BG_TEXTURE}
         alt=""
@@ -114,66 +165,29 @@ export function BusinessOpportunitySection() {
         </div>
       </m.div>
 
-      {/* Carousel — full-bleed viewport; the leading padding lines the first
-          card up with the 1080px content column (Figma: cards start at x180
-          and bleed off the right edge of the screen). */}
+      {/* Carousel — leading padding lines the first card up with the 1080px
+          content column; the rail bleeds off the right edge. */}
       <m.div
         initial="hidden"
         whileInView="visible"
         viewport={viewportOnce}
-        variants={fadeUp}
+        variants={staggerParent(0.1)}
         className="mt-8 overflow-hidden md:mt-[60px]"
         ref={emblaRef}
       >
         <div className="flex gap-5 pr-5 pl-5 sm:pr-6 sm:pl-6 md:gap-10 md:pr-[max(2.5rem,calc((100vw-1080px)/2))] md:pl-[max(2.5rem,calc((100vw-1080px)/2))]">
-          {cards.map((card) => (
-            <div
-              key={card.title}
-              className="relative h-[360px] w-[300px] shrink-0 grow-0 overflow-hidden rounded-[24px] shadow-[0_6px_10px_rgba(0,0,0,0.45)] sm:h-[400px] sm:w-[360px] md:h-[440px] md:w-[427px]"
-            >
-              <img
-                src={card.image}
-                alt=""
-                className="absolute inset-0 size-full object-cover"
-              />
-              {"body" in card ? (
-                <>
-                  {/* Dark info card — blurred black overlay, text at top */}
-                  <div className="absolute inset-0 bg-black/80 backdrop-blur-[8px]" />
-                  <div className="absolute inset-0 p-10 md:p-[60px]">
-                    <h3 className="max-w-[307px] font-solar text-[24px] font-medium leading-[1.2] text-white md:text-[32px]">
-                      {card.title}
-                    </h3>
-                    <p className="mt-[15px] max-w-[307px] text-sm leading-[1.6] text-[#BABABA] md:text-[16px]">
-                      {card.body}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* Photo card — bottom-dark gradient, bottom-anchored title */}
-                  <div className="absolute inset-0 bg-[linear-gradient(206deg,rgba(97,97,97,0)_24.9%,rgba(0,0,0,0.9)_74.8%)]" />
-                  <h3
-                    className={cn(
-                      "absolute left-10 max-w-[280px] font-solar text-[24px] font-medium leading-[1.2] text-white md:left-[60px] md:max-w-[307px] md:text-[32px]",
-                      card.titleBottom,
-                    )}
-                  >
-                    {card.title}
-                  </h3>
-                </>
-              )}
-            </div>
+          {cards.map((card, i) => (
+            <TechCard key={i} card={card} />
           ))}
         </div>
       </m.div>
 
-      {/* Progress bar — Figma: 4px track #E9E9E9, fill #4D4D4D */}
+      {/* Progress bar — Figma track colours, home's continuous-thumb mechanics */}
       <div className="relative mx-auto mt-10 w-full max-w-[1160px] px-5 sm:px-6 md:mt-[60px] md:px-10">
-        <div className="h-1 w-full overflow-hidden rounded-full bg-[#E9E9E9]">
+        <div className="relative h-1 w-full overflow-hidden rounded-full bg-[#E9E9E9]">
           <div
-            className="h-full rounded-full bg-[#4D4D4D] transition-[width] duration-300 ease-out"
-            style={{ width: `${((selected + 1) / Math.max(snapCount, 1)) * 100}%` }}
+            className="absolute inset-y-0 rounded-full bg-[#4D4D4D] transition-[left] duration-150 ease-out"
+            style={{ width: `${progress.width}%`, left: `${progress.left}%` }}
           />
         </div>
       </div>

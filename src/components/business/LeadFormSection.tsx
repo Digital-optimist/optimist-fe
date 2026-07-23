@@ -7,7 +7,7 @@ import { m } from "framer-motion";
 import { CheckCircle2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { fadeUp, viewportOnce } from "@/lib/motion-variants";
-import { Slider } from "./Slider";
+import { Slider, SliderValueBox } from "./Slider";
 
 const CHECK_ICON = "/business/why-check.svg";
 const FORM_ID = "lead-form-form";
@@ -42,10 +42,20 @@ const PROJECT_TYPES = [
 
 const labelClass = "text-[14px] font-medium leading-none text-[#999999]";
 // `outline-hidden` (transparent outline) suppresses the browser's native
-// focus halo in every browser/OS a11y mode; focus feedback is the brand-blue
-// border + a soft matching glow instead.
+// focus halo in every browser/OS a11y mode; focus feedback is simply the
+// brand-blue border.
 const inputClass =
-  "h-[50px] w-full rounded-[8px] border border-[#E9E9E9] bg-white px-4 text-[14px] font-medium text-[#212121] outline-hidden transition-[border-color,box-shadow] placeholder:font-normal placeholder:text-[#BABABA] focus:border-[#3478F6] focus:shadow-[0_0_0_3px_rgba(52,120,246,0.12)]";
+  "h-[50px] w-full rounded-[8px] border border-[#E9E9E9] bg-white px-4 text-[14px] font-medium text-[#212121] outline-hidden transition-colors selection:bg-[#3478F6]/10 placeholder:font-normal placeholder:text-[#BABABA] focus:border-[#3478F6]";
+const errorInputClass = "border-[#E5484D] focus:border-[#E5484D]";
+const errorTextClass = "mt-1.5 block text-[12px] leading-[1.3] text-[#E5484D]";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Indian mobile: 10 digits starting 6–9, tolerating +91 / 0 prefixes and
+// separators the user may type.
+const isIndianMobile = (raw: string) => {
+  const digits = raw.replace(/\D/g, "").replace(/^(?:91|0)(?=[6-9]\d{9}$)/, "");
+  return /^[6-9]\d{9}$/.test(digits);
+};
 
 export function LeadFormSection() {
   const [form, setForm] = useState({
@@ -59,14 +69,52 @@ export function LeadFormSection() {
     projectType: "New Installation",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    phone?: string;
+  }>({});
 
-  const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
+  const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((f) => ({ ...f, [key]: value }));
+    // Clear the field's error as soon as the user edits it again.
+    if (key === "name" || key === "email" || key === "phone") {
+      const k = key as "name" | "email" | "phone";
+      setErrors((prev) => (prev[k] ? { ...prev, [k]: undefined } : prev));
+    }
+  };
+
+  const validate = () => {
+    const next: typeof errors = {};
+    if (!form.name.trim()) next.name = "Please enter your name.";
+    if (!EMAIL_RE.test(form.email.trim()))
+      next.email = "Enter a valid email address.";
+    if (!isIndianMobile(form.phone))
+      next.phone = "Enter a valid 10-digit Indian mobile number.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  // Field-level check when the user leaves a field: flag format problems
+  // immediately (required-empty is only flagged on submit, so tabbing through
+  // the form doesn't shout at the user).
+  const blurValidate = (key: "name" | "email" | "phone") => {
+    const v = form[key].trim();
+    let msg: string | undefined;
+    if (key === "name" && v.length > 0 && v.length < 2)
+      msg = "Please enter your name.";
+    if (key === "email" && v && !EMAIL_RE.test(v))
+      msg = "Enter a valid email address.";
+    if (key === "phone" && v && !isIndianMobile(v))
+      msg = "Enter a valid 10-digit Indian mobile number.";
+    if (msg) setErrors((prev) => ({ ...prev, [key]: msg }));
+  };
 
   // Placeholder submit — not wired to a backend yet; shows an inline
   // confirmation instead of posting anywhere.
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitted(true);
   };
 
@@ -146,11 +194,16 @@ export function LeadFormSection() {
                         Name
                       </label>
                       <input
-                        className={inputClass}
+                        className={cn(inputClass, errors.name && errorInputClass)}
                         placeholder="Anand"
                         value={form.name}
+                        aria-invalid={!!errors.name}
                         onChange={(e) => set("name", e.target.value)}
+                        onBlur={() => blurValidate("name")}
                       />
+                      {errors.name && (
+                        <span className={errorTextClass}>{errors.name}</span>
+                      )}
                     </div>
                     <div>
                       <label className={cn(labelClass, "mb-3 block")}>
@@ -169,10 +222,15 @@ export function LeadFormSection() {
                       </label>
                       <input
                         type="email"
-                        className={inputClass}
+                        className={cn(inputClass, errors.email && errorInputClass)}
                         value={form.email}
+                        aria-invalid={!!errors.email}
                         onChange={(e) => set("email", e.target.value)}
+                        onBlur={() => blurValidate("email")}
                       />
+                      {errors.email && (
+                        <span className={errorTextClass}>{errors.email}</span>
+                      )}
                     </div>
                     <div>
                       <label className={cn(labelClass, "mb-3 block")}>
@@ -180,10 +238,15 @@ export function LeadFormSection() {
                       </label>
                       <input
                         type="tel"
-                        className={inputClass}
+                        className={cn(inputClass, errors.phone && errorInputClass)}
                         value={form.phone}
+                        aria-invalid={!!errors.phone}
                         onChange={(e) => set("phone", e.target.value)}
+                        onBlur={() => blurValidate("phone")}
                       />
+                      {errors.phone && (
+                        <span className={errorTextClass}>{errors.phone}</span>
+                      )}
                     </div>
                     <div>
                       <label className={cn(labelClass, "mb-3 block")}>
@@ -222,16 +285,14 @@ export function LeadFormSection() {
                       <span className={labelClass}>
                         How many AC units are required?
                       </span>
-                      <div className="flex h-10 shrink-0 items-center rounded-[8px] border border-[#E9E9E9] bg-white px-3">
-                        <span className="flex items-baseline gap-1">
-                          <span className="text-[20px] font-semibold leading-none text-[#3478F6]">
-                            {form.units}
-                          </span>
-                          <span className="text-[12px] font-semibold leading-none text-[#4D4D4D]">
-                            units
-                          </span>
-                        </span>
-                      </div>
+                      <SliderValueBox
+                        value={form.units}
+                        min={1}
+                        max={100}
+                        unit="units"
+                        onChange={(v) => set("units", v)}
+                        ariaLabel="How many AC units are required?"
+                      />
                     </div>
                     <Slider
                       className="mt-2"
