@@ -41,11 +41,20 @@ export function LayoutContent({ children, footerImageSrc }: LayoutContentProps) 
   // The previous landing page now lives at /home and keeps the original floating
   // Navigation + Footer it was designed around.
   const isLegacyLanding = pathname === "/home" || pathname === "/home/";
+  // The B2B/commercial landing page (/business) ships its OWN BusinessHeader +
+  // BusinessFooter inside its page client (like the main home), so the header
+  // sits on the same textured background as the hero (no seam). The layout adds
+  // neither.
+  const isBusiness = pathname === "/business" || pathname === "/business/";
 
   const hideFooter =
-    isMainHome || NO_FOOTER_ROUTES.some((route) => pathname.startsWith(route));
+    isMainHome ||
+    isBusiness ||
+    NO_FOOTER_ROUTES.some((route) => pathname.startsWith(route));
   const hideHeader =
-    isMainHome || NO_HEADER_ROUTES.some((route) => pathname.startsWith(route));
+    isMainHome ||
+    isBusiness ||
+    NO_HEADER_ROUTES.some((route) => pathname.startsWith(route));
   // The legacy landing (/home) keeps the original floating Navigation; every
   // other route uses the site-wide HomeHeader (Poppins, scroll-to-frosted-pill).
   const usesGlobalHeader = !hideHeader && !isLegacyLanding;

@@ -12,6 +12,12 @@
       "runtimeExecutable": "yarn",
       "runtimeArgs": ["dev", "-p", "3001"],
       "port": 3001
+    },
+    {
+      "name": "biz-preview",
+      "runtimeExecutable": "/Users/geetansh2k1/.nvm/versions/node/v22.22.0/bin/node",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "-p", "3000"],
+      "port": 3000
     }
   ]
 }
