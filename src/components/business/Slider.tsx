@@ -78,8 +78,12 @@ export function SliderValueBox({
             onChange={(e) => {
               const raw = e.target.value;
               if (!/^\d*\.?\d*$/.test(raw)) return;
-              setDraft(raw);
               const n = parseFloat(raw);
+              // Hard-stop anything above the slider's upper bound — the
+              // keystroke is rejected instead of waiting for blur to clamp.
+              // (Below-min partials stay allowed: "1" on the way to "12".)
+              if (!Number.isNaN(n) && n > max) return;
+              setDraft(raw);
               if (!Number.isNaN(n) && n >= min && n <= max) onChange(snap(n));
             }}
             onBlur={commit}

@@ -3,13 +3,12 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { m } from "framer-motion";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { fadeUp, staggerParent, viewportOnce } from "@/lib/motion-variants";
 
 const LOGO_MARK = "/figma/optimist-mark.svg";
 const LOGO_WORDMARK = "/figma/hero-decor.svg";
-const X_ICON = "/business/why-x.svg";
-const CHECK_ICON = "/business/why-check.svg";
 
 // Figma node 1:441 — "Why Optimist for commercial fleets?" comparison table.
 // Three columns: Features (fluid) · Other AC's (305px) · Optimist (305px on
@@ -50,11 +49,6 @@ const rows = [
   },
 ];
 
-// Shared column template: fluid features column + two fixed comparison
-// columns (Figma: 305px each at 1080 content width).
-const GRID =
-  "grid grid-cols-[1.15fr_1fr_1fr] md:grid-cols-[1fr_240px_240px] lg:grid-cols-[1fr_305px_305px]";
-
 export function WhyOptimistSection() {
   return (
     <section className="mx-auto w-full max-w-[1160px] px-5 sm:px-6 md:px-10 py-14 md:py-[100px]">
@@ -80,79 +74,72 @@ export function WhyOptimistSection() {
         </m.h2>
       </m.div>
 
-      {/* Table */}
+      {/* Table — same structure/classes as the home ComparisonSection, with
+          the business rows. Feature column spans 2 of 4 columns from md up. */}
       <m.div
         initial="hidden"
         whileInView="visible"
         viewport={viewportOnce}
         variants={staggerParent(0.06)}
-        className="mt-10 md:mt-14"
+        className="mt-10 w-full md:mt-14"
       >
-        {/* Header row — Figma: 80px tall; logo cell on #FFFCDC, rounded-t 24 */}
-        <m.div variants={fadeUp} className={cn(GRID, "h-[64px] md:h-[80px]")}>
-          <div className="flex h-full items-center px-2 md:px-10">
-            <span className="text-sm leading-none text-[#999999] md:text-[16px]">
-              Features
-            </span>
+        {/* Header row */}
+        <m.div variants={fadeUp} className="grid h-16 grid-cols-3 sm:h-20 md:grid-cols-4">
+          <div className="col-span-1 flex items-center text-sm leading-none font-light text-[#999999] sm:text-base md:col-span-2 md:pl-10">
+            Features
           </div>
-          <div className="flex h-full items-center justify-center px-2 md:px-10">
-            <span className="font-solar text-[16px] font-medium leading-none text-[#4D4D4D] md:text-[20px]">
-              Other AC&rsquo;s
-            </span>
+          <div className="col-span-1 flex items-center justify-center text-center font-solar text-base leading-none font-medium text-[#4D4D4D] sm:text-lg md:text-xl">
+            Other AC&rsquo;s
           </div>
-          {/* Real brand assets (palm mark + wordmark) — the Figma SVG export
-              outlines the wordmark with a fallback font, so it can't be used.
-              On phones the lockup is width-driven (shrinks with the narrow
-              column); from sm up it uses the design's fixed heights. */}
-          <div className="flex h-full min-w-0 items-center justify-center gap-1 rounded-t-[24px] bg-[#FFFCDC] px-2 md:px-10">
-            <img
-              src={LOGO_MARK}
-              alt=""
-              aria-hidden
-              className="h-4 w-auto shrink-0 sm:h-6 md:h-8"
-            />
-            <img
-              src={LOGO_WORDMARK}
-              alt="Optimist"
-              className="h-auto w-full min-w-0 max-w-[90px] sm:h-5 sm:w-auto sm:max-w-none md:h-[26px]"
-            />
+          <div className="col-span-1 rounded-t-[16px] bg-[#FFFCDC] sm:rounded-t-[20px] md:rounded-t-[24px]">
+            <div className="flex h-full items-center justify-center gap-0.5 md:gap-1.5">
+              <img
+                src={LOGO_MARK}
+                alt="logo"
+                aria-hidden
+                className="h-5 w-auto md:h-8"
+              />
+              <img
+                src={LOGO_WORDMARK}
+                alt="optimist"
+                aria-hidden
+                className="h-4 w-auto md:h-[26px]"
+              />
+            </div>
           </div>
         </m.div>
 
-        {/* Rows — Figma: 100px tall, top hairline, centered comparison cells */}
+        {/* Rows */}
         {rows.map((row, i) => (
           <m.div
             key={row.feature}
             variants={fadeUp}
-            className={cn(GRID, "min-h-[88px] border-t border-[#E9E9E9] md:min-h-[100px]")}
+            className="grid h-20 grid-cols-3 border-t border-[#E9E9E9] sm:h-24 md:h-25 md:grid-cols-4"
           >
-            <div className="flex items-center gap-3 py-4 pr-2 md:gap-6 md:px-10 md:py-[30px]">
+            <div className="col-span-1 flex items-center gap-3 sm:gap-4 md:col-span-2 md:gap-6 md:pl-10">
               <img
                 src={row.icon}
                 alt=""
                 aria-hidden
-                className="hidden size-6 shrink-0 object-contain sm:block"
+                className="size-5 shrink-0 object-contain sm:size-6"
               />
-              <span className="font-solar text-[15px] font-medium leading-[1.15] text-[#212121] md:text-[20px] md:leading-none">
+              <span className="font-solar text-sm font-medium text-[#212121] sm:text-base md:text-xl">
                 {row.feature}
               </span>
             </div>
-            <div className="flex flex-col items-center justify-center gap-2 px-2 py-4 text-center md:px-10 md:py-[30px]">
-              <img src={X_ICON} alt="No" className="size-4" />
-              <span className="text-[13px] leading-[1.2] text-[#212121] md:text-[16px] md:leading-none">
-                {row.other}
-              </span>
+            <div className="col-span-1 flex flex-col items-center justify-center gap-1.5 text-xs leading-none font-light sm:gap-2 sm:text-sm md:text-base">
+              <X className="size-6 stroke-[#BABABA] sm:size-7 md:size-8" />
+              <span className="px-2 text-center">{row.other}</span>
             </div>
             <div
               className={cn(
-                "flex flex-col items-center justify-center gap-2 bg-[#FFFCDC] px-2 py-4 text-center md:px-10 md:py-[30px]",
-                i === rows.length - 1 && "rounded-b-[24px]",
+                "col-span-1 flex flex-col items-center justify-center gap-1.5 bg-[#FFFCDC] text-xs leading-none font-light sm:gap-2 sm:text-sm md:text-base",
+                i === rows.length - 1 &&
+                  "rounded-b-[16px] sm:rounded-b-[20px] md:rounded-b-[24px]",
               )}
             >
-              <img src={CHECK_ICON} alt="Yes" className="size-7 md:size-8" />
-              <span className="text-[13px] leading-[1.2] text-[#212121] md:text-[16px] md:leading-none">
-                {row.optimist}
-              </span>
+              <Check className="size-6 stroke-[#08A22C] sm:size-7 md:size-8" />
+              <span className="px-2 text-center">{row.optimist}</span>
             </div>
           </m.div>
         ))}

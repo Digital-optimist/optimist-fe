@@ -13,7 +13,6 @@ const BG_TEXTURE = "/business/opportunity-bg.png";
 
 // Same cards as the home page's "under the hood" carousel (InsideTechSection):
 // full-bleed photo, bottom-anchored title, description hidden until hover.
-// The set is doubled, exactly like home, so the rail scrolls further.
 interface TechCardData {
   title: string;
   body: string;
@@ -37,7 +36,7 @@ const baseCards: TechCardData[] = [
     img: "/figma/underhood-tested.png",
   },
 ];
-const cards = [...baseCards, ...baseCards];
+const cards = baseCards;
 
 // Card — ported 1:1 from the home TechCard: black card, photo zooms on hover,
 // description reveals via grid-rows 0fr → 1fr.
